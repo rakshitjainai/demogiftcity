@@ -1,76 +1,85 @@
-import React, { useState } from 'react';
-import { Search, ChevronDown, Menu, X, Shield, BookOpen, Layers, Award, Sparkles, User, LogIn } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, ChevronDown, Menu, X, LogIn, Zap } from 'lucide-react';
 import { NAV_LINKS } from '../data/mockData';
 
 export default function Navbar({ onOpenSearch, onOpenAuth, onSelectCategory }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
 
-  const toggleDropdown = (label) => {
-    if (activeDropdown === label) {
-      setActiveDropdown(null);
-    } else {
-      setActiveDropdown(label);
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs backdrop-blur-md bg-white/95 transition-all">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/90 backdrop-blur-md border-b border-[var(--line)] shadow-sm'
+          : 'bg-[var(--paper)] border-b border-[var(--line)]'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Left: Logo & Tagline */}
-          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-12 h-12 rounded-full bg-reg-green flex items-center justify-center text-white shadow-md shadow-emerald-900/20 group-hover:scale-105 transition-transform">
-              <span className="font-extrabold text-2xl tracking-tighter flex items-center justify-center">
+        <div className="flex items-center justify-between h-[70px]">
+
+          {/* Logo */}
+          <div
+            className="flex items-center gap-3 cursor-pointer group flex-shrink-0"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            {/* Rounded-square gradient logo mark */}
+            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[var(--forest)] to-[var(--leaf)] flex items-center justify-center shadow-md shadow-[rgba(11,77,51,0.25)] group-hover:shadow-lg group-hover:shadow-[rgba(11,77,51,0.35)] transition-shadow">
+              <span
+                className="text-white text-xl leading-none"
+                style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700 }}
+              >
                 R
               </span>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center space-x-1.5">
-                <span className="text-2xl font-black tracking-tight text-slate-900 group-hover:text-reg-green transition-colors">
-                  Reg<span className="text-reg-green">Mate</span>
-                </span>
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                  PRO
-                </span>
-              </div>
-              <span className="text-[11px] font-medium text-slate-500 tracking-wide -mt-0.5">
+              <span
+                className="text-[var(--ink)] text-lg leading-none"
+                style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700 }}
+              >
+                Reg<span className="text-[var(--forest)]">Mate</span>
+              </span>
+              <span className="text-[10px] font-medium text-[var(--ink-soft)] tracking-wide mt-0.5">
                 Navigate Regulations. Stay Ahead.
               </span>
             </div>
           </div>
 
-          {/* Center: Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center space-x-1 lg:space-x-2">
+          {/* Center: Desktop Nav */}
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
             {NAV_LINKS.map((link) => (
               <div key={link.label} className="relative group">
                 <button
-                  onClick={() => link.hasDropdown ? toggleDropdown(link.label) : null}
-                  className={`px-3 py-2 text-sm font-semibold rounded-lg flex items-center space-x-1 transition-all ${
+                  onClick={() => link.hasDropdown ? null : null}
+                  className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
                     link.active
-                      ? 'text-reg-green bg-emerald-50/80 font-bold border-b-2 border-reg-green rounded-b-none'
-                      : 'text-slate-700 hover:text-reg-green hover:bg-slate-50'
+                      ? 'text-[var(--leaf)] border-b-2 border-[var(--leaf)] rounded-b-none pb-[6px]'
+                      : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
                   }`}
                 >
-                  <span>{link.label}</span>
+                  {link.label}
                   {link.hasDropdown && (
-                    <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-reg-green transition-transform group-hover:rotate-180" />
+                    <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-transform group-hover:rotate-180" />
                   )}
                 </button>
 
-                {/* Dropdown Menu */}
+                {/* Dropdown */}
                 {link.hasDropdown && link.subItems && (
                   <div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block z-50">
-                    <div className="bg-white rounded-xl shadow-xl border border-slate-100 py-2 px-1">
+                    <div className="bg-white rounded-2xl card-shadow border border-[var(--line)] py-2 px-1">
                       {link.subItems.map((sub, idx) => (
                         <button
                           key={idx}
                           onClick={() => onSelectCategory && onSelectCategory(sub)}
-                          className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-reg-green rounded-lg transition-colors flex items-center justify-between"
+                          className="w-full text-left px-3 py-2 text-[12px] font-semibold text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)] rounded-xl transition-colors flex items-center justify-between"
                         >
                           <span>{sub}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">→</span>
+                          <span className="text-[var(--gold)] text-xs">→</span>
                         </button>
                       ))}
                     </div>
@@ -80,97 +89,95 @@ export default function Navbar({ onOpenSearch, onOpenAuth, onSelectCategory }) {
             ))}
           </nav>
 
-          {/* Right: Actions (Search, Login, Get Started) */}
-          <div className="hidden sm:flex items-center space-x-3">
+          {/* Right: Actions */}
+          <div className="hidden sm:flex items-center gap-2">
             <button
               onClick={onOpenSearch}
-              className="p-2.5 rounded-full text-slate-600 hover:text-reg-green hover:bg-slate-100 transition-colors border border-slate-200"
-              title="Search Regulations & Articles"
+              className="p-2 rounded-full text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)] transition-colors border border-[var(--line)]"
+              aria-label="Search"
             >
               <Search className="w-4 h-4" />
             </button>
 
             <button
               onClick={() => onOpenAuth('login')}
-              className="px-4 py-2 text-sm font-bold text-reg-green border border-reg-green rounded-lg hover:bg-emerald-50 transition-all flex items-center space-x-1.5"
+              className="px-4 py-2 text-[13px] font-700 text-[var(--forest)] border border-[var(--forest)] rounded-full hover:bg-[var(--mint)] transition-all flex items-center gap-1.5"
             >
-              <LogIn className="w-4 h-4" />
-              <span>Login</span>
+              <LogIn className="w-3.5 h-3.5" />
+              Login
             </button>
 
             <button
               onClick={() => onOpenAuth('register')}
-              className="px-4 py-2 text-sm font-bold text-white bg-reg-green rounded-lg hover:bg-reg-green-dark shadow-sm shadow-emerald-900/20 transition-all transform active:scale-95 flex items-center space-x-1.5"
+              className="px-4 py-2 text-[13px] font-bold text-white bg-[var(--forest)] rounded-full hover:bg-[var(--forest-deep)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[rgba(11,77,51,0.3)] transition-all flex items-center gap-1.5"
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Get Started</span>
+              <Zap className="w-3.5 h-3.5 text-[var(--gold-soft)]" />
+              Get Started
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex sm:hidden items-center space-x-2">
+          {/* Mobile hamburger */}
+          <div className="flex sm:hidden items-center gap-2">
             <button
               onClick={onOpenSearch}
-              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              className="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--mint)]"
+              aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-700 hover:bg-slate-100"
+              className="p-2 rounded-lg text-[var(--ink)] hover:bg-[var(--mint)]"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-3 animate-in slide-in-from-top">
-          <div className="space-y-1">
-            {NAV_LINKS.map((link) => (
-              <div key={link.label}>
-                <a
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-3 py-2.5 text-sm font-semibold rounded-lg ${
-                    link.active ? 'bg-emerald-50 text-reg-green font-bold' : 'text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  {link.label}
-                </a>
-                {link.hasDropdown && link.subItems && (
-                  <div className="pl-4 space-y-1 my-1 border-l-2 border-emerald-100">
-                    {link.subItems.map((sub, i) => (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          onSelectCategory && onSelectCategory(sub);
-                          setMobileMenuOpen(false);
-                        }}
-                        className="block w-full text-left py-1 text-xs text-slate-600 hover:text-reg-green"
-                      >
-                        • {sub}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+        <div className="xl:hidden bg-white border-t border-[var(--line)] px-4 pt-3 pb-6 space-y-1">
+          {NAV_LINKS.map((link) => (
+            <div key={link.label}>
+              <a
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-3 py-2.5 text-sm font-semibold rounded-xl ${
+                  link.active
+                    ? 'bg-[var(--mint)] text-[var(--forest)]'
+                    : 'text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)]'
+                } transition-colors`}
+              >
+                {link.label}
+              </a>
+              {link.hasDropdown && link.subItems && (
+                <div className="pl-4 mt-1 space-y-0.5 border-l-2 border-[var(--line)] ml-3">
+                  {link.subItems.map((sub, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { onSelectCategory?.(sub); setMobileMenuOpen(false); }}
+                      className="block w-full text-left py-1.5 px-2 text-xs text-[var(--ink-soft)] hover:text-[var(--forest)] rounded-lg transition-colors"
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
 
-          <div className="pt-4 border-t border-slate-100 grid grid-cols-2 gap-2">
+          <div className="pt-3 border-t border-[var(--line)] grid grid-cols-2 gap-2">
             <button
               onClick={() => { setMobileMenuOpen(false); onOpenAuth('login'); }}
-              className="w-full py-2.5 text-center text-sm font-bold text-reg-green border border-reg-green rounded-lg"
+              className="py-2.5 text-center text-sm font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full"
             >
               Login
             </button>
             <button
               onClick={() => { setMobileMenuOpen(false); onOpenAuth('register'); }}
-              className="w-full py-2.5 text-center text-sm font-bold text-white bg-reg-green rounded-lg"
+              className="py-2.5 text-center text-sm font-bold text-white bg-[var(--forest)] rounded-full"
             >
               Get Started
             </button>
