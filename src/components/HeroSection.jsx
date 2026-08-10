@@ -38,7 +38,7 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
             {/* Eyebrow */}
             <div className="eyebrow flex items-center gap-2">
               <span style={{ color: 'var(--gold)' }}>§</span>
-              <span style={{ color: 'var(--gold)' }}>Compliance, Simplified</span>
+              <span style={{ color: 'var(--gold)' }}>Regulatory intelligence • learning • compliance</span>
             </div>
 
             {/* H1 */}
@@ -51,12 +51,7 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
                 color: 'var(--ink)',
               }}
             >
-              Your complete companion for{' '}
-              <span style={{ color: 'var(--accent-blue)' }}>Regulations</span>
-              {', '}
-              <span style={{ color: 'var(--leaf)' }}>Learning</span>
-              {' & '}
-              <span style={{ color: 'var(--ink)' }}>Compliance</span>
+              Understand regulations. Learn faster. Work smarter.
             </h1>
 
             {/* Subtitle */}
@@ -64,42 +59,18 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
               className="text-base sm:text-lg leading-relaxed max-w-[540px]"
               style={{ color: 'var(--ink-soft)', fontWeight: 400 }}
             >
-              Smart tools, expert insights and interactive learning to help professionals navigate complex laws with confidence — built around India's corporate & IFSC compliance ecosystem.
+              RegMate brings structured regulatory content, learning modules, quizzes, practical resources and compliance tools into one professional platform.
             </p>
 
-            {/* Search bar */}
-            <form onSubmit={handleSearch} className="pt-1">
-              <div
-                className="relative flex items-center rounded-full p-1.5 transition-all"
-                style={{
-                  background: 'white',
-                  border: '1.5px solid var(--line)',
-                  boxShadow: '0 2px 12px rgba(11,77,51,0.08)',
-                }}
-                onFocus={() => {}}
-              >
-                <Search className="w-4 h-4 ml-4 flex-shrink-0" style={{ color: 'var(--ink-soft)' }} />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search laws, regulations, sections, topics…"
-                  className="w-full px-3 py-2.5 text-sm bg-transparent outline-none"
-                  style={{ color: 'var(--ink)', fontFamily: 'Public Sans, sans-serif' }}
-                />
-                <button
-                  type="submit"
-                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:-translate-y-0.5"
-                  style={{
-                    background: 'var(--forest)',
-                    boxShadow: '0 4px 12px rgba(11,77,51,0.3)',
-                  }}
-                  aria-label="Search"
-                >
-                  <ArrowRight className="w-4 h-4 text-white" />
-                </button>
-              </div>
-            </form>
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              <a href="/knowledge-hub" className="cursor-target px-6 py-3 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift" style={{ background: 'var(--forest)', color: 'white', boxShadow: '0 4px 12px rgba(11,77,51,0.3)' }}>
+                Explore Knowledge Hub
+              </a>
+              <a href="/register" className="cursor-target px-6 py-3 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift" style={{ background: 'var(--paper)', color: 'var(--forest)', border: '1.5px solid var(--forest)' }}>
+                Join RegMate
+              </a>
+            </div>
 
             {/* Popular pill tags */}
             <div className="space-y-2 pt-1">

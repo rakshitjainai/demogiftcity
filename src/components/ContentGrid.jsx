@@ -58,19 +58,11 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                   <div className="flex items-center justify-between mb-1.5">
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide border"
-                      style={getCategoryStyle(item.type)}
+                      style={getCategoryStyle(item.category || '')}
                     >
-                      {item.type}
+                      {item.category || 'Update'}
                     </span>
                     <div className="flex items-center gap-2">
-                      {item.isNew && (
-                        <span
-                          className="text-[9px] font-black px-1.5 py-0.5 rounded text-white"
-                          style={{ background: 'var(--leaf)' }}
-                        >
-                          ● New
-                        </span>
-                      )}
                       <span className="text-[11px]" style={{ color: 'var(--ink-soft)' }}>
                         {item.date}
                       </span>
@@ -150,7 +142,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                           <User className="w-3 h-3" /> {blog.author}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {blog.readTime}
+                          <Clock className="w-3 h-3" /> {blog.date}
                         </span>
                       </div>
                     </div>
@@ -252,10 +244,10 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
 }
 
 function getCategoryStyle(type) {
-  const t = type.toUpperCase();
-  if (t.includes('CIRCULAR')) return { background: '#EEF3FF', color: '#1E5AA8', borderColor: '#C7D8F5' };
-  if (t.includes('AMENDMENT')) return { background: '#FEF3C7', color: '#92400E', borderColor: '#FDE68A' };
-  if (t.includes('ENFORCEMENT')) return { background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' };
-  if (t.includes('NOTIFICATION')) return { background: '#EEF6F0', color: '#0B4D33', borderColor: '#C6E8D1' };
+  const t = (type || '').toUpperCase();
+  if (t.includes('GIFT') || t.includes('IFSC')) return { background: '#EEF3FF', color: '#1E5AA8', borderColor: '#C7D8F5' };
+  if (t.includes('CORPORATE') || t.includes('DOING BUSINESS')) return { background: '#FEF3C7', color: '#92400E', borderColor: '#FDE68A' };
+  if (t.includes('IPR') || t.includes('STARTUP') || t.includes('ESOP')) return { background: '#FEE2E2', color: '#991B1B', borderColor: '#FECACA' };
+  if (t.includes('CAPITAL') || t.includes('DOCS')) return { background: '#EEF6F0', color: '#0B4D33', borderColor: '#C6E8D1' };
   return { background: '#F1F5F9', color: '#475569', borderColor: '#CBD5E1' };
 }

@@ -8,14 +8,14 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
   // Filter content matching search query
   const filteredUpdates = LATEST_UPDATES.filter(u =>
     u.title.toLowerCase().includes(query.toLowerCase()) ||
-    u.summary.toLowerCase().includes(query.toLowerCase()) ||
-    u.type.toLowerCase().includes(query.toLowerCase())
+    (u.summary || '').toLowerCase().includes(query.toLowerCase()) ||
+    (u.category || '').toLowerCase().includes(query.toLowerCase())
   );
 
   const filteredBlogs = LATEST_BLOGS.filter(b =>
     b.title.toLowerCase().includes(query.toLowerCase()) ||
-    b.category.toLowerCase().includes(query.toLowerCase()) ||
-    b.summary.toLowerCase().includes(query.toLowerCase())
+    (b.category || '').toLowerCase().includes(query.toLowerCase()) ||
+    (b.summary || '').toLowerCase().includes(query.toLowerCase())
   );
 
   const filteredTools = COMPLIANCE_TOOLS.filter(t =>
@@ -71,7 +71,7 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
                 >
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">{up.type}</span>
+                      <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">{up.category || 'Update'}</span>
                       <span className="text-[10px] text-slate-400">{up.date}</span>
                     </div>
                     <div className="text-xs font-bold text-slate-900">{up.title}</div>
