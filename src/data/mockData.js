@@ -8,14 +8,12 @@ export const POPULAR_SEARCHES = [
 ];
 
 export const QUICK_ACCESS_ITEMS = [
-  { id: "regulations", label: "Interactive Regulations", icon: "BookOpen", category: "Regulations", color: "emerald" },
-  { id: "learning", label: "Learning Modules", icon: "GraduationCap", category: "Learning", color: "blue" },
-  { id: "calendar", label: "Compliance Calendar", icon: "Calendar", category: "Tools", color: "amber" },
-  { id: "tools", label: "Tools & Calculators", icon: "Calculator", category: "Tools", color: "purple" },
-  { id: "templates", label: "Templates & Checklists", icon: "FileText", category: "Templates", color: "indigo" },
-  { id: "faqs", label: "FAQs & Knowledge Base", icon: "HelpCircle", category: "Resources", color: "teal" },
-  { id: "enforcement", label: "Enforcement Orders", icon: "Gavel", category: "Updates", color: "rose" },
-  { id: "circulars", label: "Circulars & Updates", icon: "Bell", category: "Updates", color: "sky" }
+  { id: "regulations", label: "Interactive Regulations", icon: "BookOpen", category: "Regulations", color: "emerald", desc: "Browse chapter-wise regulatory content" },
+  { id: "learning", label: "Learning & Diagnostics", icon: "GraduationCap", category: "Learning", color: "blue", desc: "Learn, revise and test yourself" },
+  { id: "quizzes", label: "Quizzes", icon: "HelpCircle", category: "Quizzes", color: "amber", desc: "Practice by subject and topic" },
+  { id: "templates", label: "Templates & Checklists", icon: "FileText", category: "Templates", color: "indigo", desc: "Ready-to-use professional resources" },
+  { id: "enforcement", label: "Enforcement Orders", icon: "Gavel", category: "Updates", color: "rose", desc: "Study actions and lessons learned" },
+  { id: "membership", label: "Membership", icon: "Zap", category: "Membership", color: "teal", desc: "Unlock the full platform" }
 ];
 
 export const STATS = [
@@ -29,134 +27,96 @@ export const STATS = [
 export const LATEST_UPDATES = [
   {
     id: "up-1",
-    type: "CIRCULAR",
-    title: "Master the IFSCA CMI Regulations, 2025",
-    date: "July 31, 2026",
-    isNew: true,
-    summary: "Comprehensive guide and regulatory breakdown on the newly issued Capital Market Intermediaries regulations in GIFT City IFSC.",
-    tagColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
-    content: "The International Financial Services Centres Authority (IFSCA) has notified the updated Capital Market Intermediaries Regulations, 2025. Key highlights include redefined net-worth requirements, streamlined registration processes, enhanced risk management disclosures, and digital compliance reporting frameworks for brokers, clearing members, and investment advisers."
+    title: "Aircraft & Ship Leasing in GIFT IFSC",
+    author: "CS Prashant Kumar",
+    date: "August 10, 2026",
+    category: "GIFT City & IFSC Law",
+    tagColor: "bg-emerald-100 text-emerald-800",
+    summary: "An overview of the regulatory framework for aircraft and ship leasing in GIFT City."
   },
   {
     id: "up-2",
-    type: "AMENDMENT",
-    title: "Stop Reading the IFSCA FME Regulations. Start Mastering Them.",
-    date: "July 27, 2026",
-    isNew: true,
-    summary: "Key practical insights into Fund Management Entity rules, schemes structure, net worth, and compliance obligations.",
-    tagColor: "bg-blue-100 text-blue-800 border-blue-300",
-    content: "Understanding the IFSCA (Fund Management) Regulations is crucial for fund managers operating in GIFT City. This amendment analysis highlights structural updates regarding Venture Capital Schemes, Restricted Retail Schemes, Angel Schemes, and family investment funds with step-by-step checklist items."
+    title: "Singapore Company Setup from India: 2025 Legal & FEMA Guide",
+    author: "CS Prashant Kumar",
+    date: "August 9, 2026",
+    category: "Doing Business in India",
+    tagColor: "bg-blue-100 text-blue-800",
+    summary: "Step-by-step guide to expanding your Indian business to Singapore under FEMA rules."
   },
   {
     id: "up-3",
-    type: "NOTIFICATION",
-    title: "Free IFSC Compliance Calendar Generator",
-    date: "July 25, 2026",
-    isNew: true,
-    summary: "Automate statutory filing due dates for FMEs, Banking Units, IT/ITeS, and Capital Market Entities operating in GIFT City.",
-    tagColor: "bg-amber-100 text-amber-800 border-amber-300",
-    content: "We are excited to launch the Free IFSC Compliance Calendar Generator tool! Simply select your entity type (Authorised FME, Registered FME, CMI, or Ancillary Service Provider) and generate custom compliance schedules with automated reminder alerts."
+    title: "SFAC Schemes and Funding Support for FPOs in India",
+    author: "CS Prashant Kumar",
+    date: "August 8, 2026",
+    category: "Doing Business in India",
+    tagColor: "bg-amber-100 text-amber-800",
+    summary: "Understanding funding support and structuring for Farmer Producer Organizations."
   },
   {
     id: "up-4",
-    type: "ENFORCEMENT ORDER",
-    title: "AML/CFT Readiness Diagnostic",
-    date: "July 22, 2026",
-    isNew: true,
-    summary: "Self-assessment framework to evaluate Anti-Money Laundering and Countering Financing of Terrorism readiness for registered entities.",
-    tagColor: "bg-rose-100 text-rose-800 border-rose-300",
-    content: "Regulators have intensified inspections targeting AML/CFT compliance. Use our interactive diagnostic assessment to check key risk areas including Customer Due Diligence (CDD), Beneficial Ownership identification, Politically Exposed Persons (PEP) screening, and Suspicious Transaction Reporting (STR) procedures."
+    title: "Required Documents for Design Registration in India",
+    author: "CS Prashant Kumar",
+    date: "August 7, 2026",
+    category: "IPR",
+    tagColor: "bg-purple-100 text-purple-800",
+    summary: "A practical checklist for protecting your industrial designs under the Designs Act."
+  },
+  {
+    id: "up-5",
+    title: "Difference Between ESOP, Sweat Equity, and Phantom Stock in India",
+    author: "CS Prashant Kumar",
+    date: "August 6, 2026",
+    category: "Startups / ESOP",
+    tagColor: "bg-rose-100 text-rose-800",
+    summary: "Compare structural differences and tax implications of startup equity compensation methods."
   }
 ];
 
 export const LATEST_BLOGS = [
   {
     id: "blog-1",
-    title: "Think You Know Related Party Transactions? Take This 20-Question Quiz",
+    title: "How to Design an ESOP Scheme That Works for Startups in India",
     author: "CS Prashant Kumar",
-    date: "July 22, 2026",
-    readTime: "5 min read",
-    category: "Corporate Law",
+    date: "August 5, 2026",
+    category: "Startups / ESOP",
     imageBg: "from-emerald-800 via-teal-900 to-slate-900",
-    iconName: "FileCheck",
-    summary: "Test your practical knowledge of Section 188 of the Companies Act 2013, Audit Committee approvals, and materiality thresholds.",
-    fullContent: `
-      ### Deep Dive: Related Party Transactions (RPT) Under Companies Act 2013
-
-      Section 188 of the Companies Act, 2013 along with Regulation 23 of SEBI LODR Regulations forms the backbone of corporate governance regarding Related Party Transactions in India.
-
-      #### Key Highlights Covered in Quiz:
-      - **Audit Committee Approval:** Mandatory omnibus approval criteria and validity periods.
-      - **Arm's Length Standard:** Documentation and transfer pricing methodologies accepted by regulatory authorities.
-      - **Materiality Thresholds:** Lower of ₹1000 Cr or 10% of annual consolidated turnover under LODR.
-      - **Board vs Shareholder Approval:** Contracts requiring prior special resolution.
-
-      Take our interactive 20-question quiz to test your readiness and receive an instant scoring report with detailed explanations!
-    `
+    summary: "Drafting robust ESOP plans that attract talent while protecting founder equity."
   },
   {
     id: "blog-2",
-    title: "Free IFSC FME Mock Test for ICSI Certificate Course",
+    title: "Does the Securities Contracts (Regulation) Act Automatically Apply to IFSC Listings of Indian Companies?",
     author: "CS Prashant Kumar",
-    date: "July 21, 2026",
-    readTime: "8 min read",
-    category: "GIFT City & IFSC Law",
+    date: "August 4, 2026",
+    category: "Capital Markets",
     imageBg: "from-blue-900 via-indigo-900 to-slate-900",
-    iconName: "Award",
-    summary: "Practice test for ICSI members & professionals pursuing certification in GIFT City Fund Management regulations.",
-    fullContent: `
-      ### Master the ICSI Certificate Course on GIFT City Laws
-
-      The Institute of Company Secretaries of India (ICSI) offers a specialized certification on International Financial Services Centres (IFSC).
-
-      #### What This Mock Test Includes:
-      - 50 High-Yield Multiple Choice Questions based on IFSCA (Fund Management) Regulations.
-      - Scenarios covering Family Investment Funds (FIF), Venture Capital Schemes, and ESG Funds.
-      - Real-time scoring and explanations authored by **CS Prashant Kumar**.
-    `
+    summary: "An analysis of SCRA applicability and implications for direct listing in GIFT City."
   },
   {
     id: "blog-3",
-    title: "Secretarial Standard–1 (SS-1) Knowledge Test",
+    title: "UAE Trademark Examination Explained (2026 Guide)",
     author: "CS Prashant Kumar",
-    date: "July 15, 2026",
-    readTime: "6 min read",
-    category: "Checklists & Procedures",
+    date: "August 3, 2026",
+    category: "IPR",
     imageBg: "from-teal-800 via-emerald-950 to-slate-900",
-    iconName: "Layers",
-    summary: "Verify your understanding of Board Meetings, Quorum requirements, Notice periods, and Minutes draft guidelines.",
-    fullContent: `
-      ### Secretarial Standard on Meetings of the Board of Directors (SS-1)
-
-      Compliance with SS-1 issued by ICSI and mandated under Section 118(10) of the Companies Act 2013 is compulsory for all companies.
-
-      #### Core Topics Tested:
-      - Minimum 7 days notice period requirement and proof of dispatch.
-      - Virtual Board Meetings rules and restricted agenda items.
-      - Quorum calculation including interested directors rules.
-      - Signing and circulation of Draft Minutes within 15 days.
-    `
+    summary: "Navigating the international trademark registration process in the United Arab Emirates."
   },
   {
     id: "blog-4",
-    title: "IFSCA Capital Market Intermediaries Regulations Knowledge Test",
+    title: "Board Resolution Format — Appointment of Additional Director (Sec. 161)",
     author: "CS Prashant Kumar",
-    date: "July 15, 2026",
-    readTime: "7 min read",
-    category: "GIFT City & IFSC Law",
+    date: "August 2, 2026",
+    category: "Docs & Formats",
     imageBg: "from-cyan-900 via-slate-900 to-emerald-950",
-    iconName: "ShieldCheck",
-    summary: "Self-evaluative test covering registration requirements, key managerial personnel criteria, and compliance officer roles.",
-    fullContent: `
-      ### Evaluating Capital Market Intermediary (CMI) Compliance in IFSC
-
-      With GIFT City rapidly expanding as a international financial hub, CMIs play a pivotal role.
-
-      #### Focus Areas:
-      - Broker-Dealer, Investment Adviser, Portfolio Manager & Custodian regulatory frameworks.
-      - Minimum net-worth and liquid assets maintenance requirements.
-      - Key managerial personnel (KMP) fit and proper criteria.
-    `
+    summary: "Standard template and compliance procedure for appointing an additional director."
+  },
+  {
+    id: "blog-5",
+    title: "Board Resolution Format — Appointment of First Auditor (Sec. 139(6))",
+    author: "CS Prashant Kumar",
+    date: "August 1, 2026",
+    category: "Docs & Formats",
+    imageBg: "from-gray-800 via-slate-900 to-zinc-900",
+    summary: "Draft format for first auditor appointment by the Board of Directors."
   }
 ];
 
@@ -211,72 +171,72 @@ export const COMPLIANCE_TOOLS = [
   },
   {
     id: "tool-2",
-    title: "IFSC Compliance Calendar Generator",
-    category: "GIFT City",
+    title: "Annual Filing Tracker",
+    category: "Corporate Law",
     icon: "Sliders",
-    description: "Generate customized monthly and annual compliance schedules tailored to your GIFT City entity type.",
-    tag: "Free Generator",
+    description: "Track annual return filings (AOC-4, MGT-7) and ensure full compliance before deadlines.",
+    tag: "Tracker",
     featured: true
   },
   {
     id: "tool-3",
-    title: "AML/CFT Readiness Diagnostic",
-    category: "Risk Assessment",
-    icon: "ShieldAlert",
-    description: "15-point audit score card for Anti-Money Laundering policies, KYC verification, and PEP screening.",
-    tag: "Diagnostic",
+    title: "Board Meeting Planner",
+    category: "Secretarial Standards",
+    icon: "CheckCircle2",
+    description: "Plan board meeting agendas, quorum requirements, and minute drafting efficiently.",
+    tag: "Planner",
     featured: true
   },
   {
     id: "tool-4",
-    title: "FME/CMI Mock Test",
-    category: "Certification",
-    icon: "CheckCircle2",
-    description: "Full-length exam simulation for IFSCA Fund Management & Capital Market Intermediaries certifications.",
-    tag: "Practice Test",
+    title: "ESOP Calculator",
+    category: "Capital Markets",
+    icon: "Calculator",
+    description: "Calculate vesting schedules, perquisite value, and taxation on Employee Stock Options.",
+    tag: "Calculator",
     featured: true
   },
   {
     id: "tool-5",
-    title: "Related Party Transactions Quiz",
-    category: "Corporate Law",
-    icon: "HelpCircle",
-    description: "Interactive test on Section 188 threshold limits, Audit Committee approvals, and disclosures.",
-    tag: "Interactive Quiz",
-    featured: false
-  },
-  {
-    id: "tool-6",
-    title: "SS-1 Knowledge Test",
-    category: "Secretarial Standards",
-    icon: "FileCheck",
-    description: "Check your compliance accuracy regarding Board Notice, Agenda, Quorum, and Minutes under SS-1.",
-    tag: "Self-Assessment",
+    title: "AML Risk Assessment",
+    category: "Risk Assessment",
+    icon: "ShieldAlert",
+    description: "Self-assessment framework to evaluate Anti-Money Laundering readiness.",
+    tag: "Diagnostic",
     featured: false
   }
 ];
 
 export const NAV_LINKS = [
-  { label: "Home", href: "#", active: true },
+  { label: "Home", href: "/", active: true },
   { 
     label: "Knowledge Hub", 
-    href: "#knowledge",
+    href: "/knowledge-hub",
     hasDropdown: true,
     subItems: [
-      "GIFT City & IFSC Law",
-      "Corporate Law",
-      "Go Global Series",
-      "Checklists & Procedures",
-      "IPR & Cyber Law",
-      "Docs & Formats"
+      "Interactive Regulations",
+      "Learning & Diagnostics",
+      "Quizzes",
+      "Diagnostic Tests",
+      "My Learning",
+      "My Certificates"
     ]
   },
-  { label: "Interactive Regulations", href: "#regulations", hasDropdown: true, subItems: ["Companies Act 2013", "IFSCA FME Regs", "IFSCA CMI Regs", "SEBI LODR"] },
-  { label: "Learning", href: "#learning", hasDropdown: false },
-  { label: "Compliance Tools", href: "#tools", hasDropdown: false },
-  { label: "Templates", href: "#templates", hasDropdown: false },
-  { label: "News", href: "#news", hasDropdown: false },
-  { label: "About", href: "#about", hasDropdown: false }
+  { 
+    label: "Compliance Tools", 
+    href: "/tools", 
+    hasDropdown: true, 
+    subItems: [
+      "Compliance Calendar",
+      "Annual Filing Tracker",
+      "Board Meeting Planner",
+      "ESOP Calculator",
+      "AML Risk Assessment"
+    ]
+  },
+  { label: "Templates", href: "/templates", hasDropdown: false },
+  { label: "News", href: "/news", hasDropdown: false },
+  { label: "About", href: "/about", hasDropdown: false }
 ];
 
 export const SAMPLE_QUIZ_QUESTIONS = [

@@ -2,10 +2,9 @@ import React from 'react';
 import { Mail, MessageCircle } from 'lucide-react';
 
 const FOOTER_LINKS = {
-  Platform: ['Knowledge Hub', 'Interactive Regulations', 'Learning Modules', 'Compliance Tools', 'Templates & Checklists'],
-  Resources: ['News & Updates', 'Circulars', 'Enforcement Orders', 'FAQs', 'Legal Glossary'],
-  Company: ['About Us', 'Our Mission', 'Careers', 'Contact Us', 'Privacy Policy'],
-  Support: ['Help Center', 'User Guide', 'Terms of Use', 'Refund Policy'],
+  Knowledge: ['Interactive Regulations', 'Quizzes', 'Learning'],
+  Resources: ['Compliance Tools', 'Templates', 'News'],
+  Account: ['Membership', 'Dashboard', 'My Profile'],
 };
 
 export default function Footer({ onOpenAuth, onSelectCategory }) {
@@ -52,7 +51,7 @@ export default function Footer({ onOpenAuth, onSelectCategory }) {
             </div>
 
             <p className="text-[12px] leading-relaxed max-w-[260px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              India's specialized compliance & learning platform for corporate secretaries, auditors, advocates, and GIFT City financial entities.
+              Regulatory intelligence, learning and practical compliance resources for professionals.
             </p>
 
             {/* Circular social icons */}
@@ -133,7 +132,7 @@ export default function Footer({ onOpenAuth, onSelectCategory }) {
         {/* Bottom bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
           style={{ color: 'rgba(255,255,255,0.3)' }}>
-          <p>© 2026 RegMate. All rights reserved. Content based on CS Prashant Kumar editorial insights.</p>
+          <p>© 2026 RegMate. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-white transition-colors">Terms of Use</a>
             <span>|</span>
