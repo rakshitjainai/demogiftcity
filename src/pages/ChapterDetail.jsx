@@ -1,38 +1,39 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, FileText, BookOpen, ChevronRight } from 'lucide-react';
-
-const ACT_NAMES = {
-  'companies-act-2013': 'Companies Act, 2013',
-  'sebi-lodr-2015': 'SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015',
-  'fema-1999': 'Foreign Exchange Management Act, 1999',
-  'ibc-2016': 'Insolvency and Bankruptcy Code, 2016',
-};
+import { ArrowLeft, FileText, BookOpen, Hash } from 'lucide-react';
+import RegulationRow from '../components/RegulationRow';
+import { ACTS_DATA, getActName } from '../data/regulationsData';
 
 export default function ChapterDetail() {
   const { actSlug, chapter } = useParams();
-  const actName = ACT_NAMES[actSlug] || actSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const chapterNum = chapter?.replace('chapter-', '') || '1';
+  const actName = getActName(actSlug);
+  const chapterNum = parseInt(chapter?.replace('chapter-', '') || '1', 10);
 
-  const sampleSections = [
-    { num: 1, title: 'Preliminary — Short Title and Definitions' },
-    { num: 2, title: 'Interpretation and Scope' },
-    { num: 3, title: 'Application of Provisions' },
-    { num: 4, title: 'Exemptions and Special Cases' },
-    { num: 5, title: 'General Rules and Procedures' },
-  ];
+  const actData = ACTS_DATA[actSlug];
+  const chapterData = actData?.chapters.find(c => c.num === chapterNum);
+  const sections = chapterData?.sections || [];
+  const chapterTitle = chapterData?.title || `Chapter ${chapterNum}`;
+
+  // Prev / next chapter
+  const allChapters = actData?.chapters || [];
+  const chapterIdx = allChapters.findIndex(c => c.num === chapterNum);
+  const prevChapter = chapterIdx > 0 ? allChapters[chapterIdx - 1] : null;
+  const nextChapter = chapterIdx < allChapters.length - 1 ? allChapters[chapterIdx + 1] : null;
 
   return (
     <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
+      {/* Back link */}
       <Link to="/interactive-regulations" className="cursor-target inline-flex items-center text-ink-soft hover:text-leaf font-medium mb-8">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Interactive Regulations
       </Link>
 
+      {/* Header */}
       <div className="mb-10">
         <span className="eyebrow block mb-3">§ {actName}</span>
-        <h1 className="text-3xl md:text-4xl font-display text-forest-deep mb-4">Chapter {chapterNum}</h1>
-        <p className="text-ink-soft text-lg">
-          Browse sections within Chapter {chapterNum} of the {actName}.
+        <h1 className="text-3xl md:text-4xl font-display text-forest-deep mb-2">Chapter {chapterNum}</h1>
+        <p className="text-xl text-ink font-medium mb-3">{chapterTitle}</p>
+        <p className="text-ink-soft">
+          {sections.length} section{sections.length !== 1 ? 's' : ''} in this chapter
         </p>
       </div>
 
@@ -40,35 +41,51 @@ export default function ChapterDetail() {
       <div className="bg-white border border-line rounded-2xl overflow-hidden card-shadow">
         <div className="px-6 py-4 bg-mint border-b border-line flex items-center gap-3">
           <BookOpen className="w-5 h-5 text-forest" />
-          <h3 className="font-semibold text-forest-deep">Sections in this Chapter</h3>
+          <h3 className="font-semibold text-forest-deep">Sections in Chapter {chapterNum} — {chapterTitle}</h3>
         </div>
-        <ul className="divide-y divide-line">
-          {sampleSections.map(sec => (
-            <li key={sec.num}>
-              <button className="cursor-target w-full text-left px-6 py-4 flex items-center justify-between hover:bg-mint transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-paper border border-line flex items-center justify-center flex-shrink-0 group-hover:bg-mint-deep group-hover:border-leaf transition-colors">
-                    <FileText className="w-4 h-4 text-ink-soft group-hover:text-leaf transition-colors" />
-                  </div>
-                  <div>
-                    <span className="font-medium text-ink group-hover:text-forest-deep transition-colors">
-                      Section {sec.num}
-                    </span>
-                    <span className="text-sm text-ink-soft ml-2">— {sec.title}</span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-line group-hover:text-leaf transition-colors" />
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="divide-y divide-line">
+          {sections.length > 0 ? sections.map(sec => (
+            <RegulationRow
+              key={sec.num}
+              to={`/interactive-regulations/${actSlug}/${chapter}/section-${sec.num}`}
+              icon={FileText}
+              title={`Section ${sec.num}`}
+              subtitle={sec.title}
+            />
+          )) : (
+            <div className="px-6 py-8 text-center text-ink-soft text-sm">
+              Section data for this chapter is being structured. Check back soon.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Chapter Prev / Next */}
+      <div className="flex items-center justify-between pt-8">
+        {prevChapter ? (
+          <Link
+            to={`/interactive-regulations/${actSlug}/chapter-${prevChapter.num}`}
+            className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-paper border border-line rounded-xl text-forest font-medium hover:bg-mint transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Ch. {prevChapter.num}: {prevChapter.title.length > 35 ? prevChapter.title.slice(0, 35) + '…' : prevChapter.title}
+          </Link>
+        ) : <div />}
+
+        {nextChapter ? (
+          <Link
+            to={`/interactive-regulations/${actSlug}/chapter-${nextChapter.num}`}
+            className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-forest text-white rounded-xl font-medium hover:bg-leaf transition-colors shadow-sm"
+          >
+            Ch. {nextChapter.num}: {nextChapter.title.length > 30 ? nextChapter.title.slice(0, 30) + '…' : nextChapter.title} →
+          </Link>
+        ) : <div />}
       </div>
 
       {/* Coming Soon notice */}
-      <div className="mt-8 bg-mint-deep border border-leaf/20 rounded-xl p-6 text-center">
+      <div className="mt-6 bg-mint-deep border border-leaf/20 rounded-xl p-5 text-center">
         <p className="text-ink-soft text-sm">
-          <strong className="text-forest-deep">Full section content coming soon.</strong> We're actively structuring the text of this chapter 
-          with annotations, cross-references, and practitioner notes by CS Prashant Kumar.
+          <strong className="text-forest-deep">Full annotated text coming soon.</strong>{' '}
+          We are structuring the complete legal text with cross-references and practitioner notes by CS Prashant Kumar.
         </p>
       </div>
     </div>

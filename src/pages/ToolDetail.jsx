@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Settings, Download } from 'lucide-react';
+import { ArrowLeft, Settings } from 'lucide-react';
+import ComplianceCalendarBuilder from '../components/ComplianceCalendarBuilder';
 
 export default function ToolDetail() {
   const { slug } = useParams();
-  const title = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const title = slug ? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Tool';
 
   const [mockValue, setMockValue] = useState('');
 
+  if (slug === 'compliance-calendar') {
+    return (
+      <div className="py-12 px-6 max-w-7xl mx-auto animate-fade-in-up">
+        <Link to="/tools" className="cursor-target inline-flex items-center text-ink-soft hover:text-leaf font-medium mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Compliance Tools
+        </Link>
+        <ComplianceCalendarBuilder />
+      </div>
+    );
+  }
+
   const toolContent = {
-    'compliance-calendar': {
-      desc: 'Automate statutory filing due dates for Companies Act, SEBI LODR, and IFSCA Filings with custom reminder alerts.',
-      inputs: ['Entity Type', 'Financial Year'],
-      result: 'Your compliance schedule will be generated here.'
-    },
     'annual-filing-tracker': {
       desc: 'Track annual return filings (AOC-4, MGT-7) step-by-step and ensure full compliance before ROC deadlines.',
       inputs: ['Company Type', 'AGM Date'],
@@ -120,3 +127,4 @@ function CalculatorIcon(props) {
     </svg>
   )
 }
+

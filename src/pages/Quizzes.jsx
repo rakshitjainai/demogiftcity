@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 
 const TOPICS = [
+  { id: 'sebi-aif-regulations', title: 'SEBI AIF Regulations', desc: 'Category I, II & III AIFs, Angel Funds & PPM rules', badge: 'New Topic' },
   { id: 'corporate-laws', title: 'Corporate Laws', desc: 'Companies Act and related regulations' },
-  { id: 'ifsc-regulations', title: 'IFSC Regulations', desc: 'GIFT City and IFSC frameworks' },
+  { id: 'ifsc-regulations', title: 'IFSC Regulations', desc: 'GIFT City, FME, and CMI frameworks' },
   { id: 'capital-markets', title: 'Capital Markets', desc: 'SEBI LODR, ICDR, and PIT' },
   { id: 'ipr', title: 'IPR', desc: 'Trademarks, Patents, and Copyrights' },
   { id: 'general-laws', title: 'General Laws', desc: 'Contract Act, Stamp Act, etc.' }
