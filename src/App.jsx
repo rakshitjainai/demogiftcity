@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import KnowledgeHub from './pages/KnowledgeHub';
 import InteractiveRegulations from './pages/InteractiveRegulations';
 import ChapterDetail from './pages/ChapterDetail';
+import SectionDetail from './pages/SectionDetail';
 import Learning from './pages/Learning';
 import Quizzes from './pages/Quizzes';
 import QuizTopic from './pages/QuizTopic';
@@ -34,6 +35,8 @@ export default function App() {
           <Route path="knowledge-hub" element={<KnowledgeHub />} />
           <Route path="interactive-regulations" element={<InteractiveRegulations />} />
           <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetail />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<SectionDetail />} />
           <Route path="learning" element={<Learning />} />
           <Route path="quizzes" element={<Quizzes />} />
           <Route path="quizzes/:topic" element={<QuizTopic />} />

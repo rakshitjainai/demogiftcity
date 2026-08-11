@@ -1,6 +1,7 @@
 export const POPULAR_SEARCHES = [
   "IFSCA FME Regulations",
   "IFSCA CMI Regulations",
+  "SEBI AIF Regulations",
   "Companies Act 2013",
   "AML/CFT",
   "GIFT City & IFSC Law",
@@ -122,40 +123,86 @@ export const LATEST_BLOGS = [
 
 export const LEARNING_MODULES = [
   {
-    id: "mod-1",
-    code: "IFSCA",
+    id: "mod-cmi",
+    code: "IFSCA-CMI",
+    title: "IFSCA Capital Market Intermediaries Regulations, 2025",
+    slug: "ifsca-cmi-regulations",
+    progress: 40,
+    lessons: 4,
+    completedLessons: 2,
+    color: "bg-slate-900 text-blue-100 border-blue-800",
+    accentBg: "bg-blue-600",
+    badge: "Updated 2025",
+    description: "In-depth guide covering regulatory approvals, net worth thresholds, governance, client onboarding, and statutory returns for GIFT City intermediaries.",
+    chapters: [
+      {
+        num: 1,
+        title: "Registration Framework & Net Worth Requirements",
+        desc: "Covers eligibility, registration procedure, and net worth thresholds across Intermediary categories (Broker-Dealers, Custodians, Investment Advisers, RTAs, Debenture Trustees)."
+      },
+      {
+        num: 2,
+        title: "Governance, Principal Officer & Compliance Officer",
+        desc: "Mandatory qualifications, appointment timelines, board oversight, risk management committee structures, and internal audit requirements."
+      },
+      {
+        num: 3,
+        title: "Code of Conduct & Client Protection",
+        desc: "Client onboarding protocols, KYC/AML norms, conflict of interest management, risk disclosures, and transparent fee structuring."
+      },
+      {
+        num: 4,
+        title: "Statutory Filings, Inspections & Enforcement",
+        desc: "Quarterly and annual return filings, compliance certificates, regulatory inspection procedures, and statutory penalty framework."
+      }
+    ]
+  },
+  {
+    id: "mod-sebi-aif",
+    code: "SEBI-AIF",
+    title: "SEBI (Alternative Investment Funds) Regulations, 2012",
+    slug: "learn-sebi-aif-regulations",
+    progress: 15,
+    lessons: 14,
+    completedLessons: 2,
+    color: "bg-amber-950 text-amber-100 border-amber-800",
+    accentBg: "bg-amber-600",
+    badge: "New Topic",
+    description: "Comprehensive 14-chapter interactive course covering Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, valuation, and GARUDA filings.",
+    chapters: [
+      { num: 1, title: "Introduction to Alternative Investment Funds (AIFs) & Regulatory Framework", desc: "Understanding the legal concept of AIFs, private pool of capital, regulatory evolution, and SEBI mandate." },
+      { num: 2, title: "Categorization of AIFs — Category I, II & III Funds", desc: "Detailed breakdown of fund classifications, tax pass-through status, and target investment strategies." },
+      { num: 3, title: "Specialised Vehicles — Angel Funds, VC Funds & Infrastructure Funds", desc: "Eligibility norms, minimum ticket sizes, angel investor qualification, and special concessions." },
+      { num: 4, title: "Registration Process, Fit & Proper Criteria & Sponsor Commitments", desc: "Filing Form A, key managerial personnel requirements, sponsor skin-in-the-game obligations, and corpus targets." },
+      { num: 5, title: "Private Placement Memorandum (PPM) & Fund Structuring", desc: "PPM drafting guidelines, standard template disclosures, fee caps, and SEBI audit of PPM terms." },
+      { num: 6, title: "Investment Conditions & Concentration Limits across AIF Categories", desc: "Maximum exposure per investee company, unlisted securities mandate, debt restrictions, and leverage rules." },
+      { num: 7, title: "Accredited Investors & Large Value Funds (LVFs) Operational Norms", desc: "Net worth thresholds for accreditation, relaxation in PPM audit, flexible investment tenure, and co-investments." },
+      { num: 8, title: "Valuation Principles & Net Asset Value (NAV) Calculation", desc: "Independent valuation policies, frequency of valuation, standards (IPEV/ICAI), and auditor appointment." },
+      { num: 9, title: "Governance Framework & Investment Committee Oversight", desc: "Responsibilities of Key Management Personnel, Investment Committee liability, and fiduciary duties." },
+      { num: 10, title: "Code of Conduct for Fund Managers, Trustees & Key Personnel", desc: "Ethics, conflict management, priority in trades, gifts policy, and insider trading prohibitions." },
+      { num: 11, title: "Listing of AIF Units, Dematerialisation & Secondary Market Transfers", desc: "Mandatory demat of AIF units, private placement listing on stock exchanges, and transfer restrictions." },
+      { num: 12, title: "SEBI Reporting Framework, GARUDA Portal & Periodic Disclosures", desc: "Quarterly reporting on SEBI portal, CTR/STR submissions, investor communication, and annual compliance audit." },
+      { num: 13, title: "Co-investment Structures & Portfolio Management Protocols", desc: "Co-investment portfolio manager (CPM) route, sidecar vehicles, and pro-rata investment rules." },
+      { num: 14, title: "Winding Up, Liquidation Scheme & Investor Exit Options", desc: "In-specie distribution, liquidation period extensions, dissolution period, and regulatory approval for exit." }
+    ]
+  },
+  {
+    id: "mod-fme",
+    code: "IFSCA-FME",
     title: "IFSCA Fund Management Regulations, 2025",
+    slug: "ifsca-fme-regulations",
     progress: 75,
     lessons: 14,
     completedLessons: 10,
     color: "bg-emerald-900 text-emerald-100 border-emerald-700",
     accentBg: "bg-emerald-600",
     badge: "Most Popular",
-    description: "Step-by-step masterclass on setting up Fund Management Entities (FMEs), registering Venture Capital Schemes, Portfolio Management Services, and ESG funds in GIFT City."
-  },
-  {
-    id: "mod-2",
-    code: "CMI",
-    title: "IFSCA Capital Market Intermediaries Regulations",
-    progress: 40,
-    lessons: 18,
-    completedLessons: 7,
-    color: "bg-slate-900 text-blue-100 border-blue-800",
-    accentBg: "bg-blue-600",
-    badge: "Updated",
-    description: "In-depth guide covering regulatory approvals, code of conduct, risk management, and statutory returns for brokers, custodians, and advisers."
-  },
-  {
-    id: "mod-3",
-    code: "FME",
-    title: "IFSCA FME — RegLearn Interactive Drills",
-    progress: 90,
-    lessons: 25,
-    completedLessons: 22,
-    color: "bg-purple-950 text-purple-100 border-purple-800",
-    accentBg: "bg-purple-600",
-    badge: "Interactive",
-    description: "Hands-on case studies, procedural drafting drills, and scenario-based compliance simulations for corporate secretarial professionals."
+    description: "Masterclass on setting up Fund Management Entities (FMEs), registering Venture Capital Schemes, Portfolio Management Services, and ESG funds in GIFT City.",
+    chapters: [
+      { num: 1, title: "Types of FMEs & Net Worth Requirements", desc: "Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail) capital norms." },
+      { num: 2, title: "Venture Capital Schemes & Restricted Schemes", desc: "Filing placement memoranda, green-channel approvals, and private placement limits." },
+      { num: 3, title: "ESG & Sustainable Investment Framework", desc: "Mandatory ESG disclosures, green washing prevention, and stewardship responsibilities." }
+    ]
   }
 ];
 
@@ -163,33 +210,37 @@ export const COMPLIANCE_TOOLS = [
   {
     id: "tool-1",
     title: "Compliance Calendar",
+    slug: "compliance-calendar",
     category: "Statutory Filings",
     icon: "Calendar",
-    description: "Interactive deadline tracker with automated alerts for Companies Act, SEBI LODR, and IFSCA Filings.",
+    description: "Interactive GIFT IFSC & Intermediary compliance calendar with officer assignment, evidence tracking, and statutory due dates.",
     tag: "Essential",
     featured: true
   },
   {
     id: "tool-2",
     title: "Annual Filing Tracker",
+    slug: "annual-filing-tracker",
     category: "Corporate Law",
     icon: "Sliders",
-    description: "Track annual return filings (AOC-4, MGT-7) and ensure full compliance before deadlines.",
+    description: "Track annual return filings (AOC-4, MGT-7) and ensure full compliance before ROC deadlines.",
     tag: "Tracker",
     featured: true
   },
   {
     id: "tool-3",
     title: "Board Meeting Planner",
+    slug: "board-meeting-planner",
     category: "Secretarial Standards",
     icon: "CheckCircle2",
-    description: "Plan board meeting agendas, quorum requirements, and minute drafting efficiently.",
+    description: "Plan board meeting agendas, quorum requirements, and minute drafting efficiently under SS-1.",
     tag: "Planner",
     featured: true
   },
   {
     id: "tool-4",
     title: "ESOP Calculator",
+    slug: "esop-calculator",
     category: "Capital Markets",
     icon: "Calculator",
     description: "Calculate vesting schedules, perquisite value, and taxation on Employee Stock Options.",
@@ -199,9 +250,10 @@ export const COMPLIANCE_TOOLS = [
   {
     id: "tool-5",
     title: "AML Risk Assessment",
+    slug: "aml-risk-assessment",
     category: "Risk Assessment",
     icon: "ShieldAlert",
-    description: "Self-assessment framework to evaluate Anti-Money Laundering readiness.",
+    description: "Self-assessment framework to evaluate Anti-Money Laundering readiness and FIU-IND compliance.",
     tag: "Diagnostic",
     featured: false
   }
@@ -237,6 +289,45 @@ export const NAV_LINKS = [
   { label: "Templates", href: "/templates", hasDropdown: false },
   { label: "News", href: "/news", hasDropdown: false },
   { label: "About", href: "/about", hasDropdown: false }
+];
+
+export const SEBI_AIF_QUIZ_QUESTIONS = [
+  {
+    id: 1,
+    question: "Under SEBI (AIF) Regulations, 2012, what is the maximum number of investors allowed in a single scheme of Category I or Category II AIF (excluding Angel Funds)?",
+    options: [
+      "50 Investors",
+      "100 Investors",
+      "1000 Investors",
+      "Unlimited Investors"
+    ],
+    correctAnswer: 2,
+    explanation: "Under Regulation 10(b) of SEBI AIF Regulations, no scheme of an AIF (other than Angel Funds) shall have more than 1000 investors."
+  },
+  {
+    id: 2,
+    question: "What is the minimum investment amount required from an individual investor in a standard Category I or II AIF scheme?",
+    options: [
+      "₹10 Lakhs",
+      "₹25 Lakhs",
+      "₹1 Crore",
+      "₹5 Crores"
+    ],
+    correctAnswer: 2,
+    explanation: "Under Regulation 10(a), the minimum investment from an individual investor in a Category I or II AIF is ₹1 Crore (₹25 Lakhs for employees/directors of the AIF or Manager)."
+  },
+  {
+    id: 3,
+    question: "Which category of AIF is allowed to employ leverage for purpose of making investments and day-to-day trading?",
+    options: [
+      "Category I AIF",
+      "Category II AIF",
+      "Category III AIF",
+      "Angel Funds"
+    ],
+    correctAnswer: 2,
+    explanation: "Category III AIFs are permitted to employ leverage or complex trading strategies, subject to regulatory limits and investor consent."
+  }
 ];
 
 export const SAMPLE_QUIZ_QUESTIONS = [
@@ -277,3 +368,4 @@ export const SAMPLE_QUIZ_QUESTIONS = [
     explanation: "Notice in writing of every Board Meeting shall be given to every Director at least seven (7) days before the date of the Meeting, unless the Articles prescribe a longer period."
   }
 ];
+
