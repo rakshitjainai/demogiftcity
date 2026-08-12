@@ -6,6 +6,7 @@ import { ACTS_DATA, DEFINITIONS_DATA, SCHEDULES_DATA } from '../data/regulations
 
 export default function InteractiveRegulations() {
   const [expandedAct, setExpandedAct] = useState(null);
+  const [expandedChapters, setExpandedChapters] = useState({}); // { [actSlug]: boolean }
   const [activeModal, setActiveModal] = useState(null); // 'schedules' | 'definitions' | null
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -32,7 +33,8 @@ export default function InteractiveRegulations() {
       <div className="space-y-4">
         {acts.map((act, idx) => {
           const isOpen = expandedAct === act.slug;
-          const previewChapters = act.chapters.slice(0, 5);
+          const isFullyExpanded = !!expandedChapters[act.slug];
+          const displayedChapters = isFullyExpanded ? act.chapters : act.chapters.slice(0, 5);
 
           return (
             <div key={act.slug} className="bg-white border border-line rounded-xl overflow-hidden card-shadow">
@@ -64,13 +66,21 @@ export default function InteractiveRegulations() {
                   {act.slug === 'ifsca-fme-2025' && (
                     <div className="flex items-center gap-3 pt-3 flex-wrap">
                       <button
-                        onClick={() => setActiveModal('schedules')}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveModal('schedules');
+                        }}
                         className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors"
                       >
                         <BookMarked className="w-4 h-4" /> View 6 Schedules (1st–6th)
                       </button>
                       <button
-                        onClick={() => setActiveModal('definitions')}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveModal('definitions');
+                        }}
                         className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors"
                       >
                         <FileCheck className="w-4 h-4" /> Defined Terms Glossary (62 Terms)
@@ -79,7 +89,7 @@ export default function InteractiveRegulations() {
                   )}
 
                   <div className="divide-y divide-line rounded-xl overflow-hidden bg-white border border-line">
-                    {previewChapters.map(ch => (
+                    {displayedChapters.map(ch => (
                       <RegulationRow
                         key={ch.num}
                         to={`/interactive-regulations/${act.slug}/chapter-${ch.num}`}
@@ -92,12 +102,23 @@ export default function InteractiveRegulations() {
 
                   {act.chapters.length > 5 && (
                     <div className="text-center pt-2">
-                      <Link
-                        to={`/interactive-regulations/${act.slug}/chapter-1`}
-                        className="cursor-target inline-block py-2 px-5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors text-sm"
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedChapters(prev => ({
+                            ...prev,
+                            [act.slug]: !isFullyExpanded
+                          }));
+                        }}
+                        className="cursor-target inline-flex items-center gap-1.5 py-2 px-5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors text-sm"
                       >
-                        View all {act.totalChapters} chapters →
-                      </Link>
+                        {isFullyExpanded ? (
+                          <>Show less ↑</>
+                        ) : (
+                          <>View all {act.totalChapters} chapters →</>
+                        )}
+                      </button>
                     </div>
                   )}
                 </div>
