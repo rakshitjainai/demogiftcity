@@ -199,9 +199,18 @@ export const LEARNING_MODULES = [
     badge: "Most Popular",
     description: "Masterclass on setting up Fund Management Entities (FMEs), registering Venture Capital Schemes, Portfolio Management Services, and ESG funds in GIFT City.",
     chapters: [
-      { num: 1, title: "Types of FMEs & Net Worth Requirements", desc: "Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail) capital norms." },
+      { num: 1, title: "Types of FMEs & Registration Framework", desc: "Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail) capital norms and eligibility." },
       { num: 2, title: "Venture Capital Schemes & Restricted Schemes", desc: "Filing placement memoranda, green-channel approvals, and private placement limits." },
-      { num: 3, title: "ESG & Sustainable Investment Framework", desc: "Mandatory ESG disclosures, green washing prevention, and stewardship responsibilities." }
+      { num: 3, title: "Retail Schemes & Exchange Traded Funds (ETFs)", desc: "Public offer of retail schemes, prospectus filings, ETF market makers, and liquidity provider obligations." },
+      { num: 4, title: "Special Situation Funds & Distressed Assets", desc: "Investment in stressed assets, Resolution Plans under IBC, acquisition of non-performing loans (NPLs)." },
+      { num: 5, title: "ESG & Sustainable Investment Framework", desc: "Mandatory ESG disclosures, green washing prevention, stewardship responsibilities, and sustainability reporting." },
+      { num: 6, title: "Family Investment Funds (FIFs) in GIFT City", desc: "Single Family Office structuring, minimum corpus ($10Mn), permitted asset classes, and self-managed funds." },
+      { num: 7, title: "Portfolio Management Services & Multi-Family Offices", desc: "PMS agreements, discretionary vs non-discretionary mandates, advisory services, and fee disclosures." },
+      { num: 8, title: "Investment Trusts (REITs & InvITs) Manager Framework", desc: "Public and private placement of REITs/InvITs, sponsor commitment, and valuation norms." },
+      { num: 9, title: "Accredited Investors & Sovereign Investment Vehicles", desc: "Eligibility criteria for accredited investors, accreditation agencies, and waiver of regulatory caps." },
+      { num: 10, title: "Risk Management, Internal Audit & Custody Norms", desc: "Appointment of independent custodian, risk management policy, valuation policies, and internal controls." },
+      { num: 11, title: "Code of Conduct & Conflict of Interest Management", desc: "Fiduciary duties, priority in allocation of investments, personal trading rules, and gifts policy." },
+      { num: 12, title: "Statutory Reporting, Inspections & Enforcement", desc: "Periodic return filings to IFSCA, regulatory audit, inspection procedures, and administrative penalties." }
     ]
   }
 ];

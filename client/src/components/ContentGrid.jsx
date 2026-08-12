@@ -4,10 +4,13 @@ import {
   FileCheck, Award, Layers, ShieldCheck, ChevronRight
 } from 'lucide-react';
 import { LATEST_UPDATES, LATEST_BLOGS, LEARNING_MODULES } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 
 const iconMap = { FileCheck, Award, Layers, ShieldCheck };
 
 export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectModule }) {
+  const { user } = useAuth();
+
   return (
     <section className="py-12" style={{ background: 'var(--mint)', borderBottom: '1px solid var(--line)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -177,63 +180,72 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
             </div>
 
             <div className="flex flex-col gap-3">
-              {LEARNING_MODULES.map((mod) => (
-                <div
-                  key={mod.id}
-                  onClick={() => onSelectModule?.(mod)}
-                  className={`rounded-2xl p-4 cursor-pointer group transition-all hover:scale-[1.02] relative overflow-hidden ${mod.color}`}
-                  style={{ border: `1px solid` }}
-                >
-                  {/* Corner glow decoration */}
+              {LEARNING_MODULES.map((mod) => {
+                const totalLessons = mod.chapters?.length || 0;
+                const userProgress = user?.learningProgress?.find(p => p.moduleId === mod.id);
+                const completedCount = userProgress ? (userProgress.completedLessons?.length || 0) : 0;
+                const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
+                return (
                   <div
-                    className="absolute -top-8 -right-8 w-24 h-24 rounded-full pointer-events-none opacity-30"
-                    style={{ background: 'rgba(255,255,255,0.2)' }}
-                  />
-
-                  {/* Top row: code pill + badge + arrow */}
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/10 border border-white/20 uppercase tracking-wider text-white">
-                        {mod.code}
-                      </span>
-                      <span
-                        className="text-[9px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: 'var(--gold-soft)', color: 'var(--ink)' }}
-                      >
-                        {mod.badge}
-                      </span>
-                    </div>
-                    <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 transition-colors">
-                      <ChevronRight className="w-3.5 h-3.5 text-white" />
-                    </div>
-                  </div>
-
-                  {/* Title in Fraunces */}
-                  <h4
-                    className="text-sm leading-snug mb-3 text-white"
-                    style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}
+                    key={mod.id}
+                    onClick={() => onSelectModule?.(mod)}
+                    className={`rounded-2xl p-4 cursor-pointer group transition-all hover:scale-[1.02] relative overflow-hidden ${mod.color}`}
+                    style={{ border: `1px solid` }}
                   >
-                    {mod.title}
-                  </h4>
+                    {/* Corner glow decoration */}
+                    <div
+                      className="absolute -top-8 -right-8 w-24 h-24 rounded-full pointer-events-none opacity-30"
+                      style={{ background: 'rgba(255,255,255,0.2)' }}
+                    />
 
-                  {/* Progress bar in gold-soft */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px] text-white/75 font-medium">
-                      <span>{mod.completedLessons}/{mod.lessons} Lessons</span>
-                      <span className="font-bold text-white">{mod.progress}% Complete</span>
+                    {/* Top row: code pill + badge + arrow */}
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/10 border border-white/20 uppercase tracking-wider text-white">
+                          {mod.code}
+                        </span>
+                        <span
+                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          style={{ background: 'var(--gold-soft)', color: 'var(--ink)' }}
+                        >
+                          {mod.badge}
+                        </span>
+                      </div>
+                      <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 transition-colors">
+                        <ChevronRight className="w-3.5 h-3.5 text-white" />
+                      </div>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-white/20 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${mod.progress}%`,
-                          background: 'linear-gradient(90deg, var(--gold-soft), var(--gold))',
-                        }}
-                      />
+
+                    {/* Title in Fraunces */}
+                    <h4
+                      className="text-sm leading-snug mb-3 text-white"
+                      style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}
+                    >
+                      {mod.title}
+                    </h4>
+
+                    {/* Dynamic Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[11px] text-white/75 font-medium">
+                        <span>{user ? `${completedCount}/${totalLessons} Lessons` : `0/${totalLessons} Lessons`}</span>
+                        <span className="font-bold text-white">
+                          {user ? `${progressPct}% Complete` : 'Sign in to track'}
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-white/20 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: user ? `${progressPct}%` : '0%',
+                            background: 'linear-gradient(90deg, var(--gold-soft), var(--gold))',
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

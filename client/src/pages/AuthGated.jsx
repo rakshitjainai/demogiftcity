@@ -2,6 +2,7 @@ import React from 'react';
 import { Lock, User, Award, BookOpen, CheckCircle, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { LEARNING_MODULES } from '../data/mockData';
 
 export default function AuthGated({ pageName }) {
   const { user, isAuthenticated, logout } = useAuth();
@@ -99,19 +100,29 @@ export default function AuthGated({ pageName }) {
 
             {user.learningProgress && user.learningProgress.length > 0 ? (
               <div className="space-y-3">
-                {user.learningProgress.map((m, idx) => (
-                  <div key={idx} className="p-4 rounded-xl bg-paper border border-line">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-sm text-forest-deep capitalize">
-                        {m.moduleId ? m.moduleId.replace(/-/g, ' ') : 'Module'}
-                      </h4>
-                      <span className="text-xs font-bold text-leaf">{m.progress}%</span>
+                {user.learningProgress.map((m, idx) => {
+                  const modDef = LEARNING_MODULES.find(lm => lm.id === m.moduleId);
+                  const title = modDef ? modDef.title : (m.moduleId ? m.moduleId.replace(/-/g, ' ') : 'Module');
+                  const totalLessons = modDef?.chapters?.length || 1;
+                  const completedCount = m.completedLessons ? m.completedLessons.length : 0;
+                  const pct = Math.round((completedCount / totalLessons) * 100);
+
+                  return (
+                    <div key={idx} className="p-4 rounded-xl bg-paper border border-line">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-sm text-forest-deep line-clamp-1">
+                          {title}
+                        </h4>
+                        <span className="text-xs font-bold text-leaf flex-shrink-0 ml-2">
+                          {completedCount}/{totalLessons} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="w-full bg-line h-2 rounded-full overflow-hidden">
+                        <div className="bg-leaf h-full rounded-full transition-all duration-300" style={{ width: `${pct}%` }} />
+                      </div>
                     </div>
-                    <div className="w-full bg-line h-2 rounded-full overflow-hidden">
-                      <div className="bg-leaf h-full rounded-full" style={{ width: `${m.progress}%` }} />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-8 text-ink-soft">
