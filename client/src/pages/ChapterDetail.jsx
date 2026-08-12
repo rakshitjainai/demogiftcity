@@ -29,11 +29,18 @@ export default function ChapterDetail() {
 
       {/* Header */}
       <div className="mb-10">
-        <span className="eyebrow block mb-3">§ {actName}</span>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="eyebrow block">§ {actName}</span>
+          {actSlug === 'ifsca-fme-2025' && (
+            <span className="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-full font-medium">
+              Draft — pending legal review
+            </span>
+          )}
+        </div>
         <h1 className="text-3xl md:text-4xl font-display text-forest-deep mb-2">Chapter {chapterNum}</h1>
         <p className="text-xl text-ink font-medium mb-3">{chapterTitle}</p>
         <p className="text-ink-soft">
-          {sections.length} section{sections.length !== 1 ? 's' : ''} in this chapter
+          {sections.length} regulation{sections.length !== 1 ? 's' : ''} in this chapter
         </p>
       </div>
 

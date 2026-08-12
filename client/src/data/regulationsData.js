@@ -1,9 +1,49 @@
-// ─── Shared Regulations Data ───────────────────────────────────────────────
-// Full chapter + section structure for all 4 acts in the Interactive Codex.
-// Each chapter has: num, title, subtitle (optional), sections[]
-// Each section has: num, title
+import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
 
+const romanMap = {
+  'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
+  'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12
+};
+
+const ifscaChapters = ifscaPackage.chapters.map(c => {
+  const num = romanMap[c.chapter_number] || parseInt(c.chapter_number, 10);
+  const chapterProvisions = ifscaPackage.provisions.filter(p => p.chapter_number === c.chapter_number);
+  return {
+    num,
+    romanNum: c.chapter_number,
+    title: c.title,
+    sections: chapterProvisions.map(p => ({
+      num: p.provision_number,
+      title: p.title,
+    }))
+  };
+});
+
+export const PROVISION_DETAILS = {};
+ifscaPackage.provisions.forEach(p => {
+  const romanNum = p.chapter_number;
+  const chNum = romanMap[romanNum] || parseInt(romanNum, 10);
+  PROVISION_DETAILS[`ifsca-fme-2025|${chNum}|${p.provision_number}`] = p;
+  PROVISION_DETAILS[`ifsca-fme-2025|${p.provision_number}`] = p;
+  PROVISION_DETAILS[p.id] = p;
+});
+
+export const DEFINITIONS_DATA = ifscaPackage.definitions || [];
+export const SCHEDULES_DATA = ifscaPackage.schedules || [];
+export const CROSS_REFERENCES_DATA = ifscaPackage.cross_references || [];
+
+// ─── Shared Regulations Data ───────────────────────────────────────────────
 export const ACTS_DATA = {
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (FUND MANAGEMENT) REGULATIONS, 2025 | 12 Chapters | 161 Regulations
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-fme-2025': {
+    title: 'IFSCA (Fund Management) Regulations, 2025',
+    shortTitle: 'IFSCA FME Regulations',
+    totalChapters: 12,
+    chapters: ifscaChapters
+  },
 
   // ══════════════════════════════════════════════════════════════════════════
   // COMPANIES ACT, 2013  |  29 Chapters
