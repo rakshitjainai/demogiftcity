@@ -103,4 +103,62 @@ router.post('/learning-progress', protect, async (req, res) => {
   }
 });
 
+// @route   GET /api/user/filing-status
+// @desc    Get user annual filing tracker status
+// @access  Private
+router.get('/filing-status', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    return res.json({
+      filingStatus: user.filingStatus || []
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching filing status', error: error.message });
+  }
+});
+
+// @route   POST /api/user/filing-status
+// @desc    Save or update user filing status
+// @access  Private
+router.post('/filing-status', protect, async (req, res) => {
+  try {
+    const { filingId, status, dateFiled } = req.body;
+
+    if (!filingId) {
+      return res.status(400).json({ message: 'filingId is required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    const existingIdx = (user.filingStatus || []).findIndex(f => f.filingId === filingId);
+
+    const entry = {
+      filingId,
+      status: status || 'Not Started',
+      dateFiled: dateFiled || '',
+      updatedAt: new Date()
+    };
+
+    if (!user.filingStatus) {
+      user.filingStatus = [];
+    }
+
+    if (existingIdx >= 0) {
+      user.filingStatus[existingIdx] = entry;
+    } else {
+      user.filingStatus.push(entry);
+    }
+
+    await user.save();
+
+    return res.json({
+      message: 'Filing status updated successfully',
+      filingStatus: user.filingStatus,
+      user: user.toAuthJSON()
+    });
+  } catch (error) {
+    console.error('Save filing status error:', error);
+    return res.status(500).json({ message: 'Error saving filing status', error: error.message });
+  }
+});
+
 export default router;

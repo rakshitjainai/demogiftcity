@@ -16,6 +16,13 @@ const learningProgressSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { _id: false });
 
+const filingStatusSchema = new mongoose.Schema({
+  filingId: { type: String, required: true },
+  status: { type: String, enum: ['Not Started', 'In Progress', 'Filed'], default: 'Not Started' },
+  dateFiled: { type: String, default: '' },
+  updatedAt: { type: Date, default: Date.now }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -25,7 +32,8 @@ const userSchema = new mongoose.Schema(
     picture: { type: String, default: '' },
     role: { type: String, default: 'member' },
     quizProgress: [quizProgressSchema],
-    learningProgress: [learningProgressSchema]
+    learningProgress: [learningProgressSchema],
+    filingStatus: [filingStatusSchema]
   },
   { timestamps: true }
 );
@@ -40,6 +48,7 @@ userSchema.methods.toAuthJSON = function () {
     role: this.role,
     quizProgress: this.quizProgress || [],
     learningProgress: this.learningProgress || [],
+    filingStatus: this.filingStatus || [],
     createdAt: this.createdAt
   };
 };

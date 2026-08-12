@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { Calendar, FileText, Users, Calculator, ShieldAlert, ArrowRight } from 'lucide-react';
 
 const TOOLS = [
-  { slug: 'compliance-calendar', title: 'Compliance Calendar', icon: <Calendar className="w-6 h-6" />, desc: 'Track upcoming statutory deadlines.' },
-  { slug: 'annual-filing-tracker', title: 'Annual Filing Tracker', icon: <FileText className="w-6 h-6" />, desc: 'Manage e-forms and ROC filings.' },
-  { slug: 'board-meeting-planner', title: 'Board Meeting Planner', icon: <Users className="w-6 h-6" />, desc: 'Draft agendas and track minutes.' },
-  { slug: 'esop-calculator', title: 'ESOP Calculator', icon: <Calculator className="w-6 h-6" />, desc: 'Vesting schedules and valuations.' },
-  { slug: 'aml-risk-assessment', title: 'AML Risk Assessment', icon: <ShieldAlert className="w-6 h-6" />, desc: 'Evaluate client risk profiles.' }
+  { slug: 'compliance-calendar', title: 'Compliance Calendar', icon: <Calendar className="w-6 h-6" />, desc: 'GIFT IFSC & statutory compliance deadline builder.' },
+  { slug: 'annual-filing-tracker', title: 'Annual Filing Tracker', icon: <FileText className="w-6 h-6" />, desc: 'ROC filings (AOC-4, MGT-7, ADT-1, DIR-3 KYC) & due dates.' },
+  { slug: 'board-meeting-planner', title: 'Board Meeting Planner', icon: <Users className="w-6 h-6" />, desc: 'Section 174 Quorum calculator, 120-day gap rule & agendas.' },
+  { slug: 'esop-calculator', title: 'ESOP Calculator', icon: <Calculator className="w-6 h-6" />, desc: 'Statutory 1-year cliff vesting schedules & equity valuation.' },
+  { slug: 'aml-risk-assessment', title: 'AML Risk Assessment', icon: <ShieldAlert className="w-6 h-6" />, desc: '10-point AML/CFT audit scorecard & diagnostic rating.' }
 ];
 
 export default function ToolsIndex() {
