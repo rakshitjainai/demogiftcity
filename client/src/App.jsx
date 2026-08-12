@@ -13,6 +13,8 @@ import DiagnosticTests from './pages/DiagnosticTests';
 import ToolsIndex from './pages/ToolsIndex';
 import ToolDetail from './pages/ToolDetail';
 import Templates from './pages/Templates';
+import BlogIndex from './pages/BlogIndex';
+import BlogDetail from './pages/BlogDetail';
 import News from './pages/News';
 import Article from './pages/Article';
 import About from './pages/About';
@@ -44,6 +46,8 @@ export default function App() {
           <Route path="tools" element={<ToolsIndex />} />
           <Route path="tools/:slug" element={<ToolDetail />} />
           <Route path="templates" element={<Templates />} />
+          <Route path="blog" element={<BlogIndex />} />
+          <Route path="blog/:slug" element={<BlogDetail />} />
           <Route path="news" element={<News />} />
           <Route path="news/:slug" element={<Article />} />
           <Route path="about" element={<About />} />

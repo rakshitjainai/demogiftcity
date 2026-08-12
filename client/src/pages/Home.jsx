@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import QuickAccessBar from '../components/QuickAccessBar';
 import StatsBand from '../components/StatsBand';
@@ -15,6 +16,7 @@ import QuizzesSection from '../components/QuizzesSection';
 import { QUICK_ACCESS_ITEMS, LATEST_BLOGS, LATEST_UPDATES } from '../data/mockData';
 
 export default function Home() {
+  const navigate = useNavigate();
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedToolTitle, setSelectedToolTitle] = useState(null);
   const [customiseOpen, setCustomiseOpen] = useState(false);
@@ -27,9 +29,17 @@ export default function Home() {
     // Search context
   };
   const handleQuickItemClick = (item) => {
-    if (item.category === 'Tools') setSelectedToolTitle(item.label);
-    else if (item.category === 'Updates') setSelectedArticle(LATEST_UPDATES[0]);
-    else setSelectedArticle(LATEST_BLOGS[0]);
+    if (item.path) {
+      navigate(item.path);
+    } else if (item.category === 'Tools') {
+      setSelectedToolTitle(item.label);
+    } else if (item.category === 'Updates') {
+      navigate('/news');
+    } else if (item.category === 'Quizzes') {
+      navigate('/quizzes');
+    } else {
+      navigate('/knowledge-hub');
+    }
   };
 
   return (

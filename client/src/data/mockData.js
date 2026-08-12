@@ -9,12 +9,12 @@ export const POPULAR_SEARCHES = [
 ];
 
 export const QUICK_ACCESS_ITEMS = [
-  { id: "regulations", label: "Interactive Regulations", icon: "BookOpen", category: "Regulations", color: "emerald", desc: "Browse chapter-wise regulatory content" },
-  { id: "learning", label: "Learning & Diagnostics", icon: "GraduationCap", category: "Learning", color: "blue", desc: "Learn, revise and test yourself" },
-  { id: "quizzes", label: "Quizzes", icon: "HelpCircle", category: "Quizzes", color: "amber", desc: "Practice by subject and topic" },
-  { id: "templates", label: "Templates & Checklists", icon: "FileText", category: "Templates", color: "indigo", desc: "Ready-to-use professional resources" },
-  { id: "enforcement", label: "Enforcement Orders", icon: "Gavel", category: "Updates", color: "rose", desc: "Study actions and lessons learned" },
-  { id: "membership", label: "Membership", icon: "Zap", category: "Membership", color: "teal", desc: "Unlock the full platform" }
+  { id: "regulations", label: "Interactive Regulations", icon: "BookOpen", path: "/interactive-regulations", category: "Regulations", color: "emerald", desc: "Browse chapter-wise regulatory content" },
+  { id: "learning", label: "Learning & Diagnostics", icon: "GraduationCap", path: "/learning", category: "Learning", color: "blue", desc: "Learn, revise and test yourself" },
+  { id: "quizzes", label: "Quizzes", icon: "HelpCircle", path: "/quizzes", category: "Quizzes", color: "amber", desc: "Practice by subject and topic" },
+  { id: "templates", label: "Templates & Checklists", icon: "FileText", path: "/templates", category: "Templates", color: "indigo", desc: "Ready-to-use professional resources" },
+  { id: "enforcement", label: "Enforcement Orders", icon: "Gavel", path: "/news", category: "Updates", color: "rose", desc: "Study actions and lessons learned" },
+  { id: "membership", label: "Membership", icon: "Zap", path: "/membership", category: "Membership", color: "teal", desc: "Unlock the full platform" }
 ];
 
 export const STATS = [
@@ -287,6 +287,7 @@ export const NAV_LINKS = [
     ]
   },
   { label: "Templates", href: "/templates", hasDropdown: false },
+  { label: "Blog", href: "/blog", hasDropdown: false },
   { label: "News", href: "/news", hasDropdown: false },
   { label: "About", href: "/about", hasDropdown: false }
 ];

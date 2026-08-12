@@ -3,7 +3,7 @@ import { Mail, MessageCircle } from 'lucide-react';
 
 const FOOTER_LINKS = {
   Knowledge: ['Interactive Regulations', 'Quizzes', 'Learning'],
-  Resources: ['Compliance Tools', 'Templates', 'News'],
+  Resources: ['Compliance Tools', 'Templates', 'Blog', 'News'],
   Account: ['Membership', 'Dashboard', 'My Profile'],
 };
 

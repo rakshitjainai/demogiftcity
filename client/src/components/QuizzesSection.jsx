@@ -1,12 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, HelpCircle } from 'lucide-react';
 
 const TOPICS = [
-  'Corporate Laws',
-  'IFSC Regulations',
-  'Capital Markets',
-  'IPR',
-  'General Laws'
+  { id: 'sebi-aif-regulations', title: 'SEBI AIF Regulations' },
+  { id: 'corporate-laws', title: 'Corporate Laws' },
+  { id: 'ifsc-regulations', title: 'IFSC Regulations' },
+  { id: 'capital-markets', title: 'Capital Markets' },
+  { id: 'ipr', title: 'IPR' },
+  { id: 'general-laws', title: 'General Laws' }
 ];
 
 export default function QuizzesSection() {
@@ -24,19 +26,23 @@ export default function QuizzesSection() {
               Topic-wise quizzes across the areas that matter to compliance professionals.
             </p>
           </div>
-          <a href="/knowledge-hub" className="cursor-target inline-flex items-center gap-2 text-leaf font-bold hover:text-leaf-bright transition-colors group">
+          <Link to="/quizzes" className="cursor-target inline-flex items-center gap-2 text-leaf font-bold hover:text-leaf-bright transition-colors group">
             View All Quizzes <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
+          </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {TOPICS.map((topic, i) => (
-            <div key={i} className="cursor-target group bg-paper border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-leaf hover:bg-mint transition-colors hover-lift">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {TOPICS.map((topic) => (
+            <Link
+              key={topic.id}
+              to={`/quizzes/${topic.id}`}
+              className="cursor-target group bg-paper border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-leaf hover:bg-mint transition-colors hover-lift"
+            >
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
                 <HelpCircle className="w-6 h-6 text-forest" />
               </div>
-              <h3 className="font-semibold text-ink leading-tight">{topic}</h3>
-            </div>
+              <h3 className="font-semibold text-ink leading-tight">{topic.title}</h3>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Menu, X, LogIn, Zap } from 'lucide-react';
+import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 
 const SUB_ITEM_ROUTES = {
   'Interactive Regulations': '/interactive-regulations',
@@ -18,7 +19,9 @@ const SUB_ITEM_ROUTES = {
 };
 
 export default function Navbar({ onOpenSearch, onOpenAuth }) {
+  const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -120,27 +123,102 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
           <div className="hidden sm:flex items-center gap-2">
             <button
               onClick={onOpenSearch}
-              className="p-2 rounded-full text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)] transition-colors border border-[var(--line)]"
+              className="p-2 rounded-full text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)] transition-colors border border-[var(--line)] cursor-pointer"
               aria-label="Search"
             >
               <Search className="w-4 h-4" />
             </button>
 
-            <Link
-              to="/login"
-              className="px-4 py-2 text-[13px] font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full hover:bg-[var(--mint)] transition-all flex items-center gap-1.5"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
+                >
+                  {user?.picture ? (
+                    <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )}
+                  <span className="text-xs font-bold text-emerald-900 max-w-[100px] truncate">
+                    {user?.name || 'My Account'}
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-emerald-700" />
+                </button>
 
-            <Link
-              to="/membership"
-              className="px-4 py-2 text-[13px] font-bold text-white bg-[var(--forest)] rounded-full hover:bg-[var(--forest-deep)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[rgba(11,77,51,0.3)] transition-all flex items-center gap-1.5"
-            >
-              <Zap className="w-3.5 h-3.5 text-[var(--gold-soft)]" />
-              Get Started
-            </Link>
+                {userDropdownOpen && (
+                  <div
+                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in"
+                    onMouseLeave={() => setUserDropdownOpen(false)}
+                  >
+                    <div className="px-4 py-2 border-b border-slate-100">
+                      <p className="text-xs font-bold text-slate-900 truncate">{user?.name}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
+                    </div>
+
+                    <Link
+                      to="/profile"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center gap-2 transition-colors"
+                    >
+                      <UserIcon className="w-4 h-4 text-emerald-600" />
+                      My Profile
+                    </Link>
+
+                    <Link
+                      to="/my-learning"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center gap-2 transition-colors"
+                    >
+                      <BookOpen className="w-4 h-4 text-emerald-600" />
+                      My Learning Progress
+                    </Link>
+
+                    <Link
+                      to="/my-certificates"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center gap-2 transition-colors"
+                    >
+                      <Award className="w-4 h-4 text-emerald-600" />
+                      My Certificates
+                    </Link>
+
+                    <div className="border-t border-slate-100 my-1"></div>
+
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => onOpenAuth ? onOpenAuth('login') : null}
+                  className="px-4 py-2 text-[13px] font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full hover:bg-[var(--mint)] transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Login
+                </button>
+
+                <button
+                  onClick={() => onOpenAuth ? onOpenAuth('register') : null}
+                  className="px-4 py-2 text-[13px] font-bold text-white bg-[var(--forest)] rounded-full hover:bg-[var(--forest-deep)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[rgba(11,77,51,0.3)] transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Zap className="w-3.5 h-3.5 text-[var(--gold-soft)]" />
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile hamburger */}
@@ -197,20 +275,38 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
           ))}
 
           <div className="pt-3 border-t border-[var(--line)] grid grid-cols-2 gap-2">
-            <Link
-              to="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2.5 text-center text-sm font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full"
-            >
-              Login
-            </Link>
-            <Link
-              to="/membership"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2.5 text-center text-sm font-bold text-white bg-[var(--forest)] rounded-full"
-            >
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="col-span-2 py-2.5 text-center text-sm font-bold text-red-600 border border-red-300 rounded-full bg-red-50"
+              >
+                Log Out ({user?.name})
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenAuth) onOpenAuth('login');
+                  }}
+                  className="py-2.5 text-center text-sm font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenAuth) onOpenAuth('register');
+                  }}
+                  className="py-2.5 text-center text-sm font-bold text-white bg-[var(--forest)] rounded-full"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

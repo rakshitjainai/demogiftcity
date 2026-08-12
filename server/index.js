@@ -83,12 +83,3 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
   console.warn('⚠️ Mongoose disconnected from MongoDB database.');
 });
-
-// Prevent server process crash on unhandled database errors
-process.on('uncaughtException', (err) => {
-  console.error('⚠️ Uncaught Exception:', err.message);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('⚠️ Unhandled Rejection:', reason);
-});

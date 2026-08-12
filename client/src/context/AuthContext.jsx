@@ -1,0 +1,199 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const AuthContext = createContext();
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
+export function AuthProvider({ children }) {
+  const [token, setToken] = useState(() => localStorage.getItem('regmate_token') || null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('regmate_user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
+
+  // Sync token to localStorage and fetch user data on mount
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        } else {
+          // Token invalid or expired
+          logout();
+        }
+      } catch (err) {
+        console.warn('Backend server disconnected or offline:', err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, [token]);
+
+  const saveAuthSession = (newToken, newUser) => {
+    setToken(newToken);
+    setUser(newUser);
+    localStorage.setItem('regmate_token', newToken);
+    localStorage.setItem('regmate_user', JSON.stringify(newUser));
+    setAuthError(null);
+  };
+
+  const login = async (email, password) => {
+    setAuthError(null);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMsg = data.message || 'Login failed. Please check your credentials.';
+        setAuthError(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      saveAuthSession(data.token, data.user);
+      return data.user;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        const offlineMsg = 'Backend server is not running. Please start the server folder on port 5000.';
+        setAuthError(offlineMsg);
+        throw new Error(offlineMsg);
+      }
+      throw err;
+    }
+  };
+
+  const register = async (name, email, password) => {
+    setAuthError(null);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMsg = data.message || 'Registration failed.';
+        setAuthError(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      saveAuthSession(data.token, data.user);
+      return data.user;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        const offlineMsg = 'Backend server is offline. Please run the server on port 5000.';
+        setAuthError(offlineMsg);
+        throw new Error(offlineMsg);
+      }
+      throw err;
+    }
+  };
+
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('regmate_token');
+    localStorage.removeItem('regmate_user');
+  };
+
+  // Save Quiz Result to backend
+  const saveQuizResult = async (topicId, score, totalQuestions, passed) => {
+    if (!token) return null;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/quiz-result`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ topicId, score, totalQuestions, passed })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to sync quiz progress to backend:', err);
+    }
+  };
+
+  // Save Learning Module Progress
+  const saveLearningProgress = async (moduleId, completedLessons, progress) => {
+    if (!token) return null;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/learning-progress`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ moduleId, completedLessons, progress })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to sync learning progress to backend:', err);
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        loading,
+        authError,
+        setAuthError,
+        login,
+        register,
+        logout,
+        saveQuizResult,
+        saveLearningProgress,
+        isAuthenticated: !!user
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

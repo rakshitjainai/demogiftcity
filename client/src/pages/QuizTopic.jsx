@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Award, CheckCircle, XCircle, ArrowRight, RotateCcw } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const QUIZ_DATA = {
   'sebi-aif-regulations': [
@@ -49,7 +50,8 @@ const QUIZ_DATA = {
 
 export default function QuizTopic() {
   const { topic } = useParams();
-  const formattedTopic = topic.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const { saveQuizResult, isAuthenticated } = useAuth();
+  const formattedTopic = topic ? topic.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'General Laws';
   
   const questions = QUIZ_DATA[topic] || QUIZ_DATA['general-laws'];
 
@@ -60,6 +62,14 @@ export default function QuizTopic() {
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    if (finished && isAuthenticated) {
+      const pct = Math.round((score / questions.length) * 100);
+      const passed = pct >= 70;
+      saveQuizResult(topic, score, questions.length, passed);
+    }
+  }, [finished, isAuthenticated]);
 
   const handleSelect = (idx) => {
     if (answered) return;
