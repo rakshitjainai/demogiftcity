@@ -43,6 +43,60 @@ export default function AuthGated({ pageName }) {
           </button>
         </div>
 
+        {/* Certificates Banner if pageName is My Certificates */}
+        {pageName === 'My Certificates' && (
+          <div className="bg-white border border-line rounded-3xl p-8 mb-8 card-shadow space-y-4">
+            <div className="flex items-center gap-3 border-b border-line pb-4">
+              <div className="p-3 bg-mint text-forest rounded-2xl">
+                <Award className="w-8 h-8" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-display text-forest-deep">My Certificates & Credentials</h2>
+                <p className="text-xs text-ink-soft">Verifiable statutory compliance mastery certificates</p>
+              </div>
+            </div>
+
+            {(() => {
+              const completedCourses = (user.courseProgress || []).filter(c => {
+                const total = c.courseSlug === 'ifsca-cmi' ? 35 : 14;
+                return (c.completedItems?.length || 0) >= total;
+              });
+
+              if (completedCourses.length > 0) {
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    {completedCourses.map((c, idx) => (
+                      <div key={idx} className="p-5 rounded-2xl bg-paper border border-leaf/30 flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-forest text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
+                          <CheckCircle className="w-6 h-6 text-mint" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-leaf block">Verifiable Certificate</span>
+                          <h4 className="font-bold text-sm text-forest-deep mt-0.5">{c.courseSlug.toUpperCase()} Compliance Certificate</h4>
+                          <p className="text-xs text-ink-soft mt-1">Issued: August 2026 • Code: REGMATE-CERT-{c.courseSlug.toUpperCase()}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+
+              return (
+                <div className="text-center py-8 bg-paper rounded-2xl border border-line text-ink-soft space-y-2">
+                  <Award className="w-10 h-10 text-leaf mx-auto opacity-50" />
+                  <p className="text-sm font-semibold text-forest-deep">No certificates earned yet.</p>
+                  <p className="text-xs text-ink-soft max-w-md mx-auto">
+                    Complete 100% of the lessons in any learning module (such as IFSCA Capital Market Intermediaries or SEBI AIF Regulations) to automatically generate your verifiable certificate!
+                  </p>
+                  <Link to="/learning" className="inline-block mt-3 px-5 py-2 bg-forest text-white text-xs font-bold rounded-full hover:bg-leaf transition-colors">
+                    Start Learning Now
+                  </Link>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
         {/* Saved Quiz & Learning Progress Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           

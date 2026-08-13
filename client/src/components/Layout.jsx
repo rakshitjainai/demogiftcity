@@ -16,6 +16,15 @@ export default function Layout() {
     setSearchOpen(true);
   };
 
+  React.useEffect(() => {
+    const handleOpenSearch = () => {
+      setSearchQuery('');
+      setSearchOpen(true);
+    };
+    window.addEventListener('open-search-modal', handleOpenSearch);
+    return () => window.removeEventListener('open-search-modal', handleOpenSearch);
+  }, []);
+
   return (
     <>
       <TargetCursor

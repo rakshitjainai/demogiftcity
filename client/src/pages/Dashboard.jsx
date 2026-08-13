@@ -27,7 +27,8 @@ import {
   ExternalLink,
   ChevronRight,
   Flame,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { ACTS_DATA, getActName } from '../data/regulationsData';
@@ -37,6 +38,9 @@ import coursesData from '../data/courses.json';
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const [showBookmarksModal, setShowBookmarksModal] = useState(false);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   // Get last read from user object or local fallback
   const lastRead = user?.readingProgress || JSON.parse(localStorage.getItem('regmate_last_read') || 'null');
@@ -758,7 +762,7 @@ export default function Dashboard() {
             
             {/* Tool 1: Search Regulations */}
             <button
-              onClick={() => navigate('/interactive-regulations')}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-search-modal'))}
               className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5"
             >
               <Search className="w-4 h-4 text-[var(--forest)]" />
@@ -767,14 +771,19 @@ export default function Dashboard() {
 
             {/* Tool 2: Bookmarks */}
             <button
-              onClick={() => navigate('/interactive-regulations')}
-              className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5"
+              onClick={() => setShowBookmarksModal(true)}
+              className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5 relative"
             >
               <Bookmark className="w-4 h-4 text-[var(--forest)]" />
               <span className="text-[10px] font-bold text-[var(--ink)] leading-tight">Bookmarks</span>
+              {bookmarks.length > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white font-extrabold text-[9px] rounded-full flex items-center justify-center">
+                  {bookmarks.length}
+                </span>
+              )}
             </button>
 
-            {/* Tool 3: Practical Tools */}
+            {/* Tool 3: Notes & Compliance Tools */}
             <button
               onClick={() => navigate('/tools')}
               className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5"
@@ -783,13 +792,14 @@ export default function Dashboard() {
               <span className="text-[10px] font-bold text-[var(--ink)] leading-tight">Notes & Tools</span>
             </button>
 
-            {/* Tool 4: Compare Sections */}
+            {/* Tool 4: Compare (Coming Soon) */}
             <button
-              onClick={() => navigate('/tools')}
-              className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5"
+              onClick={() => setShowCompareModal(true)}
+              className="p-2.5 bg-[var(--paper)] border border-[var(--line)] hover:bg-[var(--mint)] hover:border-[var(--leaf)] rounded-xl text-center transition-all cursor-pointer flex flex-col items-center gap-1.5 relative"
             >
               <Layers className="w-4 h-4 text-[var(--forest)]" />
               <span className="text-[10px] font-bold text-[var(--ink)] leading-tight">Compare</span>
+              <span className="text-[8px] font-bold px-1 bg-amber-100 text-amber-800 rounded">Soon</span>
             </button>
 
             {/* Tool 5: Download PDF */}
@@ -814,6 +824,79 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* Bookmarks Modal */}
+      {showBookmarksModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Bookmark className="w-5 h-5 text-amber-500 fill-amber-500" />
+                <h3 className="font-bold font-serif text-lg text-slate-900">Saved Bookmarks ({bookmarks.length})</h3>
+              </div>
+              <button onClick={() => setShowBookmarksModal(false)} className="p-1 rounded-full hover:bg-slate-100">
+                <X className="w-5 h-5 text-slate-500" />
+              </button>
+            </div>
+
+            {bookmarks.length > 0 ? (
+              <div className="space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
+                {bookmarks.map((bm, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => { setShowBookmarksModal(false); navigate(bm.url); }}
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:bg-emerald-50 hover:border-emerald-200 transition-colors cursor-pointer flex items-center justify-between"
+                  >
+                    <div>
+                      <h4 className="font-bold text-xs text-slate-900 truncate max-w-xs">{bm.title}</h4>
+                      <p className="text-[10px] text-slate-500 mt-0.5">{bm.actSlug || 'Interactive Regulation'}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-emerald-700 flex-shrink-0 ml-2" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 space-y-2">
+                <Bookmark className="w-8 h-8 text-amber-400 mx-auto opacity-60" />
+                <p className="text-sm font-semibold text-slate-800">No saved bookmarks yet.</p>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  Click the bookmark icon on any regulation section page to save key statutory clauses here for quick reference!
+                </p>
+                <button
+                  onClick={() => { setShowBookmarksModal(false); navigate('/interactive-regulations'); }}
+                  className="mt-2 px-4 py-2 bg-emerald-800 text-white font-bold text-xs rounded-xl hover:bg-emerald-900 transition-colors"
+                >
+                  Browse Regulations
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Compare Modal (Coming Soon) */}
+      {showCompareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center mx-auto">
+              <Layers className="w-7 h-7" />
+            </div>
+            <h3 className="font-bold font-serif text-xl text-slate-900">Section Comparison Tool</h3>
+            <span className="px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full uppercase">
+              Under Development
+            </span>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              The Section Comparison Engine is being built to allow side-by-side statutory clause comparisons between IFSCA, SEBI, and Companies Act provisions. Check back in an upcoming release!
+            </p>
+            <button
+              onClick={() => setShowCompareModal(false)}
+              className="w-full py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ─── FOOTER QUOTE BAR ─────────────────────────────────────────────── */}
       <div className="bg-[var(--mint)] border border-[var(--mint-deep)] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
