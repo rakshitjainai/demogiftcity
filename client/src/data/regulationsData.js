@@ -2,6 +2,7 @@ import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
 import ifscaFinanceCompanyPackage from './RegMate_IFSCA_Finance_Company_2021_FINAL.json';
 import ifscaInsuranceBusinessPackage from './RegMate_IFSCA_Registration_Insurance_Business_2021_FINAL.json';
 import ifscaPensionFundPackage from './RegMate_IFSCA_Pension_Fund_2026_FINAL.json';
+import ifscaMgaPackage from './RegMate_IFSCA_MGA_2026_FINAL.json';
 
 const romanMap = {
   'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
@@ -55,10 +56,11 @@ function parseChapterNumber(chapStr) {
 
 function processSchema2Package(pkg, actSlug) {
   const content = pkg.regulation_content || [];
+  const actTitleName = pkg.instrument?.regulation_name || pkg.instrument?.name || '';
   const definitions = (pkg.definitions_reference || []).map(d => ({
     ...d,
     actSlug,
-    actTitle: pkg.instrument?.name
+    actTitle: actTitleName
   }));
 
   ACT_DEFINITIONS[actSlug] = definitions;
@@ -66,13 +68,21 @@ function processSchema2Package(pkg, actSlug) {
   const regularProvisions = [];
   const schedules = [];
 
-  content.forEach(item => {
+  content.forEach((item, idx) => {
     const isSchedule = (item.chapter && item.chapter.toLowerCase().includes('schedule')) ||
-                       item.provision_type === 'schedule_form_or_annexure';
+                       item.provision_type === 'schedule_form_or_annexure' ||
+                       (item.provision_number && String(item.provision_number).toLowerCase().includes('schedule')) ||
+                       (item.provision_heading && String(item.provision_heading).toLowerCase().includes('schedule'));
     if (isSchedule) {
+      const schChapter = (item.provision_number && String(item.provision_number).toLowerCase().includes('schedule'))
+        ? item.provision_number
+        : (item.chapter || 'Schedule');
       schedules.push({
-        id: item.regulation_id,
+        id: item.regulation_id && item.regulation_id !== actSlug
+          ? `${item.regulation_id}-${item.provision_number || idx}`
+          : `${actSlug}-schedule-${item.provision_number || idx}`,
         title: item.provision_heading || item.chapter_title || 'Schedule',
+        chapter: schChapter,
         statutory_text: item.regulation_text,
         actSlug,
         simple_explanation: item.simple_explanation,
@@ -134,12 +144,15 @@ function processSchema2Package(pkg, actSlug) {
     if (p.regulation_id) PROVISION_DETAILS[p.regulation_id] = normalized;
   });
 
+  const shortTitle = pkg.instrument?.short_name || (actTitleName ? actTitleName.replace('International Financial Services Centres Authority', 'IFSCA') : '');
+  const versionDate = pkg.instrument?.version || (pkg.instrument?.gazette_date ? `Notified ${pkg.instrument.notification_date} (Gazette ${pkg.instrument.gazette_date})` : (pkg.instrument?.notification_date || ''));
+
   return {
-    title: pkg.instrument?.name || '',
-    shortTitle: pkg.instrument?.name ? pkg.instrument.name.replace('International Financial Services Centres Authority', 'IFSCA') : '',
+    title: actTitleName,
+    shortTitle,
     totalChapters: chapters.length,
     chapters,
-    versionDate: pkg.instrument?.version || '',
+    versionDate,
     status: pkg.status || 'Final',
     isSchema2: true,
     definitions,
@@ -150,6 +163,7 @@ function processSchema2Package(pkg, actSlug) {
 const financeCompanyActData = processSchema2Package(ifscaFinanceCompanyPackage, 'ifsca-finance-company-2021');
 const insuranceBusinessActData = processSchema2Package(ifscaInsuranceBusinessPackage, 'ifsca-registration-insurance-business-2021');
 const pensionFundActData = processSchema2Package(ifscaPensionFundPackage, 'ifsca-pension-fund-2026');
+const mgaActData = processSchema2Package(ifscaMgaPackage, 'ifsca-mga-2026');
 
 export function getActDefinitions(actSlug) {
   return ACT_DEFINITIONS[actSlug] || [];
@@ -186,6 +200,11 @@ export const ACTS_DATA = {
   // IFSCA (PENSION FUND) REGULATIONS, 2026 | 9 Chapters + 4 Schedules
   // ══════════════════════════════════════════════════════════════════════════
   'ifsca-pension-fund-2026': pensionFundActData,
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (MANAGING GENERAL AGENTS) REGULATIONS, 2026 | 6 Chapters + 4 Schedules
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-mga-2026': mgaActData,
 
   // ══════════════════════════════════════════════════════════════════════════
   // COMPANIES ACT, 2013  |  29 Chapters
