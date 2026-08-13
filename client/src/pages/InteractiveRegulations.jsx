@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, FileText, BookOpen, BookMarked, FileCheck, X, Search, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import RegulationRow from '../components/RegulationRow';
-import { ACTS_DATA, DEFINITIONS_DATA, SCHEDULES_DATA } from '../data/regulationsData';
+import { ACTS_DATA, getActDefinitions, getActSchedules } from '../data/regulationsData';
 
 export default function InteractiveRegulations() {
   const [expandedAct, setExpandedAct] = useState(null);
   const [expandedChapters, setExpandedChapters] = useState({}); // { [actSlug]: boolean }
-  const [activeModal, setActiveModal] = useState(null); // 'schedules' | 'definitions' | null
+  const [activeModal, setActiveModal] = useState(null); // { type: 'schedules' | 'definitions', actSlug: string } | null
   const [searchTerm, setSearchTerm] = useState('');
 
   const acts = Object.entries(ACTS_DATA).map(([slug, data]) => ({
@@ -15,11 +15,19 @@ export default function InteractiveRegulations() {
     title: data.title,
     totalChapters: data.totalChapters,
     chapters: data.chapters,
+    versionDate: data.versionDate,
+    status: data.status,
+    definitions: getActDefinitions(slug),
+    schedules: getActSchedules(slug),
   }));
 
-  const filteredDefs = DEFINITIONS_DATA.filter(d =>
-    d.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.definition_text.toLowerCase().includes(searchTerm.toLowerCase())
+  const activeActData = activeModal?.actSlug ? ACTS_DATA[activeModal.actSlug] : null;
+  const modalSchedules = activeModal?.actSlug ? getActSchedules(activeModal.actSlug) : [];
+  const modalDefinitions = activeModal?.actSlug ? getActSchedules ? getActDefinitions(activeModal.actSlug) : [] : [];
+
+  const filteredDefs = modalDefinitions.filter(d =>
+    (d.term || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (d.definition_text || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -31,10 +39,13 @@ export default function InteractiveRegulations() {
       </div>
 
       <div className="space-y-4">
-        {acts.map((act, idx) => {
+        {acts.map((act) => {
           const isOpen = expandedAct === act.slug;
           const isFullyExpanded = !!expandedChapters[act.slug];
           const displayedChapters = isFullyExpanded ? act.chapters : act.chapters.slice(0, 5);
+
+          const hasSchedules = act.schedules && act.schedules.length > 0;
+          const hasDefinitions = act.definitions && act.definitions.length > 0;
 
           return (
             <div key={act.slug} className="bg-white border border-line rounded-xl overflow-hidden card-shadow">
@@ -49,11 +60,15 @@ export default function InteractiveRegulations() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-lg text-forest-deep leading-tight">{act.title}</h3>
-                      {act.slug === 'ifsca-fme-2025' && (
+                      {act.slug === 'ifsca-fme-2025' ? (
                         <span className="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-full font-medium">
                           Draft — pending legal review
                         </span>
-                      )}
+                      ) : act.versionDate ? (
+                        <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium">
+                          Verified · {act.versionDate.includes('Consolidated') ? act.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : act.versionDate}
+                        </span>
+                      ) : null}
                     </div>
                     <p className="text-sm text-ink-soft mt-0.5">{act.totalChapters} Chapters · {act.chapters.reduce((n, c) => n + c.sections.length, 0)} Provisions</p>
                   </div>
@@ -63,28 +78,32 @@ export default function InteractiveRegulations() {
 
               {isOpen && (
                 <div className="px-6 pb-6 pt-2 bg-paper border-t border-line space-y-4">
-                  {act.slug === 'ifsca-fme-2025' && (
+                  {(hasSchedules || hasDefinitions) && (
                     <div className="flex items-center gap-3 pt-3 flex-wrap">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveModal('schedules');
-                        }}
-                        className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors"
-                      >
-                        <BookMarked className="w-4 h-4" /> View 6 Schedules (1st–6th)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveModal('definitions');
-                        }}
-                        className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors"
-                      >
-                        <FileCheck className="w-4 h-4" /> Defined Terms Glossary (62 Terms)
-                      </button>
+                      {hasSchedules && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveModal({ type: 'schedules', actSlug: act.slug });
+                          }}
+                          className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors"
+                        >
+                          <BookMarked className="w-4 h-4" /> View {act.schedules.length === 1 ? 'Schedule' : `${act.schedules.length} Schedules`}
+                        </button>
+                      )}
+                      {hasDefinitions && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveModal({ type: 'definitions', actSlug: act.slug });
+                          }}
+                          className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors"
+                        >
+                          <FileCheck className="w-4 h-4" /> Defined Terms Glossary ({act.definitions.length} Terms)
+                        </button>
+                      )}
                     </div>
                   )}
 
@@ -136,7 +155,9 @@ export default function InteractiveRegulations() {
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-forest" />
                 <h3 className="font-semibold text-forest-deep text-lg">
-                  {activeModal === 'schedules' ? 'Schedules — IFSCA (Fund Management) Regulations, 2025' : 'Defined Terms Glossary (62 Terms)'}
+                  {activeModal.type === 'schedules'
+                    ? `Schedules — ${activeActData?.title || 'Regulations'}`
+                    : `Defined Terms Glossary — ${activeActData?.title || 'Regulations'} (${modalDefinitions.length} Terms)`}
                 </h3>
               </div>
               <button
@@ -148,14 +169,19 @@ export default function InteractiveRegulations() {
             </div>
 
             <div className="p-6 overflow-y-auto space-y-6">
-              {activeModal === 'schedules' && (
+              {activeModal.type === 'schedules' && (
                 <div className="space-y-6">
-                  {SCHEDULES_DATA.map((sch, idx) => (
+                  {modalSchedules.map((sch, idx) => (
                     <div key={sch.id || idx} className="bg-paper border border-line rounded-xl p-6">
                       <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase mb-3 inline-block">
-                        Schedule {idx + 1}
+                        {sch.chapter || `Schedule ${idx + 1}`}
                       </span>
                       <h4 className="text-lg font-semibold text-forest-deep mb-3">{sch.title}</h4>
+                      {sch.simple_explanation && (
+                        <p className="text-xs text-ink-soft mb-3 bg-white p-3 rounded-lg border border-line">
+                          <strong className="text-forest">Summary:</strong> {sch.simple_explanation}
+                        </p>
+                      )}
                       <div className="bg-white border border-line rounded-lg p-4 font-serif text-xs leading-relaxed text-forest-deep whitespace-pre-line max-h-60 overflow-y-auto">
                         {sch.statutory_text}
                       </div>
@@ -164,13 +190,13 @@ export default function InteractiveRegulations() {
                 </div>
               )}
 
-              {activeModal === 'definitions' && (
+              {activeModal.type === 'definitions' && (
                 <div className="space-y-4">
                   <div className="relative">
                     <Search className="w-4 h-4 text-ink-soft absolute left-3 top-3" />
                     <input
                       type="text"
-                      placeholder="Search 62 defined terms (e.g. Accredited investor, FME, Corpus, Net worth)..."
+                      placeholder={`Search ${modalDefinitions.length} defined terms...`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-9 pr-4 py-2 border border-line rounded-xl text-sm focus:outline-none focus:border-forest"
@@ -191,6 +217,11 @@ export default function InteractiveRegulations() {
                         </p>
                       </div>
                     ))}
+                    {filteredDefs.length === 0 && (
+                      <div className="p-6 text-center text-ink-soft text-sm">
+                        No terms matched your search "{searchTerm}".
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -201,3 +232,4 @@ export default function InteractiveRegulations() {
     </div>
   );
 }
+

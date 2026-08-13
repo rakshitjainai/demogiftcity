@@ -1,8 +1,12 @@
 import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
+import ifscaFinanceCompanyPackage from './RegMate_IFSCA_Finance_Company_2021_FINAL.json';
+import ifscaInsuranceBusinessPackage from './RegMate_IFSCA_Registration_Insurance_Business_2021_FINAL.json';
 
 const romanMap = {
   'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
-  'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12
+  'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
+  'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'XVII': 17, 'XVIII': 18,
+  'XIX': 19, 'XX': 20
 };
 
 const ifscaChapters = ifscaPackage.chapters.map(c => {
@@ -32,6 +36,127 @@ export const DEFINITIONS_DATA = ifscaPackage.definitions || [];
 export const SCHEDULES_DATA = ifscaPackage.schedules || [];
 export const CROSS_REFERENCES_DATA = ifscaPackage.cross_references || [];
 
+export const ACT_DEFINITIONS = {
+  'ifsca-fme-2025': ifscaPackage.definitions || []
+};
+
+export const ACT_SCHEDULES = {
+  'ifsca-fme-2025': ifscaPackage.schedules || []
+};
+
+function parseChapterNumber(chapStr) {
+  if (!chapStr) return 1;
+  const cleaned = chapStr.replace(/^Chapter\s+/i, '').trim();
+  if (romanMap[cleaned]) return romanMap[cleaned];
+  const parsed = parseInt(cleaned, 10);
+  return isNaN(parsed) ? 1 : parsed;
+}
+
+function processSchema2Package(pkg, actSlug) {
+  const content = pkg.regulation_content || [];
+  const definitions = (pkg.definitions_reference || []).map(d => ({
+    ...d,
+    actSlug,
+    actTitle: pkg.instrument?.name
+  }));
+
+  ACT_DEFINITIONS[actSlug] = definitions;
+
+  const regularProvisions = [];
+  const schedules = [];
+
+  content.forEach(item => {
+    const isSchedule = (item.chapter && item.chapter.toLowerCase().includes('schedule')) ||
+                       item.provision_type === 'schedule_form_or_annexure';
+    if (isSchedule) {
+      schedules.push({
+        id: item.regulation_id,
+        title: item.provision_heading || item.chapter_title || 'Schedule',
+        statutory_text: item.regulation_text,
+        actSlug,
+        simple_explanation: item.simple_explanation,
+        ...item
+      });
+    } else {
+      regularProvisions.push(item);
+    }
+  });
+
+  ACT_SCHEDULES[actSlug] = schedules;
+
+  const chapterMap = new Map();
+  regularProvisions.forEach(item => {
+    const rawChapter = item.chapter || 'Chapter I';
+    const chTitle = item.chapter_title || rawChapter;
+    if (!chapterMap.has(rawChapter)) {
+      chapterMap.set(rawChapter, {
+        rawChapter,
+        title: chTitle,
+        items: []
+      });
+    }
+    chapterMap.get(rawChapter).items.push(item);
+  });
+
+  const chapters = [];
+  let chCounter = 1;
+  chapterMap.forEach((val, rawChap) => {
+    const num = parseChapterNumber(rawChap) || chCounter;
+    chapters.push({
+      num,
+      romanNum: rawChap.replace(/^Chapter\s+/i, ''),
+      title: val.title,
+      sections: val.items.map(p => ({
+        num: p.provision_number,
+        title: p.provision_heading || p.regulation_name,
+      }))
+    });
+    chCounter++;
+  });
+
+  regularProvisions.forEach(p => {
+    const rawChap = p.chapter || 'Chapter I';
+    const chNum = parseChapterNumber(rawChap);
+
+    const normalized = {
+      ...p,
+      title: p.provision_heading,
+      statutory_text: p.regulation_text,
+      regmate_explanation: p.simple_explanation || p.regmate_comment,
+      key_highlights: p.important_numbers ? [p.important_numbers] : [],
+      isSchema2: true,
+      actSlug
+    };
+
+    PROVISION_DETAILS[`${actSlug}|${chNum}|${p.provision_number}`] = normalized;
+    PROVISION_DETAILS[`${actSlug}|${p.provision_number}`] = normalized;
+    if (p.regulation_id) PROVISION_DETAILS[p.regulation_id] = normalized;
+  });
+
+  return {
+    title: pkg.instrument?.name || '',
+    shortTitle: pkg.instrument?.name ? pkg.instrument.name.replace('International Financial Services Centres Authority', 'IFSCA') : '',
+    totalChapters: chapters.length,
+    chapters,
+    versionDate: pkg.instrument?.version || '',
+    status: pkg.status || 'Final',
+    isSchema2: true,
+    definitions,
+    schedules
+  };
+}
+
+const financeCompanyActData = processSchema2Package(ifscaFinanceCompanyPackage, 'ifsca-finance-company-2021');
+const insuranceBusinessActData = processSchema2Package(ifscaInsuranceBusinessPackage, 'ifsca-registration-insurance-business-2021');
+
+export function getActDefinitions(actSlug) {
+  return ACT_DEFINITIONS[actSlug] || [];
+}
+
+export function getActSchedules(actSlug) {
+  return ACT_SCHEDULES[actSlug] || [];
+}
+
 // ─── Shared Regulations Data ───────────────────────────────────────────────
 export const ACTS_DATA = {
 
@@ -44,6 +169,16 @@ export const ACTS_DATA = {
     totalChapters: 12,
     chapters: ifscaChapters
   },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (FINANCE COMPANY) REGULATIONS, 2021 | 5 Chapters + 1 Schedule
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-finance-company-2021': financeCompanyActData,
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (REGISTRATION OF INSURANCE BUSINESS) REGULATIONS, 2021
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-registration-insurance-business-2021': insuranceBusinessActData,
 
   // ══════════════════════════════════════════════════════════════════════════
   // COMPANIES ACT, 2013  |  29 Chapters

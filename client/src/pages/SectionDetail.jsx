@@ -441,24 +441,94 @@ export default function SectionDetail() {
                     </button>
                   </div>
 
-                  <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed space-y-3`}>
-                    <p><strong>6. (1)</strong> The applicant and its key personnel shall have a track record and reputation of fairness.</p>
-                    {statutoryExpanded && (
-                      <p className="animate-fade-in">
-                        <strong>(2)</strong> While assessing the track record and reputation of fairness, the Authority shall, inter alia, consider past conduct, integrity, honesty, reputation and other dealings in financial markets or otherwise.
-                      </p>
-                    )}
+                  <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed whitespace-pre-line`}>
+                    {statutoryExpanded || statutoryTextContent.length <= 400
+                      ? statutoryTextContent
+                      : `${statutoryTextContent.slice(0, 400)}…`}
                   </div>
 
-                  <div className="pt-2 text-center border-t border-amber-200/50">
-                    <button
-                      onClick={() => setStatutoryExpanded(!statutoryExpanded)}
-                      className="cursor-target text-xs font-bold text-amber-900 hover:text-amber-950 inline-flex items-center gap-1"
-                    >
-                      {statutoryExpanded ? 'Show less ∧' : 'View full text ∨'}
-                    </button>
-                  </div>
+                  {statutoryTextContent.length > 400 && (
+                    <div className="pt-2 text-center border-t border-amber-200/50">
+                      <button
+                        onClick={() => setStatutoryExpanded(!statutoryExpanded)}
+                        className="cursor-target text-xs font-bold text-amber-900 hover:text-amber-950 inline-flex items-center gap-1"
+                      >
+                        {statutoryExpanded ? 'Show less ∧' : 'View full text ∨'}
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                {/* Key Figures & Dates Callout (Schema 2.0) */}
+                {provisionData?.important_numbers && (
+                  <div className="bg-amber-50 border border-amber-300/80 rounded-2xl p-5 text-xs text-amber-950 flex items-start gap-3 shadow-xs">
+                    <Zap className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      <strong className="font-bold text-amber-900 uppercase tracking-wider text-[11px] block">Key Figures &amp; Important Dates</strong>
+                      <p className="leading-relaxed font-medium">{provisionData.important_numbers}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Practical Point Callout */}
+                {provisionData?.practical_point && (
+                  <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-5 text-xs text-emerald-950 space-y-1 card-shadow">
+                    <strong className="font-bold text-emerald-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700" /> Practical Point
+                    </strong>
+                    <p className="leading-relaxed font-medium">{provisionData.practical_point}</p>
+                  </div>
+                )}
+
+                {/* Compliance Point Callout */}
+                {provisionData?.compliance_point && (
+                  <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-5 text-xs text-blue-950 space-y-1 card-shadow">
+                    <strong className="font-bold text-blue-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-blue-700" /> Compliance Requirement
+                    </strong>
+                    <p className="leading-relaxed font-medium">{provisionData.compliance_point}</p>
+                  </div>
+                )}
+
+                {/* Risk Point Callout */}
+                {provisionData?.risk_point && (
+                  <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-5 text-xs text-rose-950 space-y-1 card-shadow">
+                    <strong className="font-bold text-rose-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 text-rose-700" /> Risk Point
+                    </strong>
+                    <p className="leading-relaxed font-medium">{provisionData.risk_point}</p>
+                  </div>
+                )}
+
+                {/* Interview Point Callout */}
+                {provisionData?.interview_point && (
+                  <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-5 text-xs text-purple-950 space-y-1 card-shadow">
+                    <strong className="font-bold text-purple-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-purple-700" /> Practitioner &amp; Exam Focus
+                    </strong>
+                    <p className="leading-relaxed font-medium">{provisionData.interview_point}</p>
+                  </div>
+                )}
+
+                {/* Example Callout */}
+                {provisionData?.example && (
+                  <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 text-xs text-amber-950 space-y-1 card-shadow">
+                    <strong className="font-bold text-amber-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <HelpCircle className="w-4 h-4 text-amber-700" /> Illustration / Example
+                    </strong>
+                    <p className="leading-relaxed font-medium">{provisionData.example}</p>
+                  </div>
+                )}
+
+                {/* Related Provisions Plain Text */}
+                {provisionData?.related_provisions && (
+                  <div className="bg-paper border border-line rounded-2xl p-5 text-xs text-ink space-y-1 card-shadow">
+                    <strong className="font-bold text-forest uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+                      <Link2 className="w-4 h-4 text-forest" /> Related Provisions
+                    </strong>
+                    <p className="leading-relaxed">{provisionData.related_provisions}</p>
+                  </div>
+                )}
 
               </div>
             )}
@@ -491,9 +561,15 @@ export default function SectionDetail() {
                     <p className="text-xs text-ink-soft">CS Prashant Kumar Analysis</p>
                   </div>
                 </div>
-                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-mint/20 border border-mint-deep/40 rounded-xl`}>
-                  {provisionData?.regmate_explanation || `Regulation ${sNum} establishes the fit and proper threshold for FME registration. The regulator evaluates past defaults, regulatory disciplinary actions, and market conduct of promoters and key management personnel.`}
+                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-mint/20 border border-mint-deep/40 rounded-xl whitespace-pre-line`}>
+                  {provisionData?.simple_explanation || provisionData?.regmate_explanation || provisionData?.regmate_comment || `Regulation ${sNum} establishes the regulatory threshold and requirements.`}
                 </p>
+                {provisionData?.regmate_comment && provisionData?.simple_explanation && (
+                  <div className="p-4 bg-paper border border-line rounded-xl space-y-1">
+                    <strong className="text-xs font-bold text-forest-deep block">Additional Commentary:</strong>
+                    <p className={`${fontSizeClass} text-ink-soft leading-relaxed whitespace-pre-line`}>{provisionData.regmate_comment}</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -505,7 +581,7 @@ export default function SectionDetail() {
                 </h3>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-amber-950 text-xs leading-relaxed space-y-2">
                   <strong className="font-bold text-amber-900 block uppercase">Practitioner Note:</strong>
-                  <p>{provisionData?.practical_point || 'Track record assessment is a qualitative test. Any past regulatory action must be disclosed upfront in the registration application.'}</p>
+                  <p className="whitespace-pre-line">{provisionData?.practical_point || provisionData?.compliance_point || 'Disclosure and compliance verification required prior to filing.'}</p>
                 </div>
               </div>
             )}
@@ -516,8 +592,8 @@ export default function SectionDetail() {
                 <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
                   <HelpCircle className="w-6 h-6 text-forest" /> Illustration / Examples
                 </h3>
-                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-paper border border-line rounded-xl`}>
-                  {provisionData?.examples || 'Example: An applicant whose director was previously penalized by SEBI for insider trading would fail the reputation of fairness test under Regulation 6.'}
+                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-paper border border-line rounded-xl whitespace-pre-line`}>
+                  {provisionData?.example || provisionData?.examples || 'Refer to the statutory text and regulatory circulars for illustrative case scenarios.'}
                 </p>
               </div>
             )}
@@ -526,19 +602,26 @@ export default function SectionDetail() {
             {activeTab === 'related' && (
               <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
                 <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
-                  <Link2 className="w-6 h-6 text-forest" /> Related Provisions ({finalRelated.length})
+                  <Link2 className="w-6 h-6 text-forest" /> Related Provisions
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {finalRelated.map((rel, idx) => (
-                    <Link
-                      key={idx}
-                      to={`/interactive-regulations/${actSlug}/${chapter}/section-${rel.to_provision}`}
-                      className="p-3 bg-paper border border-line rounded-xl hover:bg-mint/30 transition-colors block text-xs font-semibold text-forest"
-                    >
-                      Section {rel.to_provision} — {rel.title}
-                    </Link>
-                  ))}
-                </div>
+                {provisionData?.related_provisions ? (
+                  <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed whitespace-pre-line">
+                    <strong className="text-forest block mb-1">Cross References &amp; Related Rules:</strong>
+                    {provisionData.related_provisions}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {finalRelated.map((rel, idx) => (
+                      <Link
+                        key={idx}
+                        to={`/interactive-regulations/${actSlug}/${chapter}/section-${rel.to_provision}`}
+                        className="p-3 bg-paper border border-line rounded-xl hover:bg-mint/30 transition-colors block text-xs font-semibold text-forest"
+                      >
+                        Section {rel.to_provision} — {rel.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
