@@ -125,13 +125,13 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap mt-2 md:mt-0">
           <span className="px-3 py-1 bg-[var(--mint)] border border-[var(--mint-deep)] text-[var(--forest)] text-xs font-bold rounded-full uppercase tracking-wider">
             {user?.role === 'admin' ? 'Administrator' : 'Active License Member'}
           </span>
           <button 
             onClick={() => navigate('/interactive-regulations')}
-            className="px-4 py-2 bg-[var(--forest)] text-white text-xs font-bold rounded-xl hover:bg-[var(--forest-deep)] transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 bg-[var(--forest)] text-white text-xs font-bold rounded-xl hover:bg-[var(--forest-deep)] transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer min-h-[40px]"
           >
             <BookOpen className="w-4 h-4" /> Browse Regulations
           </button>
@@ -834,7 +834,11 @@ export default function Dashboard() {
                 <Bookmark className="w-5 h-5 text-amber-500 fill-amber-500" />
                 <h3 className="font-bold font-serif text-lg text-slate-900">Saved Bookmarks ({bookmarks.length})</h3>
               </div>
-              <button onClick={() => setShowBookmarksModal(false)} className="p-1 rounded-full hover:bg-slate-100">
+              <button
+                onClick={() => setShowBookmarksModal(false)}
+                className="p-2.5 rounded-full hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Close bookmarks"
+              >
                 <X className="w-5 h-5 text-slate-500" />
               </button>
             </div>
@@ -890,7 +894,7 @@ export default function Dashboard() {
             </p>
             <button
               onClick={() => setShowCompareModal(false)}
-              className="w-full py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors"
+              className="w-full py-3 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors min-h-[48px]"
             >
               Got it
             </button>

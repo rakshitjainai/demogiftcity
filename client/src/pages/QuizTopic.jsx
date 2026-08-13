@@ -109,7 +109,7 @@ export default function QuizTopic() {
         <Link to="/quizzes" className="cursor-target inline-flex items-center text-ink-soft hover:text-leaf font-medium mb-8">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Quizzes
         </Link>
-        <div className="bg-white border border-line rounded-2xl p-8 md:p-12 card-shadow text-center">
+        <div className="bg-white border border-line rounded-2xl p-6 sm:p-8 md:p-12 card-shadow text-center">
           <div className={`w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 ${passed ? 'bg-mint' : 'bg-red-50'}`}>
             {passed ? <Award className="w-12 h-12 text-leaf" /> : <XCircle className="w-12 h-12 text-red-400" />}
           </div>
@@ -128,11 +128,11 @@ export default function QuizTopic() {
             />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            <button onClick={handleRestart} className="cursor-target px-8 py-3 bg-forest text-white rounded-full font-medium hover-lift flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
+            <button onClick={handleRestart} className="cursor-target px-8 py-3 bg-forest text-white rounded-full font-medium hover-lift flex items-center justify-center gap-2 min-h-[48px]">
               <RotateCcw className="w-4 h-4" /> Try Again
             </button>
-            <Link to="/quizzes" className="cursor-target px-8 py-3 bg-paper border border-forest text-forest rounded-full font-medium hover-lift">
+            <Link to="/quizzes" className="cursor-target px-8 py-3 bg-paper border border-forest text-forest rounded-full font-medium hover-lift flex items-center justify-center min-h-[48px]">
               All Quizzes
             </Link>
           </div>
@@ -163,10 +163,10 @@ export default function QuizTopic() {
           />
         </div>
 
-        <div className="bg-white border border-line rounded-2xl p-8 md:p-10 card-shadow">
-          <h2 className="text-xl md:text-2xl font-display text-forest-deep mb-8 leading-snug">{q.q}</h2>
+        <div className="bg-white border border-line rounded-2xl p-5 sm:p-8 md:p-10 card-shadow">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-display text-forest-deep mb-6 leading-snug">{q.q}</h2>
 
-          <div className="space-y-3 mb-8">
+          <div className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8">
             {q.opts.map((opt, idx) => {
               let style = 'bg-paper border-line text-ink hover:border-leaf hover:bg-mint';
               if (answered) {
@@ -180,9 +180,9 @@ export default function QuizTopic() {
                 <button
                   key={idx}
                   onClick={() => handleSelect(idx)}
-                  className={`cursor-target w-full text-left px-5 py-4 rounded-xl border-2 font-medium transition-all ${style} flex items-center gap-3`}
+                  className={`cursor-target w-full text-left px-4 sm:px-5 py-3 sm:py-4 rounded-xl border-2 font-medium transition-all ${style} flex items-center gap-2 sm:gap-3 min-h-[52px]`}
                 >
-                  <span className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-current flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0">
                     {String.fromCharCode(65 + idx)}
                   </span>
                   <span>{opt}</span>
@@ -202,7 +202,7 @@ export default function QuizTopic() {
           )}
 
           {answered && (
-            <button onClick={handleNext} className="cursor-target w-full sm:w-auto px-8 py-3 bg-forest text-white rounded-full font-medium hover-lift flex items-center gap-2 mx-auto">
+            <button onClick={handleNext} className="cursor-target w-full px-8 py-3.5 bg-forest text-white rounded-full font-medium hover-lift flex items-center justify-center gap-2 min-h-[52px] text-sm sm:text-base">
               {currentQ < questions.length - 1 ? <>Next Question <ArrowRight className="w-4 h-4" /></> : <>See Results <Award className="w-4 h-4" /></>}
             </button>
           )}
@@ -218,9 +218,9 @@ export default function QuizTopic() {
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Quizzes
       </Link>
       
-      <div className="bg-white border border-line rounded-2xl p-8 md:p-12 card-shadow">
+      <div className="bg-white border border-line rounded-2xl p-6 sm:p-8 md:p-12 card-shadow">
         <span className="eyebrow block mb-4">§ Topic-wise quiz</span>
-        <h1 className="text-3xl md:text-4xl font-display text-forest-deep mb-6">{formattedTopic}</h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-display text-forest-deep mb-4 sm:mb-6">{formattedTopic}</h1>
         <p className="text-ink-soft text-lg mb-8">
           Test your understanding of {formattedTopic} with this comprehensive {questions.length}-question quiz. 
           Questions are designed to simulate real-world compliance scenarios.
@@ -243,7 +243,7 @@ export default function QuizTopic() {
 
         <button 
           onClick={() => setStarted(true)} 
-          className="cursor-target w-full sm:w-auto px-8 py-4 bg-forest text-white rounded-full font-medium hover-lift text-lg shadow-lg"
+          className="cursor-target w-full sm:w-auto px-8 py-4 bg-forest text-white rounded-full font-medium hover-lift text-base sm:text-lg shadow-lg min-h-[52px]"
         >
           Start Quiz Now
         </button>

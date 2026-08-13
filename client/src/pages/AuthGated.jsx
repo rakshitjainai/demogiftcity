@@ -9,9 +9,9 @@ export default function AuthGated({ pageName }) {
 
   if (isAuthenticated && user) {
     return (
-      <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
+      <div className="py-10 sm:py-16 px-4 sm:px-6 max-w-5xl mx-auto animate-fade-in-up">
         {/* User Banner */}
-        <div className="bg-white border border-line rounded-3xl p-8 mb-8 card-shadow flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-white border border-line rounded-3xl p-6 sm:p-8 mb-8 card-shadow flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             {user.picture ? (
               <img src={user.picture} alt={user.name} className="w-20 h-20 rounded-full border-2 border-leaf shadow-md" />
@@ -36,7 +36,7 @@ export default function AuthGated({ pageName }) {
 
           <button
             onClick={logout}
-            className="px-6 py-2.5 rounded-full border border-red-200 bg-red-50 text-red-600 font-bold text-xs hover:bg-red-100 transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-6 py-2.5 rounded-full border border-red-200 bg-red-50 text-red-600 font-bold text-xs hover:bg-red-100 transition-colors flex items-center gap-2 cursor-pointer min-h-[44px]"
           >
             <LogOut className="w-4 h-4" />
             Log Out
@@ -207,13 +207,13 @@ export default function AuthGated({ pageName }) {
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           to="/"
-          className="cursor-target px-6 py-3 bg-forest text-white rounded-full font-medium hover-lift"
+          className="cursor-target px-6 py-3.5 bg-forest text-white rounded-full font-medium hover-lift min-h-[52px] flex items-center justify-center"
         >
           Return to Home & Login
         </Link>
         <Link
           to="/membership"
-          className="cursor-target px-6 py-3 border border-forest text-forest rounded-full font-medium hover-lift"
+          className="cursor-target px-6 py-3.5 border border-forest text-forest rounded-full font-medium hover-lift min-h-[52px] flex items-center justify-center"
         >
           Become a Member
         </Link>

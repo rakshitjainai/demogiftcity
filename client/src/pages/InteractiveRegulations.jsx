@@ -50,32 +50,32 @@ export default function InteractiveRegulations() {
           return (
             <div key={act.slug} className="bg-white border border-line rounded-xl overflow-hidden card-shadow">
               <button
-                onClick={() => setExpandedAct(isOpen ? null : act.slug)}
-                className="cursor-target w-full text-left px-6 py-5 flex items-center justify-between hover:bg-mint transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-mint-deep flex items-center justify-center flex-shrink-0">
-                    <FileText className="w-5 h-5 text-forest" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-lg text-forest-deep leading-tight">{act.title}</h3>
-                      {act.versionDate ? (
-                        <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium">
-                          Verified · {act.versionDate.includes('Consolidated') ? act.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : act.versionDate}
-                        </span>
-                      ) : null}
-                    </div>
-                    <p className="text-sm text-ink-soft mt-0.5">{act.totalChapters} Chapters · {act.chapters.reduce((n, c) => n + c.sections.length, 0)} Provisions</p>
-                  </div>
+              onClick={() => setExpandedAct(isOpen ? null : act.slug)}
+              className="cursor-target w-full text-left px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-mint transition-colors min-h-[64px]"
+            >
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-mint-deep flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-forest" />
                 </div>
-                {isOpen ? <ChevronDown className="text-forest flex-shrink-0" /> : <ChevronRight className="text-ink-soft flex-shrink-0" />}
-              </button>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-semibold text-base sm:text-lg text-forest-deep leading-tight">{act.title}</h3>
+                    {act.versionDate ? (
+                      <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium whitespace-nowrap">
+                        Verified · {act.versionDate.includes('Consolidated') ? act.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : act.versionDate}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-ink-soft mt-0.5">{act.totalChapters} Chapters · {act.chapters.reduce((n, c) => n + c.sections.length, 0)} Provisions</p>
+                </div>
+              </div>
+              {isOpen ? <ChevronDown className="text-forest flex-shrink-0 ml-2" /> : <ChevronRight className="text-ink-soft flex-shrink-0 ml-2" />}
+            </button>
 
               {isOpen && (
                 <div className="px-6 pb-6 pt-2 bg-paper border-t border-line space-y-4">
                   {(hasSchedules || hasDefinitions) && (
-                    <div className="flex items-center gap-3 pt-3 flex-wrap">
+                    <div className="flex items-center gap-2 sm:gap-3 pt-3 flex-wrap">
                       {hasSchedules && (
                         <button
                           type="button"
@@ -83,7 +83,7 @@ export default function InteractiveRegulations() {
                             e.stopPropagation();
                             setActiveModal({ type: 'schedules', actSlug: act.slug });
                           }}
-                          className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors"
+                          className="cursor-target inline-flex items-center gap-2 px-4 py-2.5 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors min-h-[44px]"
                         >
                           <BookMarked className="w-4 h-4" /> View {act.schedules.length === 1 ? 'Schedule' : `${act.schedules.length} Schedules`}
                         </button>
@@ -95,9 +95,9 @@ export default function InteractiveRegulations() {
                             e.stopPropagation();
                             setActiveModal({ type: 'definitions', actSlug: act.slug });
                           }}
-                          className="cursor-target inline-flex items-center gap-2 px-4 py-2 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors"
+                          className="cursor-target inline-flex items-center gap-2 px-4 py-2.5 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors min-h-[44px]"
                         >
-                          <FileCheck className="w-4 h-4" /> Defined Terms Glossary ({act.definitions.length} Terms)
+                          <FileCheck className="w-4 h-4" /> Defined Terms ({act.definitions.length} Terms)
                         </button>
                       )}
                     </div>
@@ -126,7 +126,7 @@ export default function InteractiveRegulations() {
                             [act.slug]: !isFullyExpanded
                           }));
                         }}
-                        className="cursor-target inline-flex items-center gap-1.5 py-2 px-5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors text-sm"
+                        className="cursor-target inline-flex items-center gap-1.5 py-2.5 px-5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors text-sm min-h-[44px]"
                       >
                         {isFullyExpanded ? (
                           <>Show less ↑</>
@@ -145,30 +145,31 @@ export default function InteractiveRegulations() {
 
       {/* Schedules & Definitions Modal */}
       {activeModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white border border-line rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden flex flex-col card-shadow">
-            <div className="px-6 py-4 border-b border-line flex items-center justify-between bg-mint">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-forest" />
-                <h3 className="font-semibold text-forest-deep text-lg">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-line rounded-t-3xl sm:rounded-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col card-shadow">
+            <div className="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between bg-mint flex-shrink-0">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <ShieldCheck className="w-5 h-5 text-forest flex-shrink-0" />
+                <h3 className="font-semibold text-forest-deep text-base sm:text-lg truncate">
                   {activeModal.type === 'schedules'
                     ? `Schedules — ${activeActData?.title || 'Regulations'}`
-                    : `Defined Terms Glossary — ${activeActData?.title || 'Regulations'} (${modalDefinitions.length} Terms)`}
+                    : `Defined Terms — ${activeActData?.title?.split(' ').slice(0,3).join(' ') || 'Regulations'} (${modalDefinitions.length})`}
                 </h3>
               </div>
               <button
                 onClick={() => { setActiveModal(null); setSearchTerm(''); }}
-                className="cursor-target p-1 rounded-lg text-ink-soft hover:text-ink hover:bg-paper"
+                className="cursor-target p-2.5 rounded-xl text-ink-soft hover:text-ink hover:bg-paper flex-shrink-0 ml-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto space-y-6">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6">
               {activeModal.type === 'schedules' && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {modalSchedules.map((sch, idx) => (
-                    <div key={sch.id || idx} className="bg-paper border border-line rounded-xl p-6">
+                    <div key={sch.id || idx} className="bg-paper border border-line rounded-xl p-4 sm:p-6">
                       <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase mb-3 inline-block">
                         {sch.chapter || `Schedule ${idx + 1}`}
                       </span>
@@ -189,13 +190,13 @@ export default function InteractiveRegulations() {
               {activeModal.type === 'definitions' && (
                 <div className="space-y-4">
                   <div className="relative">
-                    <Search className="w-4 h-4 text-ink-soft absolute left-3 top-3" />
+                    <Search className="w-4 h-4 text-ink-soft absolute left-3 top-3.5" />
                     <input
                       type="text"
                       placeholder={`Search ${modalDefinitions.length} defined terms...`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 border border-line rounded-xl text-sm focus:outline-none focus:border-forest"
+                      className="w-full pl-9 pr-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:border-forest min-h-[44px]"
                     />
                   </div>
 

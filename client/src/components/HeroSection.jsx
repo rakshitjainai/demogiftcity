@@ -75,10 +75,10 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
 
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-4 pt-4">
-                <a href="/knowledge-hub" className="cursor-target px-6 py-3 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift" style={{ background: 'var(--forest)', color: 'white', boxShadow: '0 4px 12px rgba(11,77,51,0.3)' }}>
+                <a href="/knowledge-hub" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--forest)', color: 'white', boxShadow: '0 4px 12px rgba(11,77,51,0.3)' }}>
                   Explore Knowledge Hub
                 </a>
-                <a href="/register" className="cursor-target px-6 py-3 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift" style={{ background: 'var(--paper)', color: 'var(--forest)', border: '1.5px solid var(--forest)' }}>
+                <a href="/register" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--paper)', color: 'var(--forest)', border: '1.5px solid var(--forest)' }}>
                   Join RegMate
                 </a>
               </div>
@@ -96,7 +96,7 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
                     <button
                       key={idx}
                       onClick={() => { setSearchTerm(pill); onSelectPill(pill); }}
-                      className="px-3 py-1 text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-sm"
+                      className="px-3 py-2 text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-sm min-h-[36px]"
                       style={{
                         background: 'var(--mint)',
                         color: 'var(--forest)',

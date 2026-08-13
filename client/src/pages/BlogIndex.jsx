@@ -105,7 +105,7 @@ export default function BlogIndex() {
           {searchQuery && (
             <button
               onClick={() => { setSearchQuery(''); setCurrentPage(1); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-[var(--ink-soft)] hover:bg-[var(--line)] cursor-pointer"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full text-[var(--ink-soft)] hover:bg-[var(--line)] cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
             >
               <X className="w-4 h-4" />
             </button>
@@ -131,7 +131,7 @@ export default function BlogIndex() {
         <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
           <button
             onClick={() => handleCategoryChange('all')}
-            className={`cursor-target px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all cursor-pointer ${
+            className={`cursor-target px-4 py-2 rounded-full text-xs font-bold flex-shrink-0 transition-all cursor-pointer min-h-[36px] ${
               selectedCategory === 'all'
                 ? 'bg-[var(--forest)] text-white shadow-sm'
                 : 'bg-[var(--paper)] border border-[var(--line)] text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)]'
@@ -271,7 +271,7 @@ export default function BlogIndex() {
             <button
               onClick={() => goToPage(validCurrentPage - 1)}
               disabled={validCurrentPage === 1}
-              className={`cursor-target px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all ${
+              className={`cursor-target px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all min-h-[44px] ${
                 validCurrentPage === 1
                   ? 'border-[var(--line)] text-slate-300 bg-slate-50 cursor-not-allowed'
                   : 'border-[var(--line)] bg-white text-[var(--ink)] hover:bg-[var(--mint)] hover:text-[var(--forest)] cursor-pointer'
@@ -293,7 +293,7 @@ export default function BlogIndex() {
                       {showEllipsis && <span className="px-1 text-xs text-[var(--ink-soft)]">...</span>}
                       <button
                         onClick={() => goToPage(page)}
-                        className={`cursor-target w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        className={`cursor-target w-10 h-10 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           validCurrentPage === page
                             ? 'bg-[var(--forest)] text-white shadow-xs'
                             : 'bg-white border border-[var(--line)] text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)]'
@@ -310,7 +310,7 @@ export default function BlogIndex() {
             <button
               onClick={() => goToPage(validCurrentPage + 1)}
               disabled={validCurrentPage === totalPages}
-              className={`cursor-target px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all ${
+              className={`cursor-target px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all min-h-[44px] ${
                 validCurrentPage === totalPages
                   ? 'border-[var(--line)] text-slate-300 bg-slate-50 cursor-not-allowed'
                   : 'border-[var(--line)] bg-white text-[var(--ink)] hover:bg-[var(--mint)] hover:text-[var(--forest)] cursor-pointer'

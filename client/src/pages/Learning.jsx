@@ -59,18 +59,18 @@ export default function Learning() {
   };
 
   return (
-    <div className="py-16 px-6 max-w-6xl mx-auto animate-fade-in-up">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+    <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto animate-fade-in-up">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end justify-between mb-10 sm:mb-12">
         <div>
           <span className="eyebrow block mb-4">§ Learning &amp; Diagnostics</span>
-          <h1 className="text-4xl font-display text-forest-deep mb-4">Learning Modules</h1>
-          <p className="text-ink-soft text-lg">Master regulatory topics through structured interactive courses.</p>
+          <h1 className="text-3xl sm:text-4xl font-display text-forest-deep mb-3 sm:mb-4">Learning Modules</h1>
+          <p className="text-ink-soft text-base sm:text-lg">Master regulatory topics through structured interactive courses.</p>
         </div>
-        <div className="mt-6 md:mt-0 flex gap-4">
-          <Link to="/my-learning" className="cursor-target px-5 py-2.5 bg-paper border border-forest text-forest rounded-full font-medium hover-lift">
+        <div className="flex gap-3 sm:gap-4 flex-wrap">
+          <Link to="/my-learning" className="cursor-target px-4 sm:px-5 py-2.5 bg-paper border border-forest text-forest rounded-full font-medium hover-lift text-sm sm:text-base min-h-[44px] flex items-center">
             My Learning
           </Link>
-          <Link to="/diagnostic-tests" className="cursor-target px-5 py-2.5 bg-forest text-white rounded-full font-medium hover-lift">
+          <Link to="/diagnostic-tests" className="cursor-target px-4 sm:px-5 py-2.5 bg-forest text-white rounded-full font-medium hover-lift text-sm sm:text-base min-h-[44px] flex items-center">
             Diagnostic Tests
           </Link>
         </div>
@@ -116,7 +116,7 @@ export default function Learning() {
                 </div>
                 <button 
                   onClick={() => setSelectedCourse(mod)}
-                  className="cursor-target mt-4 w-full flex items-center justify-center gap-2 py-2.5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors"
+                  className="cursor-target mt-4 w-full flex items-center justify-center gap-2 py-3 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors min-h-[48px]"
                 >
                   <PlayCircle className="w-4 h-4" /> View Syllabus &amp; Learn
                 </button>

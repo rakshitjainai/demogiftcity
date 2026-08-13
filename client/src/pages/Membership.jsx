@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 export default function Membership() {
   return (
-    <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
-      <div className="text-center mb-16">
+    <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-5xl mx-auto animate-fade-in-up">
+      <div className="text-center mb-12 sm:mb-16">
         <span className="eyebrow block mb-4">§ Premium Access</span>
-        <h1 className="text-4xl md:text-5xl font-display text-forest-deep mb-6">RegMate Premium</h1>
-        <p className="text-xl text-ink-soft max-w-2xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-forest-deep mb-4 sm:mb-6">RegMate Premium</h1>
+        <p className="text-base sm:text-xl text-ink-soft max-w-2xl mx-auto">
           More than articles — unlock the full suite of compliance tools, learning modules, and expert resources.
         </p>
       </div>
@@ -45,7 +45,7 @@ export default function Membership() {
           ))}
         </ul>
 
-        <button className="cursor-target w-full py-4 bg-forest text-white rounded-full font-medium hover-lift shadow-lg text-lg">
+        <button className="cursor-target w-full py-4 bg-forest text-white rounded-full font-medium hover-lift shadow-lg text-base sm:text-lg min-h-[52px]">
           Become a Member
         </button>
         <p className="text-center text-xs text-ink-soft mt-4">

@@ -17,14 +17,14 @@ export default function DiagnosticTests() {
           { id: 'fema', title: 'FEMA Due Diligence Checklist', questions: 30, time: '45 mins', premium: true },
           { id: 'lodr', title: 'LODR Compliance Health Check', questions: 50, time: '90 mins', premium: false }
         ].map(test => (
-          <div key={test.id} className="bg-white border border-line rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 card-shadow hover-lift group">
-            <div className="flex items-start gap-5">
-              <div className="w-12 h-12 bg-mint rounded-full flex-shrink-0 flex items-center justify-center">
-                <Activity className="w-6 h-6 text-leaf" />
+          <div key={test.id} className="bg-white border border-line rounded-xl p-5 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 card-shadow hover-lift group">
+            <div className="flex items-start gap-4 sm:gap-5">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-mint rounded-full flex-shrink-0 flex items-center justify-center">
+                <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-leaf" />
               </div>
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-semibold text-xl text-forest-deep">{test.title}</h3>
+                <div className="flex items-center gap-2 sm:gap-3 mb-1.5 flex-wrap">
+                  <h3 className="font-semibold text-lg sm:text-xl text-forest-deep">{test.title}</h3>
                   {test.premium && (
                     <span className="bg-gold-soft text-forest-deep text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                       Premium
@@ -36,7 +36,10 @@ export default function DiagnosticTests() {
                 </p>
               </div>
             </div>
-            <Link to={test.premium ? "/membership" : "#"} className="cursor-target inline-flex items-center text-leaf font-semibold group-hover:text-leaf-bright transition-colors whitespace-nowrap">
+            <Link
+              to={test.premium ? "/membership" : "#"}
+              className="cursor-target inline-flex items-center justify-center sm:justify-start text-leaf font-semibold group-hover:text-leaf-bright transition-colors whitespace-nowrap min-h-[44px] px-4 py-2.5 rounded-lg hover:bg-mint sm:px-0 sm:py-0 sm:rounded-none sm:hover:bg-transparent"
+            >
               {test.premium ? 'Unlock to Start' : 'Start Diagnostic'} <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </div>

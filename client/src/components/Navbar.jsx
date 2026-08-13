@@ -24,6 +24,7 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
   const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null); // label of open desktop dropdown
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -32,6 +33,26 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close desktop dropdown when clicking outside
+  useEffect(() => {
+    if (!openDropdown) return;
+    const handler = (e) => {
+      if (!e.target.closest('[data-nav-dropdown]')) setOpenDropdown(null);
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [openDropdown]);
+
+  // Close dropdowns on route change
+  useEffect(() => {
+    setOpenDropdown(null);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const isActive = (href) => location.pathname === href || (href !== '/' && location.pathname.startsWith(href));
 
@@ -60,51 +81,58 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
 
           {/* Center: Desktop Nav */}
           <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
-            {NAV_LINKS.map((link) => (
-              <div key={link.label} className="relative group">
-                {link.hasDropdown ? (
-                  <button
-                    className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
-                      isActive(link.href)
-                        ? 'text-[var(--leaf)]'
-                        : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
-                    }`}
-                  >
-                    {link.label}
-                    <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-transform group-hover:rotate-180" />
-                  </button>
-                ) : (
-                  <Link
-                    to={link.href}
-                    className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
-                      isActive(link.href)
-                        ? 'text-[var(--leaf)]'
-                        : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                )}
+            {NAV_LINKS.map((link) => {
+              const isDropdownOpen = openDropdown === link.label;
+              return (
+                <div key={link.label} className="relative" data-nav-dropdown>
+                  {link.hasDropdown ? (
+                    <button
+                      onClick={() => setOpenDropdown(isDropdownOpen ? null : link.label)}
+                      aria-expanded={isDropdownOpen}
+                      aria-haspopup="true"
+                      className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
+                        isActive(link.href) || isDropdownOpen
+                          ? 'text-[var(--leaf)] bg-[var(--mint)]'
+                          : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180 opacity-100' : ''}`} />
+                    </button>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
+                        isActive(link.href)
+                          ? 'text-[var(--leaf)]'
+                          : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  )}
 
-                {/* Dropdown */}
-                {link.hasDropdown && link.subItems && (
-                  <div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block z-50">
-                    <div className="bg-white rounded-2xl card-shadow border border-[var(--line)] py-2 px-1">
-                      {link.subItems.map((sub, idx) => (
-                        <Link
-                          key={idx}
-                          to={SUB_ITEM_ROUTES[sub] || link.href}
-                          className="w-full text-left px-3 py-2 text-[12px] font-semibold text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)] rounded-xl transition-colors flex items-center justify-between"
-                        >
-                          <span>{sub}</span>
-                          <span className="text-[var(--gold)] text-xs">→</span>
-                        </Link>
-                      ))}
+                  {/* Dropdown — click-toggled, works on mouse AND touch */}
+                  {link.hasDropdown && link.subItems && isDropdownOpen && (
+                    <div className="absolute top-full left-0 w-56 pt-2 z-50 animate-in fade-in slide-in-from-top-1">
+                      <div className="bg-white rounded-2xl card-shadow border border-[var(--line)] py-2 px-1">
+                        {link.subItems.map((sub, idx) => (
+                          <Link
+                            key={idx}
+                            to={SUB_ITEM_ROUTES[sub] || link.href}
+                            onClick={() => setOpenDropdown(null)}
+                            className="w-full text-left px-3 py-2.5 text-[12px] font-semibold text-[var(--ink-soft)] hover:bg-[var(--mint)] hover:text-[var(--forest)] rounded-xl transition-colors flex items-center justify-between min-h-[40px]"
+                          >
+                            <span>{sub}</span>
+                            <span className="text-[var(--gold)] text-xs">→</span>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           {/* Right: Desktop Actions */}

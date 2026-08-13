@@ -247,7 +247,7 @@ export default function ComplianceCalendarBuilder() {
 
         <button 
           onClick={handleExportCSV}
-          className="cursor-target inline-flex items-center justify-center gap-2 px-4 py-2 bg-leaf text-white font-medium text-xs rounded-lg hover:bg-forest transition-colors shadow-sm"
+          className="cursor-target inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-leaf text-white font-medium text-xs rounded-lg hover:bg-forest transition-colors shadow-sm min-h-[44px]"
         >
           <Download className="w-4 h-4" /> Export CSV / Excel
         </button>
@@ -279,14 +279,15 @@ export default function ComplianceCalendarBuilder() {
                 const isDone = completedItems[item.id];
                 return (
                   <tr key={item.id} className={`hover:bg-mint/20 transition-colors ${isDone ? 'bg-emerald-50/40' : ''}`}>
-                    <td className="p-4 text-center">
+                    <td className="p-3 text-center">
                       <button 
                         onClick={() => toggleComplete(item.id)}
-                        className={`cursor-target w-6 h-6 rounded border flex items-center justify-center transition-colors ${
+                        className={`cursor-target w-8 h-8 min-h-[44px] min-w-[44px] rounded border flex items-center justify-center transition-colors mx-auto ${
                           isDone 
                             ? 'bg-leaf border-leaf text-white' 
                             : 'border-line text-transparent hover:border-leaf'
                         }`}
+                        aria-label={isDone ? 'Mark incomplete' : 'Mark complete'}
                       >
                         ✓
                       </button>

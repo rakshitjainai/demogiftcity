@@ -30,24 +30,24 @@ export default function News() {
     : allArticles.filter(a => a.tag === activeCategory || a.category === activeCategory);
 
   return (
-    <div className="py-16 px-6 max-w-7xl mx-auto animate-fade-in-up">
-      <div className="text-center mb-12">
+    <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-7xl mx-auto animate-fade-in-up">
+      <div className="text-center mb-10 sm:mb-12">
         <span className="eyebrow block mb-4">§ News & Articles</span>
-        <h1 className="text-4xl md:text-5xl font-display text-forest-deep mb-6">Stay Ahead of the Curve</h1>
-        <p className="text-xl text-ink-soft max-w-2xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-forest-deep mb-4 sm:mb-6">Stay Ahead of the Curve</h1>
+        <p className="text-base sm:text-xl text-ink-soft max-w-2xl mx-auto">
           Regulatory updates, expert analyses, and practical guides by CS Prashant Kumar.
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-10 sm:mb-12 no-scrollbar">
         {CATEGORIES.map(cat => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`cursor-target px-5 py-2 rounded-full font-medium transition-colors ${
+            className={`cursor-target px-4 py-2 rounded-full font-medium transition-colors flex-shrink-0 whitespace-nowrap min-h-[40px] text-sm ${
               activeCategory === cat 
                 ? 'bg-forest text-white' 
-                : 'bg-white border border-line text-ink-soft hover:bg-mint hover:text-forest hover-lift'
+                : 'bg-white border border-line text-ink-soft hover:bg-mint hover:text-forest'
             }`}
           >
             {cat}

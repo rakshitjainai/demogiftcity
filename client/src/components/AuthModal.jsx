@@ -50,7 +50,8 @@ export default function AuthModal({ initialMode = 'login', onClose }) {
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+            className="p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -73,14 +74,14 @@ export default function AuthModal({ initialMode = 'login', onClose }) {
                 <button
                   type="button"
                   onClick={() => { setMode('login'); setAuthError(null); }}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${mode === 'login' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                  className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all cursor-pointer min-h-[40px] ${mode === 'login' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
                 >
                   Sign In
                 </button>
                 <button
                   type="button"
                   onClick={() => { setMode('register'); setAuthError(null); }}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${mode === 'register' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                  className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all cursor-pointer min-h-[40px] ${mode === 'register' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
                 >
                   Create Account
                 </button>

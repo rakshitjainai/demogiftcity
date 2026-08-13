@@ -13,11 +13,11 @@ const TOPICS = [
 
 export default function Quizzes() {
   return (
-    <div className="py-16 px-6 max-w-6xl mx-auto animate-fade-in-up">
-      <div className="text-center mb-16">
+    <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto animate-fade-in-up">
+      <div className="text-center mb-10 sm:mb-16">
         <span className="eyebrow block mb-4">§ Practice</span>
-        <h1 className="text-4xl md:text-5xl font-display text-forest-deep mb-6">Practice with Quizzes</h1>
-        <p className="text-xl text-ink-soft max-w-2xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-forest-deep mb-4 sm:mb-6">Practice with Quizzes</h1>
+        <p className="text-base sm:text-xl text-ink-soft max-w-2xl mx-auto">
           Topic-wise quizzes across the areas that matter to compliance professionals.
         </p>
       </div>

@@ -54,21 +54,22 @@ export default function CourseViewerModal({ course, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
-      <div className="bg-white w-full max-w-4xl h-full flex flex-col shadow-2xl overflow-hidden">
+      <div className="bg-white w-full md:max-w-4xl h-full flex flex-col shadow-2xl overflow-hidden">
         
         {/* Header Bar */}
-        <div className="bg-forest-deep text-white px-6 py-4 flex items-center justify-between border-b border-line/20">
-          <div className="flex items-center gap-3">
-            <span className="px-2.5 py-0.5 bg-mint/20 text-mint font-bold text-xs rounded-full uppercase">
+        <div className="bg-forest-deep text-white px-4 sm:px-6 py-4 flex items-center justify-between border-b border-line/20 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <span className="px-2.5 py-0.5 bg-mint/20 text-mint font-bold text-xs rounded-full uppercase flex-shrink-0">
               {course.code}
             </span>
-            <h2 className="text-xl font-display text-paper font-semibold truncate max-w-lg">
+            <h2 className="text-base sm:text-xl font-display text-paper font-semibold truncate">
               {course.title}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="cursor-target p-2 rounded-full hover:bg-white/10 text-paper/80 hover:text-white transition-colors"
+            className="cursor-target p-2.5 rounded-full hover:bg-white/10 text-paper/80 hover:text-white transition-colors flex-shrink-0 ml-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Close course viewer"
           >
             <X className="w-6 h-6" />
           </button>

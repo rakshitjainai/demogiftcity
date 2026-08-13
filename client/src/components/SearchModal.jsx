@@ -41,7 +41,8 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
           />
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200"
+            className="p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Close search"
           >
             <X className="w-5 h-5" />
           </button>
