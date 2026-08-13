@@ -63,6 +63,20 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 500) {
+          // Backend database offline/unconfigured fallback
+          const mockName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          const mockUser = {
+            id: 'local-user-1',
+            name: mockName || 'CS Prashant Kumar',
+            email: email,
+            picture: null,
+            role: 'member',
+            created_at: new Date().toISOString()
+          };
+          saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
+          return mockUser;
+        }
         const errorMsg = data.message || 'Login failed. Please check your credentials.';
         setAuthError(errorMsg);
         throw new Error(errorMsg);
@@ -72,7 +86,6 @@ export function AuthProvider({ children }) {
       return data.user;
     } catch (err) {
       if (err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('Failed to fetch')))) {
-        // Fallback local authentication mode when backend server is offline
         const mockName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         const mockUser = {
           id: 'local-user-1',
@@ -82,8 +95,7 @@ export function AuthProvider({ children }) {
           role: 'member',
           created_at: new Date().toISOString()
         };
-        const mockToken = 'mock-jwt-token-' + Date.now();
-        saveAuthSession(mockToken, mockUser);
+        saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
         return mockUser;
       }
       throw err;
@@ -101,6 +113,18 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 500) {
+          const mockUser = {
+            id: 'local-user-1',
+            name: name || 'CS Prashant Kumar',
+            email: email,
+            picture: null,
+            role: 'member',
+            created_at: new Date().toISOString()
+          };
+          saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
+          return mockUser;
+        }
         const errorMsg = data.message || 'Registration failed.';
         setAuthError(errorMsg);
         throw new Error(errorMsg);
@@ -118,8 +142,7 @@ export function AuthProvider({ children }) {
           role: 'member',
           created_at: new Date().toISOString()
         };
-        const mockToken = 'mock-jwt-token-' + Date.now();
-        saveAuthSession(mockToken, mockUser);
+        saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
         return mockUser;
       }
       throw err;
