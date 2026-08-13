@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 
+import logoHeader from '../assets/logoheader.jpeg';
+
 const SUB_ITEM_ROUTES = {
   'Interactive Regulations': '/interactive-regulations',
   'Learning & Diagnostics': '/learning',
@@ -49,25 +51,11 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
             to="/"
             className="flex items-center gap-3 cursor-pointer group flex-shrink-0"
           >
-            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[var(--forest)] to-[var(--leaf)] flex items-center justify-center shadow-md shadow-[rgba(11,77,51,0.25)] group-hover:shadow-lg group-hover:shadow-[rgba(11,77,51,0.35)] transition-shadow">
-              <span
-                className="text-white text-xl leading-none"
-                style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700 }}
-              >
-                R
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span
-                className="text-[var(--ink)] text-lg leading-none"
-                style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700 }}
-              >
-                Reg<span className="text-[var(--forest)]">Mate</span>
-              </span>
-              <span className="text-[10px] font-medium text-[var(--ink-soft)] tracking-wide mt-0.5">
-                Navigate Regulations. Stay Ahead.
-              </span>
-            </div>
+            <img
+              src={logoHeader}
+              alt="RegMate"
+              className="h-10 sm:h-11 w-auto object-contain rounded-md"
+            />
           </Link>
 
           {/* Center: Desktop Nav */}

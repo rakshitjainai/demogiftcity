@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, MessageCircle } from 'lucide-react';
+import logoFooter from '../assets/logofotter.jpeg';
 
 const FOOTER_LINKS = {
   Knowledge: ['Interactive Regulations', 'Quizzes', 'Learning'],
@@ -23,31 +24,14 @@ export default function Footer({ onOpenAuth, onSelectCategory }) {
           <div className="lg:col-span-2 space-y-5">
             {/* Logo */}
             <div
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center cursor-pointer"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <div
-                className="w-10 h-10 rounded-[10px] flex items-center justify-center"
-                style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)' }}
-              >
-                <span
-                  className="text-white text-xl leading-none"
-                  style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700 }}
-                >
-                  R
-                </span>
-              </div>
-              <div>
-                <span
-                  className="block text-xl"
-                  style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 700, color: 'white' }}
-                >
-                  Reg<span style={{ color: 'var(--leaf-bright)' }}>Mate</span>
-                </span>
-                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  Navigate Regulations. Stay Ahead.
-                </span>
-              </div>
+              <img
+                src={logoFooter}
+                alt="RegMate"
+                className="h-12 sm:h-14 w-auto object-contain rounded-md"
+              />
             </div>
 
             <p className="text-[12px] leading-relaxed max-w-[260px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
