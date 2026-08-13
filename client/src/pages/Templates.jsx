@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import { 
   FileText, 
   Download, 
-  Filter, 
   Copy, 
   Check, 
   Printer, 
   X, 
-  ExternalLink,
   Eye,
   FileSpreadsheet,
   FileCheck2,
-  ShieldCheck,
-  Building
+  AlertCircle,
+  CheckCircle2,
+  Info
 } from 'lucide-react';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
+import * as XLSX from 'xlsx';
+import { jsPDF } from 'jspdf';
 
 const TEMPLATES = [
   { 
@@ -23,6 +25,8 @@ const TEMPLATES = [
     format: 'DOCX',
     statute: 'Section 13 of Companies Act, 2013 & Rule 29 of Companies (Incorporation) Rules, 2014',
     filename: 'Board_Resolution_Change_of_Company_Name.docx',
+    isAI: true,
+    statusBadge: 'Draft — pending legal review',
     description: 'Standard draft resolution for change of name of a private or public company, including reservation of name via RUN/SPICe+ and approval of notice for EGM.',
     content: `CERTIFIED TRUE COPY OF THE RESOLUTION PASSED AT THE MEETING OF THE BOARD OF DIRECTORS OF [COMPANY NAME PRIVATE LIMITED] HELD ON [DATE] AT [TIME] AT THE REGISTERED OFFICE AT [ADDRESS].
 
@@ -47,6 +51,9 @@ Director (DIN: [DIN])`
     format: 'DOCX',
     statute: 'Section 161(1), 152, 164 & 173 of Companies Act, 2013 read with Secretarial Standard-1 (SS-1)',
     filename: 'Board_Resolution_Appointment_Additional_Director.docx',
+    isAI: false,
+    statusBadge: 'Verified Sourced Content',
+    sourceRef: 'Extracted from RegMate reviewed legal repository (Article #104)',
     description: 'Certified true copy format for appointing an Additional Director under Section 161(1) of Companies Act 2013, prior to ROC DIR-12 filing.',
     content: `CERTIFIED TRUE COPY OF THE RESOLUTION PASSED AT THE MEETING OF THE BOARD OF DIRECTORS OF [COMPANY NAME PRIVATE LIMITED] HELD ON [DATE] AT [TIME] AT THE REGISTERED OFFICE AT [ADDRESS].
 
@@ -71,10 +78,13 @@ Director (DIN: [DIN])`
     format: 'DOCX',
     statute: 'Section 139(6) & Section 141 of Companies Act, 2013 read with Form ADT-1 rules',
     filename: 'Board_Resolution_Appointment_First_Auditor.docx',
+    isAI: false,
+    statusBadge: 'Verified Sourced Content',
+    sourceRef: 'Extracted from RegMate reviewed legal repository (Article #114)',
     description: 'Board resolution format for appointing the first statutory auditor of a newly incorporated company within 30 days, supporting Form ADT-1 filing.',
     content: `CERTIFIED TRUE COPY OF THE RESOLUTION PASSED AT THE FIRST MEETING OF THE BOARD OF DIRECTORS OF [COMPANY NAME PRIVATE LIMITED] HELD ON [DATE] AT [TIME] AT [REGISTERED OFFICE ADDRESS].
 
-APPOINTMENT OF FIRST STATUTORY AUDITOR:
+APPOINTMENT OF FIRST STATUTORY AUDITORS:
 "RESOLVED THAT pursuant to the provisions of Section 139(6) and other applicable provisions, if any, of the Companies Act, 2013 and the rules made thereunder, M/s. [NAME OF CA FIRM], Chartered Accountants (Firm Registration No. [FRN]), having their office at [ADDRESS], who have furnished written consent and certificate under Section 141 confirming their eligibility, be and are hereby appointed as the First Statutory Auditors of the Company to hold office from the date of this meeting until the conclusion of the First Annual General Meeting of the Company at a remuneration to be fixed by the Board of Directors.
 
 RESOLVED FURTHER THAT any Director of the Company be and is hereby authorized to file Form ADT-1 with the Registrar of Companies (ROC) within 15 days of appointment and to take all necessary statutory steps."
@@ -88,12 +98,31 @@ Director (DIN: [DIN])`
   },
   { 
     id: 4, 
-    title: 'IFSC Entity Incorporation & Compliance Checklist', 
+    title: 'IFSC Entity Incorporation Checklist', 
     category: 'IFSC & GIFT City', 
     format: 'XLSX',
     statute: 'IFSCA (Fund Management / Finance Company / CMI) Regulations & GIFT SEZ Guidelines',
     filename: 'IFSC_Entity_Incorporation_Checklist.xlsx',
+    isAI: true,
+    statusBadge: 'Draft — pending legal review',
     description: 'Comprehensive 15-point diagnostic checklist covering SEZ co-developer approval, IFSCA registration, Net Worth certification, and office space allocation in GIFT IFSC.',
+    items: [
+      { id: 1, action: 'Name Approval (SPICe+)', req: "Include 'IFSC' or 'GIFT' prefix", status: 'Pending / Approved' },
+      { id: 2, action: 'SEZ Application (Form F)', req: 'Submit to SEZ Development Commissioner', status: 'Submitted' },
+      { id: 3, action: 'Co-Developer Allotment', req: 'Unit lease agreement in GIFT SEZ', status: 'Executed' },
+      { id: 4, action: 'Net Worth Certificate', req: 'Certified by CA in USD / INR', status: 'Obtained' },
+      { id: 5, action: 'Principal Officer Appt', req: 'Fit & Proper Criteria under IFSCA', status: 'Verified' },
+      { id: 6, action: 'Compliance Officer Appt', req: 'Qualified CS / Legal Professional', status: 'Appointed' },
+      { id: 7, action: 'IFSCA Reg Application', req: 'Online portal submission (Form A)', status: 'Submitted' },
+      { id: 8, action: 'Business Plan (5-Yr)', req: 'Financial projections & GWP/AUM', status: 'Drafted' },
+      { id: 9, action: 'Internal Audit Manual', req: 'Risk management & AML policy', status: 'Completed' },
+      { id: 10, action: 'Bank Account Opening', req: 'IFSC Bank Unit (IBU) Account', status: 'Opened' },
+      { id: 11, action: 'Statutory Deposit', req: 'Escrow deposit as per regulations', status: 'Transferred' },
+      { id: 12, action: 'IT Infrastructure', req: 'Cyber-security audit compliance', status: 'Audited' },
+      { id: 13, action: 'Annual SEZ Returns', req: 'Form APR filing setup', status: 'Configured' },
+      { id: 14, action: 'Tax Exemption (80LA)', req: '100% tax holiday 10-yr window', status: 'Registered' },
+      { id: 15, action: 'Board Approval', req: 'Resolution adopting IFSCA framework', status: 'Executed' }
+    ],
     content: `IFSC ENTITY INCORPORATION & REGULATORY COMPLIANCE CHECKLIST
 ============================================================
 Target Authority: International Financial Services Centres Authority (IFSCA) & GIFT SEZ Authority
@@ -123,6 +152,8 @@ ITEM | COMPLIANCE ACTION ITEM | MANDATORY REQUIREMENT | STATUS / DATE
     format: 'DOCX',
     statute: 'SEBI (Prohibition of Insider Trading) Regulations, 2015 [Reg. 9(1) & Schedule B]',
     filename: 'Insider_Trading_Policy_Draft.docx',
+    isAI: true,
+    statusBadge: 'Draft — pending legal review',
     description: 'Code of Conduct for prevention of insider trading, UPSI handling procedures, trading window closure timelines, and structural digital database (SDD) mandates.',
     content: `CODE OF CONDUCT FOR PREVENTION OF INSIDER TRADING AND PRESERVATION OF UPSI
 [Drafted under SEBI (Prohibition of Insider Trading) Regulations, 2015]
@@ -152,6 +183,8 @@ Any violation of this Code shall be reported to the Audit Committee and SEBI wit
     format: 'PDF',
     statute: 'Companies Act, 2013, SEBI Regulations, FEMA 1999 & Tax Compliance Audit',
     filename: 'Statutory_Due_Diligence_Questionnaire.pdf',
+    isAI: true,
+    statusBadge: 'Draft — pending legal review',
     description: 'Detailed 25-point compliance audit questionnaire covering corporate structure, litigation history, related party transactions, FEMA approvals, and IPR registrations.',
     content: `STATUTORY DUE DILIGENCE QUESTIONNAIRE FOR CORPORATE AUDIT
 =========================================================
@@ -191,19 +224,146 @@ export default function Templates() {
     ? TEMPLATES 
     : TEMPLATES.filter(t => t.category === activeCategory);
 
-  // Client-side Blob download handler
-  const handleDownload = (template, e) => {
-    if (e) e.stopPropagation();
+  // ─── 1. DOCX NATIVE FILE GENERATOR ─────────────────────────────────────────
+  const downloadDocxFile = async (template) => {
+    const lines = template.content.split('\n');
+    const paragraphs = [];
+
+    lines.forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        paragraphs.push(new Paragraph({ text: '' }));
+        return;
+      }
+
+      if (trimmed.startsWith('CERTIFIED TRUE COPY') || trimmed.startsWith('CODE OF CONDUCT')) {
+        paragraphs.push(
+          new Paragraph({
+            text: trimmed,
+            heading: HeadingLevel.HEADING_1,
+            spacing: { before: 240, after: 120 }
+          })
+        );
+      } else if (trimmed.endsWith(':') || trimmed.startsWith('APPROVAL FOR') || trimmed.startsWith('APPOINTMENT OF')) {
+        paragraphs.push(
+          new Paragraph({
+            children: [new TextRun({ text: trimmed, bold: true, size: 22 })],
+            spacing: { before: 180, after: 80 }
+          })
+        );
+      } else if (trimmed.startsWith('"RESOLVED') || trimmed.startsWith('RESOLVED')) {
+        paragraphs.push(
+          new Paragraph({
+            children: [new TextRun({ text: trimmed, italic: true, size: 20 })],
+            indent: { left: 360, right: 360 },
+            spacing: { before: 120, after: 120 }
+          })
+        );
+      } else {
+        paragraphs.push(
+          new Paragraph({
+            children: [new TextRun({ text: trimmed, size: 20 })],
+            spacing: { after: 80 }
+          })
+        );
+      }
+    });
+
+    const doc = new Document({
+      sections: [{ children: paragraphs }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveBlob(blob, template.filename);
+  };
+
+  // ─── 2. XLSX NATIVE SPREADSHEET GENERATOR ───────────────────────────────────
+  const downloadXlsxFile = (template) => {
+    const wb = XLSX.utils.book_new();
     
-    const blob = new Blob([template.content], { type: 'text/plain;charset=utf-8' });
+    const rows = [
+      ['ITEM #', 'COMPLIANCE ACTION ITEM', 'MANDATORY REGULATORY REQUIREMENT', 'STATUS / VERIFICATION DATE']
+    ];
+
+    if (template.items && template.items.length > 0) {
+      template.items.forEach(i => {
+        rows.push([i.id, i.action, i.req, i.status]);
+      });
+    } else {
+      rows.push([1, 'Sample Action Item', 'Mandatory Statutory Requirement', 'Pending']);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 10 },
+      { wch: 35 },
+      { wch: 55 },
+      { wch: 25 }
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'IFSC Checklist');
+    XLSX.writeFile(wb, template.filename);
+  };
+
+  // ─── 3. PDF NATIVE DOCUMENT GENERATOR ──────────────────────────────────────
+  const downloadPdfFile = (template) => {
+    const doc = new jsPDF();
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(template.title, 14, 18);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text(`Statute Ref: ${template.statute}`, 14, 25);
+    doc.setDrawColor(200);
+    doc.line(14, 28, 196, 28);
+
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(20);
+
+    const splitText = doc.splitTextToSize(template.content, 180);
+    let y = 35;
+    
+    splitText.forEach((line) => {
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, 14, y);
+      y += 5;
+    });
+
+    doc.save(template.filename);
+  };
+
+  // Helper function to download Blob
+  const saveBlob = (blob, filename) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = template.filename || `${template.title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  // Master Format Router
+  const handleDownload = async (template, e) => {
+    if (e) e.stopPropagation();
+
+    if (template.format === 'XLSX') {
+      downloadXlsxFile(template);
+    } else if (template.format === 'PDF') {
+      downloadPdfFile(template);
+    } else {
+      await downloadDocxFile(template);
+    }
   };
 
   const handleCopyText = (text) => {
@@ -260,13 +420,27 @@ export default function Templates() {
                     <FileText className="w-5 h-5" />
                   )}
                 </div>
-                <span className={`text-xs font-extrabold px-2.5 py-1 rounded-md border ${
-                  template.format === 'XLSX' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
-                  template.format === 'PDF' ? 'bg-red-50 text-red-800 border-red-200' :
-                  'bg-blue-50 text-blue-800 border-blue-200'
-                }`}>
-                  {template.format}
-                </span>
+
+                <div className="flex flex-col items-end gap-1">
+                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-md border ${
+                    template.format === 'XLSX' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
+                    template.format === 'PDF' ? 'bg-red-50 text-red-800 border-red-200' :
+                    'bg-blue-50 text-blue-800 border-blue-200'
+                  }`}>
+                    {template.format}
+                  </span>
+
+                  {/* Review Status Badge */}
+                  {template.isAI ? (
+                    <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-semibold rounded-full flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 text-amber-600" /> Draft — pending review
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-semibold rounded-full flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Verified Sourced
+                    </span>
+                  )}
+                </div>
               </div>
 
               <h3 className="font-bold text-lg text-forest-deep mb-2 line-clamp-2 group-hover:text-leaf transition-colors">
@@ -283,13 +457,13 @@ export default function Templates() {
             <div className="pt-2 flex items-center gap-2">
               <button 
                 onClick={(e) => handleDownload(template, e)}
-                className="cursor-target flex-1 py-2.5 bg-forest text-white rounded-xl font-bold text-xs hover:bg-leaf transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                className="cursor-target flex-1 py-2.5 bg-forest text-white rounded-xl font-bold text-xs hover:bg-leaf transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <Download className="w-4 h-4" /> Download {template.format}
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); setSelectedTemplate(template); }}
-                className="cursor-target p-2.5 bg-paper border border-line text-forest rounded-xl font-bold text-xs hover:bg-mint transition-colors"
+                className="cursor-target p-2.5 bg-paper border border-line text-forest rounded-xl font-bold text-xs hover:bg-mint transition-colors cursor-pointer"
                 title="Preview Template"
               >
                 <Eye className="w-4 h-4" />
@@ -307,16 +481,30 @@ export default function Templates() {
             {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-line pb-4">
               <div>
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-mint text-forest border border-leaf/20">
                     {selectedTemplate.category}
                   </span>
                   <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-paper border border-line text-ink">
                     {selectedTemplate.format}
                   </span>
+
+                  {/* Review Status Badge */}
+                  {selectedTemplate.isAI ? (
+                    <span className="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-full flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-600" /> Draft — pending legal review
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-full flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Verified Sourced Content
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-2xl font-display text-forest-deep">{selectedTemplate.title}</h2>
                 <p className="text-xs text-ink-soft mt-1">Ref: {selectedTemplate.statute}</p>
+                {selectedTemplate.sourceRef && (
+                  <p className="text-[11px] font-semibold text-emerald-700 mt-0.5">{selectedTemplate.sourceRef}</p>
+                )}
               </div>
 
               <button 
@@ -340,7 +528,7 @@ export default function Templates() {
                   className="px-4 py-2 bg-paper border border-line text-forest font-bold text-xs rounded-xl hover:bg-mint transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  <span>{copied ? 'Copied to Clipboard!' : 'Copy Resolution Text'}</span>
+                  <span>{copied ? 'Copied to Clipboard!' : 'Copy Text'}</span>
                 </button>
                 <button
                   onClick={() => window.print()}
@@ -354,7 +542,7 @@ export default function Templates() {
                 onClick={() => handleDownload(selectedTemplate)}
                 className="w-full sm:w-auto px-6 py-2.5 bg-forest text-white font-bold text-xs rounded-xl hover:bg-leaf transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
-                <Download className="w-4 h-4" /> Download {selectedTemplate.filename}
+                <Download className="w-4 h-4" /> Download Native {selectedTemplate.format} File
               </button>
             </div>
 
