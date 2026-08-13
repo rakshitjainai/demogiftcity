@@ -1,6 +1,7 @@
 import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
 import ifscaFinanceCompanyPackage from './RegMate_IFSCA_Finance_Company_2021_FINAL.json';
 import ifscaInsuranceBusinessPackage from './RegMate_IFSCA_Registration_Insurance_Business_2021_FINAL.json';
+import ifscaPensionFundPackage from './RegMate_IFSCA_Pension_Fund_2026_FINAL.json';
 
 const romanMap = {
   'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
@@ -148,6 +149,7 @@ function processSchema2Package(pkg, actSlug) {
 
 const financeCompanyActData = processSchema2Package(ifscaFinanceCompanyPackage, 'ifsca-finance-company-2021');
 const insuranceBusinessActData = processSchema2Package(ifscaInsuranceBusinessPackage, 'ifsca-registration-insurance-business-2021');
+const pensionFundActData = processSchema2Package(ifscaPensionFundPackage, 'ifsca-pension-fund-2026');
 
 export function getActDefinitions(actSlug) {
   return ACT_DEFINITIONS[actSlug] || [];
@@ -179,6 +181,11 @@ export const ACTS_DATA = {
   // IFSCA (REGISTRATION OF INSURANCE BUSINESS) REGULATIONS, 2021
   // ══════════════════════════════════════════════════════════════════════════
   'ifsca-registration-insurance-business-2021': insuranceBusinessActData,
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (PENSION FUND) REGULATIONS, 2026 | 9 Chapters + 4 Schedules
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-pension-fund-2026': pensionFundActData,
 
   // ══════════════════════════════════════════════════════════════════════════
   // COMPANIES ACT, 2013  |  29 Chapters

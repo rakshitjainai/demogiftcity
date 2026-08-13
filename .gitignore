@@ -29,3 +29,7 @@ client/node_modules/
 *.njsproj
 *.sln
 *.sw?
+
+# Spreadsheets (human-review copies)
+*.xlsx
+
