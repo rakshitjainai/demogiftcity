@@ -145,43 +145,43 @@ export default function SectionDetail() {
     <div className="min-h-screen bg-paper flex flex-col animate-fade-in font-sans">
       
       {/* ─── TOP HEADER BAR (FULL WIDTH ABOVE SIDEBARS & CONTENT) ─────────────── */}
-      <header className="bg-white border-b border-line px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 card-shadow">
+      <header className="bg-white border-b border-line px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between sticky top-0 z-30 card-shadow gap-3">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-ink-soft flex-wrap">
-          <Link to="/" className="cursor-target hover:text-leaf transition-colors">Home</Link>
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-ink-soft flex-wrap">
+          <Link to="/" className="cursor-target hover:text-leaf transition-colors min-h-[36px] flex items-center">Home</Link>
           <span className="text-ink-soft/40">&gt;</span>
-          <Link to="/interactive-regulations" className="cursor-target hover:text-leaf font-medium text-forest">
+          <Link to="/interactive-regulations" className="cursor-target hover:text-leaf font-medium text-forest min-h-[36px] flex items-center">
             {actName}
           </Link>
           <span className="text-ink-soft/40">&gt;</span>
-          <Link to={`/interactive-regulations/${actSlug}/chapter-${chapterNum}`} className="cursor-target hover:text-leaf">
+          <Link to={`/interactive-regulations/${actSlug}/chapter-${chapterNum}`} className="cursor-target hover:text-leaf min-h-[36px] flex items-center">
             Chapter {chapterNum}
           </Link>
           <span className="text-ink-soft/40">&gt;</span>
-          <span className="text-forest-deep font-bold">Section {sNum}</span>
+          <span className="text-forest-deep font-bold min-h-[36px] flex items-center">Section {sNum}</span>
         </div>
 
         {/* Right Controls: Font-size + Pill Icons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 flex-wrap w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-line/60">
           {/* Font Size Selector */}
-          <div className="flex items-center bg-paper border border-line rounded-lg p-0.5 text-xs font-bold">
+          <div className="flex items-center bg-paper border border-line rounded-xl p-0.5 text-xs font-bold min-h-[44px]">
             <button
               onClick={() => setFontSize('sm')}
-              className={`px-2 py-1 rounded transition-colors ${fontSize === 'sm' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
+              className={`px-3 py-2 rounded-lg transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer ${fontSize === 'sm' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
               title="Small font size"
             >
               A-
             </button>
             <button
               onClick={() => setFontSize('md')}
-              className={`px-2 py-1 rounded transition-colors ${fontSize === 'md' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
+              className={`px-3 py-2 rounded-lg transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer ${fontSize === 'md' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
               title="Medium font size"
             >
               A
             </button>
             <button
               onClick={() => setFontSize('lg')}
-              className={`px-2 py-1 rounded transition-colors ${fontSize === 'lg' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
+              className={`px-3 py-2 rounded-lg transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer ${fontSize === 'lg' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'}`}
               title="Large font size"
             >
               A+
@@ -189,7 +189,7 @@ export default function SectionDetail() {
           </div>
 
           {/* Action Icon Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => {
                 if (window.speechSynthesis) {
@@ -198,18 +198,20 @@ export default function SectionDetail() {
                   window.speechSynthesis.speak(u);
                 }
               }}
-              className="cursor-target px-3 py-1.5 bg-paper border border-line rounded-full text-xs font-semibold text-forest hover:bg-mint transition-colors flex items-center gap-1.5"
+              className="cursor-target px-3.5 py-2 bg-paper border border-line rounded-full text-xs font-semibold text-forest hover:bg-mint transition-colors flex items-center gap-1.5 min-h-[44px]"
             >
-              <Volume2 className="w-3.5 h-3.5 text-leaf" /> Listen
+              <Volume2 className="w-4 h-4 text-leaf" />
+              <span>Listen</span>
             </button>
 
             <button
               onClick={handleToggleBookmark}
-              className={`cursor-target px-3 py-1.5 border rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+              className={`cursor-target px-3.5 py-2 border rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors min-h-[44px] ${
                 bookmarked ? 'bg-gold/20 text-gold border-gold' : 'bg-paper border-line text-ink-soft hover:text-forest'
               }`}
             >
-              <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? 'fill-gold text-gold' : ''}`} /> Save
+              <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-gold text-gold' : ''}`} />
+              <span>Save</span>
             </button>
 
             <button
@@ -217,19 +219,20 @@ export default function SectionDetail() {
                 if (navigator.share) navigator.share({ title: `Section ${sNum}`, url: window.location.href });
                 else handleCopyLink();
               }}
-              className="cursor-target px-3 py-1.5 bg-paper border border-line rounded-full text-xs font-semibold text-ink-soft hover:text-forest transition-colors flex items-center gap-1.5"
+              className="cursor-target px-3.5 py-2 bg-paper border border-line rounded-full text-xs font-semibold text-ink-soft hover:text-forest transition-colors flex items-center gap-1.5 min-h-[44px]"
             >
-              <Share2 className="w-3.5 h-3.5" /> Share
+              <Share2 className="w-4 h-4" />
+              <span>Share</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* ─── MAIN 3-COLUMN LAYOUT CONTAINER ───────────────────────────────────── */}
-      <div className="flex-grow flex flex-col md:flex-row min-w-0">
+      {/* ─── MAIN LAYOUT CONTAINER ───────────────────────────────────── */}
+      <div className="flex-grow flex flex-col lg:flex-row min-w-0">
         
-        {/* ─── 1. LEFT SIDEBAR (PERSISTENT ~20% WIDTH) ────────────────────────── */}
-        <aside className="w-full md:w-72 lg:w-80 border-r border-line bg-white flex flex-col flex-shrink-0">
+        {/* ─── 1. LEFT SIDEBAR (HIDDEN ON MOBILE, VISIBLE ON DESKTOP ≥1024px) ─── */}
+        <aside className="hidden lg:flex w-72 lg:w-80 border-r border-line bg-white flex-col flex-shrink-0">
           
           {/* Logo & Tagline */}
           <div className="p-4 border-b border-line flex items-center gap-3">
@@ -242,7 +245,7 @@ export default function SectionDetail() {
             </div>
           </div>
 
-          {/* Act Summary Card (Solid Dark Green Card matching Mockup) */}
+          {/* Act Summary Card */}
           <div className="m-4 p-4 rounded-xl bg-forest-deep text-white space-y-1 shadow-md">
             <h3 className="font-display font-bold text-sm leading-snug text-paper">
               {actName}
@@ -320,16 +323,27 @@ export default function SectionDetail() {
           <div className="p-4 border-t border-line bg-paper/50">
             <button
               onClick={() => alert('Full statutory PDF export coming soon!')}
-              className="cursor-target w-full py-2.5 px-3 bg-white border border-line rounded-xl text-xs font-semibold text-forest hover:bg-mint transition-colors flex items-center justify-center gap-2 shadow-sm"
+              className="cursor-target w-full py-2.5 px-3 bg-white border border-line rounded-xl text-xs font-semibold text-forest hover:bg-mint transition-colors flex items-center justify-center gap-2 shadow-sm min-h-[44px]"
             >
               <Download className="w-4 h-4 text-leaf" /> Download Full Regulation (PDF)
             </button>
           </div>
         </aside>
 
-        {/* ─── 2. MAIN COLUMN (~55% WIDTH) ────────────────────────────────────── */}
-        <main className="flex-grow p-6 md:p-8 max-w-4xl space-y-6 overflow-y-auto min-w-0">
+        {/* ─── 2. MAIN READING COLUMN ────────────────────────────────────── */}
+        <main className="flex-grow p-4 sm:p-6 lg:p-8 max-w-4xl space-y-6 overflow-y-auto min-w-0 w-full">
           
+          {/* Mobile Back Link Header */}
+          <div className="lg:hidden">
+            <Link
+              to={`/interactive-regulations/${actSlug}/chapter-${chapterNum}`}
+              className="cursor-target inline-flex items-center gap-2 px-3.5 py-2.5 bg-white border border-line rounded-xl text-xs font-bold text-forest hover:bg-mint transition-colors min-h-[44px] shadow-xs"
+            >
+              <ArrowLeft className="w-4 h-4 text-leaf" />
+              <span>Back to Chapter {chapterNum}</span>
+            </Link>
+          </div>
+
           {/* Act Badge & Titles */}
           <div className="space-y-2">
             <span className="inline-block px-3 py-1 bg-mint text-forest font-bold text-xs rounded-full uppercase tracking-wider">
@@ -338,79 +352,81 @@ export default function SectionDetail() {
             <div className="text-xs font-bold text-leaf uppercase tracking-wider">
               Chapter {chapterNum} – {chapterTitle}
             </div>
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-forest-deep">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-forest-deep">
               Section {sNum}
             </h1>
-            <h2 className="text-xl md:text-2xl font-semibold text-ink leading-tight">
+            <h2 className="text-lg sm:text-xl font-semibold text-ink leading-snug">
               {sectionTitle}
             </h2>
-            <p className="text-sm text-ink-soft leading-relaxed">
+            <p className="text-xs sm:text-sm text-ink-soft leading-relaxed">
               Requirements regarding the track record and reputation of fairness of the applicant and its key personnel.
             </p>
           </div>
 
           {/* TOP PREV / NEXT SECTION ROW */}
-          <div className="bg-white border border-line rounded-xl p-3 flex items-center justify-between text-xs font-semibold text-forest">
+          <div className="bg-white border border-line rounded-xl p-2.5 sm:p-3 flex items-center justify-between text-xs font-semibold text-forest shadow-xs">
             {prevSec ? (
               <Link
                 to={`/interactive-regulations/${actSlug}/${chapter}/section-${prevSec.num}`}
-                className="cursor-target hover:text-leaf flex items-center gap-1.5"
+                className="cursor-target hover:text-leaf flex items-center gap-1.5 py-2 px-3 rounded-lg hover:bg-mint/40 transition-colors min-h-[44px]"
               >
                 &larr; Section {prevSec.num}
               </Link>
             ) : (
-              <span className="text-ink-soft/40">&larr; First Section</span>
+              <span className="text-ink-soft/40 py-2 px-3 min-h-[44px] flex items-center">&larr; First Section</span>
             )}
 
             {nextSec ? (
               <Link
                 to={`/interactive-regulations/${actSlug}/${chapter}/section-${nextSec.num}`}
-                className="cursor-target hover:text-leaf flex items-center gap-1.5"
+                className="cursor-target hover:text-leaf flex items-center gap-1.5 py-2 px-3 rounded-lg hover:bg-mint/40 transition-colors min-h-[44px]"
               >
                 Section {nextSec.num} &rarr;
               </Link>
             ) : (
-              <span className="text-ink-soft/40">Last Section &rarr;</span>
+              <span className="text-ink-soft/40 py-2 px-3 min-h-[44px] flex items-center">Last Section &rarr;</span>
             )}
           </div>
 
-          {/* TAB BAR (UNDERLINED TABS MATCHING MOCKUP) */}
-          <div className="border-b-2 border-line flex gap-6 overflow-x-auto scrollbar-none">
-            {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'statutory', label: 'Statutory Text' },
-              { id: 'explanation', label: 'RegMate Explanation' },
-              { id: 'guidance', label: 'Practical Guidance' },
-              { id: 'examples', label: 'Examples' },
-              { id: 'related', label: `Related (${finalRelated.length})` }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`cursor-target pb-3 text-xs font-bold transition-all whitespace-nowrap border-b-2 -mb-0.5 ${
-                  activeTab === tab.id
-                    ? 'text-forest-deep border-forest'
-                    : 'text-ink-soft border-transparent hover:text-forest'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          {/* TAB BAR (TOUCH OPTIMIZED WITH HORIZONTAL SCROLL & VISUAL AFFORDANCE) */}
+          <div className="relative border-b-2 border-line bg-white/50 rounded-xl p-1 shadow-xs">
+            <div className="flex gap-1.5 sm:gap-3 overflow-x-auto scrollbar-none py-1 px-1 snap-x">
+              {[
+                { id: 'overview', label: 'Overview' },
+                { id: 'statutory', label: 'Statutory Text' },
+                { id: 'explanation', label: 'RegMate Explanation' },
+                { id: 'guidance', label: 'Practical Guidance' },
+                { id: 'examples', label: 'Examples' },
+                { id: 'related', label: `Related (${finalRelated.length})` }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-target px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all whitespace-nowrap rounded-lg min-h-[44px] flex items-center flex-shrink-0 snap-start border ${
+                    activeTab === tab.id
+                      ? 'text-forest-deep border-forest bg-mint shadow-xs'
+                      : 'text-ink-soft border-transparent hover:text-forest hover:bg-paper'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* TAB CONTENT PANELS */}
           <div className="space-y-6">
 
-            {/* 1. OVERVIEW TAB (2 STACKED CARDS MATCHING MOCKUP EXACTLY) */}
+            {/* 1. OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="space-y-6 animate-fade-in">
                 
-                {/* CARD 1: Key Highlights & Scope (Light Mint-tinted Card with Checkmarks) */}
-                <div className="bg-mint/30 border border-mint-deep/40 rounded-2xl p-6 card-shadow space-y-4">
-                  <h3 className="font-semibold text-forest-deep text-base flex items-center gap-2">
-                    <CheckSquare className="w-5 h-5 text-forest" /> Key Highlights &amp; Scope
+                {/* CARD 1: Key Highlights & Scope */}
+                <div className="bg-mint/30 border border-mint-deep/40 rounded-2xl p-4 sm:p-6 card-shadow space-y-4">
+                  <h3 className="font-semibold text-forest-deep text-sm sm:text-base flex items-center gap-2">
+                    <CheckSquare className="w-5 h-5 text-forest flex-shrink-0" /> Key Highlights &amp; Scope
                   </h3>
-                  <ul className="space-y-3 text-sm text-ink font-medium">
+                  <ul className="space-y-3 text-xs sm:text-sm text-ink font-medium">
                     {highlights.map((bullet, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <CheckCircle2 className="w-4 h-4 text-leaf flex-shrink-0 mt-0.5" />
@@ -420,12 +436,12 @@ export default function SectionDetail() {
                   </ul>
                 </div>
 
-                {/* CARD 2: Statutory Text (Warmer Cream/Tan Tinted Card with Listen + Expand) */}
-                <div className="bg-[#FAF6EE] border border-amber-200/80 rounded-2xl p-6 card-shadow space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-amber-200/60">
+                {/* CARD 2: Statutory Text */}
+                <div className="bg-[#FAF6EE] border border-amber-200/80 rounded-2xl p-4 sm:p-6 card-shadow space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-amber-200/60 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-amber-900" />
-                      <h3 className="font-semibold text-amber-950 text-base">Statutory Text</h3>
+                      <FileText className="w-5 h-5 text-amber-900 flex-shrink-0" />
+                      <h3 className="font-semibold text-amber-950 text-sm sm:text-base">Statutory Text</h3>
                     </div>
                     <button
                       onClick={() => {
@@ -435,13 +451,13 @@ export default function SectionDetail() {
                           window.speechSynthesis.speak(u);
                         }
                       }}
-                      className="cursor-target px-3 py-1 bg-white border border-amber-300 rounded-full text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors flex items-center gap-1.5 shadow-sm"
+                      className="cursor-target px-3 py-1.5 bg-white border border-amber-300 rounded-full text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors flex items-center gap-1.5 shadow-sm min-h-[44px]"
                     >
                       <Volume2 className="w-3.5 h-3.5 text-amber-800" /> Listen
                     </button>
                   </div>
 
-                  <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed whitespace-pre-line`}>
+                  <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed whitespace-pre-line break-words`}>
                     {statutoryExpanded || statutoryTextContent.length <= 400
                       ? statutoryTextContent
                       : `${statutoryTextContent.slice(0, 400)}…`}
@@ -451,7 +467,7 @@ export default function SectionDetail() {
                     <div className="pt-2 text-center border-t border-amber-200/50">
                       <button
                         onClick={() => setStatutoryExpanded(!statutoryExpanded)}
-                        className="cursor-target text-xs font-bold text-amber-900 hover:text-amber-950 inline-flex items-center gap-1"
+                        className="cursor-target text-xs font-bold text-amber-900 hover:text-amber-950 inline-flex items-center gap-1 min-h-[44px] py-2 px-4"
                       >
                         {statutoryExpanded ? 'Show less ∧' : 'View full text ∨'}
                       </button>
@@ -459,9 +475,9 @@ export default function SectionDetail() {
                   )}
                 </div>
 
-                {/* Key Figures & Dates Callout (Schema 2.0) */}
+                {/* Key Figures & Dates Callout */}
                 {provisionData?.important_numbers && (
-                  <div className="bg-amber-50 border border-amber-300/80 rounded-2xl p-5 text-xs text-amber-950 flex items-start gap-3 shadow-xs">
+                  <div className="bg-amber-50 border border-amber-300/80 rounded-2xl p-4 sm:p-5 text-xs text-amber-950 flex items-start gap-3 shadow-xs">
                     <Zap className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
                       <strong className="font-bold text-amber-900 uppercase tracking-wider text-[11px] block">Key Figures &amp; Important Dates</strong>
@@ -472,7 +488,7 @@ export default function SectionDetail() {
 
                 {/* Practical Point Callout */}
                 {provisionData?.practical_point && (
-                  <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-5 text-xs text-emerald-950 space-y-1 card-shadow">
+                  <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4 sm:p-5 text-xs text-emerald-950 space-y-1 card-shadow">
                     <strong className="font-bold text-emerald-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-700" /> Practical Point
                     </strong>
@@ -482,7 +498,7 @@ export default function SectionDetail() {
 
                 {/* Compliance Point Callout */}
                 {provisionData?.compliance_point && (
-                  <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-5 text-xs text-blue-950 space-y-1 card-shadow">
+                  <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-4 sm:p-5 text-xs text-blue-950 space-y-1 card-shadow">
                     <strong className="font-bold text-blue-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-blue-700" /> Compliance Requirement
                     </strong>
@@ -492,7 +508,7 @@ export default function SectionDetail() {
 
                 {/* Risk Point Callout */}
                 {provisionData?.risk_point && (
-                  <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-5 text-xs text-rose-950 space-y-1 card-shadow">
+                  <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-4 sm:p-5 text-xs text-rose-950 space-y-1 card-shadow">
                     <strong className="font-bold text-rose-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <AlertCircle className="w-4 h-4 text-rose-700" /> Risk Point
                     </strong>
@@ -502,7 +518,7 @@ export default function SectionDetail() {
 
                 {/* Interview Point Callout */}
                 {provisionData?.interview_point && (
-                  <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-5 text-xs text-purple-950 space-y-1 card-shadow">
+                  <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-4 sm:p-5 text-xs text-purple-950 space-y-1 card-shadow">
                     <strong className="font-bold text-purple-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <Sparkles className="w-4 h-4 text-purple-700" /> Practitioner &amp; Exam Focus
                     </strong>
@@ -512,7 +528,7 @@ export default function SectionDetail() {
 
                 {/* Example Callout */}
                 {provisionData?.example && (
-                  <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 text-xs text-amber-950 space-y-1 card-shadow">
+                  <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5 text-xs text-amber-950 space-y-1 card-shadow">
                     <strong className="font-bold text-amber-900 uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <HelpCircle className="w-4 h-4 text-amber-700" /> Illustration / Example
                     </strong>
@@ -522,7 +538,7 @@ export default function SectionDetail() {
 
                 {/* Related Provisions Plain Text */}
                 {provisionData?.related_provisions && (
-                  <div className="bg-paper border border-line rounded-2xl p-5 text-xs text-ink space-y-1 card-shadow">
+                  <div className="bg-paper border border-line rounded-2xl p-4 sm:p-5 text-xs text-ink space-y-1 card-shadow">
                     <strong className="font-bold text-forest uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
                       <Link2 className="w-4 h-4 text-forest" /> Related Provisions
                     </strong>
@@ -535,17 +551,17 @@ export default function SectionDetail() {
 
             {/* 2. STATUTORY TEXT TAB */}
             {activeTab === 'statutory' && (
-              <div className="bg-[#FAF6EE] border border-amber-200 rounded-2xl p-6 md:p-8 card-shadow space-y-6 animate-fade-in">
-                <div className="flex items-center justify-between pb-4 border-b border-amber-200">
+              <div className="bg-[#FAF6EE] border border-amber-200 rounded-2xl p-4 sm:p-8 card-shadow space-y-6 animate-fade-in">
+                <div className="flex items-center justify-between pb-4 border-b border-amber-200 flex-wrap gap-2">
                   <div className="flex items-center gap-3">
                     <FileText className="w-6 h-6 text-amber-900" />
-                    <h3 className="text-xl font-semibold text-amber-950">Statutory Text</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold text-amber-950">Statutory Text</h3>
                   </div>
                   <span className="px-3 py-1 bg-amber-200/60 text-amber-900 font-semibold text-xs rounded-full">
                     Official Gazette Text
                   </span>
                 </div>
-                <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed whitespace-pre-line`}>
+                <div className={`${fontSizeClass} text-amber-950 font-serif leading-relaxed whitespace-pre-line break-words`}>
                   {statutoryTextContent}
                 </div>
               </div>
@@ -553,21 +569,21 @@ export default function SectionDetail() {
 
             {/* 3. REGMATE EXPLANATION TAB */}
             {activeTab === 'explanation' && (
-              <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
+              <div className="bg-white border border-line rounded-2xl p-4 sm:p-8 card-shadow space-y-4 animate-fade-in">
                 <div className="flex items-center gap-3 pb-4 border-b border-line">
                   <ShieldCheck className="w-6 h-6 text-forest" />
                   <div>
-                    <h3 className="text-xl font-semibold text-forest-deep">RegMate Regulatory Explanation</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold text-forest-deep">RegMate Regulatory Explanation</h3>
                     <p className="text-xs text-ink-soft">CS Prashant Kumar Analysis</p>
                   </div>
                 </div>
-                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-mint/20 border border-mint-deep/40 rounded-xl whitespace-pre-line`}>
+                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-mint/20 border border-mint-deep/40 rounded-xl whitespace-pre-line break-words`}>
                   {provisionData?.simple_explanation || provisionData?.regmate_explanation || provisionData?.regmate_comment || `Regulation ${sNum} establishes the regulatory threshold and requirements.`}
                 </p>
                 {provisionData?.regmate_comment && provisionData?.simple_explanation && (
                   <div className="p-4 bg-paper border border-line rounded-xl space-y-1">
                     <strong className="text-xs font-bold text-forest-deep block">Additional Commentary:</strong>
-                    <p className={`${fontSizeClass} text-ink-soft leading-relaxed whitespace-pre-line`}>{provisionData.regmate_comment}</p>
+                    <p className={`${fontSizeClass} text-ink-soft leading-relaxed whitespace-pre-line break-words`}>{provisionData.regmate_comment}</p>
                   </div>
                 )}
               </div>
@@ -575,24 +591,24 @@ export default function SectionDetail() {
 
             {/* 4. PRACTICAL GUIDANCE TAB */}
             {activeTab === 'guidance' && (
-              <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+              <div className="bg-white border border-line rounded-2xl p-4 sm:p-8 card-shadow space-y-4 animate-fade-in">
+                <h3 className="text-lg sm:text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
                   <CheckCircle2 className="w-6 h-6 text-leaf" /> Practical Guidance
                 </h3>
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-amber-950 text-xs leading-relaxed space-y-2">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5 text-amber-950 text-xs leading-relaxed space-y-2">
                   <strong className="font-bold text-amber-900 block uppercase">Practitioner Note:</strong>
-                  <p className="whitespace-pre-line">{provisionData?.practical_point || provisionData?.compliance_point || 'Disclosure and compliance verification required prior to filing.'}</p>
+                  <p className="whitespace-pre-line break-words">{provisionData?.practical_point || provisionData?.compliance_point || 'Disclosure and compliance verification required prior to filing.'}</p>
                 </div>
               </div>
             )}
 
             {/* 5. EXAMPLES TAB */}
             {activeTab === 'examples' && (
-              <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+              <div className="bg-white border border-line rounded-2xl p-4 sm:p-8 card-shadow space-y-4 animate-fade-in">
+                <h3 className="text-lg sm:text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
                   <HelpCircle className="w-6 h-6 text-forest" /> Illustration / Examples
                 </h3>
-                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-paper border border-line rounded-xl whitespace-pre-line`}>
+                <p className={`${fontSizeClass} text-ink leading-relaxed p-4 bg-paper border border-line rounded-xl whitespace-pre-line break-words`}>
                   {provisionData?.example || provisionData?.examples || 'Refer to the statutory text and regulatory circulars for illustrative case scenarios.'}
                 </p>
               </div>
@@ -600,22 +616,22 @@ export default function SectionDetail() {
 
             {/* 6. RELATED TAB */}
             {activeTab === 'related' && (
-              <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+              <div className="bg-white border border-line rounded-2xl p-4 sm:p-8 card-shadow space-y-4 animate-fade-in">
+                <h3 className="text-lg sm:text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
                   <Link2 className="w-6 h-6 text-forest" /> Related Provisions
                 </h3>
                 {provisionData?.related_provisions ? (
-                  <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed whitespace-pre-line">
+                  <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed whitespace-pre-line break-words">
                     <strong className="text-forest block mb-1">Cross References &amp; Related Rules:</strong>
                     {provisionData.related_provisions}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {finalRelated.map((rel, idx) => (
                       <Link
                         key={idx}
                         to={`/interactive-regulations/${actSlug}/${chapter}/section-${rel.to_provision}`}
-                        className="p-3 bg-paper border border-line rounded-xl hover:bg-mint/30 transition-colors block text-xs font-semibold text-forest"
+                        className="p-3 bg-paper border border-line rounded-xl hover:bg-mint/30 transition-colors block text-xs font-semibold text-forest min-h-[44px]"
                       >
                         Section {rel.to_provision} — {rel.title}
                       </Link>
@@ -627,11 +643,11 @@ export default function SectionDetail() {
 
           </div>
 
-          {/* BOTTOM ACTION ROW (BELOW MAIN CONTENT CARD MATCHING MOCKUP) */}
-          <div className="pt-2 flex items-center gap-4 flex-wrap text-xs text-ink-soft border-t border-line/60">
+          {/* BOTTOM ACTION ROW */}
+          <div className="pt-2 flex items-center gap-3 sm:gap-4 flex-wrap text-xs text-ink-soft border-t border-line/60">
             <button
               onClick={handleToggleBookmark}
-              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium"
+              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium min-h-[44px] px-2"
             >
               <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-gold text-gold' : ''}`} />
               <span>Bookmark</span>
@@ -642,7 +658,7 @@ export default function SectionDetail() {
                 if (navigator.share) navigator.share({ title: `Section ${sNum}`, url: window.location.href });
                 else handleCopyLink();
               }}
-              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium"
+              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium min-h-[44px] px-2"
             >
               <Share2 className="w-4 h-4" />
               <span>Share</span>
@@ -650,7 +666,7 @@ export default function SectionDetail() {
 
             <button
               onClick={handleCopyLink}
-              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium"
+              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium min-h-[44px] px-2"
             >
               {copied ? <Check className="w-4 h-4 text-leaf" /> : <Link2 className="w-4 h-4" />}
               <span>{copied ? 'Copied!' : 'Copy Link'}</span>
@@ -658,42 +674,134 @@ export default function SectionDetail() {
 
             <button
               onClick={handlePrint}
-              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium"
+              className="cursor-target flex items-center gap-1.5 hover:text-forest transition-colors font-medium min-h-[44px] px-2"
             >
               <Printer className="w-4 h-4" />
               <span>Print</span>
             </button>
           </div>
 
-          {/* BOTTOM PREV / NEXT SECTION ROW (DUPLICATED AT BOTTOM OF READING CONTENT) */}
-          <div className="bg-white border border-line rounded-xl p-3 flex items-center justify-between text-xs font-semibold text-forest">
+          {/* BOTTOM PREV / NEXT SECTION ROW */}
+          <div className="bg-white border border-line rounded-xl p-2.5 sm:p-3 flex items-center justify-between text-xs font-semibold text-forest shadow-xs">
             {prevSec ? (
               <Link
                 to={`/interactive-regulations/${actSlug}/${chapter}/section-${prevSec.num}`}
-                className="cursor-target hover:text-leaf flex items-center gap-1.5"
+                className="cursor-target hover:text-leaf flex items-center gap-1.5 py-2 px-3 rounded-lg hover:bg-mint/40 transition-colors min-h-[44px]"
               >
                 &larr; Section {prevSec.num}
               </Link>
             ) : (
-              <span className="text-ink-soft/40">&larr; First Section</span>
+              <span className="text-ink-soft/40 py-2 px-3 min-h-[44px] flex items-center">&larr; First Section</span>
             )}
 
             {nextSec ? (
               <Link
                 to={`/interactive-regulations/${actSlug}/${chapter}/section-${nextSec.num}`}
-                className="cursor-target hover:text-leaf flex items-center gap-1.5"
+                className="cursor-target hover:text-leaf flex items-center gap-1.5 py-2 px-3 rounded-lg hover:bg-mint/40 transition-colors min-h-[44px]"
               >
                 Section {nextSec.num} &rarr;
               </Link>
             ) : (
-              <span className="text-ink-soft/40">Last Section &rarr;</span>
+              <span className="text-ink-soft/40 py-2 px-3 min-h-[44px] flex items-center">Last Section &rarr;</span>
             )}
+          </div>
+
+          {/* ─── MOBILE REFERENCE SECTION (KEY TERMS, RELATED PROVISIONS, QUICK ACTIONS) ─── */}
+          <div className="block lg:hidden pt-6 mt-8 border-t-2 border-line space-y-5">
+            <h3 className="font-display font-bold text-forest-deep text-lg">Key Information &amp; Quick Actions</h3>
+
+            {/* CARD 1: Key Terms in this Section */}
+            <div className="bg-paper border border-line rounded-2xl p-4 space-y-3 card-shadow">
+              <h4 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                <Bookmark className="w-4 h-4 text-leaf" /> Key Terms in this Section
+              </h4>
+              
+              <div className="space-y-2 text-xs">
+                {keyTerms.map((item, idx) => (
+                  <div key={idx} className="p-3 bg-white border border-line rounded-xl space-y-0.5">
+                    <strong className="block text-forest font-bold text-xs">{item.term}</strong>
+                    <span className="text-[11px] text-ink-soft">{item.ref}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => alert('Viewing full terms glossary')}
+                className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block min-h-[44px] flex items-center"
+              >
+                View all terms (8) &rarr;
+              </button>
+            </div>
+
+            {/* CARD 2: Related Provisions */}
+            <div className="bg-paper border border-line rounded-2xl p-4 space-y-3 card-shadow">
+              <h4 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                <Link2 className="w-4 h-4 text-forest" /> Related Provisions
+              </h4>
+
+              <div className="space-y-2 text-xs">
+                {finalRelated.map((rel, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/interactive-regulations/${actSlug}/${chapter}/section-${rel.to_provision}`}
+                    className="cursor-target block p-3 bg-white border border-line rounded-xl hover:bg-mint/40 transition-colors min-h-[44px] flex flex-col justify-center"
+                  >
+                    <strong className="text-forest block">Section {rel.to_provision}</strong>
+                    <span className="text-[11px] text-ink-soft truncate block">{rel.title}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setActiveTab('related')}
+                className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block min-h-[44px] flex items-center"
+              >
+                View all related ({finalRelated.length}) &rarr;
+              </button>
+            </div>
+
+            {/* CARD 3: Quick Actions Menu */}
+            <div className="bg-paper border border-line rounded-2xl p-4 space-y-3 card-shadow">
+              <h4 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                <Zap className="w-4 h-4 text-gold" /> Quick Actions
+              </h4>
+
+              <div className="space-y-1.5 text-xs font-medium text-forest">
+                <button
+                  onClick={handleToggleBookmark}
+                  className="cursor-target w-full text-left p-3 rounded-xl bg-white border border-line hover:bg-mint transition-colors flex items-center gap-2 min-h-[44px]"
+                >
+                  <Bookmark className="w-4 h-4 text-leaf" /> Bookmark this section
+                </button>
+                <button
+                  onClick={handleCopyLink}
+                  className="cursor-target w-full text-left p-3 rounded-xl bg-white border border-line hover:bg-mint transition-colors flex items-center gap-2 min-h-[44px]"
+                >
+                  <Link2 className="w-4 h-4 text-leaf" /> Copy link
+                </button>
+                <button
+                  onClick={() => {
+                    if (navigator.share) navigator.share({ title: `Section ${sNum}`, url: window.location.href });
+                    else handleCopyLink();
+                  }}
+                  className="cursor-target w-full text-left p-3 rounded-xl bg-white border border-line hover:bg-mint transition-colors flex items-center gap-2 min-h-[44px]"
+                >
+                  <Share2 className="w-4 h-4 text-leaf" /> Share this section
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="cursor-target w-full text-left p-3 rounded-xl bg-white border border-line hover:bg-mint transition-colors flex items-center gap-2 min-h-[44px]"
+                >
+                  <Printer className="w-4 h-4 text-leaf" /> Print this section
+                </button>
+              </div>
+            </div>
           </div>
 
         </main>
 
-        {/* ─── 3. RIGHT SIDEBAR (PERSISTENT ~25% WIDTH) ───────────────────────── */}
-        <aside className="w-full md:w-72 lg:w-80 border-t md:border-t-0 md:border-l border-line bg-white p-5 space-y-5 flex-shrink-0">
+        {/* ─── 3. RIGHT SIDEBAR (DESKTOP ONLY ≥1024px) ───────────────────────── */}
+        <aside className="hidden lg:block w-72 lg:w-80 border-l border-line bg-white p-5 space-y-5 flex-shrink-0">
           
           {/* CARD 1: Key Terms in this Section */}
           <div className="bg-paper border border-line rounded-2xl p-4 space-y-3 card-shadow">
@@ -712,7 +820,7 @@ export default function SectionDetail() {
 
             <button
               onClick={() => alert('Viewing full terms glossary')}
-              className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block"
+              className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block min-h-[40px] flex items-center"
             >
               View all terms (8) &rarr;
             </button>
@@ -739,7 +847,7 @@ export default function SectionDetail() {
 
             <button
               onClick={() => setActiveTab('related')}
-              className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block"
+              className="cursor-target text-xs font-bold text-forest hover:text-leaf pt-1 block min-h-[40px] flex items-center"
             >
               View all related ({finalRelated.length}) &rarr;
             </button>
