@@ -12,7 +12,9 @@ router.get('/progress', protect, async (req, res) => {
     const user = await User.findById(req.user._id);
     return res.json({
       quizProgress: user.quizProgress || [],
-      learningProgress: user.learningProgress || []
+      learningProgress: user.learningProgress || [],
+      courseProgress: user.courseProgress || [],
+      readingProgress: user.readingProgress || null
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error fetching progress', error: error.message });
@@ -158,6 +160,117 @@ router.post('/filing-status', protect, async (req, res) => {
   } catch (error) {
     console.error('Save filing status error:', error);
     return res.status(500).json({ message: 'Error saving filing status', error: error.message });
+  }
+});
+// @desc    Toggle or mark a course lesson/question UID as completed
+// @access  Private
+router.post('/course-progress/toggle-item', protect, async (req, res) => {
+  try {
+    const { courseSlug, itemUid } = req.body;
+    if (!courseSlug || !itemUid) {
+      return res.status(400).json({ message: 'courseSlug and itemUid are required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user.courseProgress) user.courseProgress = [];
+
+    let entry = user.courseProgress.find(c => c.courseSlug === courseSlug);
+    if (!entry) {
+      entry = { courseSlug, completedItems: [itemUid], quizAnswers: [], updatedAt: new Date() };
+      user.courseProgress.push(entry);
+    } else {
+      const idx = entry.completedItems.indexOf(itemUid);
+      if (idx >= 0) {
+        entry.completedItems.splice(idx, 1);
+      } else {
+        entry.completedItems.push(itemUid);
+      }
+      entry.updatedAt = new Date();
+    }
+
+    await user.save();
+    return res.json({
+      message: 'Course progress updated successfully',
+      courseProgress: user.courseProgress,
+      user: user.toAuthJSON()
+    });
+  } catch (error) {
+    console.error('Toggle course item error:', error);
+    return res.status(500).json({ message: 'Error saving course progress', error: error.message });
+  }
+});
+
+// @route   POST /api/user/course-progress/answer-mcq
+// @desc    Record MCQ answer choice & mark completed
+// @access  Private
+router.post('/course-progress/answer-mcq', protect, async (req, res) => {
+  try {
+    const { courseSlug, itemUid, selectedOption, isCorrect } = req.body;
+    if (!courseSlug || !itemUid) {
+      return res.status(400).json({ message: 'courseSlug and itemUid are required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user.courseProgress) user.courseProgress = [];
+
+    let entry = user.courseProgress.find(c => c.courseSlug === courseSlug);
+    if (!entry) {
+      entry = { courseSlug, completedItems: [itemUid], quizAnswers: [{ uid: itemUid, selectedOption, isCorrect, timestamp: new Date() }], updatedAt: new Date() };
+      user.courseProgress.push(entry);
+    } else {
+      if (!entry.completedItems.includes(itemUid)) {
+        entry.completedItems.push(itemUid);
+      }
+      const existingAnswerIdx = entry.quizAnswers.findIndex(a => a.uid === itemUid);
+      const answerObj = { uid: itemUid, selectedOption, isCorrect, timestamp: new Date() };
+      if (existingAnswerIdx >= 0) {
+        entry.quizAnswers[existingAnswerIdx] = answerObj;
+      } else {
+        entry.quizAnswers.push(answerObj);
+      }
+      entry.updatedAt = new Date();
+    }
+
+    await user.save();
+    return res.json({
+      message: 'MCQ answer saved successfully',
+      courseProgress: user.courseProgress,
+      user: user.toAuthJSON()
+    });
+  } catch (error) {
+    console.error('Answer MCQ error:', error);
+    return res.status(500).json({ message: 'Error saving MCQ answer', error: error.message });
+  }
+});
+
+// @route   POST /api/user/reading-progress
+// @desc    Save last viewed act/chapter/section for Continue Reading
+// @access  Private
+router.post('/reading-progress', protect, async (req, res) => {
+  try {
+    const { actSlug, chapter, sectionNum, sectionTitle } = req.body;
+    if (!actSlug) {
+      return res.status(400).json({ message: 'actSlug is required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    user.readingProgress = {
+      actSlug,
+      chapter: chapter || 'chapter-1',
+      sectionNum: sectionNum || '1',
+      sectionTitle: sectionTitle || '',
+      updatedAt: new Date()
+    };
+
+    await user.save();
+    return res.json({
+      message: 'Reading progress updated successfully',
+      readingProgress: user.readingProgress,
+      user: user.toAuthJSON()
+    });
+  } catch (error) {
+    console.error('Save reading progress error:', error);
+    return res.status(500).json({ message: 'Error saving reading progress', error: error.message });
   }
 });
 

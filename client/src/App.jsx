@@ -20,6 +20,7 @@ import Article from './pages/Article';
 import About from './pages/About';
 import Membership from './pages/Membership';
 import AuthGated from './pages/AuthGated';
+import Dashboard from './pages/Dashboard';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="knowledge-hub" element={<KnowledgeHub />} />
           <Route path="interactive-regulations" element={<InteractiveRegulations />} />
           <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetail />} />

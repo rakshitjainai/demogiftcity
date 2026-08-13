@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Sparkles, ShieldCheck, FileText, CheckCircle2, AlertCircle, Bookmark, Tag, HelpCircle, Link2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, ShieldCheck, FileText, CheckCircle2, AlertCircle, Bookmark, Tag, HelpCircle, Link2, Search, BookOpen, Layers, ArrowLeft } from 'lucide-react';
 import { ACTS_DATA, PROVISION_DETAILS, CROSS_REFERENCES_DATA, getActName } from '../data/regulationsData';
+import { ParagraphBlock, SubRegulationBlock, ClauseBlock, ExpandableLongText, PractitionerNote } from '../components/statutory/StatutoryBlocks';
+import ActionToolbar from '../components/statutory/ActionToolbar';
+import { useAuth } from '../context/AuthContext';
 
 // ─── Per-section Key Highlights ──────────────────────────────────────────────
-// Keyed as `actSlug|sectionNum`. Falls back to number-keyed generic bullets.
-
 const SECTION_HIGHLIGHTS = {
-  // ══ Companies Act, 2013 ══
   'companies-act-2013|1': [
     'Establishes the short title, geographic extent (applies to whole of India), and the commencement date notified by the Central Government.',
     'Lays the constitutional basis upon which all subsequent provisions, rules, and notifications derive their legal force.',
@@ -20,7 +20,6 @@ const SECTION_HIGHLIGHTS = {
   ],
 };
 
-// Fallback per section number (act-agnostic)
 const FALLBACK_HIGHLIGHTS = {
   1: [
     'Establishes the short title, territorial extent, and official commencement date of the legislation.',
@@ -36,7 +35,7 @@ const FALLBACK_HIGHLIGHTS = {
 
 function getHighlights(actSlug, sNum, provisionData) {
   if (provisionData?.key_highlights && provisionData.key_highlights.length > 0) {
-    return provisionData.key_highlights.map(h => `Key highlight parameter: ${h}`);
+    return provisionData.key_highlights;
   }
   const key = `${actSlug}|${sNum}`;
   if (SECTION_HIGHLIGHTS[key]) return SECTION_HIGHLIGHTS[key];
@@ -48,10 +47,9 @@ function getHighlights(actSlug, sNum, provisionData) {
   ];
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function SectionDetail() {
   const { actSlug, chapter, sectionNum } = useParams();
+  const { saveReadingProgress } = useAuth();
 
   const actName = getActName(actSlug);
   const cleanChapter = chapter?.replace('chapter-', '') || '1';
@@ -59,274 +57,490 @@ export default function SectionDetail() {
   const cleanSection = sectionNum?.replace('section-', '') || '1';
   const sNum = cleanSection;
 
-  // Get real section title from data
+  // Active Tab & Font Size State
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview'|'statutory'|'explanation'|'guidance'|'examples'|'related'
+  const [fontSize, setFontSize] = useState(() => localStorage.getItem('regmate_font_size') || 'md');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedChs, setExpandedChs] = useState({ [chapterNum]: true });
+
+  // Load real Act & Provision data
   const actData = ACTS_DATA[actSlug];
   const chapterData = actData?.chapters.find(c => String(c.num) === String(chapterNum));
   const chapterTitle = chapterData?.title || `Chapter ${chapterNum}`;
   const sectionData = chapterData?.sections.find(s => String(s.num) === String(sNum));
   const sectionTitle = sectionData?.title || `Regulation ${sNum}`;
 
-  // Provision details from content package (if available)
   const provisionData = PROVISION_DETAILS[`${actSlug}|${chapterNum}|${cleanSection}`]
                      || PROVISION_DETAILS[`${actSlug}|${cleanSection}`]
                      || null;
 
-  // Prev/Next sections within this chapter
+  // Prev/Next sections
   const allSections = chapterData?.sections || [];
   const secIdx = allSections.findIndex(s => String(s.num) === String(sNum));
   const prevSec = secIdx > 0 ? allSections[secIdx - 1] : null;
   const nextSec = secIdx < allSections.length - 1 ? allSections[secIdx + 1] : null;
 
   const highlights = getHighlights(actSlug, sNum, provisionData);
+  const relatedProvisions = CROSS_REFERENCES_DATA.filter(cr => String(cr.from_provision) === String(sNum));
+
+  // Save reading progress for Dashboard's Continue Reading
+  useEffect(() => {
+    saveReadingProgress(actSlug, chapter || `chapter-${chapterNum}`, sNum, sectionTitle);
+    localStorage.setItem('regmate_font_size', fontSize);
+  }, [actSlug, chapterNum, sNum, sectionTitle, fontSize]);
+
+  const fontSizeClass = fontSize === 'sm' ? 'text-xs' : fontSize === 'lg' ? 'text-base' : 'text-sm';
+
+  const toggleChapterTree = (chNo) => {
+    setExpandedChs(prev => ({ ...prev, [chNo]: !prev[chNo] }));
+  };
+
+  // Filter chapters/sections for left tree
+  const filteredChapters = actData?.chapters?.filter(c => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    const chMatch = c.title.toLowerCase().includes(q) || String(c.num).includes(q);
+    const secMatch = c.sections?.some(s => s.title.toLowerCase().includes(q) || String(s.num).includes(q));
+    return chMatch || secMatch;
+  }) || [];
 
   return (
-    <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-ink-soft mb-8 flex-wrap">
-        <Link to="/interactive-regulations" className="cursor-target hover:text-leaf font-medium">
-          Interactive Regulations
-        </Link>
-        <span>/</span>
-        <Link to={`/interactive-regulations/${actSlug}/${chapter}`} className="cursor-target hover:text-leaf font-medium">
-          {actName} — Ch. {chapterNum}
-        </Link>
-        <span>/</span>
-        <span className="text-forest-deep font-semibold">Regulation {sNum}</span>
-      </div>
+    <div className="min-h-screen bg-paper flex flex-col md:flex-row animate-fade-in">
+      
+      {/* ─── LEFT SIDEBAR (Desktop Persistent Navigation Tree) ────────────────── */}
+      <aside className="w-full md:w-80 border-r border-line bg-white flex flex-col flex-shrink-0">
+        
+        {/* Header / Act Card */}
+        <div className="p-5 border-b border-line bg-paper/60 space-y-3">
+          <Link to="/interactive-regulations" className="cursor-target inline-flex items-center text-xs font-semibold text-forest hover:text-leaf mb-1">
+            <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Back to Regulations
+          </Link>
+          <div>
+            <span className="px-2 py-0.5 bg-mint text-forest font-bold text-[10px] rounded-full uppercase tracking-wider">
+              Active Act
+            </span>
+            <h2 className="font-display font-bold text-forest-deep text-lg leading-tight mt-1">
+              {actName}
+            </h2>
+            <div className="text-xs text-ink-soft mt-1 flex items-center gap-2">
+              <span>{actData?.chapters?.length || 0} Chapters</span>
+              <span>•</span>
+              <span>{actData?.totalSections || 0} Provisions</span>
+            </div>
+          </div>
 
-      {/* Header */}
-      <div className="mb-10 bg-white border border-line rounded-2xl p-8 card-shadow">
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase tracking-wider">
-            {actName}
-          </span>
-          <span className="px-3 py-1 bg-gold/20 text-forest font-semibold text-xs rounded-full">
-            Chapter {chapterNum} — {chapterTitle}
-          </span>
-          {provisionData?.requirement_type && (
-            <span className="px-3 py-1 bg-forest/10 text-forest-deep font-medium text-xs rounded-full">
-              {provisionData.requirement_type}
-            </span>
-          )}
-          {actSlug === 'ifsca-fme-2025' && (
-            <span className="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 font-medium text-xs rounded-full">
-              Draft — pending legal review
-            </span>
-          )}
+          {/* Search Filter Input */}
+          <div className="relative pt-1">
+            <Search className="w-4 h-4 text-ink-soft absolute left-3 top-3.5" />
+            <input
+              type="text"
+              placeholder="Search chapters/sections..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 bg-white border border-line rounded-lg text-xs text-ink focus:outline-none focus:border-forest"
+            />
+          </div>
         </div>
-        <h1 className="text-3xl md:text-4xl font-display text-forest-deep mb-3">
-          Regulation {sNum}
-        </h1>
-        <p className="text-xl text-ink font-medium mb-4">{sectionTitle}</p>
 
-        {/* Topic Tags */}
-        {provisionData?.topic_tags && provisionData.topic_tags.length > 0 && (
-          <div className="flex items-center gap-2 flex-wrap pt-2">
-            <Tag className="w-4 h-4 text-leaf" />
-            {provisionData.topic_tags.map((tag, idx) => (
-              <span key={idx} className="px-2.5 py-0.5 bg-paper border border-line text-ink-soft text-xs rounded-md font-medium">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+        {/* Tree Navigation */}
+        <div className="flex-grow overflow-y-auto p-3 space-y-2">
+          {filteredChapters.map(c => {
+            const isCurrentCh = c.num === chapterNum;
+            const isExpanded = expandedChs[c.num] || isCurrentCh || !!searchQuery.trim();
 
-      <div className="space-y-6">
-        {/* Key Highlights */}
-        {highlights.length > 0 && (
-          <div className="bg-paper border border-line rounded-xl p-6">
-            <h3 className="font-semibold text-forest-deep text-lg mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-gold" /> Key Highlights &amp; Scope
-            </h3>
-            <ul className="space-y-3 text-sm text-ink-soft">
-              {highlights.map((bullet, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <span className="text-leaf font-bold mt-0.5 flex-shrink-0">•</span>
-                  <span className="leading-relaxed">{bullet}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Full Statutory Text & RegMate Editorial Layer */}
-        {provisionData ? (
-          <div className="space-y-6">
-            {/* Statutory Text Card */}
-            <div className="bg-white border border-line rounded-2xl p-8 card-shadow">
-              <div className="flex items-center justify-between pb-4 border-b border-line mb-6">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-6 h-6 text-leaf" />
-                  <h3 className="text-xl font-semibold text-forest-deep">Statutory Text</h3>
-                </div>
-                <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full">
-                  Official Gazette Text
-                </span>
-              </div>
-              <div className="bg-paper border border-line rounded-xl p-6 text-forest-deep text-sm leading-relaxed whitespace-pre-line font-serif">
-                {provisionData.statutory_text}
-              </div>
-            </div>
-
-            {/* RegMate Editorial & Practical Guidance */}
-            <div className="bg-white border border-line rounded-2xl p-8 card-shadow space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-line">
-                <div className="flex items-center gap-3">
-                  <ShieldCheck className="w-6 h-6 text-forest" />
-                  <h3 className="text-xl font-semibold text-forest-deep">RegMate Editorial &amp; Practical Layer</h3>
-                </div>
-                <span className="px-3 py-1 bg-gold/20 text-forest font-semibold text-xs rounded-full">
-                  CS Prashant Kumar Analysis
-                </span>
-              </div>
-
-              {/* Explanation */}
-              {provisionData.regmate_explanation && (
-                <div>
-                  <h4 className="font-semibold text-forest-deep mb-2 flex items-center gap-2">
-                    <Bookmark className="w-4 h-4 text-leaf" /> Regulatory Explanation
-                  </h4>
-                  <p className="text-sm text-ink leading-relaxed bg-mint-deep/40 border border-line p-4 rounded-xl">
-                    {provisionData.regmate_explanation}
-                  </p>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                {/* Practical Point */}
-                {provisionData.practical_point && (
-                  <div className="bg-paper border border-line p-5 rounded-xl">
-                    <h5 className="font-semibold text-forest-deep text-sm mb-2 flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-leaf" /> Practical Guidance
-                    </h5>
-                    <p className="text-xs text-ink-soft leading-relaxed">
-                      {provisionData.practical_point}
-                    </p>
+            return (
+              <div key={c.num} className="border border-line/60 rounded-xl overflow-hidden bg-white">
+                <button
+                  onClick={() => toggleChapterTree(c.num)}
+                  className={`w-full px-3 py-2 text-left flex items-start justify-between text-xs transition-colors ${
+                    isCurrentCh ? 'bg-mint/40 font-semibold text-forest-deep' : 'hover:bg-paper text-ink'
+                  }`}
+                >
+                  <div className="truncate pr-2">
+                    <span className="text-[10px] font-bold text-leaf uppercase tracking-wider block">
+                      Ch. {c.num}
+                    </span>
+                    <span className="truncate">{c.title}</span>
                   </div>
-                )}
+                  <span className="text-[10px] text-ink-soft mt-0.5 font-bold">
+                    {c.sections?.length || 0}
+                  </span>
+                </button>
 
-                {/* Compliance Point */}
-                {provisionData.compliance_point && (
-                  <div className="bg-paper border border-line p-5 rounded-xl">
-                    <h5 className="font-semibold text-forest-deep text-sm mb-2 flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-gold" /> Compliance Checkpoint
-                    </h5>
-                    <p className="text-xs text-ink-soft leading-relaxed">
-                      {provisionData.compliance_point}
-                    </p>
+                {isExpanded && (
+                  <div className="border-t border-line/40 bg-paper/30 divide-y divide-line/30 pl-2">
+                    {c.sections?.map(sec => {
+                      const isSelectedSec = isCurrentCh && String(sec.num) === String(sNum);
+
+                      return (
+                        <Link
+                          key={sec.num}
+                          to={`/interactive-regulations/${actSlug}/chapter-${c.num}/section-${sec.num}`}
+                          className={`block px-3 py-2 text-[11px] truncate transition-all ${
+                            isSelectedSec
+                              ? 'bg-forest text-white font-semibold rounded-l-lg border-l-4 border-gold'
+                              : 'text-ink-soft hover:text-forest hover:bg-white'
+                          }`}
+                        >
+                          <span className="font-mono font-bold mr-1.5">§ {sec.num}</span>
+                          <span className="truncate">{sec.title}</span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
+            );
+          })}
+        </div>
+      </aside>
 
-              {/* Examples & Action Required */}
-              {(provisionData.examples || provisionData.action_required) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  {provisionData.examples && (
-                    <div className="bg-mint-deep/30 border border-line p-5 rounded-xl">
-                      <h5 className="font-semibold text-forest-deep text-sm mb-2 flex items-center gap-2">
-                        <HelpCircle className="w-4 h-4 text-forest" /> Illustration / Examples
-                      </h5>
-                      <p className="text-xs text-ink-soft leading-relaxed">
-                        {provisionData.examples}
-                      </p>
-                    </div>
-                  )}
-
-                  {provisionData.action_required && (
-                    <div className="bg-mint-deep/30 border border-line p-5 rounded-xl">
-                      <h5 className="font-semibold text-forest-deep text-sm mb-2 flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-leaf" /> Action Required
-                      </h5>
-                      <p className="text-xs text-ink-soft leading-relaxed">
-                        {provisionData.action_required}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Statutory Cross-References */}
-              {CROSS_REFERENCES_DATA.filter(cr => String(cr.from_provision) === String(sNum)).length > 0 && (
-                <div className="bg-mint-deep/20 border border-line rounded-xl p-5">
-                  <h5 className="font-semibold text-forest-deep text-sm mb-3 flex items-center gap-2">
-                    <Link2 className="w-4 h-4 text-forest" /> Statutory Cross-References
-                  </h5>
-                  <div className="flex flex-wrap gap-2">
-                    {CROSS_REFERENCES_DATA.filter(cr => String(cr.from_provision) === String(sNum)).map((cr, idx) => (
-                      <Link
-                        key={idx}
-                        to={`/interactive-regulations/ifsca-fme-2025/chapter-1/section-${cr.to_provision}`}
-                        className="cursor-target inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-line rounded-lg text-xs text-forest font-medium hover:bg-mint transition-colors"
-                      >
-                        <span>Regulation {cr.to_provision}</span>
-                        <span className="text-ink-soft">({cr.relation})</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+      {/* ─── MAIN COLUMN + RIGHT SIDEBAR WRAPPER ───────────────────────────── */}
+      <div className="flex-grow flex flex-col min-w-0">
+        
+        {/* TOP BAR (Breadcrumbs, Font size, TTS/Action icons) */}
+        <header className="bg-white border-b border-line px-6 py-3 flex items-center justify-between flex-wrap gap-4 sticky top-0 z-20">
+          <div className="flex items-center gap-2 text-xs text-ink-soft flex-wrap">
+            <Link to="/" className="cursor-target hover:text-leaf">Home</Link>
+            <span>/</span>
+            <Link to="/interactive-regulations" className="cursor-target hover:text-leaf">Regulations</Link>
+            <span>/</span>
+            <span className="font-semibold text-forest-deep">{actName}</span>
+            <span>/</span>
+            <span className="text-leaf font-bold">Ch. {chapterNum} § {sNum}</span>
           </div>
-        ) : (
-          <div className="bg-white border border-line rounded-2xl p-8 card-shadow">
-            <div className="flex items-center justify-between pb-6 border-b border-line mb-6">
-              <div className="flex items-center gap-3">
-                <FileText className="w-6 h-6 text-leaf" />
-                <h3 className="text-xl font-semibold text-forest-deep">Statutory Text &amp; Commentary</h3>
+
+          <ActionToolbar
+            textToSpeak={provisionData?.statutory_text || `${sectionTitle}. ${highlights.join('. ')}`}
+            itemKey={`${actSlug}|${chapterNum}|${sNum}`}
+            itemTitle={`Regulation ${sNum}: ${sectionTitle}`}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+            variant="top"
+          />
+        </header>
+
+        {/* MAIN BODY: 2 Columns (Main Content + Right Sidebar) */}
+        <div className="flex-grow flex flex-col lg:flex-row min-w-0">
+          
+          {/* MAIN READING COLUMN */}
+          <main className="flex-grow p-6 md:p-8 max-w-4xl space-y-6 overflow-y-auto">
+            
+            {/* Provision Title Header */}
+            <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-3 py-0.5 bg-mint text-forest font-bold text-xs rounded-full uppercase tracking-wider">
+                  {actName}
+                </span>
+                <span className="px-2.5 py-0.5 bg-paper border border-line text-ink-soft text-xs rounded-full">
+                  Chapter {chapterNum} — {chapterTitle}
+                </span>
+                {provisionData?.requirement_type && (
+                  <span className="px-2.5 py-0.5 bg-forest/10 text-forest-deep font-semibold text-xs rounded-full">
+                    {provisionData.requirement_type}
+                  </span>
+                )}
               </div>
-              <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full">
-                Codex Annotated View
-              </span>
-            </div>
-            <div className="bg-mint-deep border border-leaf/20 rounded-xl p-8 text-center space-y-3">
-              <ShieldCheck className="w-12 h-12 text-forest mx-auto" />
-              <h4 className="text-xl font-display text-forest-deep">Full Text &amp; Commentary Coming Soon</h4>
-              <p className="text-sm text-ink-soft max-w-xl mx-auto">
-                We are actively structuring the complete legal text of{' '}
-                <strong>Regulation {sNum} — {sectionTitle}</strong>{' '}
-                with cross-references, precedent case law, and practitioner insights by{' '}
-                <strong>CS Prashant Kumar</strong>.
+
+              <h1 className="text-2xl md:text-3xl font-display font-semibold text-forest-deep leading-tight">
+                Regulation {sNum} — {sectionTitle}
+              </h1>
+
+              <p className="text-sm text-ink-soft leading-relaxed">
+                Official regulatory provision under {actName}. Use the navigation controls or tabs below to analyze statutory requirements and practitioner insights.
               </p>
+
+              {/* Prev / Next Section Buttons */}
+              <div className="flex items-center justify-between pt-4 border-t border-line">
+                {prevSec ? (
+                  <Link
+                    to={`/interactive-regulations/${actSlug}/${chapter}/section-${prevSec.num}`}
+                    className="cursor-target inline-flex items-center gap-1.5 px-3.5 py-2 bg-paper border border-line rounded-xl text-forest text-xs font-semibold hover:bg-mint transition-colors truncate max-w-[200px]"
+                  >
+                    <ChevronLeft className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">§ {prevSec.num} {prevSec.title}</span>
+                  </Link>
+                ) : <div />}
+
+                {nextSec ? (
+                  <Link
+                    to={`/interactive-regulations/${actSlug}/${chapter}/section-${nextSec.num}`}
+                    className="cursor-target inline-flex items-center gap-1.5 px-3.5 py-2 bg-forest text-white rounded-xl text-xs font-semibold hover:bg-leaf transition-colors shadow-sm truncate max-w-[200px]"
+                  >
+                    <span className="truncate">§ {nextSec.num} {nextSec.title}</span>
+                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                  </Link>
+                ) : <div />}
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Prev / Next section navigation (real titles) */}
-        <div className="flex items-center justify-between pt-2">
-          {prevSec ? (
-            <Link
-              to={`/interactive-regulations/${actSlug}/${chapter}/section-${prevSec.num}`}
-              className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-paper border border-line rounded-xl text-forest font-medium hover:bg-mint transition-colors text-sm max-w-xs"
-            >
-              <ChevronLeft className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">§ {prevSec.num} — {prevSec.title.length > 35 ? prevSec.title.slice(0, 35) + '…' : prevSec.title}</span>
-            </Link>
-          ) : (
-            <Link
-              to={`/interactive-regulations/${actSlug}/${chapter}`}
-              className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-paper border border-line rounded-xl text-forest font-medium hover:bg-mint transition-colors text-sm"
-            >
-              <ChevronLeft className="w-4 h-4" /> Back to Chapter
-            </Link>
-          )}
+            {/* TAB BAR (Overview | Statutory Text | RegMate Explanation | Practical Guidance | Examples | Related) */}
+            <div className="border-b border-line flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {[
+                { id: 'overview', label: 'Overview' },
+                { id: 'statutory', label: 'Statutory Text' },
+                { id: 'explanation', label: 'RegMate Explanation' },
+                { id: 'guidance', label: 'Practical Guidance' },
+                { id: 'examples', label: 'Examples' },
+                { id: 'related', label: `Related (${relatedProvisions.length})` }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-target px-4 py-2.5 rounded-t-xl text-xs font-semibold transition-all whitespace-nowrap border-b-2 ${
+                    activeTab === tab.id
+                      ? 'bg-white text-forest-deep border-forest shadow-sm'
+                      : 'text-ink-soft border-transparent hover:text-forest hover:bg-paper'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-          {nextSec ? (
-            <Link
-              to={`/interactive-regulations/${actSlug}/${chapter}/section-${nextSec.num}`}
-              className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-forest text-white rounded-xl font-medium hover:bg-leaf transition-colors shadow-sm text-sm max-w-xs"
-            >
-              <span className="truncate">§ {nextSec.num} — {nextSec.title.length > 35 ? nextSec.title.slice(0, 35) + '…' : nextSec.title}</span>
-              <ChevronRight className="w-4 h-4 flex-shrink-0" />
-            </Link>
-          ) : (
-            <Link
-              to={`/interactive-regulations/${actSlug}/${chapter}`}
-              className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-forest text-white rounded-xl font-medium hover:bg-leaf transition-colors shadow-sm text-sm"
-            >
-              All Sections <ChevronRight className="w-4 h-4" />
-            </Link>
-          )}
+            {/* TAB CONTENT PANELS */}
+            <div className="space-y-6">
+
+              {/* 1. OVERVIEW TAB */}
+              {activeTab === 'overview' && (
+                <div className="space-y-6 animate-fade-in">
+                  {/* Highlights Card */}
+                  <div className="bg-white border border-line rounded-2xl p-6 card-shadow space-y-4">
+                    <h3 className="font-semibold text-forest-deep text-base flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-gold" /> Key Highlights &amp; Scope
+                    </h3>
+                    <ul className="space-y-3 text-sm text-ink-soft">
+                      {highlights.map((bullet, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span className="text-leaf font-bold mt-0.5 flex-shrink-0">•</span>
+                          <span className={`${fontSizeClass} leading-relaxed`}>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Statutory Text Card in Overview */}
+                  <div className="bg-white border border-line rounded-2xl p-6 card-shadow space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-line">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-leaf" />
+                        <h3 className="font-semibold text-forest-deep text-base">Statutory Text Preview</h3>
+                      </div>
+                      <span className="px-2.5 py-0.5 bg-mint text-forest font-bold text-[10px] rounded-full uppercase">
+                        Official Text
+                      </span>
+                    </div>
+                    
+                    <div className="bg-mint/15 border border-mint-deep/30 rounded-xl p-5">
+                      <ExpandableLongText
+                        text={provisionData?.statutory_text || `Full statutory text for Regulation ${sNum} is being compiled.`}
+                        fontSizeClass={fontSizeClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 2. STATUTORY TEXT TAB */}
+              {activeTab === 'statutory' && (
+                <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-6 animate-fade-in">
+                  <div className="flex items-center justify-between pb-4 border-b border-line">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-6 h-6 text-leaf" />
+                      <h3 className="text-xl font-semibold text-forest-deep">Complete Statutory Text</h3>
+                    </div>
+                    <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full">
+                      Official Gazette Text
+                    </span>
+                  </div>
+
+                  <div className="bg-paper/80 border border-line rounded-xl p-6 font-serif">
+                    <ParagraphBlock
+                      text={provisionData?.statutory_text || `Official Gazette text for Regulation ${sNum} is structured and verified against the parent Act.`}
+                      fontSizeClass={fontSizeClass}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 3. REGMATE EXPLANATION TAB */}
+              {activeTab === 'explanation' && (
+                <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
+                  <div className="flex items-center gap-3 pb-4 border-b border-line">
+                    <ShieldCheck className="w-6 h-6 text-forest" />
+                    <div>
+                      <h3 className="text-xl font-semibold text-forest-deep">RegMate Regulatory Explanation</h3>
+                      <p className="text-xs text-ink-soft">Commentary &amp; Statutory Analysis by CS Prashant Kumar</p>
+                    </div>
+                  </div>
+
+                  {provisionData?.regmate_explanation ? (
+                    <div className="p-5 bg-mint/20 border border-mint-deep/40 rounded-xl text-ink leading-relaxed">
+                      <ParagraphBlock text={provisionData.regmate_explanation} fontSizeClass={fontSizeClass} />
+                    </div>
+                  ) : (
+                    <p className="text-sm text-ink-soft italic">
+                      Detailed practitioner commentary for Regulation {sNum} is currently being updated.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* 4. PRACTICAL GUIDANCE TAB */}
+              {activeTab === 'guidance' && (
+                <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-6 animate-fade-in">
+                  <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+                    <CheckCircle2 className="w-6 h-6 text-leaf" /> Practical Guidance &amp; Checkpoints
+                  </h3>
+
+                  {provisionData?.practical_point && (
+                    <PractitionerNote title="Practical Guidance Note" text={provisionData.practical_point} />
+                  )}
+
+                  {provisionData?.compliance_point && (
+                    <div className="bg-paper border border-line p-5 rounded-xl">
+                      <h4 className="font-semibold text-forest-deep text-sm mb-2 flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-gold" /> Statutory Compliance Checkpoint
+                      </h4>
+                      <p className={`${fontSizeClass} text-ink-soft leading-relaxed`}>
+                        {provisionData.compliance_point}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 5. EXAMPLES TAB */}
+              {activeTab === 'examples' && (
+                <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
+                  <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+                    <HelpCircle className="w-6 h-6 text-forest" /> Illustrations &amp; Examples
+                  </h3>
+
+                  {provisionData?.examples ? (
+                    <div className="p-5 bg-mint-deep/30 border border-line rounded-xl text-ink leading-relaxed">
+                      <ParagraphBlock text={provisionData.examples} fontSizeClass={fontSizeClass} />
+                    </div>
+                  ) : (
+                    <p className="text-sm text-ink-soft italic">
+                      Illustrative case scenarios for Regulation {sNum} will appear here.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* 6. RELATED TAB */}
+              {activeTab === 'related' && (
+                <div className="bg-white border border-line rounded-2xl p-6 md:p-8 card-shadow space-y-4 animate-fade-in">
+                  <h3 className="text-xl font-semibold text-forest-deep flex items-center gap-2 pb-4 border-b border-line">
+                    <Link2 className="w-6 h-6 text-forest" /> Related Statutory Provisions ({relatedProvisions.length})
+                  </h3>
+
+                  {relatedProvisions.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {relatedProvisions.map((cr, idx) => (
+                        <Link
+                          key={idx}
+                          to={`/interactive-regulations/ifsca-fme-2025/chapter-1/section-${cr.to_provision}`}
+                          className="cursor-target p-4 bg-paper border border-line rounded-xl hover:bg-mint/30 transition-colors block space-y-1"
+                        >
+                          <span className="text-xs font-bold text-leaf uppercase tracking-wider block">
+                            Regulation {cr.to_provision}
+                          </span>
+                          <span className="text-xs text-ink-soft block font-medium">
+                            Relation: {cr.relation}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-ink-soft italic">
+                      No statutory cross-references mapped for Regulation {sNum}.
+                    </p>
+                  )}
+                </div>
+              )}
+
+            </div>
+
+            {/* Bottom Action Toolbar */}
+            <div className="pt-4">
+              <ActionToolbar
+                textToSpeak={provisionData?.statutory_text || sectionTitle}
+                itemKey={`${actSlug}|${chapterNum}|${sNum}`}
+                itemTitle={`Regulation ${sNum}: ${sectionTitle}`}
+                variant="bar"
+              />
+            </div>
+
+          </main>
+
+          {/* ─── RIGHT SIDEBAR (Desktop Convenience Panel) ──────────────────── */}
+          <aside className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-line bg-white p-6 space-y-6 flex-shrink-0">
+            
+            {/* Key Terms */}
+            <div className="bg-paper border border-line rounded-xl p-5 space-y-3">
+              <h3 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-leaf" /> Key Terms in Section
+              </h3>
+              <div className="space-y-2 text-xs text-ink">
+                <div className="p-2.5 bg-white border border-line rounded-lg">
+                  <strong className="block text-forest font-bold">Fund Management Entity (FME)</strong>
+                  <span className="text-[11px] text-ink-soft">An entity registered with IFSCA to initiate and manage fund schemes.</span>
+                </div>
+                <div className="p-2.5 bg-white border border-line rounded-lg">
+                  <strong className="block text-forest font-bold">Corpus Target</strong>
+                  <span className="text-[11px] text-ink-soft">Minimum aggregate capital commitment required per scheme.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Related Provisions */}
+            {relatedProvisions.length > 0 && (
+              <div className="bg-paper border border-line rounded-xl p-5 space-y-3">
+                <h3 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                  <Link2 className="w-4 h-4 text-forest" /> Related Provisions
+                </h3>
+                <div className="space-y-2">
+                  {relatedProvisions.slice(0, 4).map((cr, idx) => (
+                    <Link
+                      key={idx}
+                      to={`/interactive-regulations/ifsca-fme-2025/chapter-1/section-${cr.to_provision}`}
+                      className="cursor-target block p-2.5 bg-white border border-line rounded-lg text-xs font-semibold text-forest hover:bg-mint transition-colors"
+                    >
+                      § {cr.to_provision} ({cr.relation})
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quick Actions Panel */}
+            <div className="bg-forest/5 border border-forest/20 rounded-xl p-5 space-y-3">
+              <h3 className="font-semibold text-forest-deep text-xs uppercase tracking-wider flex items-center gap-2">
+                <Layers className="w-4 h-4 text-forest" /> Quick Actions
+              </h3>
+              <div className="space-y-2 text-xs">
+                <button
+                  onClick={() => window.print()}
+                  className="cursor-target w-full text-left p-2 bg-white border border-line rounded-lg font-medium text-forest hover:bg-mint transition-colors"
+                >
+                  🖨️ Print Section View
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Section link copied to clipboard!');
+                  }}
+                  className="cursor-target w-full text-left p-2 bg-white border border-line rounded-lg font-medium text-forest hover:bg-mint transition-colors"
+                >
+                  🔗 Copy Direct Link
+                </button>
+              </div>
+            </div>
+
+          </aside>
+
         </div>
       </div>
     </div>

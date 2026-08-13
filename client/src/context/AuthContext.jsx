@@ -169,6 +169,111 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Toggle Course Item Completion (Lesson or MCQ)
+  const toggleCourseItem = async (courseSlug, itemUid) => {
+    if (!token) {
+      // Local fallback for guest / unauthenticated
+      const guestProgress = JSON.parse(localStorage.getItem('regmate_guest_course_progress') || '{}');
+      if (!guestProgress[courseSlug]) guestProgress[courseSlug] = { completedItems: [], quizAnswers: [] };
+      const items = guestProgress[courseSlug].completedItems || [];
+      const idx = items.indexOf(itemUid);
+      if (idx >= 0) items.splice(idx, 1);
+      else items.push(itemUid);
+      guestProgress[courseSlug].completedItems = items;
+      localStorage.setItem('regmate_guest_course_progress', JSON.stringify(guestProgress));
+      return guestProgress;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/course-progress/toggle-item`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ courseSlug, itemUid })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to sync course item progress to backend:', err);
+    }
+  };
+
+  // Record Course MCQ Answer
+  const answerCourseMcq = async (courseSlug, itemUid, selectedOption, isCorrect) => {
+    if (!token) {
+      const guestProgress = JSON.parse(localStorage.getItem('regmate_guest_course_progress') || '{}');
+      if (!guestProgress[courseSlug]) guestProgress[courseSlug] = { completedItems: [], quizAnswers: [] };
+      if (!guestProgress[courseSlug].completedItems.includes(itemUid)) {
+        guestProgress[courseSlug].completedItems.push(itemUid);
+      }
+      guestProgress[courseSlug].quizAnswers.push({ uid: itemUid, selectedOption, isCorrect, timestamp: new Date() });
+      localStorage.setItem('regmate_guest_course_progress', JSON.stringify(guestProgress));
+      return guestProgress;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/course-progress/answer-mcq`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ courseSlug, itemUid, selectedOption, isCorrect })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to sync MCQ answer to backend:', err);
+    }
+  };
+
+  // Save Reading Progress
+  const saveReadingProgress = async (actSlug, chapter, sectionNum, sectionTitle) => {
+    // Always store locally
+    const readObj = { actSlug, chapter, sectionNum, sectionTitle, updatedAt: new Date().toISOString() };
+    localStorage.setItem('regmate_last_read', JSON.stringify(readObj));
+
+    if (!token) return readObj;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/reading-progress`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ actSlug, chapter, sectionNum, sectionTitle })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.warn('Failed to sync reading progress to backend:', err);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -182,6 +287,9 @@ export function AuthProvider({ children }) {
         logout,
         saveQuizResult,
         saveLearningProgress,
+        toggleCourseItem,
+        answerCourseMcq,
+        saveReadingProgress,
         isAuthenticated: !!user
       }}
     >

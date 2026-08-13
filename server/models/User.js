@@ -23,6 +23,26 @@ const filingStatusSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { _id: false });
 
+const courseProgressSchema = new mongoose.Schema({
+  courseSlug: { type: String, required: true },
+  completedItems: [{ type: String }],
+  quizAnswers: [{
+    uid: { type: String, required: true },
+    selectedOption: { type: String },
+    isCorrect: { type: Boolean },
+    timestamp: { type: Date, default: Date.now }
+  }],
+  updatedAt: { type: Date, default: Date.now }
+}, { _id: false });
+
+const readingProgressSchema = new mongoose.Schema({
+  actSlug: { type: String },
+  chapter: { type: String },
+  sectionNum: { type: String },
+  sectionTitle: { type: String },
+  updatedAt: { type: Date, default: Date.now }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -33,6 +53,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: 'member' },
     quizProgress: [quizProgressSchema],
     learningProgress: [learningProgressSchema],
+    courseProgress: [courseProgressSchema],
+    readingProgress: readingProgressSchema,
     filingStatus: [filingStatusSchema]
   },
   { timestamps: true }
@@ -48,6 +70,8 @@ userSchema.methods.toAuthJSON = function () {
     role: this.role,
     quizProgress: this.quizProgress || [],
     learningProgress: this.learningProgress || [],
+    courseProgress: this.courseProgress || [],
+    readingProgress: this.readingProgress || null,
     filingStatus: this.filingStatus || [],
     createdAt: this.createdAt
   };

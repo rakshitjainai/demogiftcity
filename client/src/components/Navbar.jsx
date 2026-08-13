@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen } from 'lucide-react';
+import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
@@ -157,6 +157,15 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                       <p className="text-xs font-bold text-slate-900 truncate">{user?.name}</p>
                       <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
                     </div>
+
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center gap-2 transition-colors"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                      My Dashboard
+                    </Link>
 
                     <Link
                       to="/profile"
