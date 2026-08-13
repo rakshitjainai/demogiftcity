@@ -183,7 +183,9 @@ export const ACTS_DATA = {
     title: 'IFSCA (Fund Management) Regulations, 2025',
     shortTitle: 'IFSCA FME Regulations',
     totalChapters: 12,
-    chapters: ifscaChapters
+    chapters: ifscaChapters,
+    versionDate: 'Consolidated as amended up to 30 January 2026',
+    status: 'Final'
   },
 
   // ══════════════════════════════════════════════════════════════════════════

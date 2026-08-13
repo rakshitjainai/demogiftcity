@@ -60,11 +60,7 @@ export default function InteractiveRegulations() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-lg text-forest-deep leading-tight">{act.title}</h3>
-                      {act.slug === 'ifsca-fme-2025' ? (
-                        <span className="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-full font-medium">
-                          Draft — pending legal review
-                        </span>
-                      ) : act.versionDate ? (
+                      {act.versionDate ? (
                         <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium">
                           Verified · {act.versionDate.includes('Consolidated') ? act.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : act.versionDate}
                         </span>

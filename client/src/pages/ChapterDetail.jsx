@@ -31,11 +31,7 @@ export default function ChapterDetail() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-3">
           <span className="eyebrow block">§ {actName}</span>
-          {actSlug === 'ifsca-fme-2025' ? (
-            <span className="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-full font-medium">
-              Draft — pending legal review
-            </span>
-          ) : actData?.versionDate ? (
+          {actData?.versionDate ? (
             <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium">
               Verified · {actData.versionDate.includes('Consolidated') ? actData.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : actData.versionDate}
             </span>
