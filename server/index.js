@@ -6,6 +6,8 @@ import dns from 'dns';
 
 import authRoutes from './routes/authRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
+import regulatoryMasterRoutes from './routes/regulatoryMasterRoutes.js';
+import examReadyRoutes from './routes/examReadyRoutes.js';
 
 dotenv.config();
 
@@ -48,6 +50,8 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', progressRoutes);
+app.use('/api/regulatory-master', regulatoryMasterRoutes);
+app.use('/api/exam-ready', examReadyRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

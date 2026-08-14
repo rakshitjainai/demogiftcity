@@ -8,6 +8,8 @@ import logoHeader from '../assets/logoheader.jpeg';
 
 const SUB_ITEM_ROUTES = {
   'Interactive Regulations': '/interactive-regulations',
+  'Regulatory Master': '/learning',
+  'ExamReady Mock Test': '/exam-ready',
   'Learning & Diagnostics': '/learning',
   'Quizzes': '/quizzes',
   'Diagnostic Tests': '/diagnostic-tests',

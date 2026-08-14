@@ -1,0 +1,849 @@
+{
+ "purpose": "Database schema and migration reference for the three RegLearn plugins.",
+ "warnings": [
+  "The spaced-repetition and challenge layer stores its state in the learner’s BROWSER (localStorage keys rlcmi_mem_v1, crl_mem_v1, rlaif_mem_v1). It is per-device and CANNOT be migrated. Learners keep it only if the site keeps the same domain. Changing domain resets review schedules and mistake logs. Scores, XP and certificates are unaffected - those are in the database.",
+  "Answer keys live server-side only (postmeta _rlcmi_answer / _rlaif_answer, or wp_crl_activities.answer_payload). Never expose these to the browser on the new site, or every score becomes meaningless.",
+  "Progress, review schedules and certificates are keyed to the item uid and to serial_no. Preserve both exactly. Re-importing content with new uids disconnects every learner from their history."
+ ],
+ "plugins": {
+  "CMI": {
+   "prefix": "wp_rlcmi_",
+   "shortcode": "[reglearn_cmi]",
+   "tables": {
+    "wp_rlcmi_progress": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'ifsca-cmi'"
+     },
+     {
+      "column": "item_uid",
+      "type": "VARCHAR(48)",
+      "definition": "VARCHAR(48) NOT NULL"
+     },
+     {
+      "column": "item_type",
+      "type": "VARCHAR(24)",
+      "definition": "VARCHAR(24) NOT NULL DEFAULT 'mcq'"
+     },
+     {
+      "column": "first_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "score",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "completed_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY uniq_user_item (user_id, item_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_course (course_slug)"
+     }
+    ],
+    "wp_rlcmi_responses": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'ifsca-cmi'"
+     },
+     {
+      "column": "item_uid",
+      "type": "VARCHAR(48)",
+      "definition": "VARCHAR(48) NOT NULL"
+     },
+     {
+      "column": "response",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "is_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "is_review",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "created_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_item (item_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     }
+    ],
+    "wp_rlcmi_certificates": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "serial_no",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'ifsca-cmi'"
+     },
+     {
+      "column": "learner_name",
+      "type": "VARCHAR(190)",
+      "definition": "VARCHAR(190) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "tier",
+      "type": "VARCHAR(20)",
+      "definition": "VARCHAR(20) NOT NULL DEFAULT 'Completion'"
+     },
+     {
+      "column": "accuracy",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "issued_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY uniq_serial (serial_no)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     }
+    ]
+   },
+   "table_notes": {
+    "wp_rlcmi_progress": "One row per learner per item. FIRST-ATTEMPT SCORE OF RECORD - never overwrite. Keyed by user_id + item_uid.",
+    "wp_rlcmi_responses": "Every attempt, including reviews. is_review=1 marks a refresher that must not affect scoring.",
+    "wp_rlcmi_certificates": "Issued certificates. serial_no is the public verification key - must stay unique and stable."
+   },
+   "storage": {
+    "storage": "Content is stored as WordPress custom post types: rlcmi_course, rlcmi_chapter, rlcmi_lesson, rlcmi_question (with postmeta _rlcmi_uid, _rlcmi_payload, _rlcmi_answer, _rlcmi_prov, _rlcmi_src, _rlcmi_eff, _rlcmi_chapter_no, _rlcmi_item_type).",
+    "learners": "Learners are native WordPress users with the role rlcmi_learner. Their data sits in wp_users / wp_usermeta (_rlcmi_category, _rlcmi_mobile, _rlcmi_xp, _rlcmi_streak_count, _rlcmi_streak_date, _rlcmi_email_verified, _rlcmi_completed_at, _rlcmi_current_item).",
+    "options": "rlcmi_version, rlcmi_page_url, rlcmi_verify_url, rlcmi_notify_email, rlcmi_email_verification, rlcmi_import_status, rlcmi_import_count, rlcmi_boot_error"
+   }
+  },
+  "FME": {
+   "prefix": "wp_crl_",
+   "shortcode": "[reglearn]",
+   "tables": {
+    "wp_crl_activities": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "uid",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "module_no",
+      "type": "SMALLINT",
+      "definition": "SMALLINT UNSIGNED NOT NULL DEFAULT 12"
+     },
+     {
+      "column": "module_name",
+      "type": "VARCHAR(160)",
+      "definition": "VARCHAR(160) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "sort_order",
+      "type": "SMALLINT",
+      "definition": "SMALLINT UNSIGNED NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "type",
+      "type": "VARCHAR(24)",
+      "definition": "VARCHAR(24) NOT NULL DEFAULT 'mcq'"
+     },
+     {
+      "column": "variant",
+      "type": "VARCHAR(24)",
+      "definition": "VARCHAR(24) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "title",
+      "type": "VARCHAR(220)",
+      "definition": "VARCHAR(220) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "payload",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "answer_payload",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "source_doc",
+      "type": "VARCHAR(220)",
+      "definition": "VARCHAR(220) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "provision",
+      "type": "VARCHAR(220)",
+      "definition": "VARCHAR(220) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "effective_date",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "verified_date",
+      "type": "VARCHAR(20)",
+      "definition": "VARCHAR(20) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "status",
+      "type": "VARCHAR(12)",
+      "definition": "VARCHAR(12) NOT NULL DEFAULT 'active'"
+     },
+     {
+      "column": "review_flag",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "created_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY uid (uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY module_no (module_no)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY status (status)"
+     }
+    ],
+    "wp_crl_participants": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_token",
+      "type": "VARCHAR(64)",
+      "definition": "VARCHAR(64) NOT NULL"
+     },
+     {
+      "column": "name",
+      "type": "VARCHAR(160)",
+      "definition": "VARCHAR(160) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "email",
+      "type": "VARCHAR(190)",
+      "definition": "VARCHAR(190) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "mobile",
+      "type": "VARCHAR(20)",
+      "definition": "VARCHAR(20) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "xp",
+      "type": "INT",
+      "definition": "INT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "combo",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "daily_date",
+      "type": "DATE",
+      "definition": "DATE NULL"
+     },
+     {
+      "column": "daily_count",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "streak_count",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "streak_date",
+      "type": "DATE",
+      "definition": "DATE NULL"
+     },
+     {
+      "column": "completed_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NULL"
+     },
+     {
+      "column": "final_accuracy",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NULL"
+     },
+     {
+      "column": "registered_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY user_token (user_token)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY email (email)"
+     }
+    ],
+    "wp_crl_responses": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "activity_uid",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "user_token",
+      "type": "VARCHAR(64)",
+      "definition": "VARCHAR(64) NOT NULL"
+     },
+     {
+      "column": "response",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "free_text",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "is_review",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "is_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "score",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NULL"
+     },
+     {
+      "column": "elapsed_s",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NULL"
+     },
+     {
+      "column": "created_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY activity_uid (activity_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY user_token (user_token)"
+     }
+    ],
+    "wp_crl_poll_votes": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "activity_uid",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "option_key",
+      "type": "VARCHAR(64)",
+      "definition": "VARCHAR(64) NOT NULL"
+     },
+     {
+      "column": "user_token",
+      "type": "VARCHAR(64)",
+      "definition": "VARCHAR(64) NOT NULL"
+     },
+     {
+      "column": "created_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY one_vote (activity_uid, user_token)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY activity_uid (activity_uid)"
+     }
+    ],
+    "wp_crl_progress": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_token",
+      "type": "VARCHAR(64)",
+      "definition": "VARCHAR(64) NOT NULL"
+     },
+     {
+      "column": "activity_uid",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "first_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "score",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "review_cleared",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "completed_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY once (user_token, activity_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY user_token (user_token)"
+     }
+    ]
+   },
+   "table_notes": {
+    "wp_crl_activities": "THE FME CONTENT BANK lives in the database (unlike CMI/AIF, where content is imported into custom post types). Migrate this table or re-seed from the plugin.",
+    "wp_crl_participants": "Learner records. Identified by user_token (no WordPress user account). Holds XP, combo, streak and final accuracy.",
+    "wp_crl_responses": "Every attempt. mode=review marks refreshers.",
+    "wp_crl_poll_votes": "Optional poll responses from Spot-the-Lapse screens.",
+    "wp_crl_progress": "Per-activity progress keyed by user_token."
+   },
+   "storage": {
+    "storage": "Content lives in wp_crl_activities (seeded from the plugin file), NOT in custom post types.",
+    "learners": "No WordPress user accounts. Learners are rows in wp_crl_participants identified by a browser-held user_token.",
+    "options": "crl_version, crl_counts, crl_cta_url, crl_cta_text, crl_daily_goal, crl_seed_status, crl_boot_error"
+   }
+  },
+  "AIF": {
+   "prefix": "wp_rlaif_",
+   "shortcode": "[reglearn_aif]",
+   "tables": {
+    "wp_rlaif_progress": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'sebi-aif'"
+     },
+     {
+      "column": "item_uid",
+      "type": "VARCHAR(48)",
+      "definition": "VARCHAR(48) NOT NULL"
+     },
+     {
+      "column": "item_type",
+      "type": "VARCHAR(24)",
+      "definition": "VARCHAR(24) NOT NULL DEFAULT 'mcq'"
+     },
+     {
+      "column": "first_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "score",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "completed_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY uniq_user_item (user_id, item_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_course (course_slug)"
+     }
+    ],
+    "wp_rlaif_responses": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'sebi-aif'"
+     },
+     {
+      "column": "item_uid",
+      "type": "VARCHAR(48)",
+      "definition": "VARCHAR(48) NOT NULL"
+     },
+     {
+      "column": "response",
+      "type": "LONGTEXT",
+      "definition": "LONGTEXT NULL"
+     },
+     {
+      "column": "is_correct",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NULL"
+     },
+     {
+      "column": "is_review",
+      "type": "TINYINT(1)",
+      "definition": "TINYINT(1) NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "created_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_item (item_uid)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     }
+    ],
+    "wp_rlaif_certificates": [
+     {
+      "column": "id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT"
+     },
+     {
+      "column": "serial_no",
+      "type": "VARCHAR(40)",
+      "definition": "VARCHAR(40) NOT NULL"
+     },
+     {
+      "column": "user_id",
+      "type": "BIGINT",
+      "definition": "BIGINT UNSIGNED NOT NULL"
+     },
+     {
+      "column": "course_slug",
+      "type": "VARCHAR(60)",
+      "definition": "VARCHAR(60) NOT NULL DEFAULT 'sebi-aif'"
+     },
+     {
+      "column": "learner_name",
+      "type": "VARCHAR(190)",
+      "definition": "VARCHAR(190) NOT NULL DEFAULT ''"
+     },
+     {
+      "column": "tier",
+      "type": "VARCHAR(20)",
+      "definition": "VARCHAR(20) NOT NULL DEFAULT 'Completion'"
+     },
+     {
+      "column": "accuracy",
+      "type": "SMALLINT",
+      "definition": "SMALLINT NOT NULL DEFAULT 0"
+     },
+     {
+      "column": "issued_at",
+      "type": "DATETIME",
+      "definition": "DATETIME NOT NULL"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "PRIMARY KEY  (id)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "UNIQUE KEY uniq_serial (serial_no)"
+     },
+     {
+      "column": "(index)",
+      "type": "",
+      "definition": "KEY k_user (user_id)"
+     }
+    ]
+   },
+   "table_notes": {
+    "wp_rlaif_progress": "One row per learner per item. First-attempt score of record. Keyed by user_id + item_uid.",
+    "wp_rlaif_responses": "Every attempt, including reviews (is_review=1).",
+    "wp_rlaif_certificates": "Issued certificates; serial_no is the public verification key."
+   },
+   "storage": {
+    "storage": "Same design as CMI: custom post types rlaif_course / rlaif_chapter / rlaif_lesson / rlaif_question with _rlaif_* postmeta.",
+    "learners": "Native WordPress users with role rlaif_learner; data in wp_users / wp_usermeta (_rlaif_*).",
+    "options": "rlaif_version, rlaif_page_url, rlaif_verify_url, rlaif_notify_email, rlaif_email_verification, rlaif_import_status, rlaif_import_count, rlaif_boot_error"
+   }
+  }
+ },
+ "export_sql": [
+  {
+   "plugin": "CMI",
+   "sql": "SELECT * FROM wp_rlcmi_progress;"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT * FROM wp_rlcmi_responses;"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT * FROM wp_rlcmi_certificates;"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT u.ID, u.user_login, u.user_email, u.display_name, u.user_registered FROM wp_users u INNER JOIN wp_usermeta m ON m.user_id=u.ID AND m.meta_key='wp_capabilities' WHERE m.meta_value LIKE '%rlcmi_learner%';"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT user_id, meta_key, meta_value FROM wp_usermeta WHERE meta_key LIKE '_rlcmi_%';"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT option_name, option_value FROM wp_options WHERE option_name LIKE 'rlcmi_%';"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "-- content (only if not re-importing from the plugin): SELECT p.ID,p.post_type,p.post_title,p.menu_order FROM wp_posts p WHERE p.post_type LIKE 'rlcmi_%' AND p.post_status='publish';"
+  },
+  {
+   "plugin": "CMI",
+   "sql": "SELECT pm.post_id, pm.meta_key, pm.meta_value FROM wp_postmeta pm INNER JOIN wp_posts p ON p.ID=pm.post_id WHERE p.post_type LIKE 'rlcmi_%' AND pm.meta_key LIKE '_rlcmi_%';"
+  },
+  {
+   "plugin": "FME",
+   "sql": "SELECT * FROM wp_crl_participants;"
+  },
+  {
+   "plugin": "FME",
+   "sql": "SELECT * FROM wp_crl_progress;"
+  },
+  {
+   "plugin": "FME",
+   "sql": "SELECT * FROM wp_crl_responses;"
+  },
+  {
+   "plugin": "FME",
+   "sql": "SELECT * FROM wp_crl_poll_votes;"
+  },
+  {
+   "plugin": "FME",
+   "sql": "-- content bank; re-seeding from the plugin is usually cleaner: SELECT * FROM wp_crl_activities;"
+  },
+  {
+   "plugin": "FME",
+   "sql": "SELECT option_name, option_value FROM wp_options WHERE option_name LIKE 'crl_%';"
+  },
+  {
+   "plugin": "AIF",
+   "sql": "SELECT * FROM wp_rlaif_progress;"
+  },
+  {
+   "plugin": "AIF",
+   "sql": "SELECT * FROM wp_rlaif_responses;"
+  },
+  {
+   "plugin": "AIF",
+   "sql": "SELECT * FROM wp_rlaif_certificates;"
+  },
+  {
+   "plugin": "AIF",
+   "sql": "SELECT user_id, meta_key, meta_value FROM wp_usermeta WHERE meta_key LIKE '_rlaif_%';"
+  },
+  {
+   "plugin": "AIF",
+   "sql": "SELECT option_name, option_value FROM wp_options WHERE option_name LIKE 'rlaif_%';"
+  },
+  {
+   "plugin": "ALL",
+   "sql": "-- replace wp_ with the real table prefix if the site does not use the default."
+  }
+ ]
+}

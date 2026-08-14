@@ -21,6 +21,7 @@ import About from './pages/About';
 import Membership from './pages/Membership';
 import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
+import ExamReady from './pages/ExamReady';
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="quizzes" element={<Quizzes />} />
           <Route path="quizzes/:topic" element={<QuizTopic />} />
           <Route path="diagnostic-tests" element={<DiagnosticTests />} />
+          <Route path="exam-ready" element={<ExamReady />} />
           <Route path="tools" element={<ToolsIndex />} />
           <Route path="tools/:slug" element={<ToolDetail />} />
           <Route path="templates" element={<Templates />} />

@@ -43,6 +43,13 @@ const readingProgressSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { _id: false });
 
+const examReadyAttemptSchema = new mongoose.Schema({
+  attemptDate: { type: Date, default: Date.now },
+  rawScore: { type: Number },
+  percentage: { type: Number },
+  passStatus: { type: Boolean }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -55,7 +62,8 @@ const userSchema = new mongoose.Schema(
     learningProgress: [learningProgressSchema],
     courseProgress: [courseProgressSchema],
     readingProgress: readingProgressSchema,
-    filingStatus: [filingStatusSchema]
+    filingStatus: [filingStatusSchema],
+    examReadyAttempts: [examReadyAttemptSchema]
   },
   { timestamps: true }
 );
@@ -73,6 +81,7 @@ userSchema.methods.toAuthJSON = function () {
     courseProgress: this.courseProgress || [],
     readingProgress: this.readingProgress || null,
     filingStatus: this.filingStatus || [],
+    examReadyAttempts: this.examReadyAttempts || [],
     createdAt: this.createdAt
   };
 };

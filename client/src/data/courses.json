@@ -120,12 +120,7 @@
                   "k": "D",
                   "t": "Thirteen"
                 }
-              ],
-              "explanation": "Reg 4(1)(a)-(k) lists eleven activities: broker dealer, clearing member, credit rating agency, custodian, debenture trustee, depository participant, distributor, ERDPP, investment adviser, investment banker, and research entity."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 4(1)(a)-(k) lists eleven activities: broker dealer, clearing member, credit rating agency, custodian, debenture trustee, depository participant, distributor, ERDPP, investment adviser, investment banker, and research entity."
+              ]
             }
           },
           {
@@ -155,12 +150,7 @@
                   "k": "D",
                   "t": "Register with the stock exchange instead of IFSCA"
                 }
-              ],
-              "explanation": "The proviso to Reg 4(1), inserted w.e.f. 12 Jan 2026, permits a unified registration for multiple activities in the manner specified by the Authority."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The proviso to Reg 4(1), inserted w.e.f. 12 Jan 2026, permits a unified registration for multiple activities in the manner specified by the Authority."
+              ]
             }
           },
           {
@@ -190,12 +180,7 @@
                   "k": "D",
                   "t": "Five years"
                 }
-              ],
-              "explanation": "Reg 13: the certificate granted to a CMI is perpetual unless it is suspended or cancelled by the Authority."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 13: the certificate granted to a CMI is perpetual unless it is suspended or cancelled by the Authority."
+              ]
             }
           },
           {
@@ -225,12 +210,7 @@
                   "k": "D",
                   "t": "Company, LLP, body corporate, or branch thereof"
                 }
-              ],
-              "explanation": "Reg 6: a CMI must be present in the IFSC as a company, an LLP, a body corporate, or a branch thereof."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 6: a CMI must be present in the IFSC as a company, an LLP, a body corporate, or a branch thereof."
+              ]
             }
           },
           {
@@ -261,12 +241,7 @@
                   "t": "Paying registration fees before grant"
                 }
               ],
-              "explanation": "Unified registration covers the activities applied for — not activities never included in the application. Performing an uncovered activity is unauthorised (Reg 4). SWIT filing, exchange-routing for BD, and fees-before-grant are all correct.",
               "scenario": "A newly registered multi-desk unit holds a unified registration for broker-dealing and investment banking. Six months in, it quietly begins distributing third-party funds and treats this as covered by the same certificate."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Unified registration covers the activities applied for — not activities never included in the application. Performing an uncovered activity is unauthorised (Reg 4). SWIT filing, exchange-routing for BD, and fees-before-grant are all correct."
             }
           },
           {
@@ -296,12 +271,7 @@
                   "k": "D",
                   "t": "Certificates became time-limited"
                 }
-              ],
-              "explanation": "Before 12 Jan 2026, a multi-activity unit collected a separate certificate per activity. The amendment inserted the unified-registration proviso to Reg 4(1)."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Before 12 Jan 2026, a multi-activity unit collected a separate certificate per activity. The amendment inserted the unified-registration proviso to Reg 4(1)."
+              ]
             }
           },
           {
@@ -313,11 +283,7 @@
             "source": "Primary text",
             "provision": "Reg 5(2) & 12(2)",
             "payload": {
-              "q": "Two different 30-day clocks live in the registration chapter. Name them.",
-              "answer": "Reg 5(2): the recognised stock exchange/clearing corporation/depository forwards its recommendation within 30 days of the complete application. Reg 12(2): the applicant gets 30 days to rectify deficiencies before registration can be refused."
-            },
-            "answer": {
-              "answer": "Reg 5(2): the recognised stock exchange/clearing corporation/depository forwards its recommendation within 30 days of the complete application. Reg 12(2): the applicant gets 30 days to rectify deficiencies before registration can be refused."
+              "q": "Two different 30-day clocks live in the registration chapter. Name them."
             }
           }
         ]
@@ -432,12 +398,7 @@
                   "k": "D",
                   "t": "USD 1 million"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 3: Credit Rating Agency net worth is USD 200,000."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Schedule I, S.No. 3: Credit Rating Agency net worth is USD 200,000."
+              ]
             }
           },
           {
@@ -467,12 +428,7 @@
                   "k": "D",
                   "t": "USD 1 million"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 4: Custodian net worth is USD 1 million (substituted for 'as specified by the Authority' w.e.f. 12 Jan 2026). Existing custodians must comply by 30 June 2026."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Schedule I, S.No. 4: Custodian net worth is USD 1 million (substituted for 'as specified by the Authority' w.e.f. 12 Jan 2026). Existing custodians must comply by 30 June 2026."
+              ]
             }
           },
           {
@@ -502,12 +458,7 @@
                   "k": "D",
                   "t": "Custodian (USD 1 million)"
                 }
-              ],
-              "explanation": "Debenture Trustee at USD 1.5 million (Schedule I, S.No. 5) is the highest fixed figure, above Custodian's USD 1 million."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Debenture Trustee at USD 1.5 million (Schedule I, S.No. 5) is the highest fixed figure, above Custodian's USD 1 million."
+              ]
             }
           },
           {
@@ -537,12 +488,7 @@
                   "k": "D",
                   "t": "Only the distributor minimum"
                 }
-              ],
-              "explanation": "Reg 7(4): a multi-category CMI maintains the highest of the applicable minimums, not the sum or average."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 7(4): a multi-category CMI maintains the highest of the applicable minimums, not the sum or average."
+              ]
             }
           },
           {
@@ -572,12 +518,7 @@
                   "k": "D",
                   "t": "Investment Adviser and Research Entity"
                 }
-              ],
-              "explanation": "Proviso to Reg 3(1)(cc): the liquid-assets definition applies to broker dealer, clearing member and investment banker."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Proviso to Reg 3(1)(cc): the liquid-assets definition applies to broker dealer, clearing member and investment banker."
+              ]
             }
           },
           {
@@ -608,12 +549,7 @@
                   "t": "Adding the broker-dealer and investment-banker minimums together to size capital"
                 }
               ],
-              "explanation": "Reg 7(4) requires the highest single minimum for a multi-category unit, not the sum. The other three steps are all correct (liquid-assets test, branch earmarking under 7(2), quarterly statement under Reg 16).",
               "scenario": "A branch unit runs a broker-dealer desk and an investment-banker desk. Finance sizes regulatory capital by adding the two Schedule I minimums, holds it at parent level earmarked for the IFSC branch, and files a quarterly net-worth statement."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 7(4) requires the highest single minimum for a multi-category unit, not the sum. The other three steps are all correct (liquid-assets test, branch earmarking under 7(2), quarterly statement under Reg 16)."
             }
           },
           {
@@ -643,12 +579,7 @@
                   "k": "D",
                   "t": "Raised to USD 1.5 million"
                 }
-              ],
-              "explanation": "The Custodian figure was substituted to USD 1 million (from 'As specified by the Authority from time to time') w.e.f. 12 Jan 2026, with existing custodians given until 30 June 2026."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The Custodian figure was substituted to USD 1 million (from 'As specified by the Authority from time to time') w.e.f. 12 Jan 2026, with existing custodians given until 30 June 2026."
+              ]
             }
           },
           {
@@ -660,11 +591,7 @@
             "source": "Primary text",
             "provision": "Schedule I",
             "payload": {
-              "q": "Is there a deposit requirement for CMIs?",
-              "answer": "No. Schedule I prescribes net worth only — there is no deposit requirement anywhere in the CMI Regulations. The instinct to look for a 'deposit' is imported from other regulators; here it does not exist."
-            },
-            "answer": {
-              "answer": "No. Schedule I prescribes net worth only — there is no deposit requirement anywhere in the CMI Regulations. The instinct to look for a 'deposit' is imported from other regulators; here it does not exist."
+              "q": "Is there a deposit requirement for CMIs?"
             }
           },
           {
@@ -676,11 +603,7 @@
             "source": "Primary text",
             "provision": "Schedule I",
             "payload": {
-              "q": "By when must existing custodians meet the revised USD 1 million net worth?",
-              "answer": "By 30 June 2026 — existing custodians required to infuse or earmark additional funds under the revised norms comply by that date (Schedule I, S.No. 4)."
-            },
-            "answer": {
-              "answer": "By 30 June 2026 — existing custodians required to infuse or earmark additional funds under the revised norms comply by that date (Schedule I, S.No. 4)."
+              "q": "By when must existing custodians meet the revised USD 1 million net worth?"
             }
           }
         ]
@@ -777,12 +700,7 @@
                   "k": "D",
                   "t": "A Principal Officer at the parent and a Compliance Officer in the IFSC"
                 }
-              ],
-              "explanation": "Reg 9(1): a CMI shall designate a principal officer and a separate compliance officer based out of IFSC. Two distinct, IFSC-based roles."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 9(1): a CMI shall designate a principal officer and a separate compliance officer based out of IFSC. Two distinct, IFSC-based roles."
+              ]
             }
           },
           {
@@ -812,12 +730,7 @@
                   "k": "D",
                   "t": "Only when the Authority requests confirmation"
                 }
-              ],
-              "explanation": "Reg 8(1): the entity and its key persons must be fit and proper persons at all times."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 8(1): the entity and its key persons must be fit and proper persons at all times."
+              ]
             }
           },
           {
@@ -847,12 +760,7 @@
                   "k": "D",
                   "t": "Being declared a fugitive economic offender"
                 }
-              ],
-              "explanation": "Reg 8(2)(b) lists disqualifications including being declared a fugitive economic offender, a wilful defaulter, insolvent-and-undischarged, or convicted of moral-turpitude/economic offences."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 8(2)(b) lists disqualifications including being declared a fugitive economic offender, a wilful defaulter, insolvent-and-undischarged, or convicted of moral-turpitude/economic offences."
+              ]
             }
           },
           {
@@ -882,12 +790,7 @@
                   "k": "D",
                   "t": "Neither role"
                 }
-              ],
-              "explanation": "The second proviso to Reg 9(2) makes a Bachelor of Law holder from a recognised university eligible for appointment as a compliance officer."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The second proviso to Reg 9(2) makes a Bachelor of Law holder from a recognised university eligible for appointment as a compliance officer."
+              ]
             }
           },
           {
@@ -917,12 +820,7 @@
                   "k": "D",
                   "t": "Ten years"
                 }
-              ],
-              "explanation": "The words 'ten' were substituted with 'five' by the 2026 amendment (w.e.f. 12 Jan 2026): a graduate now needs at least five years' financial-services experience."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The words 'ten' were substituted with 'five' by the 2026 amendment (w.e.f. 12 Jan 2026): a graduate now needs at least five years' financial-services experience."
+              ]
             }
           },
           {
@@ -953,12 +851,7 @@
                   "t": "Maintaining a fit-and-proper register for directors and KMP"
                 }
               ],
-              "explanation": "Reg 9(1) requires a SEPARATE compliance officer — one person cannot hold both designations. A CA is qualified, IFSC-basing is required, and a fit-and-proper register is good practice.",
               "scenario": "To keep headcount lean, a newly registered unit names its Principal Officer as also its Compliance Officer, both based in the IFSC, with a CA qualification."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 9(1) requires a SEPARATE compliance officer — one person cannot hold both designations. A CA is qualified, IFSC-basing is required, and a fit-and-proper register is good practice."
             }
           },
           {
@@ -970,11 +863,7 @@
             "source": "Primary text",
             "provision": "Reg 8(1)",
             "payload": {
-              "q": "Name three categories of person to whom the fit-and-proper test applies beyond the entity itself.",
-              "answer": "Principal officer; directors/designated partners; key managerial personnel; and controlling shareholders (Reg 8(1)). All must be fit and proper at all times."
-            },
-            "answer": {
-              "answer": "Principal officer; directors/designated partners; key managerial personnel; and controlling shareholders (Reg 8(1)). All must be fit and proper at all times."
+              "q": "Name three categories of person to whom the fit-and-proper test applies beyond the entity itself."
             }
           }
         ]
@@ -1071,12 +960,7 @@
                   "k": "D",
                   "t": "Reg 15"
                 }
-              ],
-              "explanation": "Reg 15: a CMI shall abide by the Code of Conduct as specified in Schedule II."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 15: a CMI shall abide by the Code of Conduct as specified in Schedule II."
+              ]
             }
           },
           {
@@ -1106,12 +990,7 @@
                   "k": "D",
                   "t": "At the client's competitor's request"
                 }
-              ],
-              "explanation": "Part A cl. 8: confidentiality is maintained except where disclosure is required in compliance with any law for the time being in force."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Part A cl. 8: confidentiality is maintained except where disclosure is required in compliance with any law for the time being in force."
+              ]
             }
           },
           {
@@ -1141,12 +1020,7 @@
                   "k": "D",
                   "t": "Only where the CMI profits directly"
                 }
-              ],
-              "explanation": "Part A cl. 5: a CMI shall not create a false market either singly or in collusion with other intermediaries or the issuer."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Part A cl. 5: a CMI shall not create a false market either singly or in collusion with other intermediaries or the issuer."
+              ]
             }
           },
           {
@@ -1177,12 +1051,7 @@
                   "t": "Recording and resolving a conflict of interest"
                 }
               ],
-              "explanation": "Part A cl. 7 prohibits exaggerated statements about capability, qualification and achievement. The other actions are consistent with Part A (confidentiality cl.8, honest marketing, conflict-management cl.9).",
               "scenario": "A relationship manager, closing a prospect, promises 'guaranteed, unmatched returns and the best team in GIFT City', while the firm otherwise keeps client data confidential and logs conflicts."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Part A cl. 7 prohibits exaggerated statements about capability, qualification and achievement. The other actions are consistent with Part A (confidentiality cl.8, honest marketing, conflict-management cl.9)."
             }
           },
           {
@@ -1194,11 +1063,7 @@
             "source": "Primary text",
             "provision": "Sch II",
             "payload": {
-              "q": "Schedule II has two parts. What binds all CMIs, and what is category-specific?",
-              "answer": "Part A is the code of conduct for all capital market intermediaries (as applicable). Part B adds category-specific codes (e.g., for broker dealers, CRAs, custodians, distributors, IAs, IBs, research entities). Reg 15 imports both."
-            },
-            "answer": {
-              "answer": "Part A is the code of conduct for all capital market intermediaries (as applicable). Part B adds category-specific codes (e.g., for broker dealers, CRAs, custodians, distributors, IAs, IBs, research entities). Reg 15 imports both."
+              "q": "Schedule II has two parts. What binds all CMIs, and what is category-specific?"
             }
           }
         ]
@@ -1295,12 +1160,7 @@
                   "k": "D",
                   "t": "Eight years, in electronic retrieval form"
                 }
-              ],
-              "explanation": "Reg 16(1): the specified books, records and documents must be maintained in electronic retrieval form for a minimum of eight years."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 16(1): the specified books, records and documents must be maintained in electronic retrieval form for a minimum of eight years."
+              ]
             }
           },
           {
@@ -1330,12 +1190,7 @@
                   "k": "D",
                   "t": "No fixed period"
                 }
-              ],
-              "explanation": "Reg 17(2): a CMI shall intimate any change in principal officer, compliance officer or KMP within 15 days."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 17(2): a CMI shall intimate any change in principal officer, compliance officer or KMP within 15 days."
+              ]
             }
           },
           {
@@ -1365,12 +1220,7 @@
                   "k": "D",
                   "t": "Take no action unless asked"
                 }
-              ],
-              "explanation": "Reg 23(2): an IFSC-incorporated CMI must seek prior approval of the Authority for any direct or indirect change in control. (A branch, by contrast, intimates within 15 days.)"
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 23(2): an IFSC-incorporated CMI must seek prior approval of the Authority for any direct or indirect change in control. (A branch, by contrast, intimates within 15 days.)"
+              ]
             }
           },
           {
@@ -1400,12 +1250,7 @@
                   "k": "D",
                   "t": "31 December"
                 }
-              ],
-              "explanation": "Reg 25(2): a copy of the compliance audit report for a financial year shall be furnished to the Authority by the 30th of September of such year."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 25(2): a copy of the compliance audit report for a financial year shall be furnished to the Authority by the 30th of September of such year."
+              ]
             }
           },
           {
@@ -1435,12 +1280,7 @@
                   "k": "D",
                   "t": "A member of ICAI, ICSI or ICMAI, or a person authorised to audit in a Foreign Jurisdiction"
                 }
-              ],
-              "explanation": "Reg 25(1): the audit is conducted by a member of ICAI, ICSI or ICMAI, or a person authorised to conduct audit in a Foreign Jurisdiction."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 25(1): the audit is conducted by a member of ICAI, ICSI or ICMAI, or a person authorised to conduct audit in a Foreign Jurisdiction."
+              ]
             }
           },
           {
@@ -1471,12 +1311,7 @@
                   "t": "Filing the compliance audit by 30 September"
                 }
               ],
-              "explanation": "Reg 23(2) requires an incorporated CMI to obtain PRIOR approval for a change in control — post-closing intimation is the branch rule (23(1)), not the incorporated rule. The other three are correct.",
               "scenario": "An IFSC-incorporated CMI completes a change in its controlling shareholding, then notifies IFSCA fifteen days afterwards, while otherwise reviewing its BCP annually, keeping eight-year records, and filing its audit by 30 September."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 23(2) requires an incorporated CMI to obtain PRIOR approval for a change in control — post-closing intimation is the branch rule (23(1)), not the incorporated rule. The other three are correct."
             }
           },
           {
@@ -1506,12 +1341,7 @@
                   "k": "D",
                   "t": "A rating monitoring process"
                 }
-              ],
-              "explanation": "Reg 20: maintain a BCP, updated on material change and reviewed annually. Cyber is Reg 21; the others are category-specific."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 20: maintain a BCP, updated on material change and reviewed annually. Cyber is Reg 21; the others are category-specific."
+              ]
             }
           },
           {
@@ -1523,11 +1353,7 @@
             "source": "Primary text",
             "provision": "Reg 16(1)",
             "payload": {
-              "q": "Name two records Reg 16 expressly requires beyond the basic financial statements.",
-              "answer": "A statement of net worth for each quarter (16(1)(d)) and documentation relating to compliance with the IFSCA AML/CFT/KYC Guidelines, 2022 (16(1)(e)) — alongside client account-opening and grievance records."
-            },
-            "answer": {
-              "answer": "A statement of net worth for each quarter (16(1)(d)) and documentation relating to compliance with the IFSCA AML/CFT/KYC Guidelines, 2022 (16(1)(e)) — alongside client account-opening and grievance records."
+              "q": "Name two records Reg 16 expressly requires beyond the basic financial statements."
             }
           }
         ]
@@ -1624,12 +1450,7 @@
                   "k": "D",
                   "t": "Only with the CMI's consent"
                 }
-              ],
-              "explanation": "Reg 37(1): the Authority may, suo motu or upon receipt of information or complaint, at any time appoint an inspecting authority."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 37(1): the Authority may, suo motu or upon receipt of information or complaint, at any time appoint an inspecting authority."
+              ]
             }
           },
           {
@@ -1659,12 +1480,7 @@
                   "k": "D",
                   "t": "Furnishing information to the Authority that is false or misleading in any material particular"
                 }
-              ],
-              "explanation": "Reg 41(1)(d): furnishing false or misleading information in any material particular is its own ground for suspension/cancellation."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 41(1)(d): furnishing false or misleading information in any material particular is its own ground for suspension/cancellation."
+              ]
             }
           },
           {
@@ -1694,12 +1510,7 @@
                   "k": "D",
                   "t": "The client's auditor"
                 }
-              ],
-              "explanation": "Reg 37(4) and Reg 41(2)-(4): the recognised stock exchange, clearing corporation or depository may inspect/suspend a BD, CM or DP respectively under applicable laws — a dual-oversight layer."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 37(4) and Reg 41(2)-(4): the recognised stock exchange, clearing corporation or depository may inspect/suspend a BD, CM or DP respectively under applicable laws — a dual-oversight layer."
+              ]
             }
           },
           {
@@ -1729,12 +1540,7 @@
                   "k": "D",
                   "t": "A right of every CMI"
                 }
-              ],
-              "explanation": "Reg 44: relaxation is sought by application with a non-refundable fee; the Authority processes it within 30 days of a complete application and records reasons."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 44: relaxation is sought by application with a non-refundable fee; the Authority processes it within 30 days of a complete application and records reasons."
+              ]
             }
           },
           {
@@ -1765,12 +1571,7 @@
                   "t": "Resolving the investor complaint that prompted it"
                 }
               ],
-              "explanation": "Reg 41(1)(f): failure to co-operate in any enquiry, inspection or investigation is a standalone ground — independent of the underlying issue. The other responses are all compliant.",
               "scenario": "On receiving an inspection notice, a CMI instructs staff to withhold cooperation 'until legal review concludes', with no end date, while its records are otherwise in order."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 41(1)(f): failure to co-operate in any enquiry, inspection or investigation is a standalone ground — independent of the underlying issue. The other responses are all compliant."
             }
           },
           {
@@ -1800,12 +1601,7 @@
                   "k": "D",
                   "t": "Repealed the IFSCA (Capital Market Intermediaries) Regulations, 2021"
                 }
-              ],
-              "explanation": "Reg 47(1): on and from commencement, the IFSCA (CMI) Regulations, 2021 stand repealed (with a saving for Chapter V of the 2021 regs on foreign-jurisdiction dealing until Reg 27 norms are specified)."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 47(1): on and from commencement, the IFSCA (CMI) Regulations, 2021 stand repealed (with a saving for Chapter V of the 2021 regs on foreign-jurisdiction dealing until Reg 27 norms are specified)."
+              ]
             }
           },
           {
@@ -1817,11 +1613,7 @@
             "source": "Primary text",
             "provision": "Reg 37(3)",
             "payload": {
-              "q": "Must the Authority always give notice before inspecting a CMI?",
-              "answer": "Generally yes (Reg 37(3)), but the inspecting authority may dispense with notice for reasons recorded in writing where, in the interest of investors, no notice should be given."
-            },
-            "answer": {
-              "answer": "Generally yes (Reg 37(3)), but the inspecting authority may dispense with notice for reasons recorded in writing where, in the interest of investors, no notice should be given."
+              "q": "Must the Authority always give notice before inspecting a CMI?"
             }
           }
         ]
@@ -1918,12 +1710,7 @@
                   "k": "D",
                   "t": "As specified by the depository"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 1: broker dealer (trading member) net worth is as specified by the recognised stock exchange."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Schedule I, S.No. 1: broker dealer (trading member) net worth is as specified by the recognised stock exchange."
+              ]
             }
           },
           {
@@ -1953,12 +1740,7 @@
                   "k": "D",
                   "t": "Turnover-based capital"
                 }
-              ],
-              "explanation": "Proviso to Reg 3(1)(cc): for a broker dealer, clearing member or investment banker, net worth means the aggregate value of liquid assets."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Proviso to Reg 3(1)(cc): for a broker dealer, clearing member or investment banker, net worth means the aggregate value of liquid assets."
+              ]
             }
           },
           {
@@ -1988,12 +1770,7 @@
                   "k": "D",
                   "t": "Do nothing; it is automatically permitted"
                 }
-              ],
-              "explanation": "Reg 5(4)(a): with the recognised stock exchange's approval, a clearing member may act as a broker dealer without a separate certificate of registration."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 5(4)(a): with the recognised stock exchange's approval, a clearing member may act as a broker dealer without a separate certificate of registration."
+              ]
             }
           },
           {
@@ -2024,12 +1801,7 @@
                   "t": "Assuming exchange approval to act as clearing member also authorises a new fund-distribution business"
                 }
               ],
-              "explanation": "Reg 5(4)-(5) cover BD/CM role-crossing only. Distribution is a separate registrable activity (Reg 4) needing its own registration — MII approval doesn't extend to it.",
               "scenario": "A broker dealer obtains the clearing corporation's approval to act as a clearing member, and on that basis also launches a third-party fund-distribution service."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 5(4)-(5) cover BD/CM role-crossing only. Distribution is a separate registrable activity (Reg 4) needing its own registration — MII approval doesn't extend to it."
             }
           },
           {
@@ -2041,11 +1813,7 @@
             "source": "Primary text",
             "provision": "Reg 3(1)(cc)",
             "payload": {
-              "q": "Which three categories share the liquid-assets net-worth definition?",
-              "answer": "Broker dealer, clearing member and investment banker (proviso to Reg 3(1)(cc)). For all other categories, ordinary balance-sheet net worth applies."
-            },
-            "answer": {
-              "answer": "Broker dealer, clearing member and investment banker (proviso to Reg 3(1)(cc)). For all other categories, ordinary balance-sheet net worth applies."
+              "q": "Which three categories share the liquid-assets net-worth definition?"
             }
           }
         ]
@@ -2142,12 +1910,7 @@
                   "k": "D",
                   "t": "USD 1 million"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 3: USD 200,000."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Schedule I, S.No. 3: USD 200,000."
+              ]
             }
           },
           {
@@ -2177,12 +1940,7 @@
                   "k": "D",
                   "t": "Publish the rating first"
                 }
-              ],
-              "explanation": "Reg 28(1): a CRA shall enter into a written agreement with each client, including the rights, liabilities and fee."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 28(1): a CRA shall enter into a written agreement with each client, including the rights, liabilities and fee."
+              ]
             }
           },
           {
@@ -2212,12 +1970,7 @@
                   "k": "D",
                   "t": "The fee has been paid"
                 }
-              ],
-              "explanation": "Reg 28(5): a CRA shall generally not withdraw a rating so long as the obligations under the rated security/instrument/facility are outstanding (save specified exceptions)."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 28(5): a CRA shall generally not withdraw a rating so long as the obligations under the rated security/instrument/facility are outstanding (save specified exceptions)."
+              ]
             }
           },
           {
@@ -2248,12 +2001,7 @@
                   "t": "Withdrawing a rating on a live instrument simply because the client asked, with no permitted trigger"
                 }
               ],
-              "explanation": "Reg 28(5): withdrawal while obligations are outstanding is constrained to specified situations — a bare client request is not one. The other steps comply with Reg 28.",
               "scenario": "A CRA withdraws its rating on a bond that is still outstanding, solely because the issuer asked it to and stopped paying, with no other permitted trigger documented."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 28(5): withdrawal while obligations are outstanding is constrained to specified situations — a bare client request is not one. The other steps comply with Reg 28."
             }
           },
           {
@@ -2265,11 +2013,7 @@
             "source": "Primary text",
             "provision": "Reg 3(1)(cc), Sch I",
             "payload": {
-              "q": "Does the liquid-assets net-worth definition apply to a CRA?",
-              "answer": "No. The liquid-assets definition is only for broker dealers, clearing members and investment bankers. A CRA uses the ordinary balance-sheet net-worth definition, at USD 200,000."
-            },
-            "answer": {
-              "answer": "No. The liquid-assets definition is only for broker dealers, clearing members and investment bankers. A CRA uses the ordinary balance-sheet net-worth definition, at USD 200,000."
+              "q": "Does the liquid-assets net-worth definition apply to a CRA?"
             }
           }
         ]
@@ -2366,12 +2110,7 @@
                   "k": "D",
                   "t": "USD 1.5 million"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 4: USD 1 million (substituted w.e.f. 12 Jan 2026)."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Schedule I, S.No. 4: USD 1 million (substituted w.e.f. 12 Jan 2026)."
+              ]
             }
           },
           {
@@ -2401,12 +2140,7 @@
                   "k": "D",
                   "t": "31 December 2026"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 4: existing custodians required to infuse or earmark additional funds under the revised norms comply by 30 June 2026."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 4: existing custodians required to infuse or earmark additional funds under the revised norms comply by 30 June 2026."
+              ]
             }
           },
           {
@@ -2436,12 +2170,7 @@
                   "k": "D",
                   "t": "Advise clients on which securities to buy"
                 }
-              ],
-              "explanation": "Reg 29(1): a custodian shall separate and segregate its custodian activities from all other activities."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 29(1): a custodian shall separate and segregate its custodian activities from all other activities."
+              ]
             }
           },
           {
@@ -2472,12 +2201,7 @@
                   "t": "Operating the custody desk on the same books and access profile as the proprietary trading desk 'for efficiency'"
                 }
               ],
-              "explanation": "Reg 29(1) requires custody to be separated and segregated from all other activities — sharing books/access with a trading desk defeats segregation. The other steps comply with Reg 29(3)-(4).",
               "scenario": "For efficiency, a group runs its custody desk and its proprietary trading desk on shared books and a common access profile, while still documenting client custody terms and reconciling assets."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 29(1) requires custody to be separated and segregated from all other activities — sharing books/access with a trading desk defeats segregation. The other steps comply with Reg 29(3)-(4)."
             }
           },
           {
@@ -2489,11 +2213,7 @@
             "source": "Primary text",
             "provision": "Schedule I",
             "payload": {
-              "q": "Two dates define the custodian net-worth change. What are they?",
-              "answer": "12 January 2026 — the amendment fixing custodian net worth at USD 1 million; and 30 June 2026 — the deadline for existing custodians to comply with the revised figure."
-            },
-            "answer": {
-              "answer": "12 January 2026 — the amendment fixing custodian net worth at USD 1 million; and 30 June 2026 — the deadline for existing custodians to comply with the revised figure."
+              "q": "Two dates define the custodian net-worth change. What are they?"
             }
           }
         ]
@@ -2590,12 +2310,7 @@
                   "k": "D",
                   "t": "As specified by the depository"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 5: USD 1.5 million — the highest fixed figure in Schedule I."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Schedule I, S.No. 5: USD 1.5 million — the highest fixed figure in Schedule I."
+              ]
             }
           },
           {
@@ -2625,12 +2340,7 @@
                   "k": "D",
                   "t": "Reports quarterly"
                 }
-              ],
-              "explanation": "Reg 30(2): a person shall not be appointed debenture trustee where it is an associate of the issuer or is likely to have a conflict of interest."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 30(2): a person shall not be appointed debenture trustee where it is an associate of the issuer or is likely to have a conflict of interest."
+              ]
             }
           },
           {
@@ -2660,12 +2370,7 @@
                   "k": "D",
                   "t": "A fall in the debenture's market price"
                 }
-              ],
-              "explanation": "Reg 30(3)(f): the nominee-director trigger is two consecutive interest defaults, or default in creation of security, or default in redemption."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 30(3)(f): the nominee-director trigger is two consecutive interest defaults, or default in creation of security, or default in redemption."
+              ]
             }
           },
           {
@@ -2695,12 +2400,7 @@
                   "k": "D",
                   "t": "Seven days of the relevant board meeting or 45 days of the quarter, whichever is earlier"
                 }
-              ],
-              "explanation": "Reg 30(3)(c): within seven days of the relevant board meeting or within forty-five days of the respective quarter, whichever is earlier."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 30(3)(c): within seven days of the relevant board meeting or within forty-five days of the respective quarter, whichever is earlier."
+              ]
             }
           },
           {
@@ -2731,12 +2431,7 @@
                   "t": "Calling for utilisation-of-funds reports"
                 }
               ],
-              "explanation": "Reg 30(3)(f) sets 'two consecutive defaults in interest' as the trigger — it is a bright line, not indicative. Delaying escalation past it fails debenture holders. The other steps comply with Reg 30.",
               "scenario": "Facing an issuer that has missed two consecutive interest payments, a debenture trustee waits for a third or fourth miss before considering a nominee director, treating the two-default rule as a soft guide."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 30(3)(f) sets 'two consecutive defaults in interest' as the trigger — it is a bright line, not indicative. Delaying escalation past it fails debenture holders. The other steps comply with Reg 30."
             }
           },
           {
@@ -2748,11 +2443,7 @@
             "source": "Primary text",
             "provision": "Reg 30(1)",
             "payload": {
-              "q": "When must the debenture-trustee/issuer agreement be in place?",
-              "answer": "Before the opening of the subscription list for the issue of debentures (Reg 30(1))."
-            },
-            "answer": {
-              "answer": "Before the opening of the subscription list for the issue of debentures (Reg 30(1))."
+              "q": "When must the debenture-trustee/issuer agreement be in place?"
             }
           }
         ]
@@ -2849,12 +2540,7 @@
                   "k": "D",
                   "t": "As specified by the clearing corporation"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 6: as specified by the depository."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 6: as specified by the depository."
+              ]
             }
           },
           {
@@ -2884,12 +2570,7 @@
                   "k": "D",
                   "t": "Quarterly"
                 }
-              ],
-              "explanation": "Reg 31(5): a DP shall reconcile its records with the depository on a daily basis."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 31(5): a DP shall reconcile its records with the depository on a daily basis."
+              ]
             }
           },
           {
@@ -2919,12 +2600,7 @@
                   "k": "D",
                   "t": "Must be segregated and not mixed with other owners' or the DP's own securities"
                 }
-              ],
-              "explanation": "Reg 31(2): separate accounts per beneficial owner, with securities segregated and never commingled."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 31(2): separate accounts per beneficial owner, with securities segregated and never commingled."
+              ]
             }
           },
           {
@@ -2955,12 +2631,7 @@
                   "t": "Maintaining data-processing integrity"
                 }
               ],
-              "explanation": "Reg 31(2) forbids mixing beneficial owners' securities with the participant's own securities. The other steps comply with Reg 31.",
               "scenario": "A DP keeps a small buffer of client securities parked in its own proprietary account for operational ease, while otherwise opening per-owner accounts and reconciling daily."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 31(2) forbids mixing beneficial owners' securities with the participant's own securities. The other steps comply with Reg 31."
             }
           },
           {
@@ -2972,11 +2643,7 @@
             "source": "Primary text",
             "provision": "Reg 3(1)(cc), Sch I",
             "payload": {
-              "q": "Does a depository participant use the liquid-assets net-worth definition?",
-              "answer": "No. Only broker dealers, clearing members and investment bankers use the liquid-assets definition. A DP uses the ordinary net-worth definition, with the figure set by the depository."
-            },
-            "answer": {
-              "answer": "No. Only broker dealers, clearing members and investment bankers use the liquid-assets definition. A DP uses the ordinary net-worth definition, with the figure set by the depository."
+              "q": "Does a depository participant use the liquid-assets net-worth definition?"
             }
           }
         ]
@@ -3073,12 +2740,7 @@
                   "k": "D",
                   "t": "USD 200,000"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 7: USD 50,000."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 7: USD 50,000."
+              ]
             }
           },
           {
@@ -3108,12 +2770,7 @@
                   "k": "D",
                   "t": "Required for fairness"
                 }
-              ],
-              "explanation": "Schedule II Part B (distributor): a registered distributor shall abstain from attracting clients through offer of rebate."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Schedule II Part B (distributor): a registered distributor shall abstain from attracting clients through offer of rebate."
+              ]
             }
           },
           {
@@ -3143,12 +2800,7 @@
                   "k": "D",
                   "t": "Wider — products from issuers/providers set up in India, IFSC or any foreign jurisdiction"
                 }
-              ],
-              "explanation": "Reg 32(1)(b): distribution to sophisticated investors covers products offered by any issuer/service provider set up in India, IFSC or any foreign jurisdiction — broader than the ordinary-client channel."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 32(1)(b): distribution to sophisticated investors covers products offered by any issuer/service provider set up in India, IFSC or any foreign jurisdiction — broader than the ordinary-client channel."
+              ]
             }
           },
           {
@@ -3179,12 +2831,7 @@
                   "t": "Segregating proprietary investments from client distribution"
                 }
               ],
-              "explanation": "The distributor Part B code prohibits attracting clients through rebate. The other steps are consistent with the distributor's duties.",
               "scenario": "To grow its book, a distributor advertises a cash rebate to new retail clients, while otherwise classifying clients, disclosing material information, and segregating proprietary investments."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The distributor Part B code prohibits attracting clients through rebate. The other steps are consistent with the distributor's duties."
             }
           },
           {
@@ -3196,11 +2843,7 @@
             "source": "Primary text",
             "provision": "Reg 32(1)",
             "payload": {
-              "q": "Which Gazette notification anchors the 'specified jurisdictions' for certain distribution channels?",
-              "answer": "G.S.R. 882(E) dated 28 November 2019 (as revised from time to time), referenced in Reg 32(1) for identifying eligible jurisdictions."
-            },
-            "answer": {
-              "answer": "G.S.R. 882(E) dated 28 November 2019 (as revised from time to time), referenced in Reg 32(1) for identifying eligible jurisdictions."
+              "q": "Which Gazette notification anchors the 'specified jurisdictions' for certain distribution channels?"
             }
           }
         ]
@@ -3297,12 +2940,7 @@
                   "k": "D",
                   "t": "USD 200,000"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 8: USD 25,000."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 8: USD 25,000."
+              ]
             }
           },
           {
@@ -3332,12 +2970,7 @@
                   "k": "D",
                   "t": "Exchange-approved"
                 }
-              ],
-              "explanation": "Reg 33(3): the ERDPP adheres to its code of conduct on a 'comply' or 'explain' basis."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 33(3): the ERDPP adheres to its code of conduct on a 'comply' or 'explain' basis."
+              ]
             }
           },
           {
@@ -3367,12 +3000,7 @@
                   "k": "D",
                   "t": "A separate category dealing in ESG ratings and data products"
                 }
-              ],
-              "explanation": "The ERDPP is its own Reg 4(1)(h) category for ESG ratings and data products — distinct from a credit rating agency."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The ERDPP is its own Reg 4(1)(h) category for ESG ratings and data products — distinct from a credit rating agency."
+              ]
             }
           },
           {
@@ -3403,12 +3031,7 @@
                   "t": "Maintaining USD 25,000 net worth"
                 }
               ],
-              "explanation": "CRA duties under Reg 28 do not govern an ERDPP; the ERDPP has its own comply-or-explain code under Reg 33. The other steps are correct for an ERDPP.",
               "scenario": "An ERDPP's new compliance head imports the CRA's continuous-monitoring and constrained-withdrawal rules wholesale, reasoning that 'a rating is a rating', while otherwise disclosing comply-or-explain and holding USD 25,000."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "CRA duties under Reg 28 do not govern an ERDPP; the ERDPP has its own comply-or-explain code under Reg 33. The other steps are correct for an ERDPP."
             }
           },
           {
@@ -3420,11 +3043,7 @@
             "source": "Primary text",
             "provision": "Schedule I",
             "payload": {
-              "q": "Which three categories all share a USD 25,000 net worth?",
-              "answer": "ESG Ratings and Data Products Provider, Investment Adviser, and Research Entity — all USD 25,000 under Schedule I (S.Nos. 8, 9 and 11)."
-            },
-            "answer": {
-              "answer": "ESG Ratings and Data Products Provider, Investment Adviser, and Research Entity — all USD 25,000 under Schedule I (S.Nos. 8, 9 and 11)."
+              "q": "Which three categories all share a USD 25,000 net worth?"
             }
           }
         ]
@@ -3521,12 +3140,7 @@
                   "k": "D",
                   "t": "From the exchange"
                 }
-              ],
-              "explanation": "Reg 34(4): an IA shall not receive consideration from any person other than the client being advised, in respect of the underlying products."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg 34(4): an IA shall not receive consideration from any person other than the client being advised, in respect of the underlying products."
+              ]
             }
           },
           {
@@ -3556,12 +3170,7 @@
                   "k": "D",
                   "t": "30 days"
                 }
-              ],
-              "explanation": "Reg 34(6): no own-account transaction contrary to advice for 15 days from the advice (with a 24-hour revised-assessment exception)."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 34(6): no own-account transaction contrary to advice for 15 days from the advice (with a 24-hour revised-assessment exception)."
+              ]
             }
           },
           {
@@ -3591,12 +3200,7 @@
                   "k": "D",
                   "t": "A fiduciary capacity, disclosing conflicts as they arise"
                 }
-              ],
-              "explanation": "Reg 34(3): an IA acts in a fiduciary capacity and discloses all conflicts of interest as and when they arise."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 34(3): an IA acts in a fiduciary capacity and discloses all conflicts of interest as and when they arise."
+              ]
             }
           },
           {
@@ -3627,12 +3231,7 @@
                   "t": "Maintaining arm's-length between advisory and other activities"
                 }
               ],
-              "explanation": "Reg 34(4) bars any remuneration from a person other than the advised client for the underlying products — a fund-house trail commission is exactly that. The other steps comply with Reg 34.",
               "scenario": "An adviser recommends a fund scheme to clients while quietly accepting a trail commission from the fund house, alongside a flat advisory fee, and discloses its own holdings."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 34(4) bars any remuneration from a person other than the advised client for the underlying products — a fund-house trail commission is exactly that. The other steps comply with Reg 34."
             }
           },
           {
@@ -3644,11 +3243,7 @@
             "source": "Primary text",
             "provision": "Reg 34(6)",
             "payload": {
-              "q": "What is the exception to the adviser's 15-day own-account restriction?",
-              "answer": "If the adviser genuinely forms the opinion that the situation has changed, it may transact on its own account after giving the client the revised assessment at least 24 hours in advance (proviso to Reg 34(6))."
-            },
-            "answer": {
-              "answer": "If the adviser genuinely forms the opinion that the situation has changed, it may transact on its own account after giving the client the revised assessment at least 24 hours in advance (proviso to Reg 34(6))."
+              "q": "What is the exception to the adviser's 15-day own-account restriction?"
             }
           }
         ]
@@ -3745,12 +3340,7 @@
                   "k": "D",
                   "t": "USD 200,000"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 10: USD 100,000."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 10: USD 100,000."
+              ]
             }
           },
           {
@@ -3780,12 +3370,7 @@
                   "k": "D",
                   "t": "Turnover-based"
                 }
-              ],
-              "explanation": "Proviso to Reg 3(1)(cc): for an investment banker (as for a broker dealer and clearing member), net worth means the aggregate value of liquid assets."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Proviso to Reg 3(1)(cc): for an investment banker (as for a broker dealer and clearing member), net worth means the aggregate value of liquid assets."
+              ]
             }
           },
           {
@@ -3815,12 +3400,7 @@
                   "k": "D",
                   "t": "Undertake only marketing of the issue or offer"
                 }
-              ],
-              "explanation": "Reg 35(3): a promoter/associate IB shall not undertake any activity except marketing of the issue or offer."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 35(3): a promoter/associate IB shall not undertake any activity except marketing of the issue or offer."
+              ]
             }
           },
           {
@@ -3851,12 +3431,7 @@
                   "t": "Computing net worth on liquid assets"
                 }
               ],
-              "explanation": "Reg 35(3) confines a promoter/associate IB to marketing only — book-running for an issuer it promotes is prohibited. The other steps comply with Reg 35 and Reg 3(1)(cc).",
               "scenario": "An investment banker takes the book-running lead-manager role on an IPO by a company it promotes, while documenting the mandate, demarcating co-lead roles, and computing net worth on liquid assets."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 35(3) confines a promoter/associate IB to marketing only — book-running for an issuer it promotes is prohibited. The other steps comply with Reg 35 and Reg 3(1)(cc)."
             }
           },
           {
@@ -3868,11 +3443,7 @@
             "source": "Primary text",
             "provision": "Reg 3(1)(aa)",
             "payload": {
-              "q": "What is the defining activity of an 'investment banker' under these regulations?",
-              "answer": "Issue management — making arrangements for selling, buying or subscribing to securities, or acting as manager/consultant/adviser or rendering corporate advisory in relation to issue management (Reg 3(1)(aa))."
-            },
-            "answer": {
-              "answer": "Issue management — making arrangements for selling, buying or subscribing to securities, or acting as manager/consultant/adviser or rendering corporate advisory in relation to issue management (Reg 3(1)(aa))."
+              "q": "What is the defining activity of an 'investment banker' under these regulations?"
             }
           }
         ]
@@ -3969,12 +3540,7 @@
                   "k": "D",
                   "t": "USD 200,000"
                 }
-              ],
-              "explanation": "Schedule I, S.No. 11: USD 25,000."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule I, S.No. 11: USD 25,000."
+              ]
             }
           },
           {
@@ -4004,12 +3570,7 @@
                   "k": "D",
                   "t": "No one"
                 }
-              ],
-              "explanation": "Reg 4(4): a registered investment adviser, credit rating agency or Fund Management Entity issuing/circulating/distributing research reports to the public need not separately register as a research entity."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 4(4): a registered investment adviser, credit rating agency or Fund Management Entity issuing/circulating/distributing research reports to the public need not separately register as a research entity."
+              ]
             }
           },
           {
@@ -4039,12 +3600,7 @@
                   "k": "D",
                   "t": "Ensure the independence of research from its other business activities"
                 }
-              ],
-              "explanation": "Reg 36(4): a research entity shall have appropriate mechanisms to ensure the independence of its research activities from its other business activities."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 36(4): a research entity shall have appropriate mechanisms to ensure the independence of its research activities from its other business activities."
+              ]
             }
           },
           {
@@ -4075,12 +3631,7 @@
                   "t": "Ring-fencing research from other business lines"
                 }
               ],
-              "explanation": "Reg 36(5)-(6) require analyst personal trading to be monitored, recorded and, where necessary, formally approved — an honour system with no monitoring fails this. The other steps comply with Reg 36.",
               "scenario": "A research entity lets analysts trade the very securities they cover on an honour system, with no monitoring, recording or approval, while otherwise ring-fencing research and having written dealing policies."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg 36(5)-(6) require analyst personal trading to be monitored, recorded and, where necessary, formally approved — an honour system with no monitoring fails this. The other steps comply with Reg 36."
             }
           },
           {
@@ -4092,11 +3643,7 @@
             "source": "Primary text",
             "provision": "Reg 4(4)",
             "payload": {
-              "q": "A standalone firm that only issues public research and holds no other IFSCA registration — does it need to register?",
-              "answer": "Yes. The Reg 4(4) exemption applies only to already-registered IA/CRA/FME entities. A standalone research operation with no such registration must register as a research entity."
-            },
-            "answer": {
-              "answer": "Yes. The Reg 4(4) exemption applies only to already-registered IA/CRA/FME entities. A standalone research operation with no such registration must register as a research entity."
+              "q": "A standalone firm that only issues public research and holds no other IFSCA registration — does it need to register?"
             }
           }
         ]
@@ -4175,12 +3722,7 @@
                   "k": "D",
                   "t": "Appointing a nominee director on two consecutive interest defaults"
                 }
-              ],
-              "explanation": "Schedule II Part A (via Reg 15) binds all CMIs. Daily reconciliation is DP-specific (Reg 31), fiduciary/fee-only is IA-specific (Reg 34), and the nominee director is DT-specific (Reg 30)."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Schedule II Part A (via Reg 15) binds all CMIs. Daily reconciliation is DP-specific (Reg 31), fiduciary/fee-only is IA-specific (Reg 34), and the nominee director is DT-specific (Reg 30)."
+              ]
             }
           },
           {
@@ -4210,12 +3752,7 @@
                   "k": "D",
                   "t": "Undergoing an annual compliance audit"
                 }
-              ],
-              "explanation": "The liquid-assets definition applies only to broker dealers, clearing members and investment bankers (Reg 3(1)(cc)). The other three are common: at-all-times maintenance (Reg 7), quarterly statement (Reg 16), and annual audit (Reg 25)."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The liquid-assets definition applies only to broker dealers, clearing members and investment bankers (Reg 3(1)(cc)). The other three are common: at-all-times maintenance (Reg 7), quarterly statement (Reg 16), and annual audit (Reg 25)."
+              ]
             }
           },
           {
@@ -4245,12 +3782,7 @@
                   "k": "D",
                   "t": "The highest of the applicable minimums"
                 }
-              ],
-              "explanation": "Reg 7(4): a multi-category CMI holds the highest of the applicable minimums. Here the BD/IB figures apply on a liquid-assets basis; the single highest applicable minimum governs — not the sum."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg 7(4): a multi-category CMI holds the highest of the applicable minimums. Here the BD/IB figures apply on a liquid-assets basis; the single highest applicable minimum governs — not the sum."
+              ]
             }
           },
           {
@@ -4281,12 +3813,7 @@
                   "t": "Computes net worth on the highest-of basis"
                 }
               ],
-              "explanation": "The fee-only rule (Reg 34(4)) is investment-ADVISER-specific; it does not bind a distributor, which may be product-remunerated. Meridian has no IA desk here. The other three calls are correct.",
               "scenario": "Meridian Capital IFSC runs broker-dealer, investment-banker and distributor desks plus a group custody desk. Its CO applies Part A firm-wide, segregates custody, computes net worth on the highest-of basis — and also forbids the distributor desk from taking any product commission, citing the adviser fee-only rule."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The fee-only rule (Reg 34(4)) is investment-ADVISER-specific; it does not bind a distributor, which may be product-remunerated. Meridian has no IA desk here. The other three calls are correct."
             }
           },
           {
@@ -4316,12 +3843,7 @@
                   "k": "D",
                   "t": "Appointing a nominee director on default"
                 }
-              ],
-              "explanation": "Change-in-control (Reg 23) binds every CMI (branch intimates; incorporated seeks prior approval). Custody segregation (Reg 29), the CRA rating agreement (Reg 28) and the DT nominee director (Reg 30) are each category-specific."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Change-in-control (Reg 23) binds every CMI (branch intimates; incorporated seeks prior approval). Custody segregation (Reg 29), the CRA rating agreement (Reg 28) and the DT nominee director (Reg 30) are each category-specific."
+              ]
             }
           },
           {
@@ -4351,12 +3873,7 @@
                   "k": "D",
                   "t": "15 days for the exchange to forward its recommendation"
                 }
-              ],
-              "explanation": "Reg 34(6)'s 15-day own-account restriction is IA-specific. The PO/CO-change intimation (Reg 17(2), 15 days) is common; there is no 15-day cure (it is 30 days, Reg 12); and the exchange forwarding clock is 30 days (Reg 5(2))."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg 34(6)'s 15-day own-account restriction is IA-specific. The PO/CO-change intimation (Reg 17(2), 15 days) is common; there is no 15-day cure (it is 30 days, Reg 12); and the exchange forwarding clock is 30 days (Reg 5(2))."
+              ]
             }
           },
           {
@@ -4386,12 +3903,7 @@
                   "k": "D",
                   "t": "Introduction of unified registration for multi-activity units"
                 }
-              ],
-              "explanation": "Unified registration (proviso to Reg 4(1)) is a common, cross-category registration change. The others are category-specific Schedule I figures."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Unified registration (proviso to Reg 4(1)) is a common, cross-category registration change. The others are category-specific Schedule I figures."
+              ]
             }
           },
           {
@@ -4403,11 +3915,7 @@
             "source": "Primary text",
             "provision": "whole regulation",
             "payload": {
-              "q": "Give the one-line method for classifying any CMI obligation.",
-              "answer": "Ask where it lives: Common Core (Reg 4, 7, 8-9, 15/Part A, 16-25, 37-47) binds all CMIs; Chapter IV (Reg 26-36), Schedule II Part B, or a Schedule I category figure binds only that category. Tag it A (all) or B (this desk) before acting."
-            },
-            "answer": {
-              "answer": "Ask where it lives: Common Core (Reg 4, 7, 8-9, 15/Part A, 16-25, 37-47) binds all CMIs; Chapter IV (Reg 26-36), Schedule II Part B, or a Schedule I category figure binds only that category. Tag it A (all) or B (this desk) before acting."
+              "q": "Give the one-line method for classifying any CMI obligation."
             }
           }
         ]
@@ -4507,12 +4015,7 @@
                   "k": "D",
                   "t": "Five crore rupees per scheme, raised to twenty crore for Category III"
                 }
-              ],
-              "explanation": "Reg. 10(b): each scheme shall have a corpus of at least twenty crore rupees, with the proviso reducing this to five crore for each scheme of a social impact fund. The test is per scheme, not per fund."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg. 10(b): each scheme shall have a corpus of at least twenty crore rupees, with the proviso reducing this to five crore for each scheme of a social impact fund. The test is per scheme, not per fund."
+              ]
             }
           },
           {
@@ -4542,12 +4045,7 @@
                   "k": "D",
                   "t": "The commitment is permissible only if the investor is also a director of the Manager"
                 }
-              ],
-              "explanation": "The second proviso to Reg. 10(c) disapplies the minimum-investment clause altogether for an accredited investor. It is not a reduced threshold but an exemption from the clause."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The second proviso to Reg. 10(c) disapplies the minimum-investment clause altogether for an accredited investor. It is not a reduced threshold but an exemption from the clause."
+              ]
             }
           },
           {
@@ -4577,12 +4075,7 @@
                   "k": "D",
                   "t": "The admissions are permissible if the additional investors are all accredited"
                 }
-              ],
-              "explanation": "Reg. 10(f) caps a scheme at one thousand investors. Satisfying the ticket size does not cure a breach of the investor ceiling, and the cap is per scheme. Accreditation relaxes the minimum investment, not the count."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg. 10(f) caps a scheme at one thousand investors. Satisfying the ticket size does not cure a breach of the investor ceiling, and the cap is per scheme. Accreditation relaxes the minimum investment, not the count."
+              ]
             }
           },
           {
@@ -4594,11 +4087,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 10",
             "payload": {
-              "q": "State the four scheme-level gates and their figures.",
-              "answer": "Corpus twenty crore per scheme (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees or directors of the AIF or Manager, and disapplied for an accredited investor; not more than one thousand investors per scheme; units issued in dematerialised form."
-            },
-            "answer": {
-              "answer": "Corpus twenty crore per scheme (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees or directors of the AIF or Manager, and disapplied for an accredited investor; not more than one thousand investors per scheme; units issued in dematerialised form."
+              "q": "State the four scheme-level gates and their figures."
             }
           }
         ]
@@ -4677,12 +4166,7 @@
                   "k": "D",
                   "t": "Two-thirds of the unit holders by value of their investment in the fund"
                 }
-              ],
-              "explanation": "Reg. 13(5): extension of up to two years requires approval of two-thirds of the unit holders BY VALUE of their investment. The vote is value-weighted, not a headcount."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg. 13(5): extension of up to two years requires approval of two-thirds of the unit holders BY VALUE of their investment. The vote is value-weighted, not a headcount."
+              ]
             }
           },
           {
@@ -4712,12 +4196,7 @@
                   "k": "D",
                   "t": "No defect, provided the tenure is fixed at the time of the application"
                 }
-              ],
-              "explanation": "Reg. 13(1) requires Categories I and II to be close-ended, and Reg. 13(2) sets a minimum tenure of three years. Both limbs fail independently — the open-ended option belongs to Category III alone."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg. 13(1) requires Categories I and II to be close-ended, and Reg. 13(2) sets a minimum tenure of three years. Both limbs fail independently — the open-ended option belongs to Category III alone."
+              ]
             }
           },
           {
@@ -4729,11 +4208,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 13",
             "payload": {
-              "q": "Which categories may be open-ended, and what is the minimum tenure?",
-              "answer": "Only schemes of a Category III AIF may be open- or close-ended. Categories I and II shall be close-ended with tenure determined at the time of application, and a minimum tenure of three years."
-            },
-            "answer": {
-              "answer": "Only schemes of a Category III AIF may be open- or close-ended. Categories I and II shall be close-ended with tenure determined at the time of application, and a minimum tenure of three years."
+              "q": "Which categories may be open-ended, and what is the minimum tenure?"
             }
           }
         ]
@@ -4812,12 +4287,7 @@
                   "k": "D",
                   "t": "Five percent of the corpus, with no monetary cap applying to the figure"
                 }
-              ],
-              "explanation": "Reg. 10(d): 2.5% of corpus or five crore rupees, whichever is LOWER, for Categories I and II. The 5%/ten crore pair applies to Category III, and the test is the lower of the two, not the higher."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 10(d): 2.5% of corpus or five crore rupees, whichever is LOWER, for Categories I and II. The 5%/ten crore pair applies to Category III, and the test is the lower of the two, not the higher."
+              ]
             }
           },
           {
@@ -4847,12 +4317,7 @@
                   "k": "D",
                   "t": "The waiver is permissible only if disclosed to investors in the placement memorandum"
                 }
-              ],
-              "explanation": "Two points. The rupee cap means ten crore would satisfy the amount, since the test is the lower of 5% or ten crore. But Reg. 10(d) requires the interest to take the form of investment and expressly excludes a waiver of management fees, so the structure fails on form regardless of quantum."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Two points. The rupee cap means ten crore would satisfy the amount, since the test is the lower of 5% or ten crore. But Reg. 10(d) requires the interest to take the form of investment and expressly excludes a waiver of management fees, so the structure fails on form regardless of quantum."
+              ]
             }
           },
           {
@@ -4864,11 +4329,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 10(d)",
             "payload": {
-              "q": "State the continuing-interest figures for each category.",
-              "answer": "Categories I and II: not less than 2.5% of corpus or five crore rupees, whichever is lower. Category III: not less than 5% of corpus or ten crore rupees, whichever is lower. In both cases by way of investment, not through a waiver of management fees."
-            },
-            "answer": {
-              "answer": "Categories I and II: not less than 2.5% of corpus or five crore rupees, whichever is lower. Category III: not less than 5% of corpus or ten crore rupees, whichever is lower. In both cases by way of investment, not through a waiver of management fees."
+              "q": "State the continuing-interest figures for each category."
             }
           }
         ]
@@ -4947,12 +4408,7 @@
                   "k": "D",
                   "t": "The disclosure must break out cash borrowing, derivatives and the main source too"
                 }
-              ],
-              "explanation": "The proviso to Reg. 17(c) requires disclosure of the overall level of leverage, the level arising from borrowing of cash, the level arising from derivatives or complex products, and the main source — to investors and to the Board. An aggregate figure alone is incomplete."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The proviso to Reg. 17(c) requires disclosure of the overall level of leverage, the level arising from borrowing of cash, the level arising from derivatives or complex products, and the main source — to investors and to the Board. An aggregate figure alone is incomplete."
+              ]
             }
           },
           {
@@ -4982,12 +4438,7 @@
                   "k": "D",
                   "t": "A maximum limit specified in the placement memorandum by the Manager"
                 }
-              ],
-              "explanation": "Reg. 17(c): leverage or borrowing is subject to consent from the investors and to a maximum limit as may be specified by the Board. Transaction-by-transaction approval and the two-thirds-by-value test belong to other provisions."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg. 17(c): leverage or borrowing is subject to consent from the investors and to a maximum limit as may be specified by the Board. Transaction-by-transaction approval and the two-thirds-by-value test belong to other provisions."
+              ]
             }
           },
           {
@@ -4999,11 +4450,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 17(c)",
             "payload": {
-              "q": "On what two conditions may a Category III AIF employ leverage?",
-              "answer": "Consent from the investors in the fund, and a maximum limit as may be specified by the Board — with periodic disclosure of overall leverage, leverage from cash borrowing, leverage from derivatives or complex products, and the main source, to investors and to the Board."
-            },
-            "answer": {
-              "answer": "Consent from the investors in the fund, and a maximum limit as may be specified by the Board — with periodic disclosure of overall leverage, leverage from cash borrowing, leverage from derivatives or complex products, and the main source, to investors and to the Board."
+              "q": "On what two conditions may a Category III AIF employ leverage?"
             }
           }
         ]
@@ -5082,12 +4529,7 @@
                   "k": "D",
                   "t": "Shall refer the valuation to the trustee, whose determination is then final"
                 }
-              ],
-              "explanation": "The provisos to Reg. 23 make deviation mandatory in that situation ('shall deviate'), coupled with documentation of the rationale and reporting of the deviation and its rationale to the trustee, board or designated partners and to investors."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The provisos to Reg. 23 make deviation mandatory in that situation ('shall deviate'), coupled with documentation of the rationale and reporting of the deviation and its rationale to the trustee, board or designated partners and to investors."
+              ]
             }
           },
           {
@@ -5117,12 +4559,7 @@
                   "k": "D",
                   "t": "Rests with the trustee, who must countersign the valuation report"
                 }
-              ],
-              "explanation": "The Manager must ensure an independent valuer is appointed, but Reg. 23 separately makes the Manager responsible for true and fair valuation. Appointing a valuer discharges the appointment duty, not the responsibility for the outcome."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The Manager must ensure an independent valuer is appointed, but Reg. 23 separately makes the Manager responsible for true and fair valuation. Appointing a valuer discharges the appointment duty, not the responsibility for the outcome."
+              ]
             }
           },
           {
@@ -5134,11 +4571,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 23",
             "payload": {
-              "q": "Who performs the valuation, and who is responsible for it being true and fair?",
-              "answer": "An independent valuer satisfying the Board's criteria performs it, appointed by the AIF and ensured by the Manager. The Manager remains responsible for true and fair valuation of the scheme's investments."
-            },
-            "answer": {
-              "answer": "An independent valuer satisfying the Board's criteria performs it, appointed by the AIF and ensured by the Manager. The Manager remains responsible for true and fair valuation of the scheme's investments."
+              "q": "Who performs the valuation, and who is responsible for it being true and fair?"
             }
           }
         ]
@@ -5217,12 +4650,7 @@
                   "k": "D",
                   "t": "Either II or III at the applicant's option, as the fund straddles both models"
                 }
-              ],
-              "explanation": "The derivatives-based shorting is strategic leverage. Under Reg. 2(1)(c) that is the Category III marker, and it overrides the unlisted-PE character that would otherwise suggest Category II. Category is not optional where a defining feature is present."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The derivatives-based shorting is strategic leverage. Under Reg. 2(1)(c) that is the Category III marker, and it overrides the unlisted-PE character that would otherwise suggest Category II. Category is not optional where a defining feature is present."
+              ]
             }
           },
           {
@@ -5252,12 +4680,7 @@
                   "k": "D",
                   "t": "VCF, SME Funds, angel funds, social impact funds, infrastructure and special situation funds"
                 }
-              ],
-              "explanation": "Reg. 3(4) lists VCF, SME Funds, angel funds (inserted 09-09-2025), social impact funds (which replaced 'social venture funds'), infrastructure funds and special situation funds. Hedge funds are Category III; PE and debt funds are Category II; real estate is not a named sub-category."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg. 3(4) lists VCF, SME Funds, angel funds (inserted 09-09-2025), social impact funds (which replaced 'social venture funds'), infrastructure funds and special situation funds. Hedge funds are Category III; PE and debt funds are Category II; real estate is not a named sub-category."
+              ]
             }
           },
           {
@@ -5287,12 +4710,7 @@
                   "k": "D",
                   "t": "Category II only where it uses leverage, and Category I otherwise"
                 }
-              ],
-              "explanation": "The Explanation to Reg. 2(1)(b) expressly gives debt funds as a Category II example. Category I is not 'anything economically useful' — it is the specific set the Board or Government treats as meriting incentives. Generalised economic benefit does not qualify a fund for Category I."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The Explanation to Reg. 2(1)(b) expressly gives debt funds as a Category II example. Category I is not 'anything economically useful' — it is the specific set the Board or Government treats as meriting incentives. Generalised economic benefit does not qualify a fund for Category I."
+              ]
             }
           },
           {
@@ -5322,12 +4740,7 @@
                   "k": "D",
                   "t": "No AIF category may be open-ended; every AIF must be close-ended in form"
                 }
-              ],
-              "explanation": "The Explanation to Reg. 2(1)(c) contemplates Category III funds being open-ended, consistent with their short-term, hedge-fund character. Category I and II schemes are close-ended (Chapter 2 of this course). This is a frequent trap because it inverts naturally."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The Explanation to Reg. 2(1)(c) contemplates Category III funds being open-ended, consistent with their short-term, hedge-fund character. Category I and II schemes are close-ended (Chapter 2 of this course). This is a frequent trap because it inverts naturally."
+              ]
             }
           },
           {
@@ -5339,11 +4752,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 2(1), 3(4)",
             "payload": {
-              "q": "Name the three categories by their defining test and give the Category I sub-categories.",
-              "answer": "Category I — the incentive/positive-spillover box: VCF, SME Funds, angel funds, social impact funds, infrastructure funds, special situation funds. Category II — the residual box (not I or III), no strategic leverage: e.g. private equity, debt funds. Category III — the only strategic-leverage box, may use derivatives and may be open-ended: e.g. hedge funds."
-            },
-            "answer": {
-              "answer": "Category I — the incentive/positive-spillover box: VCF, SME Funds, angel funds, social impact funds, infrastructure funds, special situation funds. Category II — the residual box (not I or III), no strategic leverage: e.g. private equity, debt funds. Category III — the only strategic-leverage box, may use derivatives and may be open-ended: e.g. hedge funds."
+              "q": "Name the three categories by their defining test and give the Category I sub-categories."
             }
           }
         ]
@@ -5430,12 +4839,7 @@
                   "k": "D",
                   "t": "It is deferred until the Sponsor obtains a fresh certification for its key personnel"
                 }
-              ],
-              "explanation": "Reg. 4(f) applies the fit-and-proper test — measured against Schedule II of the SEBI (Intermediaries) Regulations, 2008 — to the applicant, the Sponsor and the Manager. A tainted Sponsor makes the application ineligible; a clean Manager cannot cure it."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 4(f) applies the fit-and-proper test — measured against Schedule II of the SEBI (Intermediaries) Regulations, 2008 — to the applicant, the Sponsor and the Manager. A tainted Sponsor makes the application ineligible; a clean Manager cannot cure it."
+              ]
             }
           },
           {
@@ -5465,12 +4869,7 @@
                   "k": "D",
                   "t": "Two distinct key personnel, one certified and one qualified, never the same individual"
                 }
-              ],
-              "explanation": "Reg. 4(g) requires one certified and one qualified key personnel, expressly permits the same person to satisfy both limbs, and requires fresh certification before expiry. The 'five years' experience' formulation is the pre-amendment test and is now wrong."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Reg. 4(g) requires one certified and one qualified key personnel, expressly permits the same person to satisfy both limbs, and requires fresh certification before expiry. The 'five years' experience' formulation is the pre-amendment test and is now wrong."
+              ]
             }
           },
           {
@@ -5500,12 +4899,7 @@
                   "k": "D",
                   "t": "A failure of Reg. 4(b), which requires the deed itself to bar any public invitation"
                 }
-              ],
-              "explanation": "Reg. 4(b) makes the prohibition on public invitation an eligibility condition tested at the level of the deed itself, not conduct. A permissive deed fails the test even if the fund never in fact approaches the public."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg. 4(b) makes the prohibition on public invitation an eligibility condition tested at the level of the deed itself, not conduct. A permissive deed fails the test even if the fund never in fact approaches the public."
+              ]
             }
           },
           {
@@ -5535,12 +4929,7 @@
                   "k": "D",
                   "t": "For three years from the date of first close of its maiden scheme"
                 }
-              ],
-              "explanation": "Reg. 3(7) makes the certificate valid until the AIF is wound up — there is no periodic renewal. Confusing this with a fixed-term or tenure-linked validity is a common error carried over from other intermediary regimes."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 3(7) makes the certificate valid until the AIF is wound up — there is no periodic renewal. Confusing this with a fixed-term or tenure-linked validity is a common error carried over from other intermediary regimes."
+              ]
             }
           },
           {
@@ -5552,11 +4941,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 4",
             "payload": {
-              "q": "State the four eligibility gates of Reg. 4 and who the fit-and-proper test binds.",
-              "answer": "Constitution permits AIF activity and prohibits public invitation (trust registered under Registration Act 1908, LLP deed filed); applicant, Sponsor AND Manager all fit and proper on Schedule II of the SEBI (Intermediaries) Regulations, 2008; key team with one Board-certified and one professionally-qualified person (may be the same, kept certified); and a clearly described objective, targeted investors, proposed corpus, strategy and tenure."
-            },
-            "answer": {
-              "answer": "Constitution permits AIF activity and prohibits public invitation (trust registered under Registration Act 1908, LLP deed filed); applicant, Sponsor AND Manager all fit and proper on Schedule II of the SEBI (Intermediaries) Regulations, 2008; key team with one Board-certified and one professionally-qualified person (may be the same, kept certified); and a clearly described objective, targeted investors, proposed corpus, strategy and tenure."
+              "q": "State the four eligibility gates of Reg. 4 and who the fit-and-proper test binds."
             }
           }
         ]
@@ -5643,12 +5028,7 @@
                   "k": "D",
                   "t": "Neither fund, since 22% sits within the 25% cap that applies to all categories"
                 }
-              ],
-              "explanation": "Under Reg. 15(1)(d) the single-company cap is 10% for Category III (20% only for Category III LVFs) and 25% for Category I and II. The Category III fund at 22% breaches; the Category II fund at 22% is within its 25% cap."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Under Reg. 15(1)(d) the single-company cap is 10% for Category III (20% only for Category III LVFs) and 25% for Category I and II. The Category III fund at 22% breaches; the Category II fund at 22% is within its 25% cap."
+              ]
             }
           },
           {
@@ -5678,12 +5058,7 @@
                   "k": "D",
                   "t": "No, as five draws together exceed thirty days of borrowing in aggregate over the year"
                 }
-              ],
-              "explanation": "The carve-out imposes three simultaneous limits: not more than 30 days, not more than four occasions a year, and not more than 10% of investable funds. The fifth occasion breaches the frequency limit even though each individual draw satisfies duration and size."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The carve-out imposes three simultaneous limits: not more than 30 days, not more than four occasions a year, and not more than 10% of investable funds. The fifth occasion breaches the frequency limit even though each individual draw satisfies duration and size."
+              ]
             }
           },
           {
@@ -5713,12 +5088,7 @@
                   "k": "D",
                   "t": "No, since the 75% venture floor applies only to Category III funds and not to VCFs"
                 }
-              ],
-              "explanation": "Reg. 16(2)(a) requires the 75% venture/SME-listed floor to be achieved by the end of the fund's life cycle. An interim portfolio below 75% during the deployment phase is not, by itself, a breach."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 16(2)(a) requires the 75% venture/SME-listed floor to be achieved by the end of the fund's life cycle. An interim portfolio below 75% during the deployment phase is not, by itself, a breach."
+              ]
             }
           },
           {
@@ -5748,12 +5118,7 @@
                   "k": "D",
                   "t": "In liquid mutual funds, bank deposits or high-quality liquid assets such as T-bills or TREPS"
                 }
-              ],
-              "explanation": "Reg. 15(1)(f) confines idle investable funds and pending divestment proceeds to defined liquid instruments — liquid mutual funds, bank deposits, T-bills, TREPS, commercial papers, certificates of deposit and similar high-quality liquid assets — not to off-mandate deployment."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg. 15(1)(f) confines idle investable funds and pending divestment proceeds to defined liquid instruments — liquid mutual funds, bank deposits, T-bills, TREPS, commercial papers, certificates of deposit and similar high-quality liquid assets — not to off-mandate deployment."
+              ]
             }
           },
           {
@@ -5783,12 +5148,7 @@
                   "k": "D",
                   "t": "Only where the borrowing was specifically disclosed in the placement memorandum"
                 }
-              ],
-              "explanation": "Category II is defined as not undertaking leverage or borrowing other than as permitted. The 30-day / 4-occasion / 10% operational bridge is expressly permitted and does not convert the fund into Category III. Strategic leverage does; a permitted operational draw does not."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Category II is defined as not undertaking leverage or borrowing other than as permitted. The 30-day / 4-occasion / 10% operational bridge is expressly permitted and does not convert the fund into Category III. Strategic leverage does; a permitted operational draw does not."
+              ]
             }
           },
           {
@@ -5800,11 +5160,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 15, 16, 17",
             "payload": {
-              "q": "State the concentration caps by category and the three limits on operational borrowing.",
-              "answer": "Single-company concentration: 25% of investable funds for Category I and II; 10% for Category III (20% for Category III large value funds). Operational borrowing carve-out (Cat I and II): not more than 30 days, not more than 4 occasions in a year, and not more than 10% of investable funds — all three limits must hold simultaneously."
-            },
-            "answer": {
-              "answer": "Single-company concentration: 25% of investable funds for Category I and II; 10% for Category III (20% for Category III large value funds). Operational borrowing carve-out (Cat I and II): not more than 30 days, not more than 4 occasions in a year, and not more than 10% of investable funds — all three limits must hold simultaneously."
+              "q": "State the concentration caps by category and the three limits on operational borrowing."
             }
           }
         ]
@@ -5891,12 +5247,7 @@
                   "k": "D",
                   "t": "It may launch after ten working days of a merchant-banker-diligenced PPM filing"
                 }
-              ],
-              "explanation": "GARUDA (Master Circular, 30-07-2026) is an acknowledgement-based green channel: launch follows a short working-day window after a merchant-banker-diligenced filing, replacing the wait-for-prior-comments model. Responsibility for accuracy sits with the merchant banker and Manager."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "GARUDA (Master Circular, 30-07-2026) is an acknowledgement-based green channel: launch follows a short working-day window after a merchant-banker-diligenced filing, replacing the wait-for-prior-comments model. Responsibility for accuracy sits with the merchant banker and Manager."
+              ]
             }
           },
           {
@@ -5926,12 +5277,7 @@
                   "k": "D",
                   "t": "The exemption applies to every scheme, but only where the GARUDA channel is used"
                 }
-              ],
-              "explanation": "The proviso to Reg. 12(2) exempts only the first scheme from scheme fees. Later schemes attract the Second Schedule fee. Reading the first-scheme concession as a standing exemption is a costly filing error."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The proviso to Reg. 12(2) exempts only the first scheme from scheme fees. Later schemes attract the Second Schedule fee. Reading the first-scheme concession as a standing exemption is a costly filing error."
+              ]
             }
           },
           {
@@ -5961,12 +5307,7 @@
                   "k": "D",
                   "t": "From the date of PPM filing; a missed first close triggers automatic winding up"
                 }
-              ],
-              "explanation": "The Master Circular calculates close-ended tenure from the date of first close and requires first close within twelve months of eligibility to launch; failing that, the scheme must be re-applied for with the requisite fee. Final-close calculation survives only for legacy schemes that had declared first close by 17-11-2022."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The Master Circular calculates close-ended tenure from the date of first close and requires first close within twelve months of eligibility to launch; failing that, the scheme must be re-applied for with the requisite fee. Final-close calculation survives only for legacy schemes that had declared first close by 17-11-2022."
+              ]
             }
           },
           {
@@ -5996,12 +5337,7 @@
                   "k": "D",
                   "t": "Exemption from appointing a merchant banker and from every investor disclosure obligation entirely"
                 }
-              ],
-              "explanation": "The proviso relieves LVFs for accredited investors from the filing-and-Board-comment requirements of Reg. 12(2)-(3). It does not dispense with having a PPM, nor with the substantive protections — it is a light-touch on the filing machinery, not on disclosure itself."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The proviso relieves LVFs for accredited investors from the filing-and-Board-comment requirements of Reg. 12(2)-(3). It does not dispense with having a PPM, nor with the substantive protections — it is a light-touch on the filing machinery, not on disclosure itself."
+              ]
             }
           },
           {
@@ -6031,12 +5367,7 @@
                   "k": "D",
                   "t": "A SEBI assurance that the scheme has been approved on its merits"
                 }
-              ],
-              "explanation": "Reg. 11 lists conflicts of interest and the procedures to address them among the mandatory PPM disclosures. Guaranteed returns, investor net-worth disclosure and any SEBI merit-approval are not features of the AIF PPM regime."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 11 lists conflicts of interest and the procedures to address them among the mandatory PPM disclosures. Guaranteed returns, investor net-worth disclosure and any SEBI merit-approval are not features of the AIF PPM regime."
+              ]
             }
           },
           {
@@ -6048,11 +5379,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 12; MC Ch. 2, 12",
             "payload": {
-              "q": "Explain how GARUDA changes scheme launch, and state the first-close rule.",
-              "answer": "GARUDA (Master Circular, 30-07-2026) lets a regular scheme launch about ten working days after the PPM is filed through a merchant banker who has independently diligenced the disclosures — replacing the wait-for-SEBI-comments model; responsibility for accuracy rests with the merchant banker and Manager. First close must be declared within twelve months of eligibility to launch, at or above the category minimum corpus, and it starts the close-ended tenure clock; miss it and the scheme must be re-applied for with fee."
-            },
-            "answer": {
-              "answer": "GARUDA (Master Circular, 30-07-2026) lets a regular scheme launch about ten working days after the PPM is filed through a merchant banker who has independently diligenced the disclosures — replacing the wait-for-SEBI-comments model; responsibility for accuracy rests with the merchant banker and Manager. First close must be declared within twelve months of eligibility to launch, at or above the category minimum corpus, and it starts the close-ended tenure clock; miss it and the scheme must be re-applied for with fee."
+              "q": "Explain how GARUDA changes scheme launch, and state the first-close rule."
             }
           }
         ]
@@ -6139,12 +5466,7 @@
                   "k": "D",
                   "t": "Yes, but only if the value of their primary residence is added into net worth first"
                 }
-              ],
-              "explanation": "The combined limb requires income of at least one crore AND net worth of at least five crore with at least two crore fifty lakh in financial assets. Income of one crore twenty lakh, net worth of five crore fifty lakh with three crore financial assets satisfies every element. Failing the pure-income or pure-net-worth limb is irrelevant when a limb is met."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The combined limb requires income of at least one crore AND net worth of at least five crore with at least two crore fifty lakh in financial assets. Income of one crore twenty lakh, net worth of five crore fifty lakh with three crore financial assets satisfies every element. Failing the pure-income or pure-net-worth limb is irrelevant when a limb is met."
+              ]
             }
           },
           {
@@ -6174,12 +5496,7 @@
                   "k": "D",
                   "t": "Net worth of at least fifty crore, of which at least half must be financial assets"
                 }
-              ],
-              "explanation": "For a body corporate the accreditation test is a flat net worth of at least fifty crore rupees. The seven-crore-fifty-lakh and two-crore figures belong to the individual limbs, and there is no financial-assets split imposed on the corporate test."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "For a body corporate the accreditation test is a flat net worth of at least fifty crore rupees. The seven-crore-fifty-lakh and two-crore figures belong to the individual limbs, and there is no financial-assets split imposed on the corporate test."
+              ]
             }
           },
           {
@@ -6209,12 +5526,7 @@
                   "k": "D",
                   "t": "No, because the CIV co-investment route is open only to Category I and Category II AIFs"
                 }
-              ],
-              "explanation": "The Master Circular confines CIV-scheme co-investment to Category I and Category II AIFs, offered to accredited investors, with the CIV scheme ring-fenced and barred from borrowing or leverage. A Category III fund cannot run a CIV co-investment scheme."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The Master Circular confines CIV-scheme co-investment to Category I and Category II AIFs, offered to accredited investors, with the CIV scheme ring-fenced and barred from borrowing or leverage. A Category III fund cannot run a CIV co-investment scheme."
+              ]
             }
           },
           {
@@ -6244,12 +5556,7 @@
                   "k": "D",
                   "t": "Only after appointing a distributor of record to receive the trail commission"
                 }
-              ],
-              "explanation": "The Direct Plan is mandatory for investors who arrive without a distributor and must not carry distribution or placement fees. Charging such an investor a placement fee, or routing them through a distributor, is a breach of the direct-plan framework."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The Direct Plan is mandatory for investors who arrive without a distributor and must not carry distribution or placement fees. Charging such an investor a placement fee, or routing them through a distributor, is a breach of the direct-plan framework."
+              ]
             }
           },
           {
@@ -6261,11 +5568,7 @@
             "source": "SEBI Master Circular for AIFs (updated 30.07.2026)",
             "provision": "MC Ch. 10, 6, 16",
             "payload": {
-              "q": "State the individual accreditation routes and the two constraints on CIV co-investment.",
-              "answer": "Individual/HUF/family trust/sole proprietorship accredited if: income ≥ 2 crore; OR net worth ≥ 7.5 crore (≥ 3.75 crore financial); OR income ≥ 1 crore + net worth ≥ 5 crore (≥ 2.5 crore financial); primary residence excluded. CIV co-investment is confined to Category I and II AIFs and to accredited investors, and the CIV scheme is ring-fenced with separate bank/demat accounts and cannot borrow or leverage."
-            },
-            "answer": {
-              "answer": "Individual/HUF/family trust/sole proprietorship accredited if: income ≥ 2 crore; OR net worth ≥ 7.5 crore (≥ 3.75 crore financial); OR income ≥ 1 crore + net worth ≥ 5 crore (≥ 2.5 crore financial); primary residence excluded. CIV co-investment is confined to Category I and II AIFs and to accredited investors, and the CIV scheme is ring-fenced with separate bank/demat accounts and cannot borrow or leverage."
+              "q": "State the individual accreditation routes and the two constraints on CIV co-investment."
             }
           }
         ]
@@ -6352,12 +5655,7 @@
                   "k": "D",
                   "t": "Liability shifts entirely onto the investment committee, fully relieving the Manager"
                 }
-              ],
-              "explanation": "The Master Circular places investment-committee members on the same liability footing as the Manager for investment decisions and compliance. Constituting the IC does not offload the Manager's liability, and external membership does not dilute it — it shares it."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "The Master Circular places investment-committee members on the same liability footing as the Manager for investment decisions and compliance. Constituting the IC does not offload the Manager's liability, and external membership does not dilute it — it shares it."
+              ]
             }
           },
           {
@@ -6387,12 +5685,7 @@
                   "k": "D",
                   "t": "No, since conflicts must be disclosed as they arise and mitigated throughout the business"
                 }
-              ],
-              "explanation": "Reg. 21 imposes a continuing fiduciary duty: disclose conflicts as and when they arise and monitor and mitigate them throughout the business. A one-time PPM disclosure at launch does not discharge an ongoing obligation."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "Reg. 21 imposes a continuing fiduciary duty: disclose conflicts as and when they arise and monitor and mitigate them throughout the business. A one-time PPM disclosure at launch does not discharge an ongoing obligation."
+              ]
             }
           },
           {
@@ -6422,12 +5715,7 @@
                   "k": "D",
                   "t": "Within thirty days of the AIF's date of registration, as a one-time filing only"
                 }
-              ],
-              "explanation": "The CTR is an annual compliance self-test filed within thirty days of the financial year-end; the trustee or sponsor intimates observations to the manager within thirty days, and the manager cures within fifteen days. It is separate from routine SI-Portal reporting."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The CTR is an annual compliance self-test filed within thirty days of the financial year-end; the trustee or sponsor intimates observations to the manager within thirty days, and the manager cures within fifteen days. It is separate from routine SI-Portal reporting."
+              ]
             }
           },
           {
@@ -6457,12 +5745,7 @@
                   "k": "D",
                   "t": "Both are one-time obligations, each discharged at the scheme's first close and no later"
                 }
-              ],
-              "explanation": "Reg. 22 transparency runs continuously to investors (material information, fees, actions); the reporting duty is periodic filing to SEBI via the SI Portal and the annual CTR. They are different audiences and different cadences, commonly conflated."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "Reg. 22 transparency runs continuously to investors (material information, fees, actions); the reporting duty is periodic filing to SEBI via the SI Portal and the annual CTR. They are different audiences and different cadences, commonly conflated."
+              ]
             }
           },
           {
@@ -6474,11 +5757,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 21, 22; MC Ch. 17, 21",
             "payload": {
-              "q": "State the IC liability rule and the CTR timeline.",
-              "answer": "Investment-committee members are equally responsible as the Manager for the fund's investment decisions and compliance — external members share the liability, they do not dilute it. The Compliance Test Report is submitted within 30 days from the end of the financial year; the trustee/sponsor intimates observations to the manager within 30 days, and the manager makes changes within 15 days."
-            },
-            "answer": {
-              "answer": "Investment-committee members are equally responsible as the Manager for the fund's investment decisions and compliance — external members share the liability, they do not dilute it. The Compliance Test Report is submitted within 30 days from the end of the financial year; the trustee/sponsor intimates observations to the manager within 30 days, and the manager makes changes within 15 days."
+              "q": "State the IC liability rule and the CTR timeline."
             }
           }
         ]
@@ -6565,12 +5844,7 @@
                   "k": "D",
                   "t": "No, because the valuer must instead be a subsidiary of a credit rating agency in all cases"
                 }
-              ],
-              "explanation": "Independence is the threshold test: the valuer must not be an associate of the manager, sponsor or trustee. A subsidiary of the Manager fails that test regardless of its registration or experience. Qualification does not cure a structural conflict."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Independence is the threshold test: the valuer must not be an associate of the manager, sponsor or trustee. A subsidiary of the Manager fails that test regardless of its registration or experience. Qualification does not cure a structural conflict."
+              ]
             }
           },
           {
@@ -6600,12 +5874,7 @@
                   "k": "D",
                   "t": "Only at final close, when all of the scheme's assets are revalued together"
                 }
-              ],
-              "explanation": "The Master Circular treats an asset-level deviation of more than twenty per cent between consecutive valuations, or a change in methodology, as material and reportable to investors with reasons. A methodology change triggers reporting independently of the percentage."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The Master Circular treats an asset-level deviation of more than twenty per cent between consecutive valuations, or a change in methodology, as material and reportable to investors with reasons. A methodology change triggers reporting independently of the percentage."
+              ]
             }
           },
           {
@@ -6635,12 +5904,7 @@
                   "k": "D",
                   "t": "Where an investor is excused or excluded from the investment, or has defaulted on a call"
                 }
-              ],
-              "explanation": "The pro-rata requirement yields only in named cases: an investor excused or excluded from that investment, or one who has defaulted on its pro-rata contribution. Manager preference, category, or holding period are not recognised exceptions."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The pro-rata requirement yields only in named cases: an investor excused or excluded from that investment, or one who has defaulted on its pro-rata contribution. Manager preference, category, or holding period are not recognised exceptions."
+              ]
             }
           },
           {
@@ -6670,12 +5934,7 @@
                   "k": "D",
                   "t": "It capped the amount that any single investor may hold in dematerialised form"
                 }
-              ],
-              "explanation": "The corpus threshold phased the demat crediting roll-out — larger funds first, smaller funds on a later date. It is a sequencing device, not a permanent exemption, and is unrelated to the minimum-corpus registration gate."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "The corpus threshold phased the demat crediting roll-out — larger funds first, smaller funds on a later date. It is a sequencing device, not a permanent exemption, and is unrelated to the minimum-corpus registration gate."
+              ]
             }
           },
           {
@@ -6687,11 +5946,7 @@
             "source": "SEBI Master Circular for AIFs (updated 30.07.2026)",
             "provision": "MC Ch. 11, 18, 19",
             "payload": {
-              "q": "State the independent-valuer independence and qualification tests, and the pro-rata exceptions.",
-              "answer": "The independent valuer must not be an associate of the manager, sponsor or trustee (independence), must have at least three years' valuation experience, and must be IBBI-registered as a valuer or a holding/subsidiary of a credit rating agency; valuation follows IPEV. Pro-rata rights need not be maintained where an investor is excused or excluded from the particular investment, or has defaulted on its pro-rata contribution; carried interest is the recognised distribution exception."
-            },
-            "answer": {
-              "answer": "The independent valuer must not be an associate of the manager, sponsor or trustee (independence), must have at least three years' valuation experience, and must be IBBI-registered as a valuer or a holding/subsidiary of a credit rating agency; valuation follows IPEV. Pro-rata rights need not be maintained where an investor is excused or excluded from the particular investment, or has defaulted on its pro-rata contribution; carried interest is the recognised distribution exception."
+              "q": "State the independent-valuer independence and qualification tests, and the pro-rata exceptions."
             }
           }
         ]
@@ -6778,12 +6033,7 @@
                   "k": "D",
                   "t": "Wrong only on the allegation point; the ten-day notice is otherwise mandatory always"
                 }
-              ],
-              "explanation": "Inspection may be initiated suo motu, on information or on complaint — no allegation is needed to begin. And while ten days' notice is the norm, Reg. 31(2) permits a no-notice inspection where the Board is satisfied it is in investors' interest. Both parts of the director's position are wrong."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Inspection may be initiated suo motu, on information or on complaint — no allegation is needed to begin. And while ten days' notice is the norm, Reg. 31(2) permits a no-notice inspection where the Board is satisfied it is in investors' interest. Both parts of the director's position are wrong."
+              ]
             }
           },
           {
@@ -6813,12 +6063,7 @@
                   "k": "D",
                   "t": "Only external parties such as the custodian, and not the fund's own officers"
                 }
-              ],
-              "explanation": "Reg. 32 casts the duty widely: every officer and any associated person holding relevant information — expressly including the manager — must produce records and cooperate, and may be examined on oath. Confining the duty to the compliance officer is a common and serious error."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg. 32 casts the duty widely: every officer and any associated person holding relevant information — expressly including the manager — must produce records and cooperate, and may be examined on oath. Confining the duty to the compliance officer is a common and serious error."
+              ]
             }
           },
           {
@@ -6848,12 +6093,7 @@
                   "k": "D",
                   "t": "Retention may not exceed three years, after which 'Inoperative Fund' status may be sought"
                 }
-              ],
-              "explanation": "The 2026 Master Circular caps retention of proceeds at three years beyond permissible fund life and introduces 'Inoperative Fund' status as the route thereafter. These are circular provisions — cite them as such, not as regulation."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The 2026 Master Circular caps retention of proceeds at three years beyond permissible fund life and introduces 'Inoperative Fund' status as the route thereafter. These are circular provisions — cite them as such, not as regulation."
+              ]
             }
           },
           {
@@ -6883,12 +6123,7 @@
                   "k": "D",
                   "t": "Continue holding the assets with no investor approval, given that the tenure has ended"
                 }
-              ],
-              "explanation": "Illiquid residual investments may be distributed in-specie or taken into a dissolution period, but only with approval of at least seventy-five per cent of investors by value. Tenure extension by a bare numeric majority, or a Manager buy-out at carrying value, is not the prescribed route."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Illiquid residual investments may be distributed in-specie or taken into a dissolution period, but only with approval of at least seventy-five per cent of investors by value. Tenure extension by a bare numeric majority, or a Manager buy-out at carrying value, is not the prescribed route."
+              ]
             }
           },
           {
@@ -6918,12 +6153,7 @@
                   "k": "D",
                   "t": "Appointing an independent valuer instead of valuing the investments in-house"
                 }
-              ],
-              "explanation": "Reg. 35 lists non-cooperation in an enquiry, inspection or investigation among the default triggers, alongside contravention, false information, non-submission of returns and failure to resolve complaints. The other options describe compliant or neutral conduct."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "Reg. 35 lists non-cooperation in an enquiry, inspection or investigation among the default triggers, alongside contravention, false information, non-submission of returns and failure to resolve complaints. The other options describe compliant or neutral conduct."
+              ]
             }
           },
           {
@@ -6935,11 +6165,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Reg. 29-35; MC Ch. 23, 25",
             "payload": {
-              "q": "State the inspection notice rule, the winding-up/dissolution investor threshold, and the 2026 retention cap.",
-              "answer": "Inspection may be suo motu; ordinarily not less than ten days' notice, but the Board may order it without notice where satisfied it is in investors' interest (Reg. 31(2)); every officer and associated person, including the manager, must cooperate. Winding up and the dissolution-period route require approval of at least seventy-five per cent of investors by value. Under the 2026 Master Circular, retention of proceeds beyond permissible fund life cannot exceed three years, after which 'Inoperative Fund' status may be sought."
-            },
-            "answer": {
-              "answer": "Inspection may be suo motu; ordinarily not less than ten days' notice, but the Board may order it without notice where satisfied it is in investors' interest (Reg. 31(2)); every officer and associated person, including the manager, must cooperate. Winding up and the dissolution-period route require approval of at least seventy-five per cent of investors by value. Under the 2026 Master Circular, retention of proceeds beyond permissible fund life cannot exceed three years, after which 'Inoperative Fund' status may be sought."
+              "q": "State the inspection notice rule, the winding-up/dissolution investor threshold, and the 2026 retention cap."
             }
           }
         ]
@@ -7026,12 +6252,7 @@
                   "k": "D",
                   "t": "GARUDA is a Regulation, while the comment model was only ever an informal market practice"
                 }
-              ],
-              "explanation": "GARUDA is a 2026 Master Circular mechanism, not a regulation amendment. Attributing it to the Regulations is the classic source error — the whole point of the tracker discipline is to label a 2026 circular mechanism as circular."
-            },
-            "answer": {
-              "correct": "B",
-              "explanation": "GARUDA is a 2026 Master Circular mechanism, not a regulation amendment. Attributing it to the Regulations is the classic source error — the whole point of the tracker discipline is to label a 2026 circular mechanism as circular."
+              ]
             }
           },
           {
@@ -7061,12 +6282,7 @@
                   "k": "D",
                   "t": "Angel funds belong in Category III, while hedge funds are properly a Category I sub-category"
                 }
-              ],
-              "explanation": "Post-09-09-2025, angel funds are an express Category I sub-category, not a standalone Chapter III-A construct; hedge funds are the archetypal Category III example. The 'Chapter III-A construct' framing is dated for angel funds and simply wrong for hedge funds."
-            },
-            "answer": {
-              "correct": "C",
-              "explanation": "Post-09-09-2025, angel funds are an express Category I sub-category, not a standalone Chapter III-A construct; hedge funds are the archetypal Category III example. The 'Chapter III-A construct' framing is dated for angel funds and simply wrong for hedge funds."
+              ]
             }
           },
           {
@@ -7096,12 +6312,7 @@
                   "k": "D",
                   "t": "The 07-08-2024 change recast the I/II borrowing carve-out; 05-01-2024 required demat holding"
                 }
-              ],
-              "explanation": "The 07-08-2024 Fourth Amendment recast the Category I/II borrowing carve-out; the 05-01-2024 insertion required demat holding of investments. GARUDA and 'Inoperative Fund' are 2026 circular changes, not 2024 amendments."
-            },
-            "answer": {
-              "correct": "D",
-              "explanation": "The 07-08-2024 Fourth Amendment recast the Category I/II borrowing carve-out; the 05-01-2024 insertion required demat holding of investments. GARUDA and 'Inoperative Fund' are 2026 circular changes, not 2024 amendments."
+              ]
             }
           },
           {
@@ -7131,12 +6342,7 @@
                   "k": "D",
                   "t": "The existence of the 75%-by-value threshold within the winding-up regulation itself"
                 }
-              ],
-              "explanation": "The retention cap and 'Inoperative Fund' status are 2026 Master Circular additions. The registration requirement and the Category III definition are core Regulation provisions, and the winding-up vote sits in the Regulations — only option A is the circular-sourced 2026 change."
-            },
-            "answer": {
-              "correct": "A",
-              "explanation": "The retention cap and 'Inoperative Fund' status are 2026 Master Circular additions. The registration requirement and the Category III definition are core Regulation provisions, and the winding-up vote sits in the Regulations — only option A is the circular-sourced 2026 change."
+              ]
             }
           },
           {
@@ -7148,11 +6354,7 @@
             "source": "SEBI (AIF) Regulations, 2012 (consolidated)",
             "provision": "Amendments 2024-2026; MC 2026",
             "payload": {
-              "q": "List the four recent changes by date and say which are regulation and which are circular.",
-              "answer": "2024: Category I/II operational borrowing carve-out recast (07-08-2024, regulation) and demat holding of investments required (05-01-2024, regulation). 2025: angel funds folded into Category I sub-categories (09-09-2025, regulation). 2026: GARUDA green-channel launch (30-07-2026, Master Circular) and the winding-up circular's three-year retention cap plus 'Inoperative Fund' status (2026, Master Circular). Regulation changes cite the amendment regulations; GARUDA and Inoperative Fund cite the Master Circular."
-            },
-            "answer": {
-              "answer": "2024: Category I/II operational borrowing carve-out recast (07-08-2024, regulation) and demat holding of investments required (05-01-2024, regulation). 2025: angel funds folded into Category I sub-categories (09-09-2025, regulation). 2026: GARUDA green-channel launch (30-07-2026, Master Circular) and the winding-up circular's three-year retention cap plus 'Inoperative Fund' status (2026, Master Circular). Regulation changes cite the amendment regulations; GARUDA and Inoperative Fund cite the Master Circular."
+              "q": "List the four recent changes by date and say which are regulation and which are circular."
             }
           }
         ]
