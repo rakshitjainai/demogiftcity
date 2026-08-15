@@ -206,9 +206,9 @@ router.get('/:courseSlug/items/:uid', (req, res) => {
 });
 
 // ─── POST /api/regulatory-master/:courseSlug/submit-answer ─────────────────
-// Auth required. Receives user's answer, checks server-side, returns result.
+// Auth optional. Receives user's answer, checks server-side, returns result.
 // NEVER sends correct_key/explanation on the serve path — only here after submission.
-router.post('/:courseSlug/submit-answer', protect, async (req, res) => {
+router.post('/:courseSlug/submit-answer', async (req, res) => {
   try {
     const { uid, answer } = req.body;
     if (!uid || answer === undefined || answer === null) {
@@ -224,44 +224,61 @@ router.post('/:courseSlug/submit-answer', protect, async (req, res) => {
       return res.status(404).json({ message: 'Question not found' });
     }
 
-    const correctKey = item.correct_key;
-    const correctText = item.correct_text;
+    const correctKey = item.correct_key || item.blanks || item.pairs;
+    const correctText = item.correct_text || item.blanks || item.pairs || '';
     const explanation = item.explanation || '';
 
     if (!correctKey) {
       return res.status(422).json({ message: 'No answer key found for this item' });
     }
 
-    // Normalize both to uppercase for comparison
-    const isCorrect = String(answer).toUpperCase().trim() === String(correctKey).toUpperCase().trim();
+    // Normalize both to uppercase for comparison (or trim for text fill)
+    const normUser = String(answer).toUpperCase().trim();
+    const normKey = String(correctKey).toUpperCase().trim();
+    const isCorrect = normUser === normKey;
 
-    // Record first-attempt in user's courseProgress (never overwrite first attempt)
-    const courseSlug = req.params.courseSlug;
-    const user = await User.findById(req.user._id);
-    if (!user.courseProgress) user.courseProgress = [];
+    let courseProgress = null;
 
-    let cpEntry = user.courseProgress.find(c => c.courseSlug === courseSlug);
-    if (!cpEntry) {
-      cpEntry = {
-        courseSlug,
-        completedItems: [uid],
-        quizAnswers: [{ uid, selectedOption: String(answer), isCorrect, timestamp: new Date() }],
-        updatedAt: new Date()
-      };
-      user.courseProgress.push(cpEntry);
-    } else {
-      // Only record first attempt — never overwrite
-      const alreadyAnswered = cpEntry.quizAnswers.find(a => a.uid === uid);
-      if (!alreadyAnswered) {
-        cpEntry.quizAnswers.push({ uid, selectedOption: String(answer), isCorrect, timestamp: new Date() });
+    // Record first-attempt in user's courseProgress if authenticated
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const { default: jwt } = await import('jsonwebtoken');
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'regmate_jwt_secret_key_2026_secure');
+        const user = await User.findById(decoded.id);
+        if (user) {
+          const courseSlug = req.params.courseSlug;
+          if (!user.courseProgress) user.courseProgress = [];
+
+          let cpEntry = user.courseProgress.find(c => c.courseSlug === courseSlug);
+          if (!cpEntry) {
+            cpEntry = {
+              courseSlug,
+              completedItems: [uid],
+              quizAnswers: [{ uid, selectedOption: String(answer), isCorrect, timestamp: new Date() }],
+              updatedAt: new Date()
+            };
+            user.courseProgress.push(cpEntry);
+          } else {
+            // Only record first attempt — never overwrite
+            const alreadyAnswered = cpEntry.quizAnswers.find(a => a.uid === uid);
+            if (!alreadyAnswered) {
+              cpEntry.quizAnswers.push({ uid, selectedOption: String(answer), isCorrect, timestamp: new Date() });
+            }
+            if (!cpEntry.completedItems.includes(uid)) {
+              cpEntry.completedItems.push(uid);
+            }
+            cpEntry.updatedAt = new Date();
+          }
+
+          await user.save();
+          courseProgress = user.courseProgress;
+        }
+      } catch (_) {
+        // Auth check error, proceed without saving
       }
-      if (!cpEntry.completedItems.includes(uid)) {
-        cpEntry.completedItems.push(uid);
-      }
-      cpEntry.updatedAt = new Date();
     }
-
-    await user.save();
 
     // Return result — explanation is ONLY sent here, after submission
     return res.json({
@@ -270,7 +287,7 @@ router.post('/:courseSlug/submit-answer', protect, async (req, res) => {
       correctKey,
       correctText,
       explanation,
-      courseProgress: user.courseProgress,
+      courseProgress,
     });
   } catch (err) {
     console.error('Submit answer error:', err);
@@ -279,33 +296,45 @@ router.post('/:courseSlug/submit-answer', protect, async (req, res) => {
 });
 
 // ─── POST /api/regulatory-master/:courseSlug/mark-lesson ──────────────────
-// Auth required. Marks a lesson UID as read/completed in courseProgress.
-router.post('/:courseSlug/mark-lesson', protect, async (req, res) => {
+// Auth optional. Marks a lesson UID as read/completed in courseProgress.
+router.post('/:courseSlug/mark-lesson', async (req, res) => {
   try {
     const { uid, markAs } = req.body; // markAs: 'complete' | 'incomplete'
     if (!uid) return res.status(400).json({ message: 'uid is required' });
 
-    const courseSlug = req.params.courseSlug;
-    const user = await User.findById(req.user._id);
-    if (!user.courseProgress) user.courseProgress = [];
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const { default: jwt } = await import('jsonwebtoken');
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'regmate_jwt_secret_key_2026_secure');
+        const user = await User.findById(decoded.id);
+        if (user) {
+          const courseSlug = req.params.courseSlug;
+          if (!user.courseProgress) user.courseProgress = [];
 
-    let cpEntry = user.courseProgress.find(c => c.courseSlug === courseSlug);
-    if (!cpEntry) {
-      cpEntry = { courseSlug, completedItems: [], quizAnswers: [], updatedAt: new Date() };
-      user.courseProgress.push(cpEntry);
+          let cpEntry = user.courseProgress.find(c => c.courseSlug === courseSlug);
+          if (!cpEntry) {
+            cpEntry = { courseSlug, completedItems: [], quizAnswers: [], updatedAt: new Date() };
+            user.courseProgress.push(cpEntry);
+          }
+
+          const markComplete = markAs !== 'incomplete';
+          if (markComplete && !cpEntry.completedItems.includes(uid)) {
+            cpEntry.completedItems.push(uid);
+          } else if (!markComplete) {
+            const idx = cpEntry.completedItems.indexOf(uid);
+            if (idx >= 0) cpEntry.completedItems.splice(idx, 1);
+          }
+          cpEntry.updatedAt = new Date();
+
+          await user.save();
+          return res.json({ message: 'Lesson progress updated', courseProgress: user.courseProgress, user: user.toAuthJSON() });
+        }
+      } catch (_) {}
     }
 
-    const markComplete = markAs !== 'incomplete';
-    if (markComplete && !cpEntry.completedItems.includes(uid)) {
-      cpEntry.completedItems.push(uid);
-    } else if (!markComplete) {
-      const idx = cpEntry.completedItems.indexOf(uid);
-      if (idx >= 0) cpEntry.completedItems.splice(idx, 1);
-    }
-    cpEntry.updatedAt = new Date();
-
-    await user.save();
-    return res.json({ message: 'Lesson progress updated', courseProgress: user.courseProgress, user: user.toAuthJSON() });
+    return res.json({ message: 'Lesson marked (guest)' });
   } catch (err) {
     console.error('Mark lesson error:', err);
     return res.status(500).json({ message: 'Error updating lesson progress', error: err.message });
