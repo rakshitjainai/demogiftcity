@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   X, CheckCircle2, Circle, BookOpen, HelpCircle, ArrowLeft, ArrowRight,
   ShieldAlert, Sparkles, Award, Loader2, AlertCircle, ChevronDown,
@@ -13,21 +13,21 @@ import fmeContent from '../data/regmate-fme-content.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-// ─── Design Tokens & Type Helpers ──────────────────────────────────────────
+// ─── Design Tokens & Badge Helpers (Codex System) ──────────────────────────
 const W_SCORE = { 'very-high': 4, high: 3, medium: 2, low: 1 };
 const P_SCORE = { critical: 4, high: 3, medium: 2, low: 1 };
 
 function PriorityPill({ priority }) {
   const p = (priority || 'medium').toLowerCase();
   const styles = {
-    critical: 'bg-[rgba(180,70,47,0.10)] text-[#B4462F] border border-[rgba(180,70,47,0.25)]',
-    high: 'bg-[#F6ECDD] text-[#B0722B] border border-[#EAD6BB]',
-    medium: 'bg-[rgba(63,122,140,0.12)] text-[#3F7A8C] border border-[rgba(63,122,140,0.25)]',
-    low: 'bg-[rgba(124,138,163,0.14)] text-[#7C8AA3] border border-[rgba(124,138,163,0.25)]',
-  }[p] || 'bg-slate-100 text-slate-700 border-slate-200';
+    critical: 'bg-rose-50 text-rose-700 border-rose-200',
+    high: 'bg-amber-50 text-amber-800 border-amber-200',
+    medium: 'bg-mint text-forest border-mint-deep',
+    low: 'bg-paper text-ink-soft border-line',
+  }[p] || 'bg-paper text-ink-soft border-line';
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${styles}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${styles}`}>
       {priority}
     </span>
   );
@@ -35,9 +35,9 @@ function PriorityPill({ priority }) {
 
 function RolePill({ roleTag, weight }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#EEF2F9] text-[#182338] border border-slate-200">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-mint text-forest border border-mint-deep">
       <span>{roleTag}</span>
-      {weight && <span className="opacity-60">· {weight}</span>}
+      {weight && <span className="text-ink-soft/70">· {weight}</span>}
     </span>
   );
 }
@@ -46,14 +46,14 @@ function SourceChip({ source, verify }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {source && (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-white border border-[#E4E8F0] text-[#4B5A75] shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C6863A]" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-white border border-line text-ink-soft shadow-2xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold" />
           {source}
         </span>
       )}
       {verify && (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-[#FBF2DC] border border-[#EBD9AE] text-[#9A6A16] font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#9A6A16]" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-amber-50 border border-amber-200 text-amber-800 font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
           VERIFY AGAINST SOURCE
         </span>
       )}
@@ -63,11 +63,11 @@ function SourceChip({ source, verify }) {
 
 function VerifyWarningBanner({ note }) {
   return (
-    <div className="p-3.5 bg-[#FBF2DC] border border-[#EBD9AE] rounded-xl text-xs text-[#6E4E10] leading-relaxed flex items-start gap-2.5">
-      <AlertCircle className="w-4 h-4 text-[#9A6A16] flex-shrink-0 mt-0.5" />
+    <div className="p-3.5 sm:p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
+      <AlertCircle className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
       <div>
-        <strong className="block font-mono uppercase text-[10px] tracking-wider text-[#9A6A16] mb-0.5">
-          Sample Content — Verify Against Live Regulation
+        <strong className="block font-mono uppercase text-[10px] tracking-wider text-amber-800 mb-0.5">
+          Statutory Note — Verify Against Live Regulation
         </strong>
         {note || 'This topic draws on the general AML/FEMA framework. Please verify current thresholds and circulars against source.'}
       </div>
@@ -78,12 +78,17 @@ function VerifyWarningBanner({ note }) {
 // ─── Main Modal Component ──────────────────────────────────────────────────
 export default function RegulatoryMasterModal({ course, onClose }) {
   const { user, token, toggleCourseItem, hasAccess } = useAuth();
-  const isMember = user?.membershipStatus === 'active';
-  const [showMembershipLock, setShowMembershipLock] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const isFME = (course?.code || '').toUpperCase().includes('FME') || (course?.slug || '').includes('fme');
   const resolvedSlug = isFME ? 'ifsca-fme' : (course?.slug || 'ifsca-cmi');
+
+  // BUG 3 FIX: Lock body scroll when modal is open (prevents mobile bleed-through)
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
 
   // Tab navigation: 'home' | 'modules' | 'practice' | 'scenarios' | 'recall' | 'assess'
   const [activeTab, setActiveTab] = useState('home');
@@ -261,6 +266,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
     return qs;
   }, [isFME, questionFilter]);
 
+  // BUG 2 FIX: Clamp question index when filter changes so it never goes out of bounds
+  useEffect(() => {
+    if (filteredQuestions.length > 0 && currentQuestionIndex >= filteredQuestions.length) {
+      setCurrentQuestionIndex(0);
+    }
+  }, [filteredQuestions.length]);
+
   // Flashcards for current recall mode
   const currentRecallCards = useMemo(() => {
     if (!isFME || !recallMode) return [];
@@ -305,27 +317,29 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md overflow-hidden animate-fade-in"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-forest-deep/80 backdrop-blur-sm overflow-hidden animate-fade-in"
       style={{
-        fontFamily: "'Inter', system-ui, sans-serif",
-        color: '#182338',
+        fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
+        color: 'var(--ink)',
       }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* App Shell Container */}
-      <div className="w-full sm:max-w-[480px] lg:max-w-[1060px] h-full sm:h-[92vh] sm:max-h-[920px] bg-[#F4F6FA] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[#E4E8F0] relative">
+      {/* App Shell Container — full-screen on mobile, constrained modal on desktop */}
+      {/* BUG 3 FIX: w-full h-[100dvh] on mobile ensures full-screen with no bleed-through */}
+      <div className="w-full max-w-5xl h-[100dvh] sm:h-[92vh] sm:max-h-[920px] bg-paper sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border border-line relative">
 
-        {/* ─── Topbar ─── */}
-        <header className="bg-[#16203A] text-[#EAF0FA] px-4 py-3.5 flex items-center justify-between border-b border-[#26324F] flex-shrink-0 z-20">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#C6863A] to-[#B0722B] text-white flex items-center justify-center font-['Space_Grotesk'] font-bold text-sm shadow-xs flex-shrink-0">
+        {/* ─── Topbar (Codex Design System) ─── */}
+        <header className="bg-forest-deep text-paper px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-sm shadow-xs flex-shrink-0 border border-leaf/30">
               §
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-['Space_Grotesk'] font-bold text-sm text-white tracking-tight">
-                  RegMate JobReady
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-serif font-bold text-sm sm:text-base text-paper tracking-tight">
+                  RegMate Regulatory Master
                 </span>
-                <span className="px-2 py-0.5 bg-white/10 text-white/90 text-[10px] font-mono font-semibold rounded-full uppercase">
+                <span className="px-2 py-0.5 bg-mint/15 text-mint text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-mint/20">
                   {course?.code || 'IFSCA-FME'}
                 </span>
               </div>
@@ -336,19 +350,19 @@ export default function RegulatoryMasterModal({ course, onClose }) {
             {isFME && (
               <button
                 onClick={() => setShowRoleModal(true)}
-                className="cursor-target px-2.5 py-1 bg-white/10 hover:bg-white/20 text-[#EAF0FA] border border-white/15 rounded-lg text-xs flex items-center gap-1.5 transition-colors font-medium"
+                className="cursor-target px-3 py-1.5 bg-forest hover:bg-forest-deep text-mint border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[38px]"
               >
-                <UserCheck className="w-3.5 h-3.5 text-[#C6863A]" />
-                <span className="hidden sm:inline font-mono text-[11px]">{currentRole.name}</span>
-                <span className="sm:hidden font-mono text-[11px]">{currentRole.tag}</span>
-                <ChevronDown className="w-3 h-3 text-[#9DB0CE]" />
+                <UserCheck className="w-3.5 h-3.5 text-gold-soft" />
+                <span className="hidden sm:inline text-xs font-semibold">{currentRole.name}</span>
+                <span className="sm:hidden font-mono text-[11px] font-bold">{currentRole.tag}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-mint/70" />
               </button>
             )}
 
             <button
               onClick={onClose}
               aria-label="Close"
-              className="cursor-target p-1.5 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+              className="cursor-target p-2 rounded-xl hover:bg-white/10 text-mint/80 hover:text-white transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
@@ -356,81 +370,81 @@ export default function RegulatoryMasterModal({ course, onClose }) {
         </header>
 
         {/* ─── Track / Role Sub-Bar ─── */}
-        <div className="bg-[#101A2E] text-white/80 px-4 py-2 flex items-center justify-between text-xs border-b border-[#26324F] flex-shrink-0">
-          <div className="flex items-center gap-3 min-w-0 truncate">
-            <span className="text-[11px] font-mono text-[#C6863A] uppercase tracking-wider font-semibold">
+        <div className="bg-forest text-mint/90 px-4 sm:px-6 py-2 flex items-center justify-between text-xs border-b border-forest-deep flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 truncate">
+            <span className="text-[11px] font-mono text-gold-soft uppercase tracking-wider font-bold">
               {isFME ? `Focus: ${currentRole.tag} Role` : 'Mastery Track'}
             </span>
-            <span className="text-white/40">•</span>
-            <span className="text-xs text-slate-300 truncate">
+            <span className="text-mint/40">•</span>
+            <span className="text-xs text-mint/90 truncate font-medium">
               {isFME ? currentRole.line : course?.title}
             </span>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0 font-mono text-[11px]">
-            <span className="text-slate-400">Readiness</span>
-            <span className="font-bold text-[#C6863A]">{readinessPct}%</span>
+            <span className="text-mint/70">Readiness</span>
+            <span className="font-bold text-gold-soft">{readinessPct}%</span>
           </div>
         </div>
 
-        {/* ─── Main Content Body ─── */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 space-y-4 pb-20">
+        {/* ─── Main Content Body (with safe bottom padding) ─── */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-5 pb-24 sm:pb-28">
 
           {/* ================================================================= */}
           {/* TAB: HOME / DASHBOARD                                            */}
           {/* ================================================================= */}
           {activeTab === 'home' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {/* Hero Banner with Readiness Dial */}
-              <div className="bg-gradient-to-br from-[#1B2A49] to-[#16203A] text-white rounded-2xl p-5 sm:p-6 border border-[#26324F] shadow-lg relative overflow-hidden">
+              <div className="bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white rounded-3xl p-5 sm:p-7 border border-leaf/30 card-shadow relative overflow-hidden">
                 <div className="flex justify-between items-start gap-4">
                   <div>
-                    <span className="text-[10px] font-mono text-[#9DB0CE] uppercase tracking-widest block mb-1">
+                    <span className="text-[10px] font-mono text-gold-soft uppercase tracking-widest block mb-1 font-bold">
                       Target Role · {isFME ? currentRole.tag : 'Practitioner'}
                     </span>
-                    <h1 className="text-xl sm:text-2xl font-['Space_Grotesk'] font-bold text-white leading-tight">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight">
                       {isFME ? currentRole.name : course?.title}
                     </h1>
-                    <p className="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
+                    <p className="text-xs sm:text-sm text-mint/85 mt-2 max-w-xl leading-relaxed">
                       {isFME ? 'Role-weighted, statutory-backed interview preparation with real case judgements.' : course?.description}
                     </p>
                   </div>
 
-                  <span className="px-2.5 py-1 rounded-lg bg-[#C6863A]/20 border border-[#C6863A]/40 text-[#E7C89B] font-mono text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
+                  <span className="px-2.5 py-1 rounded-xl bg-gold/20 border border-gold/40 text-gold-soft font-mono text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
                     {prepMode.toUpperCase()} MODE
                   </span>
                 </div>
 
                 {/* Dial + Action row */}
-                <div className="mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center gap-5">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-18 h-18 rounded-full border-4 border-white/10 border-t-[#C6863A] border-r-[#C6863A] flex items-center justify-center flex-shrink-0">
+                <div className="mt-6 pt-5 border-t border-white/15 flex flex-col sm:flex-row items-center gap-5">
+                  <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full border-4 border-white/15 border-t-gold-soft border-r-gold-soft flex items-center justify-center flex-shrink-0">
                       <div className="text-center">
-                        <span className="font-['Space_Grotesk'] text-xl font-bold text-white block leading-none">
+                        <span className="font-serif text-lg sm:text-xl font-bold text-white block leading-none">
                           {readinessPct}%
                         </span>
-                        <span className="text-[8px] font-mono text-[#9DB0CE] uppercase">Score</span>
+                        <span className="text-[8px] font-mono text-mint/70 uppercase">Score</span>
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-white">Interview Readiness Status</div>
-                      <div className="text-[11px] text-[#9DB0CE] mt-0.5">
+                      <div className="text-xs sm:text-sm font-semibold text-white">Interview Readiness Status</div>
+                      <div className="text-[11px] text-mint/80 mt-0.5">
                         {readinessPct < 30 ? 'Initial Calibration · Focus on High-Yield Modules' : readinessPct < 70 ? 'Intermediate · Reinforce Traps & Scenarios' : 'High Readiness · Ready for Final Mock'}
                       </div>
                     </div>
                   </div>
 
-                  <div className="sm:ml-auto flex gap-2 w-full sm:w-auto">
+                  <div className="sm:ml-auto flex gap-3 w-full sm:w-auto">
                     <button
                       onClick={() => setActiveTab('practice')}
-                      className="cursor-target flex-1 sm:flex-none px-4 py-2.5 bg-[#C6863A] hover:bg-[#B0722B] text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+                      className="cursor-target flex-1 sm:flex-none px-5 py-3 bg-gold hover:bg-gold/90 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 hover-lift min-h-[44px]"
                     >
                       <Target className="w-4 h-4" /> Start Interview Qs
                     </button>
                     <button
                       onClick={() => setActiveTab('modules')}
-                      className="cursor-target flex-1 sm:flex-none px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-xl border border-white/20 transition-all flex items-center justify-center gap-1.5"
+                      className="cursor-target flex-1 sm:flex-none px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm rounded-xl border border-white/20 transition-all flex items-center justify-center gap-2 hover-lift min-h-[44px]"
                     >
                       <BookOpen className="w-4 h-4" /> Syllabus
                     </button>
@@ -439,65 +453,73 @@ export default function RegulatoryMasterModal({ course, onClose }) {
               </div>
 
               {/* Quick Action Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 <button
                   onClick={() => setActiveTab('practice')}
-                  className="cursor-target p-4 bg-white border border-[#E4E8F0] hover:border-[#C6863A] rounded-2xl text-left transition-all hover-lift shadow-xs group"
+                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-[#F6ECDD] text-[#B0722B] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
-                    <Target className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Target className="w-5 h-5" />
                   </div>
-                  <div className="font-['Space_Grotesk'] font-bold text-sm text-[#182338]">Interview Qs</div>
-                  <div className="text-[11px] text-[#4B5A75] mt-0.5">Think → Reveal flow</div>
+                  <div>
+                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Interview Qs</div>
+                    <div className="text-[11px] text-ink-soft mt-0.5">Think → Reveal flow</div>
+                  </div>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('scenarios')}
-                  className="cursor-target p-4 bg-white border border-[#E4E8F0] hover:border-[#C6863A] rounded-2xl text-left transition-all hover-lift shadow-xs group"
+                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-[#EEF2F9] text-[#182338] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
-                    <Layers className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Layers className="w-5 h-5" />
                   </div>
-                  <div className="font-['Space_Grotesk'] font-bold text-sm text-[#182338]">Simulations</div>
-                  <div className="text-[11px] text-[#4B5A75] mt-0.5">Controls & scenarios</div>
+                  <div>
+                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Simulations</div>
+                    <div className="text-[11px] text-ink-soft mt-0.5">Controls & scenarios</div>
+                  </div>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('recall')}
-                  className="cursor-target p-4 bg-white border border-[#E4E8F0] hover:border-[#C6863A] rounded-2xl text-left transition-all hover-lift shadow-xs group"
+                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-[#E4F3ED] text-[#2E8768] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
-                    <Brain className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Brain className="w-5 h-5" />
                   </div>
-                  <div className="font-['Space_Grotesk'] font-bold text-sm text-[#182338]">Rapid Recall</div>
-                  <div className="text-[11px] text-[#4B5A75] mt-0.5">Flip flashcards</div>
+                  <div>
+                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Rapid Recall</div>
+                    <div className="text-[11px] text-ink-soft mt-0.5">Flip flashcards</div>
+                  </div>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('assess')}
-                  className="cursor-target p-4 bg-white border border-[#E4E8F0] hover:border-[#C6863A] rounded-2xl text-left transition-all hover-lift shadow-xs group"
+                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-[#FBF2DC] text-[#9A6A16] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
-                    <Award className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                    <Award className="w-5 h-5" />
                   </div>
-                  <div className="font-['Space_Grotesk'] font-bold text-sm text-[#182338]">Assessment</div>
-                  <div className="text-[11px] text-[#4B5A75] mt-0.5">20-item scored test</div>
+                  <div>
+                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Assessment</div>
+                    <div className="text-[11px] text-ink-soft mt-0.5">20-item scored test</div>
+                  </div>
                 </button>
               </div>
 
               {/* FME: Priority Topics for Selected Role */}
               {isFME && (
-                <div className="bg-white border border-[#E4E8F0] rounded-2xl p-5 shadow-xs">
-                  <div className="flex items-center justify-between mb-3.5">
+                <div className="bg-white border border-line rounded-2xl p-5 sm:p-6 card-shadow">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="font-['Space_Grotesk'] font-bold text-base text-[#182338]">
+                      <h3 className="font-serif font-bold text-base sm:text-lg text-forest-deep">
                         Priority Topics for {currentRole.name}
                       </h3>
-                      <p className="text-xs text-[#4B5A75]">Weighted by interview frequency for this role</p>
+                      <p className="text-xs text-ink-soft mt-0.5">Weighted by interview frequency and regulatory significance</p>
                     </div>
                     <button
                       onClick={() => setActiveTab('modules')}
-                      className="text-xs font-semibold text-[#B0722B] hover:underline"
+                      className="text-xs font-semibold text-leaf hover:text-forest hover:underline"
                     >
                       View All
                     </button>
@@ -512,26 +534,26 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                           setSelectedTopicId(t.id);
                           setActiveTab('modules');
                         }}
-                        className="cursor-target w-full p-3.5 rounded-xl border border-[#E4E8F0] hover:border-[#C6863A] bg-[#FBFCFE] text-left flex items-center justify-between gap-3 transition-all hover-lift"
+                        className="cursor-target w-full p-3.5 sm:p-4 rounded-xl border border-line hover:border-forest bg-paper text-left flex items-center justify-between gap-3 transition-all hover-lift min-h-[56px]"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <span className="font-mono text-xs font-bold text-[#8A97AD] w-5 text-center flex-shrink-0">
+                          <span className="font-serif text-sm font-bold text-forest w-6 text-center flex-shrink-0">
                             {String(idx + 1).padStart(2, '0')}
                           </span>
                           <div className="min-w-0">
-                            <div className="font-semibold text-sm text-[#182338] truncate">{t.title}</div>
-                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            <div className="font-semibold text-xs sm:text-sm text-forest-deep truncate">{t.title}</div>
+                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                               <PriorityPill priority={t.priority} />
                               <RolePill roleTag={currentRole.tag} weight={t.weight} />
                               {t.verify && (
-                                <span className="text-[10px] font-mono text-[#9A6A16] font-semibold bg-[#FBF2DC] px-1.5 py-0.5 rounded">
+                                <span className="text-[10px] font-mono text-amber-800 font-semibold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
                                   Verify
                                 </span>
                               )}
                             </div>
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-[#8A97AD] flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-ink-soft flex-shrink-0" />
                       </button>
                     ))}
                   </div>
@@ -539,9 +561,9 @@ export default function RegulatoryMasterModal({ course, onClose }) {
               )}
 
               {/* Sourcing & Disclaimer Card */}
-              <div className="p-4 bg-[#F6ECDD]/50 border border-[#EAD6BB] rounded-2xl text-xs text-[#5A431F] leading-relaxed">
-                <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase text-[#B0722B] mb-1">
-                  <Shield className="w-3.5 h-3.5" /> Sourcing &amp; Regulatory Accuracy
+              <div className="p-4 sm:p-5 bg-mint/50 border border-mint-deep rounded-2xl text-xs text-forest-deep leading-relaxed">
+                <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase text-forest mb-1.5">
+                  <Shield className="w-4 h-4 text-leaf" /> Sourcing &amp; Regulatory Accuracy
                 </div>
                 <p>
                   {isFME ? fmeContent._meta.disclaimer : 'Preparation aid, not legal advice. Always verify live regulation text, circulars, and official gazette notifications prior to regulatory filings or assessments.'}
@@ -555,7 +577,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           {/* TAB: MODULES / SYLLABUS                                          */}
           {/* ================================================================= */}
           {activeTab === 'modules' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {isFME ? (
                 // ─── FME Track Content (Modules -> Topics -> Multi-layer Card) ───
@@ -587,24 +609,24 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                     };
 
                     return (
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         {/* Topic Header & Breadcrumb */}
-                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#E4E8F0]">
+                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-line">
                           <button
                             onClick={() => setSelectedTopicId(null)}
-                            className="cursor-target inline-flex items-center gap-1.5 text-xs font-semibold text-[#4B5A75] hover:text-[#182338]"
+                            className="cursor-target inline-flex items-center gap-1.5 text-xs font-semibold text-ink-soft hover:text-forest min-h-[40px]"
                           >
                             <ArrowLeft className="w-4 h-4" /> Back to Module Topics
                           </button>
                           <button
                             onClick={() => handleToggleComplete(topic.id)}
-                            className={`cursor-target px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                            className={`cursor-target px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all min-h-[40px] ${
                               isDone
-                                ? 'bg-[#E4F3ED] text-[#2E8768] border border-[#2E8768]/30'
-                                : 'bg-[#16203A] text-white hover:bg-[#101A2E]'
+                                ? 'bg-mint text-forest-deep border border-leaf/40'
+                                : 'bg-forest text-white hover:bg-forest-deep'
                             }`}
                           >
-                            {isDone ? <><CheckCircle2 className="w-3.5 h-3.5" /> Topic Completed</> : <><Circle className="w-3.5 h-3.5" /> Mark Complete</>}
+                            {isDone ? <><CheckCircle2 className="w-4 h-4 text-leaf" /> Topic Completed</> : <><Circle className="w-4 h-4" /> Mark Complete</>}
                           </button>
                         </div>
 
@@ -616,23 +638,23 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                             <RolePill roleTag="PO" weight={topic.roleWeight?.po} />
                             <RolePill roleTag="L&C" weight={topic.roleWeight?.lc} />
                           </div>
-                          <h2 className="text-xl sm:text-2xl font-['Space_Grotesk'] font-bold text-[#182338]">
+                          <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-forest-deep">
                             {topic.title}
                           </h2>
-                          <div className="mt-2.5">
+                          <div className="mt-3">
                             <SourceChip source={topic.source} verify={topic.verify} />
                           </div>
                         </div>
 
                         {topic.verify && <VerifyWarningBanner />}
 
-                        {/* Layer 1: Why This Gets Asked (Signature dark card) */}
+                        {/* Layer 1: Why This Gets Asked (Signature dark forest card) */}
                         {topic.why && (
-                          <div className="bg-[#101A2E] text-white rounded-2xl p-5 border border-[#26324F] shadow-sm">
-                            <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#C6863A] font-bold mb-2">
-                              <Sparkles className="w-3.5 h-3.5" /> Why this gets asked in interviews
+                          <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 border border-leaf/30 card-shadow">
+                            <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold mb-2">
+                              <Sparkles className="w-4 h-4 text-gold-soft" /> Why this gets asked in interviews
                             </div>
-                            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans">
+                            <p className="text-xs sm:text-sm text-mint/90 leading-relaxed font-sans">
                               {topic.why}
                             </p>
                           </div>
@@ -640,11 +662,11 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* Layer 2: The Core Statutory Explanation */}
                         {topic.explanation && (
-                          <div className="bg-white border border-[#E4E8F0] rounded-2xl p-5 shadow-xs space-y-2">
-                            <div className="text-[10px] font-mono uppercase tracking-widest text-[#4B5A75] font-bold">
+                          <div className="bg-white border border-line rounded-2xl p-5 sm:p-6 card-shadow space-y-2">
+                            <div className="text-[10px] font-mono uppercase tracking-widest text-forest font-bold">
                               Statutory Core &amp; Regulatory Meaning
                             </div>
-                            <p className="text-sm text-[#182338] leading-relaxed">
+                            <p className="text-sm sm:text-base text-ink leading-relaxed">
                               {topic.explanation}
                             </p>
                           </div>
@@ -652,11 +674,11 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* Layer 3: Practical Point */}
                         {topic.practicalPoint && (
-                          <div className="bg-[#FBFCFE] border border-[#E4E8F0] rounded-2xl p-5 shadow-xs space-y-2">
-                            <div className="text-[10px] font-mono uppercase tracking-widest text-[#3F7A8C] font-bold flex items-center gap-1.5">
-                              <Zap className="w-3.5 h-3.5" /> Practical Point / In Practice
+                          <div className="bg-mint/40 border border-mint-deep rounded-2xl p-5 sm:p-6 card-shadow space-y-2">
+                            <div className="text-[10px] font-mono uppercase tracking-widest text-forest font-bold flex items-center gap-1.5">
+                              <Zap className="w-4 h-4 text-leaf" /> Practical Point / In Practice
                             </div>
-                            <p className="text-sm text-[#4B5A75] leading-relaxed">
+                            <p className="text-sm sm:text-base text-forest-deep leading-relaxed">
                               {topic.practicalPoint}
                             </p>
                           </div>
@@ -664,11 +686,11 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* Layer 4: Example / Case */}
                         {topic.example && (
-                          <div className="bg-[#F4F6FA] border border-[#E4E8F0] rounded-2xl p-5 shadow-xs space-y-2">
-                            <div className="text-[10px] font-mono uppercase tracking-widest text-[#4B5A75] font-bold">
+                          <div className="bg-paper border border-line rounded-2xl p-5 sm:p-6 card-shadow space-y-2">
+                            <div className="text-[10px] font-mono uppercase tracking-widest text-ink-soft font-bold">
                               Practitioner Scenario / Example
                             </div>
-                            <p className="text-xs sm:text-sm text-[#182338] leading-relaxed italic">
+                            <p className="text-xs sm:text-sm text-ink leading-relaxed italic">
                               "{topic.example}"
                             </p>
                           </div>
@@ -676,14 +698,14 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* Layer 5: Takeaways */}
                         {topic.takeaway && topic.takeaway.length > 0 && (
-                          <div className="bg-[#F6ECDD] border border-[#EAD6BB] rounded-2xl p-5">
-                            <div className="text-[10px] font-mono uppercase tracking-widest text-[#B0722B] font-bold mb-3 flex items-center gap-2">
-                              <Check className="w-3.5 h-3.5" /> Key Takeaways to Quote
+                          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-5 sm:p-6">
+                            <div className="text-[10px] font-mono uppercase tracking-widest text-amber-800 font-bold mb-3 flex items-center gap-2">
+                              <Check className="w-4 h-4 text-amber-700" /> Key Takeaways to Quote
                             </div>
                             <ul className="space-y-2">
                               {topic.takeaway.map((tk, idx) => (
-                                <li key={idx} className="text-xs sm:text-sm text-[#5A431F] flex items-start gap-2 leading-relaxed">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#C6863A] mt-2 flex-shrink-0" />
+                                <li key={idx} className="text-xs sm:text-sm text-amber-950 flex items-start gap-2.5 leading-relaxed">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-2 flex-shrink-0" />
                                   <span>{tk}</span>
                                 </li>
                               ))}
@@ -693,15 +715,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* QuickCheck MCQs for this topic */}
                         {quickCheckList.length > 0 && (
-                          <div className="bg-white border border-[#E4E8F0] rounded-2xl p-5 shadow-xs space-y-4 pt-6">
-                            <div className="flex items-center justify-between pb-3 border-b border-[#E4E8F0]">
+                          <div className="bg-white border border-line rounded-2xl p-5 sm:p-6 card-shadow space-y-5 pt-6">
+                            <div className="flex items-center justify-between pb-3 border-b border-line flex-wrap gap-2">
                               <div>
-                                <h3 className="font-['Space_Grotesk'] font-bold text-base text-[#182338]">
+                                <h3 className="font-serif font-bold text-base sm:text-lg text-forest-deep">
                                   QuickCheck Diagnostic
                                 </h3>
-                                <p className="text-xs text-[#4B5A75]">5-question check for this topic</p>
+                                <p className="text-xs text-ink-soft">Test your retention of this topic</p>
                               </div>
-                              <span className="px-2.5 py-1 rounded-full bg-[#EEF2F9] text-[#182338] text-[10px] font-mono font-bold">
+                              <span className="px-3 py-1 rounded-full bg-mint text-forest text-[11px] font-mono font-bold border border-mint-deep">
                                 {quickCheckList.length} Questions
                               </span>
                             </div>
@@ -712,19 +734,19 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 const isCorrect = chosen === qc.answer;
 
                                 return (
-                                  <div key={qIdx} className="p-4 rounded-xl bg-[#FBFCFE] border border-[#E4E8F0] space-y-3">
-                                    <div className="text-xs font-mono text-[#8A97AD]">Q{qIdx + 1}</div>
-                                    <div className="text-sm font-semibold text-[#182338] leading-snug">{qc.q}</div>
+                                  <div key={qIdx} className="p-4 sm:p-5 rounded-xl bg-paper border border-line space-y-3">
+                                    <div className="text-xs font-mono font-bold text-forest">Q{qIdx + 1}</div>
+                                    <div className="text-sm sm:text-base font-semibold text-forest-deep leading-snug">{qc.q}</div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                       {qc.options.map((opt, optIdx) => {
-                                        let optStyle = 'bg-white border-[#E4E8F0] text-[#182338] hover:border-[#C6863A]';
+                                        let optStyle = 'bg-white border-line text-ink hover:border-forest hover:bg-mint/20';
                                         if (qcState.submitted) {
-                                          if (optIdx === qc.answer) optStyle = 'bg-[#E4F3ED] border-[#2E8768] text-[#2E8768] font-bold';
-                                          else if (optIdx === chosen && !isCorrect) optStyle = 'bg-red-50 border-red-300 text-red-800';
-                                          else optStyle = 'bg-white border-[#E4E8F0] opacity-50';
+                                          if (optIdx === qc.answer) optStyle = 'bg-mint border-leaf text-forest-deep font-bold ring-1 ring-leaf';
+                                          else if (optIdx === chosen && !isCorrect) optStyle = 'bg-rose-50 border-rose-300 text-rose-900';
+                                          else optStyle = 'bg-white border-line opacity-50 text-ink-soft';
                                         } else if (chosen === optIdx) {
-                                          optStyle = 'bg-[#16203A] border-[#16203A] text-white font-bold';
+                                          optStyle = 'bg-forest text-white border-forest font-bold shadow-xs';
                                         }
 
                                         return (
@@ -732,9 +754,9 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                             key={optIdx}
                                             disabled={qcState.submitted}
                                             onClick={() => handleQcOption(qIdx, optIdx)}
-                                            className={`cursor-target p-3 rounded-xl border text-left text-xs transition-all flex items-center gap-2 ${optStyle}`}
+                                            className={`cursor-target p-3.5 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-start gap-2.5 min-h-[48px] ${optStyle}`}
                                           >
-                                            <span className="w-5 h-5 rounded-md bg-black/5 flex items-center justify-center font-mono text-[10px] flex-shrink-0">
+                                            <span className="w-5 h-5 rounded-md bg-black/5 flex items-center justify-center font-mono text-[10px] font-bold flex-shrink-0 mt-0.5">
                                               {['A', 'B', 'C', 'D'][optIdx]}
                                             </span>
                                             <span className="leading-snug">{opt}</span>
@@ -744,8 +766,8 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                     </div>
 
                                     {qcState.submitted && (
-                                      <div className={`p-3 rounded-lg text-xs leading-relaxed ${isCorrect ? 'bg-[#E4F3ED] text-[#2E8768]' : 'bg-red-50 text-red-800'}`}>
-                                        <strong className="block mb-0.5">{isCorrect ? '✓ Correct' : '✕ Explanation:'}</strong>
+                                      <div className={`p-3.5 rounded-xl text-xs sm:text-sm leading-relaxed ${isCorrect ? 'bg-mint text-forest-deep border border-mint-deep' : 'bg-rose-50 text-rose-900 border border-rose-200'}`}>
+                                        <strong className="block mb-1 font-bold">{isCorrect ? '✓ Correct Answer' : '✕ Explanation:'}</strong>
                                         {qc.explain}
                                       </div>
                                     )}
@@ -758,13 +780,16 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               <button
                                 onClick={handleQcSubmit}
                                 disabled={Object.keys(qcState.answers).length < quickCheckList.length}
-                                className={`cursor-target w-full py-3 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
+                                className={`cursor-target w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 min-h-[48px] ${
                                   Object.keys(qcState.answers).length === quickCheckList.length
-                                    ? 'bg-[#16203A] text-white hover:bg-[#101A2E]'
-                                    : 'bg-[#E4E8F0] text-[#8A97AD] cursor-not-allowed'
+                                    ? 'bg-forest hover:bg-forest-deep text-white shadow-md hover-lift'
+                                    : 'bg-line/70 text-ink-soft/60 cursor-not-allowed border border-line'
                                 }`}
                               >
-                                Submit QuickCheck Answers
+                                {Object.keys(qcState.answers).length < quickCheckList.length
+                                  ? `Answer all ${quickCheckList.length} questions to submit (${Object.keys(qcState.answers).length}/${quickCheckList.length} selected)`
+                                  : 'Submit QuickCheck Answers'
+                                }
                               </button>
                             )}
                           </div>
@@ -777,10 +802,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <h2 className="text-xl font-['Space_Grotesk'] font-bold text-[#182338]">
+                        <h2 className="text-xl sm:text-2xl font-serif font-bold text-forest-deep">
                           Modules &amp; Knowledge Objects
                         </h2>
-                        <p className="text-xs text-[#4B5A75]">7 comprehensive IFSCA Fund Management modules</p>
+                        <p className="text-xs text-ink-soft">7 comprehensive IFSCA Fund Management modules</p>
                       </div>
                     </div>
 
@@ -791,7 +816,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       const isUnlocked = hasAccess ? hasAccess('job_ready', idx) : idx < 2;
 
                       return (
-                        <div key={m.id} className={`bg-white border ${isUnlocked ? 'border-[#E4E8F0]' : 'border-amber-200 bg-amber-50/20'} rounded-2xl overflow-hidden shadow-xs relative`}>
+                        <div key={m.id} className={`bg-white border ${isUnlocked ? 'border-line' : 'border-amber-200 bg-amber-50/20'} rounded-2xl overflow-hidden card-shadow relative`}>
                           <button
                             onClick={() => {
                               if (!isUnlocked) {
@@ -800,15 +825,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 setSelectedModuleId(isExpanded ? null : m.id);
                               }
                             }}
-                            className="cursor-target w-full p-4 sm:p-5 text-left flex items-start justify-between gap-3 hover:bg-[#FBFCFE] transition-colors"
+                            className="cursor-target w-full p-4 sm:p-5 text-left flex items-start justify-between gap-3 hover:bg-mint/10 transition-colors min-h-[64px]"
                           >
                             <div className="flex items-start gap-3.5 min-w-0">
-                              <span className="font-['Space_Grotesk'] text-xl font-bold text-[#C6863A] w-7 flex-shrink-0 pt-0.5">
+                              <span className="font-serif text-xl sm:text-2xl font-bold text-forest w-8 flex-shrink-0 pt-0.5">
                                 {m.no}
                               </span>
                               <div className="min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <h3 className="font-semibold text-sm sm:text-base text-[#182338] leading-snug">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h3 className="font-semibold text-sm sm:text-base text-forest-deep leading-snug">
                                     {m.title}
                                   </h3>
                                   {!isUnlocked && (
@@ -817,13 +842,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-xs text-[#4B5A75] mt-1 leading-relaxed line-clamp-2">
+                                <p className="text-xs text-ink-soft mt-1 leading-relaxed line-clamp-2">
                                   {m.summary}
                                 </p>
-                                <div className="flex items-center gap-2 mt-2 font-mono text-[11px] text-[#8A97AD]">
+                                <div className="flex items-center gap-2 mt-2 font-mono text-[11px] text-ink-soft">
                                   <span>{topicIds.length} Topics</span>
                                   <span>•</span>
-                                  <span className={doneTopics > 0 ? 'text-[#2E8768] font-bold' : ''}>
+                                  <span className={doneTopics > 0 ? 'text-leaf font-bold' : ''}>
                                     {doneTopics}/{topicIds.length} Done
                                   </span>
                                 </div>
@@ -833,15 +858,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               {!isUnlocked ? (
                                 <Lock className="w-5 h-5 text-amber-600" />
                               ) : isExpanded ? (
-                                <ChevronDown className="w-5 h-5 text-[#8A97AD]" />
+                                <ChevronDown className="w-5 h-5 text-forest" />
                               ) : (
-                                <ChevronRight className="w-5 h-5 text-[#8A97AD]" />
+                                <ChevronRight className="w-5 h-5 text-ink-soft" />
                               )}
                             </div>
                           </button>
 
                           {isExpanded && (
-                            <div className="border-t border-[#E4E8F0] bg-[#F4F6FA] p-3 space-y-2">
+                            <div className="border-t border-line bg-paper p-3 sm:p-4 space-y-2.5">
                               {topicIds.map(tId => {
                                 const topic = fmeContent.topics[tId];
                                 if (!topic) return null;
@@ -851,25 +876,25 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                   <button
                                     key={tId}
                                     onClick={() => setSelectedTopicId(tId)}
-                                    className="cursor-target w-full p-3.5 rounded-xl bg-white border border-[#E4E8F0] hover:border-[#C6863A] text-left flex items-center justify-between gap-3 transition-all hover-lift"
+                                    className="cursor-target w-full p-3.5 sm:p-4 rounded-xl bg-white border border-line hover:border-forest text-left flex items-center justify-between gap-3 transition-all hover-lift min-h-[52px]"
                                   >
                                     <div className="min-w-0">
-                                      <div className="font-semibold text-xs sm:text-sm text-[#182338] truncate">
+                                      <div className="font-semibold text-xs sm:text-sm text-forest-deep truncate">
                                         {topic.title}
                                       </div>
                                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                         <PriorityPill priority={topic.priority} />
                                         <RolePill roleTag={currentRole.tag} weight={topic.roleWeight?.[selectedRole]} />
                                         {topic.verify && (
-                                          <span className="text-[10px] font-mono text-[#9A6A16] bg-[#FBF2DC] px-1.5 py-0.5 rounded font-semibold">
+                                          <span className="text-[10px] font-mono text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded font-semibold">
                                             Verify
                                           </span>
                                         )}
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0">
-                                      {isDone && <CheckCircle2 className="w-4 h-4 text-[#2E8768]" />}
-                                      <ChevronRight className="w-4 h-4 text-[#8A97AD]" />
+                                      {isDone && <CheckCircle2 className="w-4 h-4 text-leaf" />}
+                                      <ChevronRight className="w-4 h-4 text-ink-soft" />
                                     </div>
                                   </button>
                                 );
@@ -882,12 +907,12 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   </div>
                 )
               ) : (
-                // ─── Non-FME Track (CMI / AIF in JobReady layout) ───
-                <div className="space-y-4">
+                // ─── Non-FME Track (CMI / AIF in Codex layout) ───
+                <div className="space-y-5">
                   {cmiLoading ? (
                     <div className="py-20 text-center space-y-3">
-                      <Loader2 className="w-8 h-8 animate-spin text-[#C6863A] mx-auto" />
-                      <p className="text-xs text-[#4B5A75]">Loading course curriculum…</p>
+                      <Loader2 className="w-8 h-8 animate-spin text-forest mx-auto" />
+                      <p className="text-xs text-ink-soft">Loading course curriculum…</p>
                     </div>
                   ) : cmiActiveItem ? (
                     (() => {
@@ -907,7 +932,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                         { key: 'D', text: item.option_D },
                       ].filter(o => o.text);
 
-                      // Current index in filtered list
+                      // BUG 4 FIX: Build filtered list, then safely recover if active item not in current filter
                       const filteredList = cmiItems.filter(i => {
                         const matchType = cmiTypeFilter === 'all' ||
                           (cmiTypeFilter === 'lesson' && (i.itemType === 'lesson' || i.type === 'lesson')) ||
@@ -917,23 +942,34 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                         const matchCh = cmiChapterFilter === 'all' || (i.module_no || i.chapterNo) === Number(cmiChapterFilter);
                         return matchType && matchCh;
                       });
-                      const currIdx = filteredList.findIndex(i => i.uid === item.uid);
+                      let currIdx = filteredList.findIndex(i => i.uid === item.uid);
+                      // BUG 4 FIX: If active item is not in the filtered list (e.g. after filter change),
+                      // snap to first item in the new filtered list instead of showing broken state
+                      if (currIdx === -1 && filteredList.length > 0) {
+                        // Defer state update to avoid render-loop
+                        setTimeout(() => {
+                          setCmiActiveItem(filteredList[0]);
+                          setCmiSelectedOption(null);
+                          setCmiFillText('');
+                        }, 0);
+                        currIdx = 0;
+                      }
 
                       return (
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                           {/* Active Item Card */}
-                          <div className="bg-white border border-[#E4E8F0] rounded-2xl p-5 sm:p-7 shadow-sm space-y-5">
+                          <div className="bg-white border border-line rounded-2xl p-5 sm:p-7 card-shadow space-y-5">
                             {/* Header / Meta */}
-                            <div className="flex items-center justify-between pb-3 border-b border-[#E4E8F0] flex-wrap gap-2">
+                            <div className="flex items-center justify-between pb-3 border-b border-line flex-wrap gap-2">
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-md bg-[#EEF2F9] text-[#182338]">
+                                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-md bg-mint text-forest border border-mint-deep">
                                   Chapter {item.module_no || item.chapterNo || 1}
                                 </span>
-                                <span className="text-[10px] font-mono font-semibold uppercase px-2.5 py-1 rounded-md bg-[#F6ECDD] text-[#B0722B]">
+                                <span className="text-[10px] font-mono font-semibold uppercase px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
                                   {isLesson ? 'Lesson' : item.type ? item.type.toUpperCase() : 'Question'}
                                 </span>
                                 {item.provision && (
-                                  <span className="text-[10px] font-mono text-[#8A97AD] hidden sm:inline">
+                                  <span className="text-[10px] font-mono text-ink-soft hidden sm:inline">
                                     § {item.provision}
                                   </span>
                                 )}
@@ -941,18 +977,18 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                               <button
                                 onClick={() => handleToggleComplete(item.uid)}
-                                className={`cursor-target px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                                className={`cursor-target px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all min-h-[38px] ${
                                   isDone
-                                    ? 'bg-[#E4F3ED] text-[#2E8768] border border-[#2E8768]/30'
-                                    : 'bg-[#16203A] text-white hover:bg-[#101A2E]'
+                                    ? 'bg-mint text-forest-deep border border-leaf/40'
+                                    : 'bg-forest text-white hover:bg-forest-deep'
                                 }`}
                               >
-                                {isDone ? <><CheckCircle2 className="w-3.5 h-3.5" /> Done</> : <><Circle className="w-3.5 h-3.5" /> Mark Done</>}
+                                {isDone ? <><CheckCircle2 className="w-4 h-4 text-leaf" /> Done</> : <><Circle className="w-4 h-4" /> Mark Done</>}
                               </button>
                             </div>
 
                             {/* Title / Question text */}
-                            <h2 className="text-lg sm:text-xl font-['Space_Grotesk'] font-bold text-[#182338] leading-snug">
+                            <h2 className="text-lg sm:text-xl font-serif font-bold text-forest-deep leading-snug">
                               {item.title || item.question}
                             </h2>
 
@@ -960,7 +996,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                             {isLesson && (
                               <div className="space-y-4">
                                 {item.hook && (
-                                  <div className="p-4 bg-[#101A2E] text-white rounded-xl text-xs sm:text-sm italic leading-relaxed">
+                                  <div className="p-4 bg-gradient-to-br from-forest-deep to-forest text-white rounded-xl text-xs sm:text-sm italic leading-relaxed">
                                     "{item.hook}"
                                   </div>
                                 )}
@@ -968,27 +1004,27 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 {item.cards && item.cards.length > 0 && (
                                   <div className="space-y-3">
                                     {item.cards.map((card, cIdx) => (
-                                      <div key={cIdx} className="p-4 rounded-xl bg-[#FBFCFE] border border-[#E4E8F0] space-y-2.5">
+                                      <div key={cIdx} className="p-4 rounded-xl bg-paper border border-line space-y-2.5">
                                         {card.tag && (
-                                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EEF2F9] text-[#182338] uppercase">
+                                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-mint text-forest uppercase">
                                             {card.tag}
                                           </span>
                                         )}
-                                        {card.title && <h3 className="font-bold text-sm text-[#182338]">{card.title}</h3>}
+                                        {card.title && <h3 className="font-bold text-sm text-forest-deep">{card.title}</h3>}
                                         {card.law && (
-                                          <div className="p-3 bg-[#EEF2F9] rounded-lg text-xs font-mono text-[#182338] leading-relaxed">
-                                            <strong className="block text-[10px] uppercase text-[#4B5A75] mb-1">Statutory Law:</strong>
+                                          <div className="p-3 bg-mint/40 border border-mint-deep rounded-lg text-xs font-mono text-forest-deep leading-relaxed">
+                                            <strong className="block text-[10px] uppercase text-forest mb-1">Statutory Law:</strong>
                                             {card.law}
                                           </div>
                                         )}
                                         {card.means && (
-                                          <p className="text-xs sm:text-sm text-[#4B5A75] leading-relaxed">
-                                            <strong className="text-[#182338]">Meaning: </strong>{card.means}
+                                          <p className="text-xs sm:text-sm text-ink leading-relaxed">
+                                            <strong className="text-forest-deep">Meaning: </strong>{card.means}
                                           </p>
                                         )}
                                         {card.watch && (
                                           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2">
-                                            <ShieldAlert className="w-4 h-4 text-[#C6863A] flex-shrink-0 mt-0.5" />
+                                            <ShieldAlert className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                                             <div>
                                               <strong className="block text-[10px] uppercase font-bold text-amber-800">Practitioner Caution:</strong>
                                               {card.watch}
@@ -1001,17 +1037,17 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 )}
 
                                 {item.summary && (
-                                  <div className="p-4 bg-[#F4F6FA] border border-[#E4E8F0] rounded-xl text-xs sm:text-sm text-[#182338] leading-relaxed">
-                                    <strong className="block text-[10px] font-mono uppercase text-[#8A97AD] mb-1">Summary:</strong>
+                                  <div className="p-4 bg-paper border border-line rounded-xl text-xs sm:text-sm text-ink leading-relaxed">
+                                    <strong className="block text-[10px] font-mono uppercase text-forest mb-1">Summary:</strong>
                                     {item.summary}
                                   </div>
                                 )}
 
                                 {item.tip && (
-                                  <div className="p-4 bg-[#F6ECDD] border border-[#EAD6BB] rounded-xl text-xs text-[#5A431F] leading-relaxed flex items-start gap-2.5">
-                                    <Sparkles className="w-4 h-4 text-[#C6863A] flex-shrink-0 mt-0.5" />
+                                  <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
+                                    <Sparkles className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                                     <div>
-                                      <strong className="block font-mono uppercase text-[10px] text-[#B0722B] mb-0.5">Practitioner Note &amp; Tip:</strong>
+                                      <strong className="block font-mono uppercase text-[10px] text-amber-800 mb-0.5">Practitioner Note &amp; Tip:</strong>
                                       {item.tip}
                                     </div>
                                   </div>
@@ -1021,24 +1057,24 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                             {/* ─── MCQ QUESTION ─── */}
                             {isMCQ && (
-                              <div className="space-y-3">
+                              <div className="space-y-4">
                                 <div className="grid grid-cols-1 gap-2.5">
                                   {mcqOptions.map(opt => {
                                     const isSelected = cmiSelectedOption === opt.key;
-                                    let style = 'bg-white border-[#E4E8F0] text-[#182338] hover:border-[#C6863A]';
+                                    let style = 'bg-white border-line text-ink hover:border-forest hover:bg-mint/20';
 
                                     if (subState) {
                                       const isCorrectOpt = String(opt.key).toUpperCase() === String(subState.correctKey).toUpperCase();
                                       const isChosenOpt = String(opt.key).toUpperCase() === String(subState.selected).toUpperCase();
                                       if (isCorrectOpt) {
-                                        style = 'bg-[#E4F3ED] border-[#2E8768] text-[#2E8768] font-bold';
+                                        style = 'bg-mint border-leaf text-forest-deep font-bold ring-1 ring-leaf';
                                       } else if (isChosenOpt && !subState.isCorrect) {
-                                        style = 'bg-red-50 border-red-300 text-red-800';
+                                        style = 'bg-rose-50 border-rose-300 text-rose-900';
                                       } else {
-                                        style = 'bg-white border-[#E4E8F0] opacity-50';
+                                        style = 'bg-white border-line opacity-50 text-ink-soft';
                                       }
                                     } else if (isSelected) {
-                                      style = 'bg-[#16203A] border-[#16203A] text-white font-bold';
+                                      style = 'bg-forest border-forest text-white font-bold shadow-xs';
                                     }
 
                                     return (
@@ -1046,12 +1082,12 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                         key={opt.key}
                                         disabled={!!subState || cmiSubmitting}
                                         onClick={() => setCmiSelectedOption(opt.key)}
-                                        className={`cursor-target w-full p-3.5 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-start gap-3 ${style}`}
+                                        className={`cursor-target w-full p-3.5 sm:p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-start gap-3 min-h-[50px] ${style}`}
                                       >
-                                        <span className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center font-mono font-bold text-xs flex-shrink-0">
+                                        <span className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center font-mono font-bold text-xs flex-shrink-0 mt-0.5">
                                           {opt.key}
                                         </span>
-                                        <span className="pt-0.5 leading-relaxed">{opt.text}</span>
+                                        <span className="leading-relaxed">{opt.text}</span>
                                       </button>
                                     );
                                   })}
@@ -1061,10 +1097,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                   <button
                                     onClick={() => handleSubmitAnswer(item)}
                                     disabled={!cmiSelectedOption || cmiSubmitting}
-                                    className={`cursor-target w-full py-3.5 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
+                                    className={`cursor-target w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 min-h-[48px] ${
                                       cmiSelectedOption && !cmiSubmitting
-                                        ? 'bg-[#C6863A] hover:bg-[#B0722B] text-white shadow-md'
-                                        : 'bg-[#E4E8F0] text-[#8A97AD] cursor-not-allowed'
+                                        ? 'bg-forest hover:bg-forest-deep text-white shadow-md hover-lift'
+                                        : 'bg-line/70 text-ink-soft/60 cursor-not-allowed border border-line'
                                     }`}
                                   >
                                     {cmiSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Check Answer'}
@@ -1072,18 +1108,18 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 ) : (
                                   <div className="space-y-3 pt-2 animate-fade-in">
                                     <div className={`p-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 ${
-                                      subState.isCorrect ? 'bg-[#E4F3ED] text-[#2E8768]' : 'bg-red-50 text-red-800 border border-red-200'
+                                      subState.isCorrect ? 'bg-mint text-forest-deep border border-leaf/30' : 'bg-rose-50 text-rose-900 border border-rose-200'
                                     }`}>
                                       {subState.isCorrect ? (
-                                        <><CheckCircle2 className="w-5 h-5 text-[#2E8768] flex-shrink-0" /> Correct! Excellent regulatory analysis.</>
+                                        <><CheckCircle2 className="w-5 h-5 text-leaf flex-shrink-0" /> Correct! Excellent regulatory analysis.</>
                                       ) : (
-                                        <><ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0" /> Incorrect. Correct answer: Option {subState.correctKey}</>
+                                        <><ShieldAlert className="w-5 h-5 text-rose-700 flex-shrink-0" /> Incorrect. Correct answer: Option {subState.correctKey}</>
                                       )}
                                     </div>
 
                                     {subState.explanation && (
-                                      <div className="p-4 bg-[#F4F6FA] border border-[#E4E8F0] rounded-xl text-xs text-[#182338] leading-relaxed">
-                                        <strong className="block font-mono uppercase text-[10px] text-[#4B5A75] mb-1">Statutory Explanation:</strong>
+                                      <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed">
+                                        <strong className="block font-mono uppercase text-[10px] text-forest mb-1">Statutory Explanation:</strong>
                                         {subState.explanation}
                                       </div>
                                     )}
@@ -1094,24 +1130,24 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                             {/* ─── TRUE / FALSE QUESTION ─── */}
                             {isTF && (
-                              <div className="space-y-3">
+                              <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-3">
                                   {['true', 'false'].map(val => {
                                     const isSelected = cmiSelectedOption === val;
-                                    let style = 'bg-white border-[#E4E8F0] text-[#182338] hover:border-[#C6863A]';
+                                    let style = 'bg-white border-line text-ink hover:border-forest hover:bg-mint/20';
 
                                     if (subState) {
                                       const isCorrectOpt = String(val).toLowerCase() === String(subState.correctKey).toLowerCase();
                                       const isChosenOpt = String(val).toLowerCase() === String(subState.selected).toLowerCase();
                                       if (isCorrectOpt) {
-                                        style = 'bg-[#E4F3ED] border-[#2E8768] text-[#2E8768] font-bold';
+                                        style = 'bg-mint border-leaf text-forest-deep font-bold';
                                       } else if (isChosenOpt && !subState.isCorrect) {
-                                        style = 'bg-red-50 border-red-300 text-red-800';
+                                        style = 'bg-rose-50 border-rose-300 text-rose-900';
                                       } else {
-                                        style = 'bg-white border-[#E4E8F0] opacity-50';
+                                        style = 'bg-white border-line opacity-50 text-ink-soft';
                                       }
                                     } else if (isSelected) {
-                                      style = 'bg-[#16203A] border-[#16203A] text-white font-bold';
+                                      style = 'bg-forest border-forest text-white font-bold';
                                     }
 
                                     return (
@@ -1119,7 +1155,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                         key={val}
                                         disabled={!!subState || cmiSubmitting}
                                         onClick={() => setCmiSelectedOption(val)}
-                                        className={`cursor-target p-4 rounded-xl border text-center font-bold text-sm capitalize transition-all ${style}`}
+                                        className={`cursor-target p-4 rounded-xl border text-center font-bold text-sm capitalize transition-all min-h-[50px] ${style}`}
                                       >
                                         {val}
                                       </button>
@@ -1131,10 +1167,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                   <button
                                     onClick={() => handleSubmitAnswer(item)}
                                     disabled={!cmiSelectedOption || cmiSubmitting}
-                                    className={`cursor-target w-full py-3.5 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
+                                    className={`cursor-target w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 min-h-[48px] ${
                                       cmiSelectedOption && !cmiSubmitting
-                                        ? 'bg-[#C6863A] hover:bg-[#B0722B] text-white shadow-md'
-                                        : 'bg-[#E4E8F0] text-[#8A97AD] cursor-not-allowed'
+                                        ? 'bg-forest hover:bg-forest-deep text-white shadow-md hover-lift'
+                                        : 'bg-line/70 text-ink-soft/60 cursor-not-allowed border border-line'
                                     }`}
                                   >
                                     {cmiSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Check Answer'}
@@ -1142,18 +1178,18 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 ) : (
                                   <div className="space-y-3 pt-2 animate-fade-in">
                                     <div className={`p-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 ${
-                                      subState.isCorrect ? 'bg-[#E4F3ED] text-[#2E8768]' : 'bg-red-50 text-red-800 border border-red-200'
+                                      subState.isCorrect ? 'bg-mint text-forest-deep border border-leaf/30' : 'bg-rose-50 text-rose-900 border border-rose-200'
                                     }`}>
                                       {subState.isCorrect ? (
-                                        <><CheckCircle2 className="w-5 h-5 text-[#2E8768] flex-shrink-0" /> Correct statement analysis.</>
+                                        <><CheckCircle2 className="w-5 h-5 text-leaf flex-shrink-0" /> Correct statement analysis.</>
                                       ) : (
-                                        <><ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0" /> Incorrect statement analysis.</>
+                                        <><ShieldAlert className="w-5 h-5 text-rose-700 flex-shrink-0" /> Incorrect statement analysis.</>
                                       )}
                                     </div>
 
                                     {subState.explanation && (
-                                      <div className="p-4 bg-[#F4F6FA] border border-[#E4E8F0] rounded-xl text-xs text-[#182338] leading-relaxed">
-                                        <strong className="block font-mono uppercase text-[10px] text-[#4B5A75] mb-1">Statutory Explanation:</strong>
+                                      <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed">
+                                        <strong className="block font-mono uppercase text-[10px] text-forest mb-1">Statutory Explanation:</strong>
                                         {subState.explanation}
                                       </div>
                                     )}
@@ -1164,25 +1200,25 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                             {/* ─── FILL IN THE BLANK QUESTION ─── */}
                             {isFill && (
-                              <div className="space-y-3">
+                              <div className="space-y-4">
                                 {!subState ? (
                                   <div className="space-y-3">
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                                       <input
                                         type="text"
                                         placeholder="Type your answer here..."
                                         value={cmiFillText}
                                         onChange={(e) => setCmiFillText(e.target.value)}
                                         onKeyDown={(e) => { if (e.key === 'Enter') handleSubmitAnswer(item); }}
-                                        className="flex-1 px-4 py-3 border border-[#E4E8F0] rounded-xl text-sm focus:outline-none focus:border-[#C6863A]"
+                                        className="flex-1 px-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:border-leaf min-h-[48px] bg-white"
                                       />
                                       <button
                                         onClick={() => handleSubmitAnswer(item)}
                                         disabled={!cmiFillText.trim() || cmiSubmitting}
-                                        className={`cursor-target px-6 py-3 rounded-xl font-semibold text-xs transition-all ${
+                                        className={`cursor-target px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all min-h-[48px] ${
                                           cmiFillText.trim() && !cmiSubmitting
-                                            ? 'bg-[#C6863A] hover:bg-[#B0722B] text-white shadow-md'
-                                            : 'bg-[#E4E8F0] text-[#8A97AD] cursor-not-allowed'
+                                            ? 'bg-forest hover:bg-forest-deep text-white shadow-md hover-lift'
+                                            : 'bg-line/70 text-ink-soft/60 cursor-not-allowed border border-line'
                                         }`}
                                       >
                                         {cmiSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Check Answer'}
@@ -1192,18 +1228,18 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 ) : (
                                   <div className="space-y-3 pt-2 animate-fade-in">
                                     <div className={`p-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 ${
-                                      subState.isCorrect ? 'bg-[#E4F3ED] text-[#2E8768]' : 'bg-red-50 text-red-800 border border-red-200'
+                                      subState.isCorrect ? 'bg-mint text-forest-deep border border-leaf/30' : 'bg-rose-50 text-rose-900 border border-rose-200'
                                     }`}>
                                       {subState.isCorrect ? (
-                                        <><CheckCircle2 className="w-5 h-5 text-[#2E8768] flex-shrink-0" /> Correct! Answer: {subState.correctKey}</>
+                                        <><CheckCircle2 className="w-5 h-5 text-leaf flex-shrink-0" /> Correct! Answer: {subState.correctKey}</>
                                       ) : (
-                                        <><ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0" /> Incorrect. Your answer: "{subState.selected}" · Correct answer: "{subState.correctKey}"</>
+                                        <><ShieldAlert className="w-5 h-5 text-rose-700 flex-shrink-0" /> Incorrect. Your answer: "{subState.selected}" · Correct answer: "{subState.correctKey}"</>
                                       )}
                                     </div>
 
                                     {subState.explanation && (
-                                      <div className="p-4 bg-[#F4F6FA] border border-[#E4E8F0] rounded-xl text-xs text-[#182338] leading-relaxed">
-                                        <strong className="block font-mono uppercase text-[10px] text-[#4B5A75] mb-1">Statutory Explanation:</strong>
+                                      <div className="p-4 bg-paper border border-line rounded-xl text-xs text-ink leading-relaxed">
+                                        <strong className="block font-mono uppercase text-[10px] text-forest mb-1">Statutory Explanation:</strong>
                                         {subState.explanation}
                                       </div>
                                     )}
@@ -1213,7 +1249,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                             )}
 
                             {/* ─── Prev / Next Navigation ─── */}
-                            <div className="flex items-center justify-between pt-4 border-t border-[#E4E8F0]">
+                            <div className="flex items-center justify-between pt-4 border-t border-line">
                               <button
                                 disabled={currIdx <= 0}
                                 onClick={() => {
@@ -1223,45 +1259,46 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                     setCmiFillText('');
                                   }
                                 }}
-                                className="cursor-target px-4 py-2 rounded-xl text-xs font-semibold border border-[#E4E8F0] hover:bg-[#F4F6FA] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                className="cursor-target px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-line hover:bg-mint/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px]"
                               >
-                                ← Previous Item
+                                ← Previous
                               </button>
 
-                              <span className="text-xs font-mono text-[#8A97AD]">
+                              <span className="text-xs font-mono text-ink-soft">
                                 {currIdx >= 0 ? `${currIdx + 1} / ${filteredList.length}` : ''}
                               </span>
 
                               <button
-                                disabled={currIdx < 0 || currIdx >= filteredList.length - 1}
+                                disabled={filteredList.length === 0 || currIdx >= filteredList.length - 1}
                                 onClick={() => {
-                                  if (currIdx >= 0 && currIdx < filteredList.length - 1) {
-                                    setCmiActiveItem(filteredList[currIdx + 1]);
+                                  const nextIdx = Math.min(currIdx + 1, filteredList.length - 1);
+                                  if (nextIdx > currIdx) {
+                                    setCmiActiveItem(filteredList[nextIdx]);
                                     setCmiSelectedOption(null);
                                     setCmiFillText('');
                                   }
                                 }}
-                                className="cursor-target px-4 py-2 rounded-xl text-xs font-semibold bg-[#16203A] text-white hover:bg-[#101A2E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+                                className="cursor-target px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-forest text-white hover:bg-forest-deep disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5 min-h-[44px]"
                               >
-                                Next Item →
+                                Next →
                               </button>
                             </div>
                           </div>
 
                           {/* ─── Curriculum Sidebar / Selector ─── */}
-                          <div className="bg-white border border-[#E4E8F0] rounded-2xl p-4 sm:p-5 space-y-3">
+                          <div className="bg-white border border-line rounded-2xl p-4 sm:p-5 card-shadow space-y-3">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                              <h4 className="text-xs font-mono font-bold uppercase text-[#4B5A75]">
+                              <h4 className="text-xs font-mono font-bold uppercase text-forest">
                                 Course Syllabus &amp; Items ({filteredList.length})
                               </h4>
                               {/* Type Filters */}
-                              <div className="flex items-center gap-1.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
                                 {['all', 'lesson', 'mcq', 'truefalse', 'fill'].map(f => (
                                   <button
                                     key={f}
-                                    onClick={() => setCmiTypeFilter(f)}
-                                    className={`cursor-target px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold capitalize transition-colors ${
-                                      cmiTypeFilter === f ? 'bg-[#16203A] text-white' : 'bg-[#F4F6FA] text-[#4B5A75] hover:bg-[#E4E8F0]'
+                                    onClick={() => { setCmiTypeFilter(f); setCmiActiveItem(null); }}
+                                    className={`cursor-target px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold capitalize transition-colors min-h-[32px] ${
+                                      cmiTypeFilter === f ? 'bg-forest text-white' : 'bg-paper text-ink-soft hover:bg-mint border border-line'
                                     }`}
                                   >
                                     {f}
@@ -1279,20 +1316,20 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                     setCmiSelectedOption(null);
                                     setCmiFillText('');
                                   }}
-                                  className={`cursor-target w-full p-2.5 rounded-xl text-left text-xs flex items-center justify-between transition-colors ${
+                                  className={`cursor-target w-full p-3 rounded-xl text-left text-xs flex items-center justify-between transition-colors min-h-[44px] ${
                                     item.uid === itemObj.uid
-                                      ? 'bg-[#16203A] text-white font-bold'
-                                      : 'bg-[#FBFCFE] hover:bg-[#F4F6FA] text-[#182338] border border-[#E4E8F0]'
+                                      ? 'bg-forest text-white font-bold shadow-xs'
+                                      : 'bg-paper hover:bg-mint/40 text-ink border border-line'
                                   }`}
                                 >
                                   <div className="flex items-center gap-2 truncate pr-2">
-                                    <span className="text-[10px] font-mono opacity-60 flex-shrink-0">
+                                    <span className="text-[10px] font-mono opacity-70 flex-shrink-0">
                                       Ch{itemObj.module_no || itemObj.chapterNo || 1}
                                     </span>
                                     <span className="truncate">{itemObj.title || itemObj.question}</span>
                                   </div>
                                   {completedSet.has(itemObj.uid) && (
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2E8768] flex-shrink-0" />
+                                    <CheckCircle2 className="w-4 h-4 text-leaf flex-shrink-0" />
                                   )}
                                 </button>
                               ))}
@@ -1312,18 +1349,19 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           {/* TAB: PRACTICE / QUESTIONS (Think → Reveal → Remember)             */}
           {/* ================================================================= */}
           {activeTab === 'practice' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {isFME ? (
                 (() => {
                   const total = filteredQuestions.length;
-                  const q = filteredQuestions[currentQuestionIndex] || filteredQuestions[0];
+                  const safeIndex = Math.min(Math.max(0, currentQuestionIndex), total - 1);
+                  const q = filteredQuestions[safeIndex];
                   const isRevealed = !!revealedQuestions[q?.id];
 
                   if (!q) {
                     return (
-                      <div className="p-8 text-center bg-white rounded-2xl border border-[#E4E8F0]">
-                        <p className="text-xs text-[#4B5A75]">No questions found for this filter.</p>
+                      <div className="p-8 text-center bg-white rounded-2xl border border-line">
+                        <p className="text-xs text-ink-soft">No questions found for this filter.</p>
                       </div>
                     );
                   }
@@ -1334,15 +1372,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   };
 
                   return (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {/* Filter Bar */}
                       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
                         {['all', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'critical'].map(f => (
                           <button
                             key={f}
                             onClick={() => { setQuestionFilter(f); setCurrentQuestionIndex(0); }}
-                            className={`cursor-target px-3 py-1 rounded-full text-xs font-mono font-semibold whitespace-nowrap transition-colors ${
-                              questionFilter === f ? 'bg-[#16203A] text-white' : 'bg-white border border-[#E4E8F0] text-[#4B5A75]'
+                            className={`cursor-target px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold whitespace-nowrap transition-colors min-h-[36px] ${
+                              questionFilter === f ? 'bg-forest text-white' : 'bg-white border border-line text-ink-soft hover:bg-mint/40'
                             }`}
                           >
                             {f === 'all' ? 'All Questions' : f === 'critical' ? 'Critical Only' : `Module ${f.toUpperCase()}`}
@@ -1351,16 +1389,16 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="flex items-center justify-between text-xs font-mono text-[#4B5A75]">
-                        <span>{String(currentQuestionIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
-                        <div className="flex-1 mx-3 h-1.5 bg-[#E4E8F0] rounded-full overflow-hidden">
-                          <div className="h-full bg-[#C6863A] rounded-full transition-all" style={{ width: `${((currentQuestionIndex + 1) / total) * 100}%` }} />
+                      <div className="flex items-center justify-between text-xs font-mono text-ink-soft">
+                        <span className="font-bold text-forest">{String(safeIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+                        <div className="flex-1 mx-3 h-2 bg-line rounded-full overflow-hidden">
+                          <div className="h-full bg-leaf rounded-full transition-all duration-300" style={{ width: `${((safeIndex + 1) / total) * 100}%` }} />
                         </div>
-                        <span className="uppercase">{q.length} answer</span>
+                        <span className="uppercase text-[11px]">{q.length} answer</span>
                       </div>
 
                       {/* Question Card */}
-                      <div className="bg-white border border-[#E4E8F0] rounded-3xl p-5 sm:p-7 shadow-lg space-y-5">
+                      <div className="bg-white border border-line rounded-3xl p-5 sm:p-7 card-shadow space-y-5">
                         <div className="flex flex-wrap items-center gap-2">
                           <PriorityPill priority={q.priority} />
                           <RolePill roleTag="CO" weight={q.roleWeight?.co} />
@@ -1368,25 +1406,25 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                           <RolePill roleTag="L&C" weight={q.roleWeight?.lc} />
                         </div>
 
-                        <h2 className="text-xl sm:text-2xl font-['Space_Grotesk'] font-bold text-[#182338] leading-snug">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-forest-deep leading-snug">
                           {q.q}
                         </h2>
 
                         {!isRevealed ? (
                           // Think prompt before reveal
                           <div className="space-y-4 pt-2">
-                            <div className="p-4 bg-[#F6ECDD] border border-dashed border-[#EAD6BB] rounded-2xl text-center">
-                              <div className="text-[10px] font-mono uppercase tracking-widest text-[#B0722B] font-bold">
+                            <div className="p-4 sm:p-5 bg-amber-50/70 border border-dashed border-amber-200 rounded-2xl text-center">
+                              <div className="text-[10px] font-mono uppercase tracking-widest text-amber-800 font-bold">
                                 Think It Through First
                               </div>
-                              <p className="text-xs text-[#7A5B2A] mt-1">
+                              <p className="text-xs sm:text-sm text-amber-950 mt-1.5 max-w-md mx-auto leading-relaxed">
                                 How would you structure this answer in 30 seconds before reading the model response?
                               </p>
                             </div>
 
                             <button
                               onClick={handleReveal}
-                              className="cursor-target w-full py-4 bg-[#C6863A] hover:bg-[#B0722B] text-white font-semibold text-sm rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2"
+                              className="cursor-target w-full py-4 bg-forest hover:bg-forest-deep text-white font-bold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 hover-lift min-h-[52px]"
                             >
                               <Eye className="w-4 h-4" /> Reveal How to Answer
                             </button>
@@ -1396,42 +1434,49 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                           <div className="space-y-5 pt-2 animate-fade-in">
                             {/* Model Answer */}
                             <div className="space-y-2">
-                              <div className="flex items-center justify-between pb-1 border-b border-[#E4E8F0]">
-                                <span className="text-[10px] font-mono uppercase tracking-widest text-[#4B5A75] font-bold">
+                              <div className="flex items-center justify-between pb-1.5 border-b border-line">
+                                <span className="text-[10px] font-mono uppercase tracking-widest text-forest font-bold">
                                   Model Interview Response
                                 </span>
-                                <span className="text-[10px] font-mono text-[#B0722B] bg-[#F6ECDD] px-2 py-0.5 rounded uppercase">
+                                <span className="text-[10px] font-mono text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase font-semibold">
                                   {q.length}
                                 </span>
                               </div>
-                              <p className="text-sm sm:text-base text-[#182338] leading-relaxed font-sans">
+                              <p className="text-sm sm:text-base text-ink leading-relaxed font-sans">
                                 {q.answer}
                               </p>
                             </div>
 
                             {/* Remember Flow Structure */}
-                            {q.remember && q.remember.length > 0 && (
-                              <div className="bg-[#101A2E] text-white rounded-2xl p-5 space-y-3">
-                                <div className="text-[10px] font-mono uppercase tracking-widest text-[#C6863A] font-bold flex items-center gap-1.5">
-                                  <Brain className="w-3.5 h-3.5" /> Remember The Structure (Mental Flow)
-                                </div>
-                                <div className="flex flex-wrap items-center gap-2">
-                                  {q.remember.map((node, nIdx) => (
-                                    <React.Fragment key={nIdx}>
-                                      {nIdx > 0 && <span className="text-[#C6863A] text-xs">→</span>}
-                                      <span className="px-3 py-1.5 bg-white/10 border border-white/15 rounded-lg text-xs font-mono font-semibold text-slate-200">
-                                        {node.replace(/^→\s*/, '')}
-                                      </span>
-                                    </React.Fragment>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
+                            {q.remember && q.remember.length > 0 && (() => {
+                               // Strip leading arrow chars from each node (data sometimes includes them)
+                               const nodes = q.remember
+                                 .map(n => String(n).replace(/^[-→>]+\s*/, '').trim())
+                                 .filter(n => n.length > 0);
+                               if (nodes.length === 0) return null;
+                               return (
+                                 <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 space-y-3 card-shadow border border-leaf/30">
+                                   <div className="text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold flex items-center gap-1.5">
+                                     <Brain className="w-4 h-4 text-gold-soft" /> Remember The Structure (Mental Flow)
+                                   </div>
+                                   <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+                                     {nodes.map((node, nIdx) => (
+                                       <React.Fragment key={nIdx}>
+                                         {nIdx > 0 && <span className="text-gold-soft font-bold text-sm leading-none">→</span>}
+                                         <span className="px-3 py-1.5 bg-white/15 border border-white/25 rounded-xl text-xs font-mono font-semibold text-white leading-snug">
+                                           {node}
+                                         </span>
+                                       </React.Fragment>
+                                     ))}
+                                   </div>
+                                 </div>
+                               );
+                             })()}
 
                             {/* Interview Trap */}
                             {q.trap && (
-                              <div className="p-4 bg-red-50/70 border border-red-200 rounded-2xl text-xs text-red-900 leading-relaxed">
-                                <strong className="block font-mono uppercase text-[10px] text-red-700 mb-1">
+                              <div className="p-4 sm:p-5 bg-rose-50 border border-rose-200 rounded-2xl text-xs sm:text-sm text-rose-900 leading-relaxed">
+                                <strong className="block font-mono uppercase text-[10px] text-rose-700 mb-1">
                                   ⚠ Interview Trap to Avoid:
                                 </strong>
                                 {q.trap}
@@ -1440,8 +1485,8 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                             {/* Delivery Tip */}
                             {q.tip && (
-                              <div className="p-4 bg-[#F6ECDD] border border-[#EAD6BB] rounded-2xl text-xs text-[#5A431F] leading-relaxed">
-                                <strong className="block font-mono uppercase text-[10px] text-[#B0722B] mb-1">
+                              <div className="p-4 sm:p-5 bg-mint/50 border border-mint-deep rounded-2xl text-xs sm:text-sm text-forest-deep leading-relaxed">
+                                <strong className="block font-mono uppercase text-[10px] text-forest mb-1">
                                   💡 Delivery &amp; Practitioner Tip:
                                 </strong>
                                 {q.tip}
@@ -1450,21 +1495,23 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                           </div>
                         )}
 
-                        {/* Prev / Next Navigation */}
-                        <div className="flex items-center justify-between pt-4 border-t border-[#E4E8F0]">
+                        {/* Navigation */}
+                        <div className="flex items-center justify-between pt-4 border-t border-line gap-3">
                           <button
-                            disabled={currentQuestionIndex === 0}
-                            onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
-                            className="cursor-target px-4 py-2 rounded-xl text-xs font-semibold border border-[#E4E8F0] hover:bg-[#F4F6FA] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            disabled={safeIndex === 0}
+                            onClick={() => setCurrentQuestionIndex(safeIndex - 1)}
+                            className="cursor-target px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-line hover:bg-mint/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px]"
                           >
                             Previous
                           </button>
+                          <span className="font-mono text-xs text-ink-soft font-bold">
+                            {safeIndex + 1} / {total}
+                          </span>
                           <button
-                            disabled={currentQuestionIndex === total - 1}
-                            onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
-                            className="cursor-target px-4 py-2 rounded-xl text-xs font-semibold bg-[#16203A] text-white hover:bg-[#101A2E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+                            onClick={() => setCurrentQuestionIndex((safeIndex + 1) % total)}
+                            className="cursor-target px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-forest text-white hover:bg-forest-deep transition-colors flex items-center gap-1.5 min-h-[44px]"
                           >
-                            Next Question <ArrowRight className="w-3.5 h-3.5" />
+                            Next <ArrowRight className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
@@ -1472,9 +1519,9 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   );
                 })()
               ) : (
-                <div className="p-6 bg-white border border-[#E4E8F0] rounded-2xl text-center space-y-3">
-                  <p className="text-sm font-semibold text-[#182338]">CMI / AIF Practice Questions are available in the Syllabus tab.</p>
-                  <button onClick={() => setActiveTab('modules')} className="px-4 py-2 bg-[#16203A] text-white rounded-xl text-xs font-bold">
+                <div className="p-6 sm:p-8 bg-white border border-line rounded-2xl text-center space-y-4 card-shadow">
+                  <p className="text-sm sm:text-base font-semibold text-forest-deep">CMI / AIF Practice Questions are organized chapter-wise in the Syllabus tab.</p>
+                  <button onClick={() => setActiveTab('modules')} className="px-5 py-3 bg-forest text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-forest-deep transition-all min-h-[44px]">
                     Go to Syllabus
                   </button>
                 </div>
@@ -1487,22 +1534,22 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           {/* TAB: SCENARIOS & SIMULATIONS                                      */}
           {/* ================================================================= */}
           {activeTab === 'scenarios' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {/* Sub-tab toggle */}
-              <div className="flex items-center gap-2 p-1 bg-white border border-[#E4E8F0] rounded-2xl w-fit">
+              <div className="flex items-center gap-2 p-1.5 bg-mint border border-mint-deep rounded-2xl w-fit">
                 <button
                   onClick={() => { setScenarioSubTab('scenarios'); setOpenScenarioId(null); }}
-                  className={`cursor-target px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    scenarioSubTab === 'scenarios' ? 'bg-[#16203A] text-white' : 'text-[#4B5A75] hover:text-[#182338]'
+                  className={`cursor-target px-4 py-2 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                    scenarioSubTab === 'scenarios' ? 'bg-forest text-white shadow-xs' : 'text-forest hover:bg-mint-deep'
                   }`}
                 >
                   Judgement Scenarios ({fmeContent.scenarios?.length || 0})
                 </button>
                 <button
                   onClick={() => { setScenarioSubTab('simulations'); setOpenScenarioId(null); }}
-                  className={`cursor-target px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    scenarioSubTab === 'simulations' ? 'bg-[#16203A] text-white' : 'text-[#4B5A75] hover:text-[#182338]'
+                  className={`cursor-target px-4 py-2 rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                    scenarioSubTab === 'simulations' ? 'bg-forest text-white shadow-xs' : 'text-forest hover:bg-mint-deep'
                   }`}
                 >
                   Job Simulations ({fmeContent.simulations?.length || 0})
@@ -1526,24 +1573,24 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   };
 
                   return (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       <button
                         onClick={() => setOpenScenarioId(null)}
-                        className="cursor-target inline-flex items-center gap-1.5 text-xs font-semibold text-[#4B5A75] hover:text-[#182338]"
+                        className="cursor-target inline-flex items-center gap-1.5 text-xs font-semibold text-ink-soft hover:text-forest min-h-[40px]"
                       >
                         <ArrowLeft className="w-4 h-4" /> Back to All {isSim ? 'Simulations' : 'Scenarios'}
                       </button>
 
-                      <div className="bg-white border border-[#E4E8F0] rounded-3xl overflow-hidden shadow-lg">
+                      <div className="bg-white border border-line rounded-3xl overflow-hidden card-shadow">
                         {/* Setup Dark Header */}
-                        <div className="bg-gradient-to-br from-[#1B2A49] to-[#16203A] text-white p-6 space-y-3">
-                          <span className="text-[10px] font-mono text-[#C6863A] uppercase tracking-widest font-bold">
+                        <div className="bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white p-6 sm:p-7 space-y-3">
+                          <span className="text-[10px] font-mono text-gold-soft uppercase tracking-widest font-bold">
                             {isSim ? `Job Simulation · ${item.role?.toUpperCase()} Role` : 'Judgement Scenario'}
                           </span>
-                          <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-sans">
+                          <p className="text-sm sm:text-base text-mint/90 leading-relaxed font-sans">
                             {item.setup}
                           </p>
-                          <div className="pt-3 border-t border-white/10 font-['Space_Grotesk'] font-bold text-base sm:text-lg text-white">
+                          <div className="pt-3 border-t border-white/15 font-serif font-bold text-base sm:text-lg text-white">
                             {item.prompt}
                           </div>
                         </div>
@@ -1554,20 +1601,20 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                           </div>
                         )}
 
-                        <div className="p-6 space-y-5">
+                        <div className="p-5 sm:p-7 space-y-5">
                           {!isRevealed ? (
                             <div className="space-y-4">
-                              <div className="p-4 bg-[#F6ECDD] border border-dashed border-[#EAD6BB] rounded-2xl text-center">
-                                <div className="text-[10px] font-mono uppercase tracking-widest text-[#B0722B] font-bold">
+                              <div className="p-4 sm:p-5 bg-amber-50/70 border border-dashed border-amber-200 rounded-2xl text-center">
+                                <div className="text-[10px] font-mono uppercase tracking-widest text-amber-800 font-bold">
                                   What would you do first?
                                 </div>
-                                <p className="text-xs text-[#7A5B2A] mt-1">
+                                <p className="text-xs sm:text-sm text-amber-950 mt-1.5">
                                   Formulate your statutory steps and escalation ladder before revealing.
                                 </p>
                               </div>
                               <button
                                 onClick={handleReveal}
-                                className="cursor-target w-full py-4 bg-[#C6863A] hover:bg-[#B0722B] text-white font-semibold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+                                className="cursor-target w-full py-4 bg-forest hover:bg-forest-deep text-white font-bold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 hover-lift min-h-[52px]"
                               >
                                 <Eye className="w-4 h-4" /> Reveal Framework &amp; Control
                               </button>
@@ -1577,13 +1624,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               {/* Scenario Steps */}
                               {item.steps && (
                                 <div className="space-y-3">
-                                  <div className="text-[10px] font-mono uppercase tracking-widest text-[#4B5A75] font-bold">
+                                  <div className="text-[10px] font-mono uppercase tracking-widest text-forest font-bold">
                                     Step-by-Step Approach Framework
                                   </div>
                                   <div className="space-y-2.5">
                                     {item.steps.map((st, sIdx) => (
-                                      <div key={sIdx} className="flex items-start gap-3 p-3 bg-[#FBFCFE] border border-[#E4E8F0] rounded-xl text-xs sm:text-sm text-[#182338] leading-relaxed">
-                                        <span className="w-6 h-6 rounded-lg bg-[#F6ECDD] text-[#B0722B] font-['Space_Grotesk'] font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                      <div key={sIdx} className="flex items-start gap-3 p-3.5 bg-paper border border-line rounded-xl text-xs sm:text-sm text-ink leading-relaxed">
+                                        <span className="w-6 h-6 rounded-lg bg-mint text-forest font-serif font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                                           {sIdx + 1}
                                         </span>
                                         <p className="pt-0.5">{st}</p>
@@ -1596,36 +1643,36 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               {/* Simulation Facts */}
                               {item.obligation && (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  <div className="p-4 bg-[#FBFCFE] border border-[#E4E8F0] rounded-xl">
-                                    <div className="text-[10px] font-mono uppercase text-[#8A97AD] font-bold mb-1">Applicable Obligation</div>
-                                    <div className="text-xs sm:text-sm text-[#182338] font-medium leading-snug">{item.obligation}</div>
+                                  <div className="p-4 bg-paper border border-line rounded-xl">
+                                    <div className="text-[10px] font-mono uppercase text-forest font-bold mb-1">Applicable Obligation</div>
+                                    <div className="text-xs sm:text-sm text-ink font-medium leading-snug">{item.obligation}</div>
                                   </div>
-                                  <div className="p-4 bg-[#FBFCFE] border border-[#E4E8F0] rounded-xl">
-                                    <div className="text-[10px] font-mono uppercase text-[#2E8768] font-bold mb-1">Practical Action</div>
-                                    <div className="text-xs sm:text-sm text-[#182338] font-medium leading-snug">{item.action}</div>
+                                  <div className="p-4 bg-paper border border-line rounded-xl">
+                                    <div className="text-[10px] font-mono uppercase text-leaf font-bold mb-1">Practical Action</div>
+                                    <div className="text-xs sm:text-sm text-ink font-medium leading-snug">{item.action}</div>
                                   </div>
                                 </div>
                               )}
 
                               {/* Common Mistake */}
                               {item.mistake && (
-                                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-red-900">
-                                  <strong className="block font-mono uppercase text-[10px] text-red-700 mb-1">Common Interview Mistake:</strong>
+                                <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs sm:text-sm text-rose-900 leading-relaxed">
+                                  <strong className="block font-mono uppercase text-[10px] text-rose-700 mb-1">Common Interview Mistake:</strong>
                                   {item.mistake}
                                 </div>
                               )}
 
                               {/* Compliance Control Table */}
                               {item.control && (
-                                <div className="bg-[#101A2E] text-white rounded-2xl p-5 space-y-3">
-                                  <div className="text-[10px] font-mono uppercase tracking-widest text-[#C6863A] font-bold flex items-center gap-1.5">
-                                    <Shield className="w-3.5 h-3.5" /> Structured Compliance Control
+                                <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 space-y-3 card-shadow border border-leaf/30">
+                                  <div className="text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold flex items-center gap-1.5">
+                                    <Shield className="w-4 h-4 text-gold-soft" /> Structured Compliance Control
                                   </div>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-mono">
                                     {Object.entries(item.control).map(([k, v]) => (
-                                      <div key={k} className="p-2.5 bg-white/5 border border-white/10 rounded-lg">
-                                        <span className="text-[10px] uppercase text-[#9DB0CE] block mb-0.5">{k}:</span>
-                                        <span className="text-slate-100 font-sans text-xs">{v}</span>
+                                      <div key={k} className="p-3 bg-white/10 border border-white/15 rounded-xl">
+                                        <span className="text-[10px] uppercase text-gold-soft block mb-1 font-bold">{k}:</span>
+                                        <span className="text-mint font-sans text-xs sm:text-sm leading-relaxed">{v}</span>
                                       </div>
                                     ))}
                                   </div>
@@ -1647,27 +1694,27 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       <button
                         key={s.id}
                         onClick={() => setOpenScenarioId(s.id)}
-                        className="cursor-target w-full p-4 sm:p-5 rounded-2xl bg-white border border-[#E4E8F0] hover:border-[#C6863A] text-left flex items-center justify-between gap-4 transition-all hover-lift shadow-xs"
+                        className="cursor-target w-full p-4 sm:p-5 rounded-2xl bg-white border border-line hover:border-forest text-left flex items-center justify-between gap-4 transition-all hover-lift card-shadow min-h-[70px]"
                       >
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5">
-                            <span className="px-2 py-0.5 bg-[#EEF2F9] text-[#182338] text-[10px] font-mono font-bold rounded uppercase">
+                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <span className="px-2.5 py-0.5 bg-mint text-forest text-[10px] font-mono font-bold rounded uppercase border border-mint-deep">
                               {s.role?.toUpperCase() || 'PRACTICE'}
                             </span>
                             {isDone && (
-                              <span className="text-[10px] font-mono text-[#2E8768] font-bold flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3" /> Completed
+                              <span className="text-[10px] font-mono text-leaf font-bold flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Completed
                               </span>
                             )}
                           </div>
-                          <h3 className="font-semibold text-sm sm:text-base text-[#182338] leading-snug">
+                          <h3 className="font-semibold text-sm sm:text-base text-forest-deep leading-snug">
                             {s.title || s.setup.slice(0, 65) + '…'}
                           </h3>
-                          <p className="text-xs text-[#4B5A75] mt-1 line-clamp-2">
+                          <p className="text-xs text-ink-soft mt-1 line-clamp-2">
                             {s.setup}
                           </p>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-[#8A97AD] flex-shrink-0" />
+                        <ChevronRight className="w-5 h-5 text-ink-soft flex-shrink-0" />
                       </button>
                     );
                   })}
@@ -1681,30 +1728,30 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           {/* TAB: RAPID RECALL (Flashcards Deck)                              */}
           {/* ================================================================= */}
           {activeTab === 'recall' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {!recallMode ? (
                 // Mode Selection
                 <div className="space-y-4">
                   <div>
-                    <h2 className="text-xl font-['Space_Grotesk'] font-bold text-[#182338]">Rapid Recall Decks</h2>
-                    <p className="text-xs text-[#4B5A75]">High-speed active recall: definitions, thresholds, timelines and traps</p>
+                    <h2 className="text-xl sm:text-2xl font-serif font-bold text-forest-deep">Rapid Recall Decks</h2>
+                    <p className="text-xs text-ink-soft">High-speed active recall: definitions, thresholds, timelines and traps</p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {fmeContent.recall.modes.map(m => (
                       <button
                         key={m.id}
                         onClick={() => { setRecallMode(m.id); setFlashIndex(0); setFlashFlipped(false); }}
-                        className="cursor-target p-5 rounded-2xl bg-white border border-[#E4E8F0] hover:border-[#C6863A] text-left flex items-start gap-4 transition-all hover-lift shadow-xs"
+                        className="cursor-target p-5 rounded-2xl bg-white border border-line hover:border-forest text-left flex items-start gap-4 transition-all hover-lift card-shadow min-h-[90px]"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-[#101A2E] text-white flex flex-col items-center justify-center flex-shrink-0">
-                          <span className="font-['Space_Grotesk'] font-bold text-lg leading-none">{m.mins}</span>
-                          <span className="font-mono text-[8px] text-[#9DB0CE] uppercase">min</span>
+                        <div className="w-12 h-12 rounded-2xl bg-forest text-mint flex flex-col items-center justify-center flex-shrink-0 border border-leaf/30">
+                          <span className="font-serif font-bold text-lg leading-none">{m.mins}</span>
+                          <span className="font-mono text-[8px] text-mint/80 uppercase">min</span>
                         </div>
                         <div>
-                          <div className="font-['Space_Grotesk'] font-bold text-base text-[#182338]">{m.label}</div>
-                          <p className="text-xs text-[#4B5A75] mt-1 leading-relaxed">{m.desc}</p>
+                          <div className="font-serif font-bold text-base text-forest-deep">{m.label}</div>
+                          <p className="text-xs text-ink-soft mt-1 leading-relaxed">{m.desc}</p>
                         </div>
                       </button>
                     ))}
@@ -1718,15 +1765,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                   if (!card) {
                     return (
-                      <div className="p-8 text-center bg-white rounded-3xl border border-[#E4E8F0] space-y-4">
-                        <div className="w-14 h-14 rounded-2xl bg-[#E4F3ED] text-[#2E8768] flex items-center justify-center mx-auto">
+                      <div className="p-8 text-center bg-white rounded-3xl border border-line space-y-4 card-shadow">
+                        <div className="w-14 h-14 rounded-2xl bg-mint text-leaf flex items-center justify-center mx-auto">
                           <Check className="w-8 h-8" />
                         </div>
-                        <h3 className="font-['Space_Grotesk'] font-bold text-xl text-[#182338]">Deck Completed!</h3>
-                        <p className="text-xs text-[#4B5A75]">You reviewed all cards in this mode.</p>
+                        <h3 className="font-serif font-bold text-xl sm:text-2xl text-forest-deep">Deck Completed!</h3>
+                        <p className="text-xs text-ink-soft">You reviewed all cards in this mode.</p>
                         <button
                           onClick={() => setRecallMode(null)}
-                          className="px-5 py-2.5 bg-[#16203A] text-white rounded-xl font-semibold text-xs"
+                          className="px-6 py-3 bg-forest text-white rounded-xl font-semibold text-xs sm:text-sm hover:bg-forest-deep transition-all min-h-[44px]"
                         >
                           Back to Deck Selector
                         </button>
@@ -1739,11 +1786,11 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       <div className="flex items-center justify-between">
                         <button
                           onClick={() => setRecallMode(null)}
-                          className="cursor-target text-xs font-semibold text-[#4B5A75] hover:text-[#182338] flex items-center gap-1"
+                          className="cursor-target text-xs font-semibold text-ink-soft hover:text-forest flex items-center gap-1 min-h-[36px]"
                         >
                           <ArrowLeft className="w-4 h-4" /> Back to Recall Modes
                         </button>
-                        <span className="font-mono text-xs text-[#8A97AD]">
+                        <span className="font-mono text-xs font-bold text-forest">
                           {flashIndex + 1} / {cards.length}
                         </span>
                       </div>
@@ -1751,27 +1798,27 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       {/* 3D Flashcard */}
                       <div
                         onClick={() => setFlashFlipped(!flashFlipped)}
-                        className="cursor-pointer bg-gradient-to-br from-[#101A2E] via-[#16203A] to-[#1B2A49] text-white rounded-3xl p-6 sm:p-10 min-h-[300px] flex flex-col justify-between border border-[#26324F] shadow-xl hover-lift relative select-none"
+                        className="cursor-pointer bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white rounded-3xl p-6 sm:p-10 min-h-[280px] sm:min-h-[320px] flex flex-col justify-between border border-leaf/30 card-shadow hover-lift relative select-none"
                       >
-                        <div className="flex justify-between items-center text-xs text-[#9DB0CE] font-mono">
-                          <span className="text-[10px] text-[#C6863A] uppercase font-bold tracking-widest">{card.cat}</span>
-                          <span>Tap to flip</span>
+                        <div className="flex justify-between items-center text-xs text-mint/80 font-mono">
+                          <span className="text-[10px] text-gold-soft uppercase font-bold tracking-widest">{card.cat}</span>
+                          <span className="text-[11px] font-medium">Tap to flip</span>
                         </div>
 
                         <div className="py-6 text-center my-auto">
                           {!flashFlipped ? (
-                            <h3 className="text-xl sm:text-3xl font-['Space_Grotesk'] font-bold text-white leading-tight">
+                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white leading-snug">
                               {card.front}
                             </h3>
                           ) : (
-                            <p className="text-sm sm:text-lg text-slate-100 font-sans leading-relaxed text-left animate-fade-in whitespace-pre-line">
+                            <p className="text-sm sm:text-base lg:text-lg text-mint font-sans leading-relaxed text-left animate-fade-in whitespace-pre-line">
                               {card.back}
                             </p>
                           )}
                         </div>
 
-                        <div className="text-center font-mono text-[11px] text-[#9DB0CE]">
-                          {flashFlipped ? '✓ Flipped (Tap to flip back)' : 'Tap anywhere to reveal back'}
+                        <div className="text-center font-mono text-[11px] text-mint/70">
+                          {flashFlipped ? '✓ Flipped (Tap to flip back)' : 'Tap anywhere to reveal statutory answer'}
                         </div>
                       </div>
 
@@ -1780,7 +1827,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                         <button
                           disabled={flashIndex === 0}
                           onClick={() => { setFlashIndex(prev => prev - 1); setFlashFlipped(false); }}
-                          className="cursor-target px-4 py-2.5 rounded-xl border border-[#E4E8F0] bg-white text-xs font-semibold disabled:opacity-40"
+                          className="cursor-target px-4 sm:px-5 py-3 rounded-xl border border-line bg-white text-xs sm:text-sm font-semibold disabled:opacity-40 min-h-[44px]"
                         >
                           Previous
                         </button>
@@ -1793,9 +1840,9 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               setFlashIndex(cards.length);
                             }
                           }}
-                          className="cursor-target flex-1 py-2.5 bg-[#C6863A] hover:bg-[#B0722B] text-white font-semibold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                          className="cursor-target flex-1 py-3 bg-forest hover:bg-forest-deep text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md flex items-center justify-center gap-1.5 hover-lift min-h-[44px]"
                         >
-                          {flashIndex < cards.length - 1 ? 'Next Card' : 'Finish Deck'} <ArrowRight className="w-3.5 h-3.5" />
+                          {flashIndex < cards.length - 1 ? 'Next Card' : 'Finish Deck'} <ArrowRight className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -1810,7 +1857,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           {/* TAB: GRADED ASSESSMENT                                            */}
           {/* ================================================================= */}
           {activeTab === 'assess' && (
-            <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {!assessCompleted ? (
                 (() => {
@@ -1825,29 +1872,29 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   };
 
                   return (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {/* Header */}
-                      <div className="flex items-center justify-between text-xs font-mono text-[#4B5A75]">
-                        <span className="font-bold text-[#182338]">Question {assessIndex + 1} of {total}</span>
-                        <div className="flex-1 mx-3 h-1.5 bg-[#E4E8F0] rounded-full overflow-hidden">
-                          <div className="h-full bg-[#C6863A] rounded-full transition-all" style={{ width: `${((assessIndex + 1) / total) * 100}%` }} />
+                      <div className="flex items-center justify-between text-xs font-mono text-ink-soft">
+                        <span className="font-bold text-forest">Question {assessIndex + 1} of {total}</span>
+                        <div className="flex-1 mx-3 h-2 bg-line rounded-full overflow-hidden">
+                          <div className="h-full bg-leaf rounded-full transition-all duration-300" style={{ width: `${((assessIndex + 1) / total) * 100}%` }} />
                         </div>
-                        <span>{fmeContent.areas[q?.area] || 'General'}</span>
+                        <span className="font-semibold text-forest-deep">{fmeContent.areas[q?.area] || 'General'}</span>
                       </div>
 
                       {/* Question Card */}
-                      <div className="bg-white border border-[#E4E8F0] rounded-3xl p-6 sm:p-8 shadow-lg space-y-5">
-                        <div className="font-['Space_Grotesk'] font-bold text-lg sm:text-xl text-[#182338] leading-snug">
+                      <div className="bg-white border border-line rounded-3xl p-5 sm:p-8 card-shadow space-y-5">
+                        <div className="font-serif font-bold text-lg sm:text-xl lg:text-2xl text-forest-deep leading-snug">
                           {q?.q}
                         </div>
 
                         <div className="space-y-2.5">
                           {q?.options.map((opt, optIdx) => {
-                            let style = 'bg-white border-[#E4E8F0] text-[#182338] hover:border-[#C6863A]';
+                            let style = 'bg-white border-line text-ink hover:border-forest hover:bg-mint/20';
                             if (isAnswered) {
-                              if (optIdx === q.answer) style = 'bg-[#E4F3ED] border-[#2E8768] text-[#2E8768] font-bold';
-                              else if (optIdx === chosen && chosen !== q.answer) style = 'bg-red-50 border-red-300 text-red-800';
-                              else style = 'bg-white border-[#E4E8F0] opacity-50';
+                              if (optIdx === q.answer) style = 'bg-mint border-leaf text-forest-deep font-bold ring-1 ring-leaf';
+                              else if (optIdx === chosen && chosen !== q.answer) style = 'bg-rose-50 border-rose-300 text-rose-900';
+                              else style = 'bg-white border-line opacity-50 text-ink-soft';
                             }
 
                             return (
@@ -1855,9 +1902,9 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 key={optIdx}
                                 disabled={isAnswered}
                                 onClick={() => handleSelectOpt(optIdx)}
-                                className={`cursor-target w-full p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-center gap-3 ${style}`}
+                                className={`cursor-target w-full p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-start gap-3 min-h-[50px] ${style}`}
                               >
-                                <span className="w-6 h-6 rounded-lg bg-black/5 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0">
+                                <span className="w-6 h-6 rounded-lg bg-black/5 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                                   {['A', 'B', 'C', 'D'][optIdx]}
                                 </span>
                                 <span className="leading-relaxed">{opt}</span>
@@ -1867,11 +1914,11 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                         </div>
 
                         {isAnswered && (
-                          <div className="p-4 bg-[#F4F6FA] border border-[#E4E8F0] rounded-xl text-xs leading-relaxed space-y-1">
-                            <strong className="block text-[#182338] font-bold">
-                              {chosen === q.answer ? '✓ Correct!' : '✕ Incorrect statutory analysis:'}
+                          <div className="p-4 bg-paper border border-line rounded-xl text-xs sm:text-sm leading-relaxed space-y-1">
+                            <strong className="block text-forest-deep font-bold">
+                              {chosen === q.answer ? '✓ Correct Answer!' : '✕ Incorrect statutory analysis:'}
                             </strong>
-                            <p className="text-[#4B5A75]">{q.explain}</p>
+                            <p className="text-ink-soft">{q.explain}</p>
                           </div>
                         )}
 
@@ -1884,7 +1931,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 setAssessCompleted(true);
                               }
                             }}
-                            className="cursor-target w-full py-3.5 bg-[#16203A] hover:bg-[#101A2E] text-white font-semibold text-xs rounded-xl transition-colors flex items-center justify-center gap-2"
+                            className="cursor-target w-full py-4 bg-forest hover:bg-forest-deep text-white font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 hover-lift min-h-[50px]"
                           >
                             {assessIndex < total - 1 ? 'Next Question' : 'View Final Scored Results'} <ArrowRight className="w-4 h-4" />
                           </button>
@@ -1912,35 +1959,35 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                   const pct = Math.round((correctCount / total) * 100);
 
                   return (
-                    <div className="bg-white border border-[#E4E8F0] rounded-3xl p-6 sm:p-8 shadow-lg space-y-6 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-[#F6ECDD] text-[#B0722B] flex items-center justify-center mx-auto">
-                        <Award className="w-8 h-8" />
+                    <div className="bg-white border border-line rounded-3xl p-6 sm:p-8 card-shadow space-y-6 text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-mint text-forest flex items-center justify-center mx-auto border border-mint-deep">
+                        <Award className="w-8 h-8 text-leaf" />
                       </div>
 
                       <div>
-                        <h2 className="font-['Space_Grotesk'] font-bold text-2xl sm:text-3xl text-[#182338]">
+                        <h2 className="font-serif font-bold text-2xl sm:text-3xl text-forest-deep">
                           Assessment Performance
                         </h2>
-                        <div className="font-['Space_Grotesk'] text-4xl sm:text-5xl font-bold text-[#16203A] mt-2">
-                          {correctCount} <span className="text-lg text-[#8A97AD]">/ {total}</span>
+                        <div className="font-serif text-4xl sm:text-5xl font-bold text-forest mt-2">
+                          {correctCount} <span className="text-lg text-ink-soft">/ {total}</span>
                         </div>
-                        <p className="text-sm font-semibold text-[#C6863A] mt-1">{pct}% Score Overall</p>
+                        <p className="text-sm font-semibold text-leaf mt-1">{pct}% Score Overall</p>
                       </div>
 
                       {/* Area Breakdown Bars */}
-                      <div className="text-left space-y-3 pt-4 border-t border-[#E4E8F0]">
-                        <h4 className="text-xs font-mono font-bold uppercase text-[#4B5A75]">Area-wise Breakdown</h4>
+                      <div className="text-left space-y-3 pt-4 border-t border-line">
+                        <h4 className="text-xs font-mono font-bold uppercase text-forest">Area-wise Breakdown</h4>
                         {Object.entries(byArea).map(([area, stat]) => {
                           const areaPct = Math.round((stat.c / stat.t) * 100);
                           return (
-                            <div key={area} className="space-y-1">
+                            <div key={area} className="space-y-1.5">
                               <div className="flex justify-between text-xs font-medium">
-                                <span className="text-[#182338]">{area}</span>
-                                <span className="font-mono text-[#8A97AD]">{stat.c}/{stat.t} ({areaPct}%)</span>
+                                <span className="text-ink font-semibold">{area}</span>
+                                <span className="font-mono text-ink-soft">{stat.c}/{stat.t} ({areaPct}%)</span>
                               </div>
-                              <div className="w-full h-2 bg-[#E4E8F0] rounded-full overflow-hidden">
+                              <div className="w-full h-2 bg-line rounded-full overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${areaPct >= 70 ? 'bg-[#2E8768]' : areaPct >= 40 ? 'bg-[#C6863A]' : 'bg-red-500'}`}
+                                  className={`h-full rounded-full transition-all duration-500 ${areaPct >= 70 ? 'bg-leaf' : areaPct >= 40 ? 'bg-gold' : 'bg-rose-500'}`}
                                   style={{ width: `${areaPct}%` }}
                                 />
                               </div>
@@ -1949,16 +1996,16 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                         })}
                       </div>
 
-                      <div className="flex gap-3 pt-4">
+                      <div className="flex gap-3 pt-4 flex-col sm:flex-row">
                         <button
                           onClick={() => { setAssessIndex(0); setAssessAnswers({}); setAssessCompleted(false); }}
-                          className="cursor-target flex-1 py-3 bg-[#F4F6FA] hover:bg-[#E4E8F0] text-[#182338] font-semibold text-xs rounded-xl transition-colors"
+                          className="cursor-target flex-1 py-3.5 bg-paper hover:bg-mint border border-line text-forest font-semibold text-xs sm:text-sm rounded-xl transition-colors min-h-[48px]"
                         >
                           Retake Assessment
                         </button>
                         <button
                           onClick={() => setActiveTab('home')}
-                          className="cursor-target flex-1 py-3 bg-[#16203A] text-white font-semibold text-xs rounded-xl shadow-md transition-colors"
+                          className="cursor-target flex-1 py-3.5 bg-forest hover:bg-forest-deep text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition-colors min-h-[48px]"
                         >
                           Return to Home
                         </button>
@@ -1973,81 +2020,74 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
         </main>
 
-        {/* ─── Bottom Navigation Bar ─── */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-[#16203A] border-t border-[#26324F] h-16 flex items-center justify-around px-2 z-30">
-          <button
-            onClick={() => setActiveTab('home')}
-            className={`cursor-target flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-colors ${
-              activeTab === 'home' ? 'text-white' : 'text-[#9DB0CE] hover:text-white'
-            }`}
-          >
-            <div className={`p-1 rounded-lg ${activeTab === 'home' ? 'bg-[#C6863A]/20 text-[#C6863A]' : ''}`}>
-              <Brain className="w-4 h-4" />
-            </div>
-            <span className="text-[10px] font-mono font-medium">Home</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('modules')}
-            className={`cursor-target flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-colors ${
-              activeTab === 'modules' ? 'text-white' : 'text-[#9DB0CE] hover:text-white'
-            }`}
-          >
-            <div className={`p-1 rounded-lg ${activeTab === 'modules' ? 'bg-[#C6863A]/20 text-[#C6863A]' : ''}`}>
-              <BookOpen className="w-4 h-4" />
-            </div>
-            <span className="text-[10px] font-mono font-medium">Modules</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('practice')}
-            className={`cursor-target flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-colors ${
-              activeTab === 'practice' ? 'text-white' : 'text-[#9DB0CE] hover:text-white'
-            }`}
-          >
-            <div className={`p-1 rounded-lg ${activeTab === 'practice' ? 'bg-[#C6863A]/20 text-[#C6863A]' : ''}`}>
-              <Target className="w-4 h-4" />
-            </div>
-            <span className="text-[10px] font-mono font-medium">Practice</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('scenarios')}
-            className={`cursor-target flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-colors ${
-              activeTab === 'scenarios' ? 'text-white' : 'text-[#9DB0CE] hover:text-white'
-            }`}
-          >
-            <div className={`p-1 rounded-lg ${activeTab === 'scenarios' ? 'bg-[#C6863A]/20 text-[#C6863A]' : ''}`}>
-              <Layers className="w-4 h-4" />
-            </div>
-            <span className="text-[10px] font-mono font-medium">Scenarios</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('recall')}
-            className={`cursor-target flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-colors ${
-              activeTab === 'recall' ? 'text-white' : 'text-[#9DB0CE] hover:text-white'
-            }`}
-          >
-            <div className={`p-1 rounded-lg ${activeTab === 'recall' ? 'bg-[#C6863A]/20 text-[#C6863A]' : ''}`}>
-              <Zap className="w-4 h-4" />
-            </div>
-            <span className="text-[10px] font-mono font-medium">Recall</span>
-          </button>
+        {/* ─── Bottom Navigation Bar (Codex Theme) ─── */}
+        {/* BUG 6 FIX: Added Assess tab; active tab has bg-mint pill for clear visual indicator */}
+        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-line flex-shrink-0"
+             style={{ height: 'calc(56px + env(safe-area-inset-bottom, 0px))', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+          <div className="h-14 flex items-center justify-around px-1 z-30">
+            {[
+              { id: 'home',      icon: <Brain className="w-4 h-4" />,   label: 'Home'     },
+              { id: 'modules',   icon: <BookOpen className="w-4 h-4" />, label: 'Modules'  },
+              { id: 'practice',  icon: <Target className="w-4 h-4" />,  label: 'Practice', fmeOnly: false },
+              { id: 'recall',    icon: <Zap className="w-4 h-4" />,     label: 'Recall',   fmeOnly: true  },
+              { id: 'assess',    icon: <Award className="w-4 h-4" />,   label: 'Assess',   fmeOnly: true  },
+            ]
+            .filter(t => !t.fmeOnly || isFME)
+            .map(t => (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className={`cursor-target flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 transition-all min-h-[48px] rounded-xl mx-0.5 ${
+                  activeTab === t.id
+                    ? 'text-forest font-bold'
+                    : 'text-ink-soft hover:text-forest'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl transition-colors ${
+                  activeTab === t.id ? 'bg-mint text-forest shadow-xs' : ''
+                }`}>
+                  {t.icon}
+                </div>
+                <span className={`text-[9px] font-mono leading-none ${
+                  activeTab === t.id ? 'text-forest font-bold' : 'text-ink-soft'
+                }`}>{t.label}</span>
+              </button>
+            ))}
+            {/* Scenarios — not in the condensed mobile nav, accessible from Home tile */}
+            {isFME && (
+              <button
+                onClick={() => setActiveTab('scenarios')}
+                className={`cursor-target flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 transition-all min-h-[48px] rounded-xl mx-0.5 ${
+                  activeTab === 'scenarios'
+                    ? 'text-forest font-bold'
+                    : 'text-ink-soft hover:text-forest'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl transition-colors ${
+                  activeTab === 'scenarios' ? 'bg-mint text-forest shadow-xs' : ''
+                }`}>
+                  <Layers className="w-4 h-4" />
+                </div>
+                <span className={`text-[9px] font-mono leading-none ${
+                  activeTab === 'scenarios' ? 'text-forest font-bold' : 'text-ink-soft'
+                }`}>Cases</span>
+              </button>
+            )}
+          </div>
         </nav>
 
         {/* ─── Role Selection Modal ─── */}
         {showRoleModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#E4E8F0] space-y-4 animate-fade-in">
+          <div className="fixed inset-0 z-50 bg-forest-deep/70 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-line space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-['Space_Grotesk'] font-bold text-lg text-[#182338]">Select Target Role</h3>
-                  <p className="text-xs text-[#4B5A75]">Prioritize questions &amp; compliance controls</p>
+                  <h3 className="font-serif font-bold text-lg text-forest-deep">Select Target Role</h3>
+                  <p className="text-xs text-ink-soft">Prioritize questions &amp; compliance controls</p>
                 </div>
                 <button
                   onClick={() => setShowRoleModal(false)}
-                  className="p-1 text-[#8A97AD] hover:text-[#182338]"
+                  className="p-1.5 text-ink-soft hover:text-forest min-h-[36px] min-w-[36px] flex items-center justify-center"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -2060,22 +2100,22 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                     <button
                       key={r.id}
                       onClick={() => handleRoleChange(r.id)}
-                      className={`cursor-target w-full p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 ${
+                      className={`cursor-target w-full p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 min-h-[64px] ${
                         isSel
-                          ? 'bg-[#F6ECDD] border-[#C6863A] text-[#182338]'
-                          : 'bg-white border-[#E4E8F0] hover:border-[#C6863A] text-[#182338]'
+                          ? 'bg-mint/60 border-leaf text-forest-deep shadow-xs'
+                          : 'bg-white border-line hover:border-forest text-ink'
                       }`}
                     >
-                      <div className={`w-9 h-9 rounded-xl font-['Space_Grotesk'] font-bold text-xs flex items-center justify-center flex-shrink-0 ${
-                        isSel ? 'bg-[#C6863A] text-white' : 'bg-[#EEF2F9] text-[#182338]'
+                      <div className={`w-9 h-9 rounded-xl font-serif font-bold text-xs flex items-center justify-center flex-shrink-0 ${
+                        isSel ? 'bg-forest text-white' : 'bg-mint text-forest'
                       }`}>
                         {r.tag}
                       </div>
                       <div className="min-w-0">
                         <div className="font-bold text-sm leading-snug">{r.name}</div>
-                        <div className="text-xs text-[#4B5A75] mt-0.5 leading-relaxed">{r.line}</div>
+                        <div className="text-xs text-ink-soft mt-0.5 leading-relaxed">{r.line}</div>
                       </div>
-                      {isSel && <Check className="w-5 h-5 text-[#C6863A] ml-auto flex-shrink-0" />}
+                      {isSel && <Check className="w-5 h-5 text-leaf ml-auto flex-shrink-0" />}
                     </button>
                   );
                 })}
@@ -2089,7 +2129,7 @@ export default function RegulatoryMasterModal({ course, onClose }) {
           isOpen={showUpgradeModal}
           onClose={() => setShowUpgradeModal(false)}
           sectionKey="job_ready"
-          title="Unlock All Job &amp; Fund Management Modules"
+          title="Unlock All Regulatory Master Modules"
           message="You have accessed the 2 free preview modules. Upgrade your membership pass to unlock all 7 Fund Management &amp; CMI modules."
         />
 
