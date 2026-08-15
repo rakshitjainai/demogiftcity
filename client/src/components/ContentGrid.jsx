@@ -3,6 +3,7 @@ import {
   ArrowRight, Bell, BookOpen, Sparkles, User, Clock,
   FileCheck, Award, Layers, ShieldCheck, ChevronRight
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { LATEST_UPDATES, LATEST_BLOGS, LEARNING_MODULES } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 
@@ -41,13 +42,13 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => onSelectUpdate?.(LATEST_UPDATES[0])}
+              <Link
+                to="/news"
                 className="text-xs font-semibold flex items-center gap-1 hover:underline"
                 style={{ color: 'var(--leaf)' }}
               >
                 View All <ArrowRight className="w-3 h-3" />
-              </button>
+              </Link>
             </div>
 
             {/* Updates list */}
@@ -104,23 +105,24 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => onSelectArticle?.(LATEST_BLOGS[0])}
+              <Link
+                to="/blog"
                 className="text-xs font-semibold flex items-center gap-1 hover:underline"
                 style={{ color: 'var(--accent-blue)' }}
               >
                 View All <ArrowRight className="w-3 h-3" />
-              </button>
+              </Link>
             </div>
 
             <div className="flex flex-col gap-3">
               {LATEST_BLOGS.map((blog) => {
                 const IconComp = iconMap[blog.iconName] || BookOpen;
                 return (
-                  <div
+                  <Link
                     key={blog.id}
-                    onClick={() => onSelectArticle?.(blog)}
-                    className="flex items-start gap-3 p-2 rounded-xl cursor-pointer group transition-all hover:bg-[var(--mint)] -mx-2 px-2"
+                    to={`/news/article-${blog.id}`}
+                    className="flex items-start gap-3 p-2 rounded-xl cursor-pointer group transition-all hover:bg-[var(--mint)] -mx-2 px-2 no-underline"
+                    style={{ textDecoration: 'none' }}
                   >
                     {/* Gradient thumbnail */}
                     <div
@@ -149,7 +151,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
