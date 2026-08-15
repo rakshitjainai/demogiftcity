@@ -1,0 +1,84 @@
+REGMATE — FINAL BUILD (frontend + backend)   |  Domain: https://csatwork.in (unchanged)
+Your SQL database is already created — DO NOT re-import. Keep your existing config.php.
+
+=========================================================================
+WHAT'S IN THIS PACKAGE
+=========================================================================
+RegMate-FME-InverviewReady.html          <- upload to public_html/
+Regmate-backend/
+  index.php                              (private stub)
+  database.sql                           (reference only — already imported)
+  config/
+    config.sample.php                    (TEMPLATE — do NOT overwrite your real config.php)
+  api/
+    index.php        (router)
+    register.php  login.php              (existing)
+    profile.php  progress.php  event.php  resume.php  ping.php   (NEW endpoints)
+    diagnostic.php
+  admin/
+    index.php        (dashboard)
+
+=========================================================================
+DEPLOY (Hostinger File Manager) — 3 steps
+=========================================================================
+1) Upload everything inside Regmate-backend/ into:
+      public_html/Regmate-backend/
+   OVERWRITE when asked. This adds the 5 new api/*.php endpoints and keeps
+   your existing files.
+   ⚠ DO NOT upload config/config.sample.php over your real config/config.php.
+     Your live config already has the correct DB credentials. Leave it.
+
+2) Upload the frontend, overwriting the old file:
+      public_html/RegMate-FME-InverviewReady.html
+
+3) SECURITY (do this now): the DB password and admin password were exposed
+   earlier. Rotate both:
+   - Hostinger > Databases > change the DB user password, then update
+     public_html/Regmate-backend/config/config.php
+   - Change ADMIN_PASSWORD in that same config.php
+
+=========================================================================
+TEST (in this exact order)
+=========================================================================
+1) https://csatwork.in/Regmate-backend/api/ping.php
+   Expect:  {"ok":true,"service":"RegMate API","database":true,"method":"GET"}
+
+2) Open in a FRESH / incognito window:
+   https://csatwork.in/RegMate-FME-InverviewReady.html
+   Expect: the REGISTRATION screen (Name / Mobile / Email).
+
+3) Register -> you should land on onboarding -> then the dashboard.
+   (An email is sent to the owner address in config.php on each registration.)
+
+4) Reload the page -> you stay on your dashboard (session validated by the server).
+
+5) In the browser console: localStorage.clear() then reload
+   -> you should return to REGISTRATION (no stale skip). This is the fix.
+
+6) Admin dashboard: https://csatwork.in/Regmate-backend/admin/
+   Sign in with your (rotated) ADMIN_PASSWORD to see candidates + progress.
+
+=========================================================================
+WHAT WAS FIXED
+=========================================================================
+- HTTP 405: every API action now posts to its own .php file (profile/progress/
+  event/resume/ping) instead of index.php?action=... — removing the redirect
+  that downgraded POST to GET and caused 405.
+- Registration skipped (Safari/others): the app no longer trusts a localStorage
+  flag. On load it validates the saved token with the backend (resume): valid ->
+  dashboard; invalid/expired/absent -> clears the stale state and shows
+  registration. Same in Chrome/Safari/Edge/Firefox/incognito.
+- Register/Login button bug: a re-render could null the button reference and
+  throw on submit; handlers now use the clicked element directly.
+
+VERIFIED HERE: all 12 PHP files pass php -l; frontend JS passes node -c;
+headless flow test passes register->onboarding, valid-resume->dashboard,
+stale-resume->registration, fresh->registration.
+
+NOTE: I cannot reach your live Hostinger server from here. If ping.php does not
+return the JSON above after upload, the remaining cause is a server rule
+(redirect/WAF) outside these files — send me exactly what ping.php shows.
+
+STILL TO DO (separate content pass, on request):
+Practice "How to approach" + "Model answer" for every question type; expand to
+12 scenarios and 10 job simulations; recall-card layout + 390px mobile QA.

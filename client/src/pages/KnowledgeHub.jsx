@@ -1,6 +1,8 @@
 import React from 'react';
 import { BookOpen, HelpCircle, GraduationCap, Scale, Briefcase, FileText, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 const CATEGORIES = [
   { id: 'gift', title: 'GIFT City & IFSC', icon: <Briefcase className="w-6 h-6 text-leaf" />, count: '24 Modules' },
@@ -10,6 +12,18 @@ const CATEGORIES = [
 ];
 
 export default function KnowledgeHub() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Knowledge Hub"
+        message="Accessing structured regulatory content, practice quizzes, and interactive learning modules requires an authenticated account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
   return (
     <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-7xl mx-auto animate-fade-in-up">
       <div className="text-center mb-12 sm:mb-16">

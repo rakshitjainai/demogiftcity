@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen, LayoutDashboard } from 'lucide-react';
+import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen, LayoutDashboard, ShieldCheck } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +20,8 @@ const SUB_ITEM_ROUTES = {
   'Board Meeting Planner': '/tools/board-meeting-planner',
   'ESOP Calculator': '/tools/esop-calculator',
   'AML Risk Assessment': '/tools/aml-risk-assessment',
+  'Jobs': '/jobs',
+  'Products': '/jobs'
 };
 
 export default function Navbar({ onOpenSearch, onOpenAuth }) {
@@ -81,36 +83,36 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
             />
           </Link>
 
-          {/* Center: Desktop Nav */}
-          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
+          {/* Center: Desktop Nav (positioned left near logo with generous spacing and single-line names) */}
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 ml-2 lg:ml-4 flex-1 justify-start" aria-label="Main navigation">
             {NAV_LINKS.map((link) => {
               const isDropdownOpen = openDropdown === link.label;
               return (
-                <div key={link.label} className="relative" data-nav-dropdown>
+                <div key={link.label} className="relative flex-shrink-0" data-nav-dropdown>
                   {link.hasDropdown ? (
                     <button
                       onClick={() => setOpenDropdown(isDropdownOpen ? null : link.label)}
                       aria-expanded={isDropdownOpen}
                       aria-haspopup="true"
-                      className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
+                      className={`whitespace-nowrap px-2.5 xl:px-3 py-1.5 text-[13px] font-semibold rounded-lg flex items-center gap-1.5 transition-all ${
                         isActive(link.href) || isDropdownOpen
-                          ? 'text-[var(--leaf)] bg-[var(--mint)]'
+                          ? 'text-[var(--leaf)] bg-[var(--mint)] font-bold'
                           : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
                       }`}
                     >
-                      {link.label}
-                      <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180 opacity-100' : ''}`} />
+                      <span className="whitespace-nowrap">{link.label}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 opacity-60 flex-shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180 opacity-100' : ''}`} />
                     </button>
                   ) : (
                     <Link
                       to={link.href}
-                      className={`px-3 py-2 text-[13px] font-semibold rounded-lg flex items-center gap-1 transition-all ${
+                      className={`whitespace-nowrap px-2.5 xl:px-3 py-1.5 text-[13px] font-semibold rounded-lg flex items-center gap-1.5 transition-all ${
                         isActive(link.href)
-                          ? 'text-[var(--leaf)]'
+                          ? 'text-[var(--leaf)] font-bold'
                           : 'text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)]'
                       }`}
                     >
-                      {link.label}
+                      <span className="whitespace-nowrap">{link.label}</span>
                     </Link>
                   )}
 
@@ -135,10 +137,25 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                 </div>
               );
             })}
+
+            {/* Admin-only Dashboard Option with dedicated right margin before Search */}
+            {isAuthenticated && user && (user.role === 'admin' || user.email?.toLowerCase().includes('admin')) && (
+              <Link
+                to="/admin"
+                className={`whitespace-nowrap px-2.5 xl:px-3 py-1.5 text-[13px] font-bold rounded-lg flex items-center gap-1.5 transition-all ml-1 mr-4 xl:mr-6 flex-shrink-0 ${
+                  isActive('/admin')
+                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                    : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                <span>Dashboard</span>
+              </Link>
+            )}
           </nav>
 
           {/* Right: Desktop Actions */}
-          <div className="hidden xl:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={onOpenSearch}
               className="p-2 rounded-full text-[var(--ink-soft)] hover:text-[var(--forest)] hover:bg-[var(--mint)] transition-colors border border-[var(--line)] cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
@@ -212,6 +229,17 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                       My Certificates
                     </Link>
 
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="px-4 py-2 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 flex items-center gap-2 transition-colors min-h-[40px]"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-amber-600" />
+                        Admin Panel
+                      </Link>
+                    )}
+
                     <div className="border-t border-slate-100 my-1"></div>
 
                     <button
@@ -231,25 +259,25 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
               <>
                 <button
                   onClick={() => onOpenAuth ? onOpenAuth('login') : null}
-                  className="px-4 py-2 text-[13px] font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full hover:bg-[var(--mint)] transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                  className="whitespace-nowrap px-4 py-2 text-[13px] font-bold text-[var(--forest)] border border-[var(--forest)] rounded-full hover:bg-[var(--mint)] transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px] flex-shrink-0"
                 >
-                  <LogIn className="w-3.5 h-3.5" />
-                  Login
+                  <LogIn className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Login</span>
                 </button>
 
                 <button
                   onClick={() => onOpenAuth ? onOpenAuth('register') : null}
-                  className="px-4 py-2 text-[13px] font-bold text-white bg-[var(--forest)] rounded-full hover:bg-[var(--forest-deep)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[rgba(11,77,51,0.3)] transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                  className="whitespace-nowrap px-4 py-2 text-[13px] font-bold text-white bg-[var(--forest)] rounded-full hover:bg-[var(--forest-deep)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[rgba(11,77,51,0.3)] transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px] flex-shrink-0"
                 >
-                  <Zap className="w-3.5 h-3.5 text-[var(--gold-soft)]" />
-                  Get Started
+                  <Zap className="w-3.5 h-3.5 text-[var(--gold-soft)] flex-shrink-0" />
+                  <span className="whitespace-nowrap">Get Started</span>
                 </button>
               </>
             )}
           </div>
 
           {/* Mobile Actions & Hamburger */}
-          <div className="flex xl:hidden items-center gap-1.5">
+          <div className="flex lg:hidden items-center gap-1.5">
             <button
               onClick={onOpenSearch}
               className="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--mint)] min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -297,7 +325,7 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-white border-t border-[var(--line)] px-4 pt-3 pb-6 space-y-2 animate-in fade-in slide-in-from-top-2">
+        <div className="lg:hidden bg-white border-t border-[var(--line)] px-4 pt-3 pb-6 space-y-2 animate-in fade-in slide-in-from-top-2">
           {/* User Account Card / Mobile Auth Entry */}
           {isAuthenticated ? (
             <div className="p-3.5 bg-emerald-50/90 border border-emerald-200 rounded-2xl space-y-2.5 mb-3 shadow-xs">
@@ -372,25 +400,40 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                   setMobileMenuOpen(false);
                   if (onOpenAuth) onOpenAuth('login');
                 }}
-                className="flex-1 min-h-[44px] py-2.5 text-center text-xs font-bold text-[var(--forest)] border border-[var(--forest)] rounded-xl bg-white hover:bg-[var(--mint)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="whitespace-nowrap flex-1 min-h-[44px] py-2.5 text-center text-xs font-bold text-[var(--forest)] border border-[var(--forest)] rounded-xl bg-white hover:bg-[var(--mint)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
               >
-                <LogIn className="w-4 h-4" />
-                <span>Login</span>
+                <LogIn className="w-4 h-4 flex-shrink-0" />
+                <span className="whitespace-nowrap">Login</span>
               </button>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   if (onOpenAuth) onOpenAuth('register');
                 }}
-                className="flex-1 min-h-[44px] py-2.5 text-center text-xs font-bold text-white bg-[var(--forest)] rounded-xl hover:bg-[var(--forest-deep)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="whitespace-nowrap flex-1 min-h-[44px] py-2.5 text-center text-xs font-bold text-white bg-[var(--forest)] rounded-xl hover:bg-[var(--forest-deep)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
               >
-                <Zap className="w-4 h-4 text-[var(--gold-soft)]" />
-                <span>Get Started</span>
+                <Zap className="w-4 h-4 text-[var(--gold-soft)] flex-shrink-0" />
+                <span className="whitespace-nowrap">Get Started</span>
               </button>
             </div>
           )}
 
           {/* Navigation Links */}
+          {isAuthenticated && user && (user.role === 'admin' || user.email?.toLowerCase().includes('admin')) && (
+            <Link
+              to="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block px-3.5 py-3 text-sm font-bold rounded-xl min-h-[44px] flex items-center gap-2 mb-2 ${
+                isActive('/admin')
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                  : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+              } transition-colors`}
+            >
+              <ShieldCheck className="w-4 h-4 text-amber-600" />
+              <span>Dashboard (Admin)</span>
+            </Link>
+          )}
+
           {NAV_LINKS.map((link) => (
             <div key={link.label}>
               <Link

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, FileText, Users, Calculator, ShieldAlert, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 const TOOLS = [
   { slug: 'compliance-calendar', title: 'Compliance Calendar', icon: <Calendar className="w-6 h-6" />, desc: 'GIFT IFSC & statutory compliance deadline builder.' },
@@ -11,6 +13,18 @@ const TOOLS = [
 ];
 
 export default function ToolsIndex() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Compliance Tools"
+        message="Accessing interactive compliance calculators, trackers, and planners requires an authenticated RegMate account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
   return (
     <div className="py-16 px-6 max-w-6xl mx-auto animate-fade-in-up">
       <div className="text-center mb-16">

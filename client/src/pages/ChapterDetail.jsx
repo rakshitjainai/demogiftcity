@@ -1,13 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, FileText, BookOpen, Hash } from 'lucide-react';
 import RegulationRow from '../components/RegulationRow';
 import { ACTS_DATA, getActName } from '../data/regulationsData';
+import { useAuth } from '../context/AuthContext';
+import UpgradeModal from '../components/UpgradeModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function ChapterDetail() {
   const { actSlug, chapter } = useParams();
+  const { user, isAuthenticated, trackUsage } = useAuth();
+  const navigate = useNavigate();
+  const [showLock, setShowLock] = useState(false);
+
+  // Auth lock check for logged out users
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Knowledge Hub"
+        message="Reading regulatory chapters requires an authenticated RegMate account. Please log in or create an account to access."
+        redirectPath="/login"
+      />
+    );
+  }
+
   const actName = getActName(actSlug);
   const chapterNum = parseInt(chapter?.replace('chapter-', '') || '1', 10);
+  const isMember = user?.membershipStatus === 'active';
+  const hasRegPass = user?.subscriptions?.includes('interactive_regulations') || user?.subscriptions?.includes('full_access');
+
+  // Membership lock check for Chapter > 2
+  if (!isMember && !hasRegPass && chapterNum > 2) {
+    return (
+      <UpgradeModal
+        isOpen={true}
+        onClose={() => navigate('/interactive-regulations')}
+        sectionKey="interactive_regulations"
+        title={`Chapter ${chapterNum} is Locked`}
+        message={`Chapter 1 and 2 are free preview. Upgrade your pass to unlock Chapter ${chapterNum} and all other interactive regulation chapters.`}
+      />
+    );
+  }
+
+  if (showLock) {
+    return (
+      <LockOverlay
+        type="membership"
+        title="Become a Member to Continue"
+        message="You have reached your free reading limit of 2 chapters in the Knowledge Hub. Upgrade to active membership for unlimited access across all interactive regulations."
+        redirectPath="/membership"
+      />
+    );
+  }
+
+  const chapterSlug = `${actSlug}/${chapter}`;
+
+  useEffect(() => {
+    const readChapters = user?.chaptersRead || [];
+    
+    // If not read yet and limit reached (2 chapters for non-members)
+    if (!isMember && !readChapters.includes(chapterSlug) && readChapters.length >= 2) {
+      setShowLock(true);
+    } else {
+      trackUsage('chapter', chapterSlug);
+    }
+  }, [actSlug, chapter, user?.membershipStatus, user?.chaptersRead?.length]);
 
   const actData = ACTS_DATA[actSlug];
   const chapterData = actData?.chapters.find(c => c.num === chapterNum);
@@ -95,6 +153,14 @@ export default function ChapterDetail() {
           We are structuring the complete legal text with cross-references and practitioner notes by CS Prashant Kumar.
         </p>
       </div>
+
+      {showLock && (
+        <LockOverlay
+          type="membership"
+          title="Become a Member to Continue"
+          message="You have reached your free reading limit of 2 chapters. Upgrade to an active membership for unlimited access across all interactive regulations and chapters."
+        />
+      )}
     </div>
   );
 }

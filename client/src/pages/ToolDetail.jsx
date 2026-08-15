@@ -6,9 +6,23 @@ import AnnualFilingTracker from '../components/AnnualFilingTracker';
 import BoardMeetingPlanner from '../components/BoardMeetingPlanner';
 import EsopCalculator from '../components/EsopCalculator';
 import AmlRiskAssessment from '../components/AmlRiskAssessment';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 export default function ToolDetail() {
   const { slug } = useParams();
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Compliance Tools"
+        message="Accessing interactive compliance calculators, trackers, and planners requires an authenticated RegMate account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
 
   const renderToolComponent = () => {
     switch (slug) {

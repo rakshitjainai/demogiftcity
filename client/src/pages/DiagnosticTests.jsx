@@ -1,8 +1,22 @@
 import React from 'react';
 import { Activity, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 export default function DiagnosticTests() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Diagnostic Tests"
+        message="Accessing organizational compliance diagnostic tests requires an authenticated RegMate account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
   return (
     <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
       <div className="mb-12">
@@ -15,7 +29,7 @@ export default function DiagnosticTests() {
         {[
           { id: 'aml', title: 'AML/CFT Readiness Diagnostic', questions: 45, time: '60 mins', premium: true },
           { id: 'fema', title: 'FEMA Due Diligence Checklist', questions: 30, time: '45 mins', premium: true },
-          { id: 'lodr', title: 'LODR Compliance Health Check', questions: 50, time: '90 mins', premium: false }
+          { id: 'lodr', title: 'LODR Compliance Health Check', questions: 50, time: '90 mins', premium: true }
         ].map(test => (
           <div key={test.id} className="bg-white border border-line rounded-xl p-5 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 card-shadow hover-lift group">
             <div className="flex items-start gap-4 sm:gap-5">

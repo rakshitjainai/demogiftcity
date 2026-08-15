@@ -4,9 +4,11 @@ import {
   ShieldAlert, Sparkles, Award, Loader2, AlertCircle, ChevronDown,
   ChevronRight, Zap, Target, Play, Brain, Shield, Clock, RotateCcw,
   Check, Eye, Filter, UserCheck, Flame, Scale, FileText, BarChart3,
-  ExternalLink, Layers
+  ExternalLink, Layers, Lock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import LockOverlay from './LockOverlay';
+import UpgradeModal from './UpgradeModal';
 import fmeContent from '../data/regmate-fme-content.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -75,7 +77,10 @@ function VerifyWarningBanner({ note }) {
 
 // ─── Main Modal Component ──────────────────────────────────────────────────
 export default function RegulatoryMasterModal({ course, onClose }) {
-  const { user, token, toggleCourseItem } = useAuth();
+  const { user, token, toggleCourseItem, hasAccess } = useAuth();
+  const isMember = user?.membershipStatus === 'active';
+  const [showMembershipLock, setShowMembershipLock] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const isFME = (course?.code || '').toUpperCase().includes('FME') || (course?.slug || '').includes('fme');
   const resolvedSlug = isFME ? 'ifsca-fme' : (course?.slug || 'ifsca-cmi');
@@ -779,15 +784,22 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       </div>
                     </div>
 
-                    {fmeContent.modules.map(m => {
+                    {fmeContent.modules.map((m, idx) => {
                       const topicIds = fmeContent.moduleTopics[m.id] || [];
                       const isExpanded = selectedModuleId === m.id;
                       const doneTopics = topicIds.filter(tId => completedSet.has(tId)).length;
+                      const isUnlocked = hasAccess ? hasAccess('job_ready', idx) : idx < 2;
 
                       return (
-                        <div key={m.id} className="bg-white border border-[#E4E8F0] rounded-2xl overflow-hidden shadow-xs">
+                        <div key={m.id} className={`bg-white border ${isUnlocked ? 'border-[#E4E8F0]' : 'border-amber-200 bg-amber-50/20'} rounded-2xl overflow-hidden shadow-xs relative`}>
                           <button
-                            onClick={() => setSelectedModuleId(isExpanded ? null : m.id)}
+                            onClick={() => {
+                              if (!isUnlocked) {
+                                setShowUpgradeModal(true);
+                              } else {
+                                setSelectedModuleId(isExpanded ? null : m.id);
+                              }
+                            }}
                             className="cursor-target w-full p-4 sm:p-5 text-left flex items-start justify-between gap-3 hover:bg-[#FBFCFE] transition-colors"
                           >
                             <div className="flex items-start gap-3.5 min-w-0">
@@ -795,9 +807,16 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                 {m.no}
                               </span>
                               <div className="min-w-0">
-                                <h3 className="font-semibold text-sm sm:text-base text-[#182338] leading-snug">
-                                  {m.title}
-                                </h3>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-semibold text-sm sm:text-base text-[#182338] leading-snug">
+                                    {m.title}
+                                  </h3>
+                                  {!isUnlocked && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-bold">
+                                      <Lock className="w-3 h-3 text-amber-600" /> Locked
+                                    </span>
+                                  )}
+                                </div>
                                 <p className="text-xs text-[#4B5A75] mt-1 leading-relaxed line-clamp-2">
                                   {m.summary}
                                 </p>
@@ -811,7 +830,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                               </div>
                             </div>
                             <div className="pt-1 flex-shrink-0">
-                              {isExpanded ? <ChevronDown className="w-5 h-5 text-[#8A97AD]" /> : <ChevronRight className="w-5 h-5 text-[#8A97AD]" />}
+                              {!isUnlocked ? (
+                                <Lock className="w-5 h-5 text-amber-600" />
+                              ) : isExpanded ? (
+                                <ChevronDown className="w-5 h-5 text-[#8A97AD]" />
+                              ) : (
+                                <ChevronRight className="w-5 h-5 text-[#8A97AD]" />
+                              )}
                             </div>
                           </button>
 
@@ -2058,6 +2083,15 @@ export default function RegulatoryMasterModal({ course, onClose }) {
             </div>
           </div>
         )}
+
+        {/* Upgrade / Subscription Modal */}
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          sectionKey="job_ready"
+          title="Unlock All Job &amp; Fund Management Modules"
+          message="You have accessed the 2 free preview modules. Upgrade your membership pass to unlock all 7 Fund Management &amp; CMI modules."
+        />
 
       </div>
     </div>

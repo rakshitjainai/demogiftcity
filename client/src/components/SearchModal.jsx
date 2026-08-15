@@ -1,28 +1,66 @@
 import React, { useState } from 'react';
-import { Search, X, BookOpen, Bell, ArrowRight } from 'lucide-react';
+import { Search, X, BookOpen, Bell, ArrowRight, HelpCircle, Briefcase, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { LATEST_UPDATES, LATEST_BLOGS, COMPLIANCE_TOOLS } from '../data/mockData';
+
+// Extended searchable items list
+const SEARCH_COLLECTIONS = [
+  ...LATEST_UPDATES.map(u => ({ ...u, type: 'update', path: `/news/${u.id}` })),
+  ...LATEST_BLOGS.map(b => ({ ...b, type: 'blog', path: `/blog/${b.id}` })),
+  ...COMPLIANCE_TOOLS.map(t => ({ ...t, type: 'tool', path: `/tools/${t.id}` })),
+  { id: 'job-fme', title: 'IFSCA FME JobReady & Interview Simulator', category: 'Products / Jobs', summary: 'Preparation tool & simulation engine for Fund Management Entity (FME) regulatory interviews', type: 'job', path: '/jobs' },
+  { id: 'reg-ifsca-fme', title: 'IFSCA Fund Management Regulations 2022', category: 'Interactive Regulations', summary: 'Detailed chapter-wise regulations for Authorised and Registered FMEs in GIFT City', type: 'regulation', path: '/interactive-regulations' },
+  { id: 'reg-sebi-aif', title: 'SEBI (Alternative Investment Funds) Regulations', category: 'Interactive Regulations', summary: 'Category I, II, III AIF operational, compliance, and filing rules', type: 'regulation', path: '/interactive-regulations' },
+  { id: 'quiz-ifsca-cmi', title: 'IFSCA Capital Markets & Intermediaries Quiz', category: 'Practice Quizzes', summary: '100+ diagnostic questions covering CMI regulations in GIFT IFSC', type: 'quiz', path: '/quizzes' },
+  { id: 'quiz-aml', title: 'AML / CFT & PMLA Compliance Quiz', category: 'Practice Quizzes', summary: 'Anti-money laundering reporting and beneficial ownership verification questions', type: 'quiz', path: '/quizzes' }
+];
 
 export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
   const [query, setQuery] = useState(initialQuery || '');
+  const navigate = useNavigate();
 
-  // Filter content matching search query
-  const filteredUpdates = LATEST_UPDATES.filter(u =>
-    u.title.toLowerCase().includes(query.toLowerCase()) ||
-    (u.summary || '').toLowerCase().includes(query.toLowerCase()) ||
-    (u.category || '').toLowerCase().includes(query.toLowerCase())
-  );
+  // Smart partial word matching
+  const searchTerms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
 
-  const filteredBlogs = LATEST_BLOGS.filter(b =>
-    b.title.toLowerCase().includes(query.toLowerCase()) ||
-    (b.category || '').toLowerCase().includes(query.toLowerCase()) ||
-    (b.summary || '').toLowerCase().includes(query.toLowerCase())
-  );
+  const getMatchScore = (item) => {
+    if (searchTerms.length === 0) return 0;
 
-  const filteredTools = COMPLIANCE_TOOLS.filter(t =>
-    t.title.toLowerCase().includes(query.toLowerCase()) ||
-    t.description.toLowerCase().includes(query.toLowerCase()) ||
-    t.category.toLowerCase().includes(query.toLowerCase())
-  );
+    const titleStr = (item.title || '').toLowerCase();
+    const catStr = (item.category || item.tag || '').toLowerCase();
+    const descStr = (item.summary || item.description || '').toLowerCase();
+
+    let score = 0;
+
+    searchTerms.forEach(term => {
+      if (titleStr.includes(term)) {
+        score += titleStr.startsWith(term) ? 50 : 30;
+      }
+      if (catStr.includes(term)) {
+        score += 20;
+      }
+      if (descStr.includes(term)) {
+        score += 10;
+      }
+    });
+
+    return score;
+  };
+
+  const results = searchTerms.length === 0 
+    ? [] 
+    : SEARCH_COLLECTIONS
+        .map(item => ({ item, score: getMatchScore(item) }))
+        .filter(res => res.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(res => res.item);
+
+  const handleSelect = (item) => {
+    if (onSelectItem) onSelectItem(item);
+    if (item.path) {
+      navigate(item.path);
+    }
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
@@ -36,12 +74,20 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search regulations, IFSCA circulars, Companies Act, tools..."
+            placeholder="Search regulations, circulars, FME, AIF, tools, quizzes..."
             className="w-full bg-transparent outline-none text-sm text-slate-900 font-semibold placeholder-slate-400"
           />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="text-xs text-slate-400 hover:text-slate-600 px-2 py-1"
+            >
+              Clear
+            </button>
+          )}
           <button
             onClick={onClose}
-            className="p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Close search"
           >
             <X className="w-5 h-5" />
@@ -49,84 +95,65 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
         </div>
 
         {/* Results List */}
-        <div className="p-5 overflow-y-auto space-y-5 custom-scrollbar">
+        <div className="p-5 overflow-y-auto space-y-3 custom-scrollbar min-h-[250px]">
           
           {query.trim() === '' && (
-            <div className="text-center py-8 text-xs text-slate-400">
-              Type keywords such as <strong className="text-slate-700">"IFSCA"</strong>, <strong className="text-slate-700">"Related Party"</strong>, or <strong className="text-slate-700">"AML"</strong> to filter regulations & tools.
+            <div className="text-center py-8 space-y-2">
+              <p className="text-xs text-slate-400">
+                Type keywords such as <strong className="text-slate-700">"IFSCA"</strong>, <strong className="text-slate-700">"FME"</strong>, <strong className="text-slate-700">"AIF"</strong>, or <strong className="text-slate-700">"AML"</strong> to filter across RegMate.
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center pt-2">
+                {['IFSCA FME', 'SEBI AIF', 'Aircraft Leasing', 'ESOP', 'Jobs'].map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => setQuery(tag)}
+                    className="px-3 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-xs font-semibold border border-slate-200 cursor-pointer transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Regulatory Updates Section */}
-          {filteredUpdates.length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-                <Bell className="w-3.5 h-3.5 text-reg-green" />
-                <span>Circulars & Amendments ({filteredUpdates.length})</span>
-              </h4>
-              {filteredUpdates.map(up => (
-                <div
-                  key={up.id}
-                  onClick={() => { onSelectItem(up); onClose(); }}
-                  className="p-3 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/80 cursor-pointer flex items-center justify-between transition-colors"
-                >
-                  <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">{up.category || 'Update'}</span>
-                      <span className="text-[10px] text-slate-400">{up.date}</span>
-                    </div>
-                    <div className="text-xs font-bold text-slate-900">{up.title}</div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
-                </div>
-              ))}
+          {query.trim() !== '' && results.length === 0 && (
+            <div className="text-center py-12 text-slate-400">
+              <p className="text-sm font-semibold text-slate-600">No results found matching "{query}"</p>
+              <p className="text-xs mt-1">Try searching with broader terms like "IFSCA", "Regulations", or "Quiz".</p>
             </div>
           )}
 
-          {/* Blogs & Articles Section */}
-          {filteredBlogs.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-                <span>Articles & Guides ({filteredBlogs.length})</span>
-              </h4>
-              {filteredBlogs.map(b => (
-                <div
-                  key={b.id}
-                  onClick={() => { onSelectItem(b); onClose(); }}
-                  className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50/80 border border-slate-200/80 cursor-pointer flex items-center justify-between transition-colors"
-                >
-                  <div>
-                    <div className="text-[10px] font-semibold text-blue-600 mb-0.5">{b.category} • {b.author}</div>
-                    <div className="text-xs font-bold text-slate-900">{b.title}</div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+          {results.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => handleSelect(item)}
+              className="p-3.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/80 cursor-pointer flex items-center justify-between transition-colors group"
+            >
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-slate-600 group-hover:text-emerald-700 group-hover:border-emerald-300">
+                  {item.type === 'update' && <Bell className="w-4 h-4 text-emerald-600" />}
+                  {item.type === 'blog' && <BookOpen className="w-4 h-4 text-blue-600" />}
+                  {item.type === 'tool' && <FileText className="w-4 h-4 text-purple-600" />}
+                  {item.type === 'job' && <Briefcase className="w-4 h-4 text-amber-600" />}
+                  {item.type === 'regulation' && <BookOpen className="w-4 h-4 text-emerald-700" />}
+                  {item.type === 'quiz' && <HelpCircle className="w-4 h-4 text-teal-600" />}
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* Tools Section */}
-          {filteredTools.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-                <span>Tools & Calculators ({filteredTools.length})</span>
-              </h4>
-              {filteredTools.map(t => (
-                <div
-                  key={t.id}
-                  onClick={() => { onSelectItem(t); onClose(); }}
-                  className="p-3 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200/80 cursor-pointer flex items-center justify-between transition-colors"
-                >
-                  <div>
-                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">{t.tag}</span>
-                    <div className="text-xs font-bold text-slate-900 mt-1">{t.title}</div>
+                <div>
+                  <div className="flex items-center space-x-2 mb-0.5">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700 group-hover:bg-emerald-200 group-hover:text-emerald-900">
+                      {item.category || item.type}
+                    </span>
+                    {item.date && <span className="text-[10px] text-slate-400">{item.date}</span>}
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                  <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-900">{item.title}</div>
+                  {item.summary && <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{item.summary}</div>}
                 </div>
-              ))}
+              </div>
+
+              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-2" />
             </div>
-          )}
+          ))}
 
         </div>
 

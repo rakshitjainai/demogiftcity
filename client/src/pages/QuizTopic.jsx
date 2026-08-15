@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Award, CheckCircle, XCircle, ArrowRight, RotateCcw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
+import UpgradeModal from '../components/UpgradeModal';
 
 const QUIZ_DATA = {
   'sebi-aif-regulations': [
@@ -50,7 +52,20 @@ const QUIZ_DATA = {
 
 export default function QuizTopic() {
   const { topic } = useParams();
-  const { saveQuizResult, isAuthenticated } = useAuth();
+  const { user, saveQuizResult, trackUsage, isAuthenticated } = useAuth();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Practice Quizzes"
+        message="Attempting diagnostic quizzes requires an authenticated RegMate account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
+
   const formattedTopic = topic ? topic.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'General Laws';
   
   const questions = QUIZ_DATA[topic] || QUIZ_DATA['general-laws'];
@@ -73,14 +88,25 @@ export default function QuizTopic() {
 
   const handleSelect = (idx) => {
     if (answered) return;
+
     setSelectedOpt(idx);
     setAnswered(true);
     if (idx === questions[currentQ].ans) {
       setScore(s => s + 1);
     }
+
+    // Track user answer count on backend/state
+    if (trackUsage) trackUsage('quiz');
   };
 
   const handleNext = () => {
+    const isMember = user?.membershipStatus === 'active';
+    const hasQuizPass = user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
+    // When non-member answers 2 questions and clicks Next, trigger UpgradeModal
+    if (!isMember && !hasQuizPass && currentQ >= 1) {
+      setShowUpgradeModal(true);
+      return;
+    }
     if (currentQ < questions.length - 1) {
       setCurrentQ(q => q + 1);
       setSelectedOpt(null);
@@ -202,11 +228,38 @@ export default function QuizTopic() {
           )}
 
           {answered && (
-            <button onClick={handleNext} className="cursor-target w-full px-8 py-3.5 bg-forest text-white rounded-full font-medium hover-lift flex items-center justify-center gap-2 min-h-[52px] text-sm sm:text-base">
-              {currentQ < questions.length - 1 ? <>Next Question <ArrowRight className="w-4 h-4" /></> : <>See Results <Award className="w-4 h-4" /></>}
-            </button>
+            <div className="space-y-3">
+              <button onClick={handleNext} className="cursor-target w-full px-8 py-3.5 bg-forest text-white rounded-full font-medium hover-lift flex items-center justify-center gap-2 min-h-[52px] text-sm sm:text-base">
+                {currentQ < questions.length - 1 ? <>Next Question <ArrowRight className="w-4 h-4" /></> : <>See Results <Award className="w-4 h-4" /></>}
+              </button>
+
+              {(!user?.membershipStatus === 'active' && !user?.subscriptions?.includes('quizzes') && !user?.subscriptions?.includes('full_access') && currentQ >= 1) && (
+                <button
+                  onClick={() => setFinished(true)}
+                  className="cursor-target w-full py-2.5 bg-paper border border-line text-ink-soft hover:text-forest rounded-full font-medium text-xs transition-colors"
+                >
+                  Finish Preview &amp; View Free Score ({score}/{questions.length})
+                </button>
+              )}
+            </div>
           )}
         </div>
+
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => {
+            setShowUpgradeModal(false);
+            const hasPass = user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access') || user?.membershipStatus === 'active';
+            if (hasPass && currentQ < questions.length - 1) {
+              setCurrentQ(q => q + 1);
+              setSelectedOpt(null);
+              setAnswered(false);
+            }
+          }}
+          sectionKey="quizzes"
+          title="Free Quiz Limit Reached (2 Questions Free)"
+          message="You have answered the 2 free preview questions. Upgrade your membership pass to unlock all diagnostic quizzes and practice questions across RegMate."
+        />
       </div>
     );
   }
@@ -248,6 +301,22 @@ export default function QuizTopic() {
           Start Quiz Now
         </button>
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => {
+          setShowUpgradeModal(false);
+          const hasPass = user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access') || user?.membershipStatus === 'active';
+          if (hasPass && currentQ < questions.length - 1) {
+            setCurrentQ(q => q + 1);
+            setSelectedOpt(null);
+            setAnswered(false);
+          }
+        }}
+        sectionKey="quizzes"
+        title="Free Quiz Limit Reached (2 Questions Free)"
+        message="You have answered the 2 free preview questions. Upgrade your membership pass to unlock all diagnostic quizzes and practice questions across RegMate."
+      />
     </div>
   );
 }

@@ -10,6 +10,10 @@ import { ACTS_DATA, PROVISION_DETAILS, CROSS_REFERENCES_DATA, getActName } from 
 import ActionToolbar from '../components/statutory/ActionToolbar';
 import { useAuth } from '../context/AuthContext';
 
+import LockOverlay from '../components/LockOverlay';
+import UpgradeModal from '../components/UpgradeModal';
+import { useNavigate } from 'react-router-dom';
+
 // ─── Per-section Key Highlights ──────────────────────────────────────────────
 const SECTION_HIGHLIGHTS = {
   'ifsca-fme-2025|2|6': [
@@ -53,11 +57,54 @@ function getHighlights(actSlug, chapterNum, sNum, provisionData) {
 
 export default function SectionDetail() {
   const { actSlug, chapter, sectionNum } = useParams();
-  const { saveReadingProgress } = useAuth();
+  const { user, isAuthenticated, saveReadingProgress, trackUsage } = useAuth();
 
-  const actName = getActName(actSlug);
   const cleanChapter = chapter?.replace('chapter-', '') || '1';
   const chapterNum = parseInt(cleanChapter, 10) || 1;
+  const chapterSlug = `${actSlug}/chapter-${chapterNum}`;
+
+  // Auth & Membership Lock Checks
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Statutory Provisions"
+        message="Reading detailed statutory sections and regulatory explanations requires an authenticated account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
+
+  const navigate = useNavigate();
+  const isMember = user?.membershipStatus === 'active';
+  const hasRegPass = user?.subscriptions?.includes('interactive_regulations') || user?.subscriptions?.includes('full_access');
+  const readChapters = user?.chaptersRead || [];
+
+  if (!isMember && !hasRegPass && chapterNum > 2) {
+    return (
+      <UpgradeModal
+        isOpen={true}
+        onClose={() => navigate('/interactive-regulations')}
+        sectionKey="interactive_regulations"
+        title={`Chapter ${chapterNum} is Locked`}
+        message={`Chapter 1 and 2 are free preview. Upgrade your pass to unlock Chapter ${chapterNum} and all interactive regulations.`}
+      />
+    );
+  }
+
+  if (!isMember && !hasRegPass && !readChapters.includes(chapterSlug) && readChapters.length >= 2) {
+    return (
+      <UpgradeModal
+        isOpen={true}
+        onClose={() => navigate('/interactive-regulations')}
+        sectionKey="interactive_regulations"
+        title="Free Reading Quota Reached (2 Free Chapters)"
+        message="You have reached the free reading limit of 2 chapters in Interactive Regulations. Upgrade your membership pass to unlock all content."
+      />
+    );
+  }
+
+  const actName = getActName(actSlug);
   const cleanSection = sectionNum?.replace('section-', '') || '1';
   const sNum = cleanSection;
 

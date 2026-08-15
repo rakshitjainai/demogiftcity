@@ -1,13 +1,60 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, AlertCircle, RefreshCw, Calendar, HelpCircle, ShieldAlert, Award, ArrowRight } from 'lucide-react';
 import { SAMPLE_QUIZ_QUESTIONS } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from './LockOverlay';
 
 export default function ToolModal({ toolTitle, onClose }) {
+  const { user, isAuthenticated } = useAuth();
+  const isMember = user?.membershipStatus === 'active';
   const [activeTab, setActiveTab] = useState('interactive');
   const [currentQuizIdx, setCurrentQuizIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [quizScore, setQuizScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [showMembershipLock, setShowMembershipLock] = useState(false);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+        <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <LockOverlay
+            type="login"
+            title="Login Required for Compliance Tools"
+            message="Accessing interactive compliance tools and calculators requires an authenticated account. Please log in or sign up to continue."
+            redirectPath="/login"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (showMembershipLock) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+        <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <LockOverlay
+            type="membership"
+            title="Become a Member to Continue"
+            message="You have reached the free limit of 3 questions in this drill. Upgrade to active membership for unlimited access across all interactive compliance tools."
+            redirectPath="/membership"
+          />
+        </div>
+      </div>
+    );
+  }
 
   // Diagnostic Checklist State
   const [diagnosticChecklist, setDiagnosticChecklist] = useState({
@@ -23,6 +70,10 @@ export default function ToolModal({ toolTitle, onClose }) {
   };
 
   const handleNextQuiz = () => {
+    if (!isMember && currentQuizIdx >= 2) {
+      setShowMembershipLock(true);
+      return;
+    }
     if (selectedOption === SAMPLE_QUIZ_QUESTIONS[currentQuizIdx].correctAnswer) {
       setQuizScore(prev => prev + 1);
     }

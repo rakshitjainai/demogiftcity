@@ -3,12 +3,27 @@ import { ChevronDown, ChevronRight, FileText, BookOpen, BookMarked, FileCheck, X
 import { Link } from 'react-router-dom';
 import RegulationRow from '../components/RegulationRow';
 import { ACTS_DATA, getActDefinitions, getActSchedules } from '../data/regulationsData';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 export default function InteractiveRegulations() {
+  const { user, isAuthenticated } = useAuth();
+  const isMember = user?.membershipStatus === 'active';
   const [expandedAct, setExpandedAct] = useState(null);
   const [expandedChapters, setExpandedChapters] = useState({}); // { [actSlug]: boolean }
   const [activeModal, setActiveModal] = useState(null); // { type: 'schedules' | 'definitions', actSlug: string } | null
   const [searchTerm, setSearchTerm] = useState('');
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Interactive Regulations"
+        message="Browsing regulatory acts, chapters, and official text requires an authenticated account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
 
   const acts = Object.entries(ACTS_DATA).map(([slug, data]) => ({
     slug,
@@ -111,6 +126,7 @@ export default function InteractiveRegulations() {
                         icon={BookOpen}
                         title={`Chapter ${ch.num}`}
                         subtitle={ch.title}
+                        badge={!isMember && ch.num > 2 ? '🔒 Membership Required' : null}
                       />
                     ))}
                   </div>

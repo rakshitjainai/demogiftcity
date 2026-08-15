@@ -23,6 +23,10 @@ import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
 import ExamReady from './pages/ExamReady';
 
+import Jobs from './pages/Jobs';
+import AdminPanel from './pages/AdminPanel';
+import ProtectedRoute from './components/ProtectedRoute';
+
 export default function App() {
   return (
     <div
@@ -36,19 +40,28 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="knowledge-hub" element={<KnowledgeHub />} />
-          <Route path="interactive-regulations" element={<InteractiveRegulations />} />
-          <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetail />} />
-          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
-          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<SectionDetail />} />
-          <Route path="learning" element={<Learning />} />
-          <Route path="quizzes" element={<Quizzes />} />
-          <Route path="quizzes/:topic" element={<QuizTopic />} />
-          <Route path="diagnostic-tests" element={<DiagnosticTests />} />
-          <Route path="exam-ready" element={<ExamReady />} />
-          <Route path="tools" element={<ToolsIndex />} />
-          <Route path="tools/:slug" element={<ToolDetail />} />
+          <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
+          <Route
+            path="admin"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="knowledge-hub" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
+          <Route path="interactive-regulations" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
+          <Route path="interactive-regulations/:actSlug/:chapter" element={<ProtectedRoute><ChapterDetail /></ProtectedRoute>} />
+          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
+          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
+          <Route path="learning" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
+          <Route path="quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+          <Route path="quizzes/:topic" element={<ProtectedRoute><QuizTopic /></ProtectedRoute>} />
+          <Route path="diagnostic-tests" element={<ProtectedRoute><DiagnosticTests /></ProtectedRoute>} />
+          <Route path="exam-ready" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
+          <Route path="tools" element={<ProtectedRoute><ToolsIndex /></ProtectedRoute>} />
+          <Route path="tools/:slug" element={<ProtectedRoute><ToolDetail /></ProtectedRoute>} />
           <Route path="templates" element={<Templates />} />
           <Route path="blog" element={<BlogIndex />} />
           <Route path="blog/:slug" element={<BlogDetail />} />

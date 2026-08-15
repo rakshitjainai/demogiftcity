@@ -287,6 +287,14 @@ export const NAV_LINKS = [
       "AML Risk Assessment"
     ]
   },
+  {
+    label: "Products",
+    href: "/jobs",
+    hasDropdown: true,
+    subItems: [
+      "Jobs"
+    ]
+  },
   { label: "Templates", href: "/templates", hasDropdown: false },
   { label: "Blog", href: "/blog", hasDropdown: false },
   { label: "News", href: "/news", hasDropdown: false },

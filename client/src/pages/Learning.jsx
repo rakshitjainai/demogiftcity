@@ -3,6 +3,7 @@ import { PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap } from 'lucide
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RegulatoryMasterModal from '../components/RegulatoryMasterModal';
+import LockOverlay from '../components/LockOverlay';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -41,8 +42,19 @@ const COURSES = [
 ];
 
 export default function Learning() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [selectedCourse, setSelectedCourse] = useState(null);
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Regulatory Master"
+        message="Accessing structured learning modules and diagnostic lessons requires an authenticated account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
 
   // Meta from API (lesson/question counts)
   const [courseMeta, setCourseMeta] = useState({});

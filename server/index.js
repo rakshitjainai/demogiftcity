@@ -8,6 +8,8 @@ import authRoutes from './routes/authRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
 import regulatoryMasterRoutes from './routes/regulatoryMasterRoutes.js';
 import examReadyRoutes from './routes/examReadyRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 
 dotenv.config();
 
@@ -52,6 +54,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', progressRoutes);
 app.use('/api/regulatory-master', regulatoryMasterRoutes);
 app.use('/api/exam-ready', examReadyRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Job Interface backend support (both legacy PHP paths and Express paths)
+app.use('/Regmate-backend/api', jobRoutes);
+app.use('/api/job', jobRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

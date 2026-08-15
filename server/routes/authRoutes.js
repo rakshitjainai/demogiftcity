@@ -17,7 +17,7 @@ const generateToken = (id) => {
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide all required fields: name, email, password' });
@@ -31,10 +31,16 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const isAdmin = (process.env.ADMIN_EMAIL && email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase());
+
     const user = await User.create({
       name,
       email: email.toLowerCase(),
-      password: hashedPassword
+      password: hashedPassword,
+      phone: phone || '',
+      role: isAdmin ? 'admin' : 'member',
+      membershipStatus: isAdmin ? 'active' : 'free',
+      subscriptionPlan: isAdmin ? 'Admin Tier' : 'Free Tier'
     });
 
     const token = generateToken(user._id);
@@ -60,7 +66,39 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Please enter both email and password' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const normalizedEmail = email.toLowerCase();
+    const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase();
+    const adminPassword = process.env.ADMIN_PASSWORD || '';
+
+    // Check if logging in as server env Admin
+    if (adminEmail && normalizedEmail === adminEmail && password === adminPassword) {
+      let adminUser = await User.findOne({ email: normalizedEmail });
+      if (!adminUser) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        adminUser = await User.create({
+          name: 'System Admin',
+          email: normalizedEmail,
+          password: hashedPassword,
+          phone: '',
+          role: 'admin',
+          membershipStatus: 'active',
+          subscriptionPlan: 'Admin Tier'
+        });
+      } else if (adminUser.role !== 'admin') {
+        adminUser.role = 'admin';
+        adminUser.membershipStatus = 'active';
+        await adminUser.save();
+      }
+
+      const token = generateToken(adminUser._id);
+      return res.json({
+        token,
+        user: adminUser.toAuthJSON()
+      });
+    }
+
+    let user = await User.findOne({ email: normalizedEmail });
 
     // If user is not found in DB, ask to sign up first
     if (!user) {
@@ -72,6 +110,13 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password. Please check your credentials.' });
+    }
+
+    // Ensure role is admin if matching ADMIN_EMAIL
+    if (adminEmail && normalizedEmail === adminEmail && user.role !== 'admin') {
+      user.role = 'admin';
+      user.membershipStatus = 'active';
+      await user.save();
     }
 
     const token = generateToken(user._id);
@@ -99,4 +144,34 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/update-usage
+// @desc    Track quiz answer count or chapter read count for Knowledge Hub restrictions
+// @access  Private
+router.post('/update-usage', protect, async (req, res) => {
+  try {
+    const { type, chapterSlug } = req.body;
+    const user = req.user;
+
+    if (type === 'quiz') {
+      user.quizQuestionsAnswered = (user.quizQuestionsAnswered || 0) + 1;
+    } else if (type === 'chapter' && chapterSlug) {
+      if (!user.chaptersRead) user.chaptersRead = [];
+      if (!user.chaptersRead.includes(chapterSlug)) {
+        user.chaptersRead.push(chapterSlug);
+      }
+    }
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      user: user.toAuthJSON()
+    });
+  } catch (error) {
+    console.error('Update usage error:', error);
+    return res.status(500).json({ message: 'Server error updating usage' });
+  }
+});
+
 export default router;
+

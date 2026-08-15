@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import LockOverlay from '../components/LockOverlay';
 
 const TOPICS = [
   { id: 'sebi-aif-regulations', title: 'SEBI AIF Regulations', desc: 'Category I, II & III AIFs, Angel Funds & PPM rules', badge: 'New Topic' },
@@ -12,6 +14,18 @@ const TOPICS = [
 ];
 
 export default function Quizzes() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for Practice Quizzes"
+        message="Accessing topic-wise compliance practice quizzes requires an authenticated RegMate account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
   return (
     <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto animate-fade-in-up">
       <div className="text-center mb-10 sm:mb-16">

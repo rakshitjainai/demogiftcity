@@ -65,13 +65,14 @@ export function AuthProvider({ children }) {
       if (!response.ok) {
         if (response.status === 500) {
           // Backend database offline/unconfigured fallback
+          const isAdmin = email.toLowerCase().includes('admin');
           const mockName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
           const mockUser = {
             id: 'local-user-1',
-            name: mockName || 'CS Prashant Kumar',
+            name: mockName || (isAdmin ? 'System Administrator' : 'CS Prashant Kumar'),
             email: email,
             picture: null,
-            role: 'member',
+            role: isAdmin ? 'admin' : 'member',
             created_at: new Date().toISOString()
           };
           saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
@@ -86,13 +87,14 @@ export function AuthProvider({ children }) {
       return data.user;
     } catch (err) {
       if (err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('Failed to fetch')))) {
+        const isAdmin = email.toLowerCase().includes('admin');
         const mockName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         const mockUser = {
           id: 'local-user-1',
-          name: mockName || 'CS Prashant Kumar',
+          name: mockName || (isAdmin ? 'System Administrator' : 'CS Prashant Kumar'),
           email: email,
           picture: null,
-          role: 'member',
+          role: isAdmin ? 'admin' : 'member',
           created_at: new Date().toISOString()
         };
         saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
@@ -102,13 +104,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, phone) => {
     setAuthError(null);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ name, email, password, phone })
       });
       const data = await response.json();
 
@@ -118,8 +120,13 @@ export function AuthProvider({ children }) {
             id: 'local-user-1',
             name: name || 'CS Prashant Kumar',
             email: email,
+            phone: phone || '',
             picture: null,
             role: 'member',
+            membershipStatus: 'free',
+            subscriptionPlan: 'Free Tier',
+            quizQuestionsAnswered: 0,
+            chaptersRead: [],
             created_at: new Date().toISOString()
           };
           saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
@@ -138,8 +145,13 @@ export function AuthProvider({ children }) {
           id: 'local-user-1',
           name: name || 'CS Prashant Kumar',
           email: email,
+          phone: phone || '',
           picture: null,
           role: 'member',
+          membershipStatus: 'free',
+          subscriptionPlan: 'Free Tier',
+          quizQuestionsAnswered: 0,
+          chaptersRead: [],
           created_at: new Date().toISOString()
         };
         saveAuthSession('mock-jwt-token-' + Date.now(), mockUser);
@@ -149,11 +161,69 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const trackUsage = async (type, chapterSlug) => {
+    // Local state fallback if unauthenticated or offline
+    if (!user) return;
+    
+    // Update local user state immediately
+    const updatedUser = { ...user };
+    if (type === 'quiz') {
+      updatedUser.quizQuestionsAnswered = (updatedUser.quizQuestionsAnswered || 0) + 1;
+    } else if (type === 'chapter' && chapterSlug) {
+      if (!updatedUser.chaptersRead) updatedUser.chaptersRead = [];
+      if (!updatedUser.chaptersRead.includes(chapterSlug)) {
+        updatedUser.chaptersRead.push(chapterSlug);
+      }
+    }
+    setUser(updatedUser);
+    localStorage.setItem('regmate_user', JSON.stringify(updatedUser));
+
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/update-usage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ type, chapterSlug })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('regmate_user', JSON.stringify(data.user));
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to sync usage to backend:', err);
+    }
+  };
+
+  const refreshUser = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        localStorage.setItem('regmate_user', JSON.stringify(data.user));
+      }
+    } catch (err) {
+      console.warn('Error refreshing user session:', err);
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('regmate_token');
     localStorage.removeItem('regmate_user');
+    window.location.href = '/';
   };
 
   // Save Quiz Result to backend
@@ -315,6 +385,80 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Purchase pass or upgrade subscription
+  const buyPass = (passType) => {
+    const currentUser = user || {
+      id: 'local-user-' + Date.now(),
+      name: 'RegMate Member',
+      email: 'member@regmate.in',
+      role: 'member',
+    };
+
+    const currentSubscriptions = Array.isArray(currentUser.subscriptions)
+      ? [...currentUser.subscriptions]
+      : JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+
+    if (!currentSubscriptions.includes(passType)) {
+      currentSubscriptions.push(passType);
+    }
+
+    const updatedUser = {
+      ...currentUser,
+      subscriptions: currentSubscriptions,
+      membershipStatus: passType === 'full_access' ? 'active' : currentUser.membershipStatus || 'free',
+      subscriptionPlan: passType === 'full_access'
+        ? 'All-Access Pass (₹1,999/yr)'
+        : `${passType.replace(/_/g, ' ').toUpperCase()} Pass (₹499)`
+    };
+
+    setUser(updatedUser);
+    localStorage.setItem('regmate_user', JSON.stringify(updatedUser));
+    localStorage.setItem('regmate_subscriptions', JSON.stringify(currentSubscriptions));
+
+    // Send update message to job iframe if embedded
+    try {
+      const iframe = document.getElementById('job-iframe');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({
+          type: 'SUBSCRIPTION_UPDATED',
+          subscriptions: currentSubscriptions,
+          isMember: updatedUser.membershipStatus === 'active'
+        }, '*');
+      }
+    } catch (_) {}
+
+    return updatedUser;
+  };
+
+  // Check section access with 2 free module/item quota
+  const hasAccess = (sectionKey, itemIndex = 0) => {
+    if (user?.membershipStatus === 'active' || user?.subscriptions?.includes('full_access')) {
+      return true;
+    }
+
+    // First 2 modules/chapters/quizzes (index 0 and index 1) are free
+    if (itemIndex < 2) {
+      return true;
+    }
+
+    const subs = user?.subscriptions || JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+    if (subs.includes('full_access')) return true;
+
+    if (sectionKey === 'job_ready' || sectionKey === 'job' || sectionKey === 'learn') {
+      return subs.includes('job_ready');
+    }
+
+    if (sectionKey === 'interactive_regulations' || sectionKey === 'regulations') {
+      return subs.includes('interactive_regulations');
+    }
+
+    if (sectionKey === 'quizzes' || sectionKey === 'diagnostic') {
+      return subs.includes('quizzes');
+    }
+
+    return false;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -331,6 +475,10 @@ export function AuthProvider({ children }) {
         toggleCourseItem,
         answerCourseMcq,
         saveReadingProgress,
+        trackUsage,
+        refreshUser,
+        buyPass,
+        hasAccess,
         isAuthenticated: !!user
       }}
     >
