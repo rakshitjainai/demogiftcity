@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, HelpCircle } from 'lucide-react';
+import { ArrowRight, Layers, Building2, Globe, TrendingUp, Shield, Scale } from 'lucide-react';
 
 const TOPICS = [
-  { id: 'sebi-aif-regulations', title: 'SEBI AIF Regulations' },
-  { id: 'corporate-laws', title: 'Corporate Laws' },
-  { id: 'ifsc-regulations', title: 'IFSC Regulations' },
-  { id: 'capital-markets', title: 'Capital Markets' },
-  { id: 'ipr', title: 'IPR' },
-  { id: 'general-laws', title: 'General Laws' }
+  { id: 'sebi-aif-regulations', title: 'SEBI AIF Regulations', icon: Layers, color: 'text-emerald-700', bg: 'bg-emerald-50' },
+  { id: 'corporate-laws', title: 'Corporate Laws', icon: Building2, color: 'text-blue-700', bg: 'bg-blue-50' },
+  { id: 'ifsc-regulations', title: 'IFSC Regulations', icon: Globe, color: 'text-teal-700', bg: 'bg-teal-50' },
+  { id: 'capital-markets', title: 'Capital Markets', icon: TrendingUp, color: 'text-amber-700', bg: 'bg-amber-50' },
+  { id: 'ipr', title: 'IPR', icon: Shield, color: 'text-rose-700', bg: 'bg-rose-50' },
+  { id: 'general-laws', title: 'General Laws', icon: Scale, color: 'text-violet-700', bg: 'bg-violet-50' },
 ];
 
 export default function QuizzesSection() {
@@ -32,18 +32,21 @@ export default function QuizzesSection() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {TOPICS.map((topic) => (
-            <Link
-              key={topic.id}
-              to={`/quizzes/${topic.id}`}
-              className="cursor-target group bg-paper border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-leaf hover:bg-mint transition-colors hover-lift"
-            >
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                <HelpCircle className="w-6 h-6 text-forest" />
-              </div>
-              <h3 className="font-semibold text-ink leading-tight">{topic.title}</h3>
-            </Link>
-          ))}
+          {TOPICS.map((topic) => {
+            const Icon = topic.icon;
+            return (
+              <Link
+                key={topic.id}
+                to={`/quizzes/${topic.id}`}
+                className="cursor-target group bg-paper border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-leaf hover:bg-mint transition-colors hover-lift"
+              >
+                <div className={`w-12 h-12 rounded-full ${topic.bg} flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform`}>
+                  <Icon className={`w-6 h-6 ${topic.color}`} />
+                </div>
+                <h3 className="font-semibold text-ink leading-tight">{topic.title}</h3>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
