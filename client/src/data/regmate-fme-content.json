@@ -1,0 +1,2131 @@
+{
+  "_meta": {
+    "product": "RegMate FME Interview Ready",
+    "market": "GIFT IFSC — Fund Management",
+    "version": "1.0.0",
+    "roles": [
+      "Compliance Officer (co)",
+      "Principal Officer (po)",
+      "Legal & Compliance (lc)"
+    ],
+    "sourcing": "Modules 1-3 & 6 grounded in IFSCA (Fund Management) Regulations, 2025 (amended to 30 Jan 2026). Modules 4-5 (AML/PMLA, FEMA) carry verify:true and must be checked against source before use.",
+    "disclaimer": "Preparation aid, not legal advice. Verify current thresholds/timelines against the live regulation.",
+    "structure": "Product > Role > Module > Topic (knowledge object) > Question > QuickCheck (MCQ) > Scenario > Simulation > Control > Assessment. roleWeight keys: co/po/lc with values very-high|high|medium|low. priority: critical|high|medium|low. answer = zero-based index of the correct option.",
+    "collections": {
+      "roles": "selectable target roles",
+      "experience": "onboarding experience bands",
+      "backgrounds": "onboarding background options",
+      "timelines": "interview timing -> prep mode",
+      "modes": "tonight | twoday | deep prep modes",
+      "modules": "7 modules (m1..m7)",
+      "topics": "knowledge objects keyed by id; moduleId links to module",
+      "moduleTopics": "ordered topic ids per module",
+      "questions": "interview questions (Think/Reveal/Remember + trap/testing/tip)",
+      "quickChecks": "per-topic MCQ banks keyed by topic id",
+      "scenarios": "judgement scenarios",
+      "simulations": "job simulations with compliance control",
+      "controls": "standalone compliance-control cards",
+      "recall": "rapid-recall decks + modes",
+      "assessment": "graded MCQ/TF/scenario bank (20 items)",
+      "areas": "assessment area labels",
+      "readinessDimensions": "6 readiness dimensions"
+    }
+  },
+  "W": {
+    "very-high": 4,
+    "high": 3,
+    "medium": 2,
+    "low": 1
+  },
+  "P": {
+    "critical": 4,
+    "high": 3,
+    "medium": 2,
+    "low": 1
+  },
+  "roles": [
+    {
+      "id": "co",
+      "name": "Compliance Officer",
+      "tag": "CO",
+      "line": "Ongoing compliance, AML/CFT, monitoring, reporting.",
+      "focus": [
+        "Ongoing compliance",
+        "AML / CFT / KYC",
+        "Reporting & filings",
+        "Compliance calendar",
+        "Monitoring & escalation"
+      ]
+    },
+    {
+      "id": "po",
+      "name": "Principal Officer",
+      "tag": "PO",
+      "line": "Registration, fit & proper, accountability, judgement.",
+      "focus": [
+        "Registration & eligibility",
+        "Fit & proper",
+        "Accountability",
+        "Senior regulatory judgement",
+        "Difficult scenarios"
+      ]
+    },
+    {
+      "id": "lc",
+      "name": "Legal & Compliance",
+      "tag": "L&C",
+      "line": "Scheme documents, PPM, disclosure, cross-border.",
+      "focus": [
+        "Scheme documentation & PPM",
+        "Investor documentation",
+        "Disclosure",
+        "Cross-border structuring",
+        "Regulatory interpretation"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "id": "fresher",
+      "label": "Fresher / 0–2 yrs"
+    },
+    {
+      "id": "3-5",
+      "label": "3–5 years"
+    },
+    {
+      "id": "5-10",
+      "label": "5–10 years"
+    },
+    {
+      "id": "10+",
+      "label": "10+ years"
+    }
+  ],
+  "backgrounds": [
+    "Company Secretarial",
+    "Legal",
+    "Compliance",
+    "Finance / CA",
+    "Banking / Financial Services",
+    "Fund / Investment Management",
+    "Other"
+  ],
+  "timelines": [
+    {
+      "id": "today",
+      "label": "Today",
+      "mode": "tonight",
+      "note": "A few hours"
+    },
+    {
+      "id": "tomorrow",
+      "label": "Tomorrow",
+      "mode": "tonight",
+      "note": "Tonight-focused"
+    },
+    {
+      "id": "2-3",
+      "label": "In 2–3 days",
+      "mode": "twoday",
+      "note": "Core + practice"
+    },
+    {
+      "id": "4-7",
+      "label": "In 4–7 days",
+      "mode": "deep",
+      "note": "Full path"
+    },
+    {
+      "id": "prep",
+      "label": "Just preparing",
+      "mode": "deep",
+      "note": "No fixed date"
+    }
+  ],
+  "modes": {
+    "tonight": {
+      "id": "tonight",
+      "label": "Tonight Mode",
+      "blurb": "Highest-value concepts, definitions, thresholds and the questions that get asked most. Skip the long tail."
+    },
+    "twoday": {
+      "id": "twoday",
+      "label": "2-Day Prep",
+      "blurb": "Complete core modules, deeper explanations, scenarios, role-weighted questions and an assessment."
+    },
+    "deep": {
+      "id": "deep",
+      "label": "Deep Prep",
+      "blurb": "Everything in 2-Day Prep plus cases, simulations and repeated recall over several days."
+    }
+  },
+  "modules": [
+    {
+      "id": "m1",
+      "no": "01",
+      "title": "FME Regulatory Framework",
+      "summary": "Categories, registration, eligibility, net worth, permitted activities, key thresholds."
+    },
+    {
+      "id": "m2",
+      "no": "02",
+      "title": "Principal Officer & Compliance Officer",
+      "summary": "Who they are, eligibility, fit & proper, accountability, PO vs CO, interview traps."
+    },
+    {
+      "id": "m3",
+      "no": "03",
+      "title": "Scheme Documentation & PPM",
+      "summary": "Placement memorandum vs offer document, private placement, onboarding, disclosure."
+    },
+    {
+      "id": "m4",
+      "no": "04",
+      "title": "AML / CFT / KYC",
+      "summary": "PMLA obligations, CDD/EDD, beneficial ownership, STR, Principal Officer vs Designated Director."
+    },
+    {
+      "id": "m5",
+      "no": "05",
+      "title": "FEMA & Cross-Border Fund Issues",
+      "summary": "IFSC as a jurisdiction, inflows/outflows, downstream, round-tripping awareness."
+    },
+    {
+      "id": "m6",
+      "no": "06",
+      "title": "Reporting, Valuation & Compliance Calendar",
+      "summary": "Periodic and event-based reporting, valuation, custodian, ongoing obligations."
+    },
+    {
+      "id": "m7",
+      "no": "07",
+      "title": "Cases, Enforcement & Developments",
+      "summary": "How to read an enforcement action and turn it into a compliance lesson."
+    }
+  ],
+  "topics": {
+    "t_categories": {
+      "id": "t_categories",
+      "moduleId": "m1",
+      "title": "The three FME categories",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "high",
+        "po": "very-high",
+        "lc": "high"
+      },
+      "source": "FM Regs 2025, reg. 3(4)",
+      "verify": false,
+      "why": "This is the opening question in almost every FME interview. It shows whether you understand the licensing spine of GIFT IFSC fund management — everything else hangs off which category the FME holds.",
+      "explanation": "Under the IFSCA (Fund Management) Regulations, 2025, a fund manager in IFSC registers as one of three categories of Fund Management Entity (FME): Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail). The category decides who you can raise money from, what schemes you can run and what activities you may undertake. Each higher category can also do everything the lower ones can.",
+      "practicalPoint": "In practice the category is chosen up front based on the business plan — retail vs accredited/private-placement money, and whether the firm wants PMS, REIT/InvIT or ETF activity. You cannot quietly switch category later; a change needs prior IFSCA approval.",
+      "example": "A boutique setting up a single venture capital scheme for a handful of accredited investors would register as an Authorised FME. A firm running restricted schemes plus portfolio management would take Registered FME (Non-Retail). A house planning public retail schemes or ETFs needs Registered FME (Retail).",
+      "takeaway": [
+        "Authorised FME → VCS / Single Family Investment Fund (private placement)",
+        "Registered FME (Non-Retail) → restricted schemes + PMS + private REIT/InvIT",
+        "Registered FME (Retail) → retail schemes, public REIT/InvIT, ETFs",
+        "Higher category = superset of the lower ones",
+        "Category change needs prior IFSCA approval"
+      ]
+    },
+    "t_networth": {
+      "id": "t_networth",
+      "moduleId": "m1",
+      "title": "Net worth requirements",
+      "priority": "high",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, Second Schedule",
+      "verify": false,
+      "why": "A clean thresholds question. Interviewers use it to check that you actually know the numbers, not just the concepts.",
+      "explanation": "The minimum net worth is tied to the FME category: Authorised FME USD 75,000; Registered FME (Non-Retail) USD 500,000; Registered FME (Retail) USD 1,000,000. It must be maintained at all times, not just at registration.",
+      "practicalPoint": "A branch can maintain net worth at the parent level, but the parent must ensure funds for the branch's day-to-day operations. This net worth is separate from, and in addition to, net worth needed for any other regulated activity the group runs.",
+      "takeaway": [
+        "Authorised — USD 75,000",
+        "Non-Retail — USD 500,000",
+        "Retail — USD 1,000,000",
+        "'At all times', not just at entry",
+        "Separate from other-activity net worth"
+      ]
+    },
+    "t_kmp": {
+      "id": "t_kmp",
+      "moduleId": "m1",
+      "title": "KMP structure of an FME",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "very-high",
+        "lc": "high"
+      },
+      "source": "FM Regs 2025, reg. 7",
+      "verify": false,
+      "why": "Tests whether you understand the governance backbone — who must be appointed, and when a firm needs more than a Principal Officer.",
+      "explanation": "Every FME must designate a Principal Officer responsible for the overall activities of the FME — fund management, risk management and compliance. A Registered FME must additionally appoint one KMP as Compliance Officer. A Registered FME (Retail) must also appoint an additional KMP for fund management before filing its first retail scheme or ETF offer document. Any FME managing AUM of at least USD 1 billion (excluding fund-of-funds AUM) must appoint an additional fund-management KMP within six months of the financial year end.",
+      "practicalPoint": "All these KMPs must be based out of the IFSC. The structure scales with the business: a small Authorised FME may run on a Principal Officer alone; a large retail house will carry a PO, a Compliance Officer and separate fund-management KMPs.",
+      "takeaway": [
+        "Every FME → Principal Officer",
+        "Registered FME → + Compliance Officer",
+        "Registered FME (Retail) → + fund-management KMP",
+        "AUM ≥ USD 1bn (ex-FoF) → + fund-management KMP",
+        "All KMPs based in IFSC"
+      ]
+    },
+    "t_thresholds": {
+      "id": "t_thresholds",
+      "moduleId": "m1",
+      "title": "Investor & corpus thresholds",
+      "priority": "high",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "very-high"
+      },
+      "source": "FM Regs 2025, reg. 2 & scheme chapters",
+      "verify": false,
+      "why": "Cross-checks that you can separate 'who can invest' from 'how big the fund must be' — a common area where candidates blur the numbers.",
+      "explanation": "Restricted schemes are for accredited investors or investors putting in at least USD 150,000, and are capped at 1,000 investors. The minimum corpus for a Venture Capital Scheme and for restricted schemes is USD 3 million; a VCS corpus must not exceed USD 200 million.",
+      "practicalPoint": "Accredited-investor status removes the minimum-ticket floor. Employees and directors of the FME investing in the scheme are subject to a lower minimum. Always state whether a number is an investor-eligibility threshold or a fund-size threshold.",
+      "takeaway": [
+        "Restricted scheme investor floor — USD 150,000",
+        "Max 1,000 investors in a restricted scheme",
+        "VCS / restricted scheme min corpus — USD 3 million",
+        "VCS corpus cap — USD 200 million",
+        "Accredited investor = no minimum ticket"
+      ]
+    },
+    "t_po_role": {
+      "id": "t_po_role",
+      "moduleId": "m2",
+      "title": "The Principal Officer's mandate",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "high",
+        "po": "very-high",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, reg. 7(1)",
+      "verify": false,
+      "why": "If you are interviewing for PO, this is the question. It tests whether you grasp the breadth of the accountability you would be taking on.",
+      "explanation": "The Principal Officer is responsible for the overall activities of the FME — including, but not limited to, fund management, risk management and compliance. It is a single point of senior accountability across the firm, not a narrow function.",
+      "practicalPoint": "In an interview, don't reduce the PO to 'the person who signs filings'. Frame it as ownership of the firm's regulatory posture: making sure the FME operates within its category, its KMP structure is intact, and issues are escalated and resolved.",
+      "takeaway": [
+        "PO owns overall FME activities",
+        "Spans fund management, risk and compliance",
+        "Single senior accountability point",
+        "Must be based in IFSC",
+        "Not merely a filing signatory"
+      ]
+    },
+    "t_kmp_eligibility": {
+      "id": "t_kmp_eligibility",
+      "moduleId": "m2",
+      "title": "KMP eligibility — qualification & experience",
+      "priority": "high",
+      "roleWeight": {
+        "co": "high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, reg. 7(5) (amended w.e.f. 30 Jan 2026)",
+      "verify": false,
+      "why": "Interviewers check whether you know the actual eligibility bar — and the shortcuts that apply to a Compliance Officer.",
+      "explanation": "A KMP generally needs a professional qualification or a post-graduate degree/diploma (minimum one year) in finance, law, accountancy, business, commerce, economics, capital markets, banking, insurance or actuarial science — or a CFA/FRM — plus at least five years of related experience in an eligible institution. A Principal Officer with 15 years of fund-management experience can qualify on a graduate degree in any field.",
+      "practicalPoint": "For the Compliance Officer, the experience requirement drops to three years where the person holds a professional qualification. Professional qualification includes ICAI / ICSI / ICMAI membership — and for the Compliance Officer, an LLB also counts. This clause was substituted by the 2026 amendment, so quote it as the current position.",
+      "takeaway": [
+        "Base: professional qual / PG degree + 5 yrs experience",
+        "PO with 15 yrs FM experience → graduate in any field",
+        "Compliance Officer → 3 yrs if professionally qualified",
+        "CA / CS / CMA count; LLB counts for CO",
+        "Amended w.e.f. 30 Jan 2026 — cite as current"
+      ]
+    },
+    "t_fit_proper": {
+      "id": "t_fit_proper",
+      "moduleId": "m2",
+      "title": "Fit & proper — a continuing test",
+      "priority": "high",
+      "roleWeight": {
+        "co": "high",
+        "po": "very-high",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, fit & proper provisions",
+      "verify": false,
+      "why": "A judgement question dressed as a knowledge question. Interviewers want to see that you treat fit & proper as ongoing, not a one-time box.",
+      "explanation": "The FME, its directors, KMPs and controlling shareholders must be fit and proper persons at all times. It covers integrity, competence, financial soundness and absence of relevant regulatory or criminal findings.",
+      "practicalPoint": "The phrase that matters is 'at all times'. If a director is later found not fit and proper by a regulatory order, that has consequences for the FME — so monitoring the status of key persons is a live compliance task, not a registration formality.",
+      "takeaway": [
+        "Applies to FME, directors, KMPs, controlling shareholders",
+        "'At all times' — continuing obligation",
+        "Covers integrity, competence, soundness, record",
+        "A later adverse order affects standing",
+        "Monitoring status is a live compliance task"
+      ]
+    },
+    "t_po_vs_co": {
+      "id": "t_po_vs_co",
+      "moduleId": "m2",
+      "title": "PO vs Compliance Officer",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, reg. 7(1)–(2)",
+      "verify": false,
+      "why": "A favourite distinction question. It separates candidates who memorised titles from those who understand the governance design.",
+      "explanation": "The Principal Officer owns the overall activities of the FME. The Compliance Officer — a mandatory additional KMP for a Registered FME — is specifically responsible for compliance with the regulations and for implementing risk-management policies and practices. The PO's remit is broad; the CO's is focused on the compliance and risk function.",
+      "practicalPoint": "An Authorised FME may not have a separate Compliance Officer at all — the PO carries compliance. So the right answer depends on the FME category. Say that, and you show you understand the structure rather than a slogan.",
+      "takeaway": [
+        "PO = overall activities of the FME",
+        "CO = compliance + risk implementation",
+        "CO is mandatory for a Registered FME",
+        "Authorised FME may run on PO alone",
+        "Answer depends on FME category"
+      ]
+    },
+    "t_ppm_vs_offer": {
+      "id": "t_ppm_vs_offer",
+      "moduleId": "m3",
+      "title": "Placement memorandum vs offer document",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "very-high"
+      },
+      "source": "FM Regs 2025, reg. 2 (definitions)",
+      "verify": false,
+      "why": "The core documentation distinction. For a Legal & Compliance role this is fundamental — mixing up the two signals you don't understand private vs public fund raising.",
+      "explanation": "A placement memorandum (the PPM) is the document by which an FME invites accredited investors — it belongs to private placement. An offer document is how a Registered FME (Retail) invites the public. The right document follows the FME category and the type of scheme.",
+      "practicalPoint": "The PPM is the investor's primary disclosure document: strategy, risks, fees, conflicts, terms. Getting disclosure right in the PPM is where most of the legal-and-compliance work sits for non-retail funds.",
+      "takeaway": [
+        "PPM = private placement, accredited investors",
+        "Offer document = public, Retail FME",
+        "Document follows category and scheme type",
+        "PPM is the investor's primary disclosure",
+        "Disclosure quality is the core L&C job"
+      ]
+    },
+    "t_ppm_filing": {
+      "id": "t_ppm_filing",
+      "moduleId": "m3",
+      "title": "Filing & 'taken on record'",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "medium",
+        "po": "medium",
+        "lc": "high"
+      },
+      "source": "FM Regs 2025, scheme filing provisions",
+      "verify": false,
+      "why": "Tests process literacy — whether you know a PPM is filed and taken on record, not 'approved' in the retail sense.",
+      "explanation": "For restricted / VCS schemes the FME files the placement memorandum with IFSCA along with the fee; the scheme proceeds once the memorandum is taken on record, and the FME must incorporate any changes IFSCA communicates. A memorandum has a validity window within which the FME must reach first close.",
+      "practicalPoint": "Language matters in interviews: say the PPM is 'taken on record' for private schemes rather than 'approved'. Note that failing to reach minimum corpus within the window has consequences, including options to extend on paying part of a fresh filing fee.",
+      "verifyNote": "Exact validity periods and fee percentages vary by scheme chapter — confirm the specific numbers against the relevant chapter before quoting them.",
+      "takeaway": [
+        "PPM filed with IFSCA + fee",
+        "Scheme proceeds once 'taken on record'",
+        "Incorporate IFSCA's communicated changes",
+        "First close within the validity window",
+        "Say 'taken on record', not 'approved'"
+      ]
+    },
+    "t_pmla_po": {
+      "id": "t_pmla_po",
+      "moduleId": "m4",
+      "title": "FME Principal Officer vs PMLA Principal Officer",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "source": "PMLA, 2002 & PML Rules (general framework)",
+      "verify": true,
+      "why": "One of the most common trap questions in a compliance interview. Two very different roles share the same title.",
+      "explanation": "The Principal Officer under the FME regulations owns the overall activities of the FME. The Principal Officer under the PMLA framework is the officer responsible for furnishing information — such as suspicious transaction reports — to FIU-IND. The PMLA framework also requires a Designated Director, who bears senior responsibility for the reporting entity's AML compliance.",
+      "practicalPoint": "They can be different people. In an interview, name both roles, say what each is responsible for, and note that the Designated Director sits at senior-management level while the PMLA Principal Officer is the operational reporting point.",
+      "verifyNote": "SAMPLE CONTENT — VERIFY AGAINST SOURCE. The uploaded PMLA file is a scanned image; confirm exact definitions and duties against the PMLA and PML Rules text.",
+      "takeaway": [
+        "FME PO → overall FME activities (FM Regs)",
+        "PMLA PO → reporting to FIU-IND (STRs etc.)",
+        "Designated Director → senior AML responsibility",
+        "They can be different individuals",
+        "Don't collapse the two roles"
+      ]
+    },
+    "t_cdd_edd": {
+      "id": "t_cdd_edd",
+      "moduleId": "m4",
+      "title": "CDD, EDD and beneficial ownership",
+      "priority": "high",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "medium",
+        "lc": "medium"
+      },
+      "source": "PML Rules / AML guidelines (general framework)",
+      "verify": true,
+      "why": "Bread-and-butter for a Compliance Officer. Interviewers want to hear the logic: risk-based due diligence, and who you look through to.",
+      "explanation": "Customer Due Diligence means identifying and verifying the client and understanding the purpose of the relationship. Enhanced Due Diligence applies to higher-risk clients — for example PEPs or complex structures. Beneficial ownership means identifying the natural persons who ultimately own or control the client, not stopping at the immediate entity.",
+      "practicalPoint": "The point interviewers listen for is 'risk-based'. You don't apply the same intensity to everyone; you calibrate. And you always look through layers to the ultimate beneficial owner.",
+      "verifyNote": "SAMPLE CONTENT — VERIFY AGAINST SOURCE. Confirm BO thresholds and EDD triggers against current PML Rules and the applicable AML guidelines.",
+      "takeaway": [
+        "CDD = identify + verify + understand purpose",
+        "EDD = extra scrutiny for higher-risk clients",
+        "BO = ultimate natural persons in control",
+        "Approach is risk-based, not uniform",
+        "Look through the structure"
+      ]
+    },
+    "t_ifsc_fema": {
+      "id": "t_ifsc_fema",
+      "moduleId": "m5",
+      "title": "How IFSC sits within FEMA",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "medium",
+        "po": "medium",
+        "lc": "very-high"
+      },
+      "source": "FEMA, 1999 & IFSC framework (general)",
+      "verify": true,
+      "why": "For cross-border and legal roles, interviewers test whether you understand why GIFT IFSC is treated differently for exchange-control purposes.",
+      "explanation": "An IFSC unit is, for many purposes, treated as a person resident outside India under the exchange-control framework, which is what lets GIFT IFSC operate as an offshore-in-onshore jurisdiction. Fund flows in and out, and downstream investment into India, run through this lens.",
+      "practicalPoint": "Frame it as 'why the structure exists': the FEMA treatment is what allows an IFSC fund to raise and deploy foreign capital efficiently. Then flag round-tripping as the risk regulators watch — capital leaving India and returning dressed as foreign investment.",
+      "verifyNote": "SAMPLE CONTENT — VERIFY AGAINST SOURCE. The uploaded FEMA file is a scanned image; confirm the precise resident/non-resident treatment and any current notifications before quoting specifics.",
+      "takeaway": [
+        "IFSC unit ≈ non-resident for many FEMA purposes",
+        "Enables offshore-in-onshore fund structures",
+        "Inflows / outflows / downstream run through FEMA",
+        "Round-tripping is the watched risk",
+        "Explain the 'why', flag the risk"
+      ]
+    },
+    "t_valuation_custodian": {
+      "id": "t_valuation_custodian",
+      "moduleId": "m6",
+      "title": "Valuation & the independent custodian",
+      "priority": "high",
+      "roleWeight": {
+        "co": "high",
+        "po": "medium",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, reg. 132 & valuation provisions",
+      "verify": false,
+      "why": "Tests the ongoing-obligations side of the job — the things that keep a fund compliant after launch.",
+      "explanation": "An FME must appoint an independent custodian, generally based in IFSC, for the securities it manages. Valuation must follow the prescribed norms; for certain schemes a valuation report is prepared periodically (for example, a half-yearly report within one month of the period end).",
+      "practicalPoint": "For a Compliance Officer this is calendar work: independence of the custodian and valuer, timeliness of valuation reports, and making sure reports aren't stale when relied upon.",
+      "verifyNote": "Exact valuation frequencies differ by scheme type — confirm the specific frequency for the scheme in question.",
+      "takeaway": [
+        "Independent custodian, generally IFSC-based",
+        "Custodian not mandatory for some FoF setups",
+        "Valuation follows prescribed norms",
+        "Reports on a defined cycle, filed on time",
+        "Independence + timeliness are the compliance points"
+      ]
+    },
+    "t_reporting": {
+      "id": "t_reporting",
+      "moduleId": "m6",
+      "title": "Periodic & event-based reporting",
+      "priority": "high",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "medium",
+        "lc": "medium"
+      },
+      "source": "FM Regs 2025, reporting provisions",
+      "verify": false,
+      "why": "Directly tests a Compliance Officer's core deliverable — knowing what's periodic, what's event-driven, and roughly when things are due.",
+      "explanation": "Compliance splits into periodic reporting (regular investor and regulatory reporting on a set cycle) and event-based reporting (things triggered by a specific event — a change in KMP, a material change, a filing). Investor reporting for certain services runs at least quarterly, within a month of quarter end.",
+      "practicalPoint": "In an interview, structure the answer as two buckets — periodic vs event-based — then give one concrete example of each. That structure alone signals that you'd run a real compliance calendar.",
+      "takeaway": [
+        "Two buckets: periodic and event-based",
+        "Periodic runs on a fixed cycle",
+        "Event-based is triggered by a specific change",
+        "Some investor reporting is quarterly (+1 month)",
+        "A compliance calendar ties it together"
+      ]
+    },
+    "t_reading_enforcement": {
+      "id": "t_reading_enforcement",
+      "moduleId": "m7",
+      "title": "How to read an enforcement action",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "high",
+        "po": "high",
+        "lc": "high"
+      },
+      "source": "Method (apply to authoritative orders)",
+      "verify": false,
+      "why": "Interviewers sometimes hand you a real order and ask 'what went wrong here?'. They're testing whether you can extract a lesson without over-reading the order.",
+      "explanation": "Read any enforcement action in five moves: the facts, the specific provision breached, the deficiency the regulator identified, the consequence, and the lesson. Keep the lesson tied to what the order actually establishes.",
+      "practicalPoint": "The discipline is not to inflate an order into a broad legal principle. Say what the FME did, which obligation it missed, and what control would have prevented it — nothing wider than the order supports.",
+      "case": {
+        "title": "Illustrative pattern (not a specific order)",
+        "facts": "An FME onboarded investors before beneficial-ownership verification was complete.",
+        "issue": "AML/KYC obligation not met before the relationship proceeded.",
+        "deficiency": "Onboarding control allowed the file to advance with a gap.",
+        "consequence": "Regulatory observation; remediation of the onboarding process.",
+        "lesson": "Make BO verification a hard gate before onboarding can proceed."
+      },
+      "verifyNote": "SAMPLE CONTENT — VERIFY AGAINST SOURCE. This is an illustrative pattern, not a real order. Use only authoritative IFSCA orders in the live product.",
+      "takeaway": [
+        "Facts → provision → deficiency → consequence → lesson",
+        "Tie the lesson to what the order establishes",
+        "Don't inflate an order into a legal principle",
+        "Always end on the control that prevents recurrence"
+      ]
+    }
+  },
+  "moduleTopics": {
+    "m1": [
+      "t_categories",
+      "t_networth",
+      "t_kmp",
+      "t_thresholds"
+    ],
+    "m2": [
+      "t_po_role",
+      "t_kmp_eligibility",
+      "t_fit_proper",
+      "t_po_vs_co"
+    ],
+    "m3": [
+      "t_ppm_vs_offer",
+      "t_ppm_filing"
+    ],
+    "m4": [
+      "t_pmla_po",
+      "t_cdd_edd"
+    ],
+    "m5": [
+      "t_ifsc_fema"
+    ],
+    "m6": [
+      "t_valuation_custodian",
+      "t_reporting"
+    ],
+    "m7": [
+      "t_reading_enforcement"
+    ]
+  },
+  "qTypes": {
+    "knowledge": "Knowledge",
+    "concept": "Concept",
+    "practical": "Practical",
+    "scenario": "Scenario",
+    "trap": "Trap",
+    "role": "Role",
+    "cross": "Cross-Regulatory"
+  },
+  "questions": [
+    {
+      "id": "q_categories",
+      "moduleId": "m1",
+      "type": "knowledge",
+      "length": "strong",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "high",
+        "po": "very-high",
+        "lc": "high"
+      },
+      "q": "What are the different categories of FME under the current IFSCA framework?",
+      "answer": "Under the IFSCA Fund Management Regulations there are three categories of Fund Management Entity. An Authorised FME runs venture capital schemes or a single-family investment fund, raising from accredited investors by private placement. A Registered FME (Non-Retail) runs restricted schemes for accredited or above-threshold investors, and can also do portfolio management and private-placement REITs and InvITs. A Registered FME (Retail) can run retail schemes for the public, do public REITs and InvITs, and launch ETFs. Each higher category can also do everything the lower ones can.",
+      "remember": [
+        "Three categories",
+        "Authorised → VCS / family fund",
+        "Non-Retail → restricted + PMS + private REIT/InvIT",
+        "Retail → public schemes + ETFs",
+        "Higher = superset"
+      ],
+      "trap": "Don't say there are 'AIF categories' — that's the domestic SEBI AIF vocabulary. In IFSC the licence is the FME category; scheme types sit under it.",
+      "testing": [
+        "Regulatory knowledge",
+        "Ability to distinguish similar concepts"
+      ],
+      "tip": "Lead with 'there are three categories', then take them in order. Structure signals confidence."
+    },
+    {
+      "id": "q_po_co",
+      "moduleId": "m2",
+      "type": "concept",
+      "length": "strong",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "q": "What is the difference between the Principal Officer and the Compliance Officer of an FME?",
+      "answer": "The Principal Officer is responsible for the overall activities of the FME — fund management, risk and compliance together. The Compliance Officer is a separate KMP, mandatory for a Registered FME, who is specifically responsible for compliance with the regulations and for implementing the firm's risk-management policies. So the PO's remit is broad and the CO's is focused. In a smaller Authorised FME there may be no separate Compliance Officer at all — the Principal Officer carries that too.",
+      "remember": [
+        "PO = overall FME activities",
+        "CO = compliance + risk implementation",
+        "CO mandatory for Registered FME",
+        "Authorised FME may run on PO alone",
+        "Answer depends on category"
+      ],
+      "trap": "Don't imply every FME must have a Compliance Officer. It depends on the FME category.",
+      "testing": [
+        "Role awareness",
+        "Ability to distinguish similar concepts"
+      ],
+      "tip": "End by tying it to category — that's what separates a memorised answer from an understood one."
+    },
+    {
+      "id": "q_pmla_po",
+      "moduleId": "m4",
+      "type": "trap",
+      "length": "strong",
+      "priority": "critical",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "q": "Is the Principal Officer of an FME the same as the Principal Officer under the PMLA?",
+      "answer": "No — they share a title but they're different roles. The Principal Officer under the FME regulations owns the overall activities of the FME. The Principal Officer under the PMLA framework is the person responsible for furnishing information, like suspicious transaction reports, to FIU-IND. The PMLA framework also has a Designated Director at senior-management level for AML responsibility. The two Principal Officers can be different people, and you shouldn't treat them as one.",
+      "remember": [
+        "Same title, different roles",
+        "FME PO → overall activities",
+        "PMLA PO → reporting to FIU-IND",
+        "Designated Director → senior AML responsibility",
+        "Can be different people"
+      ],
+      "trap": "The whole question is the trap — candidates instinctively say 'yes, same person'. It isn't necessarily.",
+      "testing": [
+        "Ability to distinguish similar concepts",
+        "Cross-framework awareness"
+      ],
+      "tip": "Answer 'no' clearly, then explain both. A confident distinction here is a strong signal.",
+      "verify": true,
+      "verifyNote": "AML detail — verify against PMLA / PML Rules."
+    },
+    {
+      "id": "q_ppm",
+      "moduleId": "m3",
+      "type": "knowledge",
+      "length": "short",
+      "priority": "high",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "very-high"
+      },
+      "q": "What is a PPM and how is it different from an offer document?",
+      "answer": "A PPM — placement memorandum — is the document an FME uses to invite accredited investors into a private-placement scheme. An offer document is what a Registered FME (Retail) uses to invite the public. So the PPM is the private-placement disclosure document, and the offer document is the retail one. The PPM is the investor's main source of information on strategy, risks, fees and terms.",
+      "remember": [
+        "PPM → private placement, accredited investors",
+        "Offer document → public, Retail FME",
+        "PPM = primary investor disclosure",
+        "Document follows category & scheme"
+      ],
+      "trap": "Don't call the PPM a 'prospectus' — that's retail/public language.",
+      "testing": [
+        "Regulatory knowledge",
+        "Practical understanding"
+      ],
+      "tip": "Anchor the difference on private vs public. Everything else follows."
+    },
+    {
+      "id": "q_networth",
+      "moduleId": "m1",
+      "type": "knowledge",
+      "length": "short",
+      "priority": "high",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "low"
+      },
+      "q": "What are the net worth requirements for the three FME categories?",
+      "answer": "Net worth tracks the category: an Authorised FME needs USD 75,000, a Registered FME (Non-Retail) needs USD 500,000, and a Registered FME (Retail) needs USD 1,000,000. It has to be maintained at all times, and it's separate from any net worth needed for other regulated activities.",
+      "remember": [
+        "Authorised — 75k",
+        "Non-Retail — 500k",
+        "Retail — 1m",
+        "'At all times'",
+        "Separate from other activities"
+      ],
+      "trap": "It's 'at all times', not just at registration — say that and you show you understand it as an ongoing obligation.",
+      "testing": [
+        "Regulatory knowledge"
+      ],
+      "tip": "If you blank on a number, give the ranking — Authorised lowest, Retail highest — then the figures."
+    },
+    {
+      "id": "q_kmp_eligibility",
+      "moduleId": "m2",
+      "type": "knowledge",
+      "length": "strong",
+      "priority": "high",
+      "roleWeight": {
+        "co": "high",
+        "po": "high",
+        "lc": "medium"
+      },
+      "q": "What qualification and experience does a KMP of an FME need?",
+      "answer": "Broadly, a KMP needs a professional qualification or a post-graduate degree or diploma in a relevant field — finance, law, accountancy, business, economics and so on — or a CFA or FRM, plus around five years of related experience in an eligible institution. A Principal Officer with fifteen years of fund-management experience can qualify on a graduate degree in any field. For the Compliance Officer, the experience requirement is lower — three years where the person is professionally qualified.",
+      "remember": [
+        "Professional qual / relevant PG + ~5 yrs",
+        "CFA / FRM count",
+        "PO with 15 yrs FM → any graduate degree",
+        "CO → 3 yrs if professionally qualified",
+        "CA/CS/CMA count; LLB for CO"
+      ],
+      "trap": "The lower experience bar is specific to the Compliance Officer — don't apply it to every KMP.",
+      "testing": [
+        "Regulatory knowledge",
+        "Role awareness"
+      ],
+      "tip": "Note it was amended in Jan 2026 — showing you track amendments is a plus.",
+      "verify": false
+    },
+    {
+      "id": "q_transaction",
+      "moduleId": "m1",
+      "type": "scenario",
+      "length": "deeper",
+      "priority": "high",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "high",
+        "lc": "high"
+      },
+      "q": "As Compliance Officer, the business team wants to push a transaction you think may breach a regulatory limit. How do you handle it?",
+      "answer": "First I'd establish the facts precisely — what exactly is proposed, the amounts, the counterparties. Then I'd identify the specific obligation or limit that's in play and assess how close we are to breaching it. If there's genuine regulatory risk, I don't just say no — I explain the issue to the business, look for a compliant way to achieve the commercial goal, and escalate to the Principal Officer where the call is significant. Whatever we decide, I document the rationale, and if the transaction can't proceed compliantly, it doesn't proceed.",
+      "remember": [
+        "Facts",
+        "→ Regulation",
+        "→ Risk",
+        "→ Escalation",
+        "→ Action + documentation"
+      ],
+      "trap": "Don't answer as either a pushover ('I'd let it go') or a blocker ('I'd just refuse'). Show structured judgement.",
+      "testing": [
+        "Judgement",
+        "Accountability",
+        "Practical understanding",
+        "Communication ability"
+      ],
+      "tip": "Say the framework out loud — facts, regulation, risk, escalation, action, documentation. It shows you think like a compliance professional."
+    },
+    {
+      "id": "q_category_change",
+      "moduleId": "m1",
+      "type": "practical",
+      "length": "short",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "medium",
+        "po": "high",
+        "lc": "medium"
+      },
+      "q": "An FME registered as Authorised now wants to run restricted schemes. Can it just start?",
+      "answer": "No. Restricted schemes sit under the Registered FME (Non-Retail) category, so the firm would need to be in that category. An FME can't change its category on its own — that needs prior approval from IFSCA. So the practical answer is: apply to move category first, then run the restricted schemes.",
+      "remember": [
+        "Restricted schemes → Non-Retail category",
+        "Can't self-upgrade",
+        "Category change needs IFSCA approval",
+        "Approval first, activity second"
+      ],
+      "trap": "Don't assume 'higher category can do lower activities' means you can drift upward freely — moving up needs approval.",
+      "testing": [
+        "Practical understanding",
+        "Regulatory knowledge"
+      ],
+      "tip": "Answer the yes/no first, then the 'because'. Interviewers like a clear position followed by the reason."
+    },
+    {
+      "id": "q_fit_proper",
+      "moduleId": "m2",
+      "type": "role",
+      "length": "short",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "high",
+        "po": "very-high",
+        "lc": "medium"
+      },
+      "q": "One of the FME's directors is named in an adverse regulatory order. As Principal Officer, why should you care?",
+      "answer": "Because fit and proper is a continuing test — the FME, its directors, KMPs and controlling shareholders have to remain fit and proper at all times, not just at registration. An adverse order against a director can affect that standing and therefore the FME. So as Principal Officer I'd treat monitoring the status of key persons as a live compliance task, assess the impact of the order, and act on it rather than filing it away.",
+      "remember": [
+        "Fit & proper is continuing",
+        "Applies to directors & KMPs too",
+        "Adverse order can affect the FME",
+        "Monitoring is a live task",
+        "Assess and act"
+      ],
+      "trap": "Don't treat fit & proper as a one-time registration check — the phrase is 'at all times'.",
+      "testing": [
+        "Accountability",
+        "Judgement",
+        "Role awareness"
+      ],
+      "tip": "Own it as your responsibility. For a PO role, showing you take personal accountability matters as much as the rule."
+    },
+    {
+      "id": "q_round_tripping",
+      "moduleId": "m5",
+      "type": "cross",
+      "length": "strong",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "medium",
+        "po": "medium",
+        "lc": "very-high"
+      },
+      "q": "Why do regulators worry about round-tripping in IFSC fund structures?",
+      "answer": "Because an IFSC unit is treated as non-resident for many exchange-control purposes, which is what makes offshore-in-onshore structures work. The concern is that this treatment could be misused — Indian capital leaving the country and coming back dressed as foreign investment to get a benefit it shouldn't. So when you structure a fund, you want the flows to be genuine and well-documented, and you watch for arrangements that look like capital simply doing a round trip.",
+      "remember": [
+        "IFSC ≈ non-resident for FEMA purposes",
+        "Enables offshore-in-onshore funds",
+        "Round-tripping = capital leaving & returning as 'foreign'",
+        "Risk = misuse of the treatment",
+        "Structure genuine, documented flows"
+      ],
+      "trap": "Don't overstate specifics — if you're not sure of an exact FEMA provision, explain the principle rather than inventing a rule.",
+      "testing": [
+        "Cross-framework awareness",
+        "Judgement"
+      ],
+      "tip": "This is a principle question — lead with why the structure exists, then name the risk.",
+      "verify": true,
+      "verifyNote": "FEMA detail — verify against FEMA / current notifications."
+    },
+    {
+      "id": "q_bo_onboarding",
+      "moduleId": "m4",
+      "type": "practical",
+      "length": "short",
+      "priority": "high",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "medium",
+        "lc": "medium"
+      },
+      "q": "An onboarding file is missing beneficial-ownership information. Can the investor be onboarded?",
+      "answer": "Not until the beneficial ownership is established. CDD requires you to identify the natural persons who ultimately own or control the investor, and that has to be done before the relationship proceeds. So I'd hold onboarding, go back for the missing information, and only clear the file once BO is verified. It's a hard gate, not a formality you complete later.",
+      "remember": [
+        "BO must be established first",
+        "Look through to natural persons",
+        "Hold onboarding until complete",
+        "Hard gate, not a later step",
+        "Document the resolution"
+      ],
+      "trap": "Don't say 'onboard now, collect later' — that's exactly the control failure enforcement actions flag.",
+      "testing": [
+        "Practical understanding",
+        "Judgement"
+      ],
+      "tip": "Frame BO verification as a gate. That single word signals you understand controls.",
+      "verify": true,
+      "verifyNote": "AML detail — verify against PML Rules."
+    },
+    {
+      "id": "q_reporting",
+      "moduleId": "m6",
+      "type": "concept",
+      "length": "short",
+      "priority": "medium",
+      "roleWeight": {
+        "co": "very-high",
+        "po": "medium",
+        "lc": "low"
+      },
+      "q": "How would you describe the reporting obligations of an FME?",
+      "answer": "I'd split them into two buckets. Periodic reporting runs on a fixed cycle — regular investor and regulatory reporting; for some services that's quarterly, within a month of quarter end. Event-based reporting is triggered by a specific event, like a change in a KMP or a material change to a scheme. Running both well is basically a compliance calendar — knowing what's due, when, and what triggers a filing.",
+      "remember": [
+        "Two buckets: periodic + event-based",
+        "Periodic = fixed cycle",
+        "Event-based = triggered by a change",
+        "Some reporting quarterly (+1 month)",
+        "Calendar ties it together"
+      ],
+      "trap": "Don't list random filings — the interviewer wants the structure, not a memory dump.",
+      "testing": [
+        "Practical understanding",
+        "Communication ability"
+      ],
+      "tip": "The two-bucket structure is the whole answer. Give one concrete example of each."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "s_transaction",
+      "role": "co",
+      "moduleId": "m1",
+      "setup": "You are the Compliance Officer of an FME. The business team wants to proceed with a transaction, but you identify a possible regulatory issue.",
+      "prompt": "What would you do first?",
+      "steps": [
+        "Establish the facts — what exactly is proposed, amounts, counterparties.",
+        "Identify the applicable regulation or limit that's in play.",
+        "Assess the issue — how real and how serious is the risk?",
+        "Escalate to the Principal Officer where the decision is significant.",
+        "Document the analysis and the decision.",
+        "Take the required action — proceed compliantly, restructure, or stop."
+      ],
+      "remember": [
+        "FACTS",
+        "→ REGULATION",
+        "→ RISK",
+        "→ ESCALATION",
+        "→ ACTION",
+        "→ DOCUMENTATION"
+      ],
+      "considerations": "The mistake candidates make is jumping to a verdict before establishing facts. Facts first, always."
+    },
+    {
+      "id": "s_onboarding",
+      "role": "co",
+      "moduleId": "m4",
+      "setup": "You are the Compliance Officer. An investor onboarding file has incomplete beneficial-ownership information.",
+      "prompt": "What should happen next?",
+      "steps": [
+        "Establish what's missing — which BO details, and why.",
+        "Recognise the obligation — BO must be verified before onboarding.",
+        "Hold the file — onboarding doesn't proceed on a gap.",
+        "Request the missing information from the investor / introducer.",
+        "Verify beneficial ownership to the natural persons in control.",
+        "Only then clear the file, and document the resolution."
+      ],
+      "remember": [
+        "MISSING",
+        "→ OBLIGATION",
+        "→ HOLD",
+        "→ REQUEST",
+        "→ VERIFY",
+        "→ CLEAR + DOCUMENT"
+      ],
+      "considerations": "Treat BO verification as a hard gate. 'Onboard now, verify later' is the exact failure pattern regulators cite.",
+      "verify": true,
+      "verifyNote": "AML specifics — verify against PML Rules."
+    },
+    {
+      "id": "s_ppm_disclosure",
+      "role": "lc",
+      "moduleId": "m3",
+      "setup": "You are in Legal & Compliance. The fund team wants to launch a restricted scheme quickly and asks whether the PPM disclosures can be 'tidied up later'.",
+      "prompt": "How do you respond?",
+      "steps": [
+        "Establish the timeline pressure and what's actually incomplete.",
+        "Identify the obligation — the PPM is the investor's primary disclosure.",
+        "Assess the risk — thin disclosure is a live regulatory and litigation exposure.",
+        "Push back constructively — disclosure is finalised before filing, not after.",
+        "Escalate to the PO if the business insists on cutting corners.",
+        "Document the position you took."
+      ],
+      "remember": [
+        "The PPM is disclosure, not a formality",
+        "Finalise before filing",
+        "Thin disclosure = real exposure",
+        "Constructive push-back",
+        "Document your position"
+      ],
+      "considerations": "For an L&C role, interviewers want to see you protect disclosure quality under commercial pressure."
+    }
+  ],
+  "simulations": [
+    {
+      "id": "sim_onboarding",
+      "role": "co",
+      "title": "The incomplete onboarding file",
+      "setup": "You are the Compliance Officer. An investor onboarding file reaches you with incomplete beneficial-ownership information, and the relationship manager is keen to close this week.",
+      "prompt": "What should happen next?",
+      "obligation": "CDD requires beneficial ownership to be identified and verified before the relationship proceeds.",
+      "action": "Hold onboarding, request the missing BO information, verify to the ultimate natural persons, then clear and document.",
+      "mistake": "Onboarding first and 'verifying later' to meet the RM's deadline.",
+      "control": {
+        "trigger": "New investor onboarding",
+        "obligation": "Beneficial ownership verified before onboarding",
+        "person": "Compliance Officer",
+        "action": "BO check to natural-person level",
+        "timeline": "Before the relationship proceeds",
+        "approval": "Compliance sign-off",
+        "filing": "Onboarding record",
+        "evidence": "Verified BO documentation on file",
+        "monitoring": "Periodic file review / sampling"
+      },
+      "verify": true,
+      "verifyNote": "AML specifics — verify against PML Rules."
+    },
+    {
+      "id": "sim_kmp_departure",
+      "role": "po",
+      "title": "A KMP resigns",
+      "setup": "You are the Principal Officer. Your Compliance Officer — the firm's only Compliance Officer KMP — resigns with immediate effect.",
+      "prompt": "What should happen next?",
+      "obligation": "A Registered FME must have a Compliance Officer KMP; changes to KMPs must follow the manner specified by IFSCA.",
+      "action": "Assess the gap, arrange interim cover for the compliance function, begin identifying an eligible replacement, and notify/file the KMP change as required.",
+      "mistake": "Leaving the Compliance Officer seat empty while continuing regulated activity as if nothing changed.",
+      "control": {
+        "trigger": "Compliance Officer resignation",
+        "obligation": "Maintain required KMP structure",
+        "person": "Principal Officer",
+        "action": "Interim cover + eligible replacement + KMP-change filing",
+        "timeline": "Promptly, per IFSCA's specified manner",
+        "approval": "PO / board",
+        "filing": "KMP change notification",
+        "evidence": "Appointment records + filing acknowledgement",
+        "monitoring": "KMP register kept current"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "id": "c_onboarding",
+      "title": "Investor onboarding — BO gate",
+      "trigger": "New investor onboarding begins",
+      "obligation": "Beneficial ownership identified & verified before onboarding",
+      "person": "Compliance Officer",
+      "action": "Run CDD; look through to ultimate natural persons; apply EDD if higher-risk",
+      "timeline": "Complete before the relationship proceeds",
+      "approval": "Compliance sign-off",
+      "filing": "Onboarding record retained",
+      "evidence": "Verified BO documents on file",
+      "monitoring": "Periodic sampling of onboarding files",
+      "source": "PML Rules / AML framework",
+      "verify": true
+    },
+    {
+      "id": "c_kmp",
+      "title": "KMP change control",
+      "trigger": "A KMP is appointed or resigns",
+      "obligation": "Maintain the KMP structure required for the FME category",
+      "person": "Principal Officer",
+      "action": "Confirm eligibility of replacement; arrange interim cover; file the change",
+      "timeline": "In the manner and time specified by IFSCA",
+      "approval": "PO / board",
+      "filing": "KMP-change notification to IFSCA",
+      "evidence": "Appointment letter + filing acknowledgement",
+      "monitoring": "KMP register reviewed each quarter",
+      "source": "FM Regs 2025, reg. 7",
+      "verify": false
+    },
+    {
+      "id": "c_valuation",
+      "title": "Periodic valuation control",
+      "trigger": "Valuation period ends",
+      "obligation": "Value scheme assets per prescribed norms and report on time",
+      "person": "Compliance Officer / appointed valuer",
+      "action": "Obtain valuation from independent valuer; check independence & timeliness",
+      "timeline": "Within the prescribed window (e.g. half-yearly report within one month)",
+      "approval": "Compliance review",
+      "filing": "Valuation report retained / shared with investors",
+      "evidence": "Dated valuation report + independence confirmation",
+      "monitoring": "Calendar reminder; report not stale when relied on",
+      "source": "FM Regs 2025, valuation provisions",
+      "verify": false
+    }
+  ],
+  "recall": {
+    "definitions": [
+      {
+        "term": "FME",
+        "def": "Fund Management Entity — the licensed fund manager in IFSC. Three categories."
+      },
+      {
+        "term": "Authorised FME",
+        "def": "VCS or single-family investment fund; private placement to accredited investors."
+      },
+      {
+        "term": "Registered FME (Non-Retail)",
+        "def": "Restricted schemes + PMS + private-placement REIT/InvIT."
+      },
+      {
+        "term": "Registered FME (Retail)",
+        "def": "Retail schemes for the public; public REIT/InvIT; ETFs."
+      },
+      {
+        "term": "PPM",
+        "def": "Placement memorandum — private-placement disclosure document for accredited investors."
+      },
+      {
+        "term": "Offer document",
+        "def": "Public disclosure document used by a Registered FME (Retail)."
+      },
+      {
+        "term": "Principal Officer",
+        "def": "KMP responsible for the overall activities of the FME."
+      },
+      {
+        "term": "Compliance Officer",
+        "def": "KMP responsible for compliance + risk implementation (mandatory for Registered FME)."
+      },
+      {
+        "term": "Fit & proper",
+        "def": "Continuing 'at all times' standard for FME, directors, KMPs, controlling shareholders."
+      }
+    ],
+    "thresholds": [
+      {
+        "k": "Authorised FME net worth",
+        "v": "USD 75,000"
+      },
+      {
+        "k": "Non-Retail net worth",
+        "v": "USD 500,000"
+      },
+      {
+        "k": "Retail net worth",
+        "v": "USD 1,000,000"
+      },
+      {
+        "k": "Restricted scheme investor floor",
+        "v": "USD 150,000"
+      },
+      {
+        "k": "Max investors (restricted)",
+        "v": "1,000"
+      },
+      {
+        "k": "VCS / restricted min corpus",
+        "v": "USD 3 million"
+      },
+      {
+        "k": "VCS corpus cap",
+        "v": "USD 200 million"
+      },
+      {
+        "k": "Additional fund-mgmt KMP trigger",
+        "v": "AUM ≥ USD 1 billion (ex-FoF)"
+      }
+    ],
+    "timelines": [
+      {
+        "k": "Additional KMP after ≥USD 1bn AUM",
+        "v": "Within 6 months of FY end"
+      },
+      {
+        "k": "Some investor reporting",
+        "v": "Quarterly, within 1 month of quarter end"
+      },
+      {
+        "k": "Half-yearly valuation report (illustrative)",
+        "v": "Within 1 month of period end"
+      }
+    ],
+    "distinctions": [
+      {
+        "a": "FME Principal Officer",
+        "b": "PMLA Principal Officer",
+        "note": "Overall FME activities vs reporting to FIU-IND. Can be different people."
+      },
+      {
+        "a": "Principal Officer",
+        "b": "Compliance Officer",
+        "note": "Overall activities vs compliance + risk. CO mandatory for Registered FME."
+      },
+      {
+        "a": "PPM",
+        "b": "Offer document",
+        "note": "Private placement / accredited vs public / retail."
+      },
+      {
+        "a": "FME category",
+        "b": "Scheme type",
+        "note": "Licence vs the product that sits under it."
+      }
+    ],
+    "traps": [
+      "Calling FME categories 'AIF categories' (that's SEBI/domestic language).",
+      "Assuming every FME needs a Compliance Officer — depends on category.",
+      "Treating fit & proper as a one-time check — it's 'at all times'.",
+      "Saying the PPM is 'approved' — for private schemes it's 'taken on record'.",
+      "Collapsing the FME PO and the PMLA PO into one role."
+    ],
+    "modes": [
+      {
+        "id": "r5",
+        "label": "5-Minute Recall",
+        "mins": 5,
+        "desc": "Definitions + top thresholds only.",
+        "includes": [
+          "definitions",
+          "thresholds"
+        ]
+      },
+      {
+        "id": "r15",
+        "label": "15-Minute Revision",
+        "mins": 15,
+        "desc": "Definitions, thresholds, timelines, distinctions.",
+        "includes": [
+          "definitions",
+          "thresholds",
+          "timelines",
+          "distinctions"
+        ]
+      },
+      {
+        "id": "r30",
+        "label": "30-Minute Interview Mode",
+        "mins": 30,
+        "desc": "Everything, plus the common traps.",
+        "includes": [
+          "definitions",
+          "thresholds",
+          "timelines",
+          "distinctions",
+          "traps"
+        ]
+      },
+      {
+        "id": "night",
+        "label": "Night Before",
+        "mins": 20,
+        "desc": "Distinctions + traps + key thresholds.",
+        "includes": [
+          "distinctions",
+          "traps",
+          "thresholds"
+        ]
+      },
+      {
+        "id": "final",
+        "label": "Final 10 Minutes",
+        "mins": 10,
+        "desc": "Traps + the numbers most likely to be asked.",
+        "includes": [
+          "traps",
+          "thresholds"
+        ]
+      }
+    ]
+  },
+  "areas": {
+    "m1": "FME Framework",
+    "m2": "PO / CO",
+    "m3": "PPM",
+    "m4": "AML / CFT",
+    "m5": "FEMA",
+    "m6": "Reporting"
+  },
+  "assessment": [
+    {
+      "id": "a1",
+      "area": "m1",
+      "type": "mcq",
+      "q": "How many categories of FME are there under the IFSCA Fund Management Regulations?",
+      "options": [
+        "Two",
+        "Three",
+        "Four",
+        "Five"
+      ],
+      "answer": 1,
+      "explain": "Three: Authorised FME, Registered FME (Non-Retail), Registered FME (Retail)."
+    },
+    {
+      "id": "a2",
+      "area": "m1",
+      "type": "mcq",
+      "q": "Which category can launch ETFs and run public retail schemes?",
+      "options": [
+        "Authorised FME",
+        "Registered FME (Non-Retail)",
+        "Registered FME (Retail)",
+        "Any FME"
+      ],
+      "answer": 2,
+      "explain": "Only the Registered FME (Retail) can run retail schemes and ETFs."
+    },
+    {
+      "id": "a3",
+      "area": "m1",
+      "type": "mcq",
+      "q": "Minimum net worth for a Registered FME (Retail)?",
+      "options": [
+        "USD 75,000",
+        "USD 500,000",
+        "USD 1,000,000",
+        "USD 2,000,000"
+      ],
+      "answer": 2,
+      "explain": "USD 1,000,000 — the highest of the three, matching the retail category."
+    },
+    {
+      "id": "a4",
+      "area": "m2",
+      "type": "tf",
+      "q": "Every FME must appoint a separate Compliance Officer.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False. The Compliance Officer is mandatory for a Registered FME; an Authorised FME may run on the Principal Officer alone."
+    },
+    {
+      "id": "a5",
+      "area": "m2",
+      "type": "mcq",
+      "q": "The Principal Officer of an FME is responsible for…",
+      "options": [
+        "Only regulatory filings",
+        "Only fund management",
+        "The overall activities of the FME",
+        "Only AML reporting"
+      ],
+      "answer": 2,
+      "explain": "The overall activities of the FME — fund management, risk and compliance."
+    },
+    {
+      "id": "a6",
+      "area": "m2",
+      "type": "tf",
+      "q": "Fit & proper is only tested at the time of registration.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False. It is a continuing 'at all times' obligation."
+    },
+    {
+      "id": "a7",
+      "area": "m3",
+      "type": "mcq",
+      "q": "A placement memorandum (PPM) is used to invite…",
+      "options": [
+        "The general public",
+        "Accredited investors (private placement)",
+        "Only employees",
+        "Foreign governments"
+      ],
+      "answer": 1,
+      "explain": "The PPM is the private-placement document for accredited investors; the offer document is the public/retail one."
+    },
+    {
+      "id": "a8",
+      "area": "m4",
+      "type": "tf",
+      "q": "The FME Principal Officer and the PMLA Principal Officer are always the same person.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False. They are different roles and can be different people. (Verify AML detail against PMLA.)"
+    },
+    {
+      "id": "a9",
+      "area": "m4",
+      "type": "scenario",
+      "q": "An onboarding file lacks beneficial-ownership information. The correct action is to…",
+      "options": [
+        "Onboard now, verify later",
+        "Hold onboarding until BO is verified",
+        "Escalate to the business team to decide",
+        "Ignore it for small investors"
+      ],
+      "answer": 1,
+      "explain": "Hold onboarding — BO verification is a gate before the relationship proceeds. (Verify against PML Rules.)"
+    },
+    {
+      "id": "a10",
+      "area": "m1",
+      "type": "mcq",
+      "q": "Minimum investment for an investor in a restricted scheme (non-accredited)?",
+      "options": [
+        "USD 40,000",
+        "USD 60,000",
+        "USD 150,000",
+        "USD 250,000"
+      ],
+      "answer": 2,
+      "explain": "USD 150,000 for a restricted scheme; accredited investors have no minimum ticket."
+    },
+    {
+      "id": "a11",
+      "area": "m6",
+      "type": "mcq",
+      "q": "Reporting obligations are best described as…",
+      "options": [
+        "All annual",
+        "Periodic and event-based",
+        "Only on request",
+        "Only at wind-up"
+      ],
+      "answer": 1,
+      "explain": "Two buckets — periodic (fixed cycle) and event-based (triggered by a change)."
+    },
+    {
+      "id": "a12",
+      "area": "m1",
+      "type": "tf",
+      "q": "An FME can change its category whenever it wants, without approval.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False. A category change needs prior approval from IFSCA."
+    },
+    {
+      "id": "a13",
+      "area": "m1",
+      "type": "mcq",
+      "q": "The VCS total corpus is capped at…",
+      "options": [
+        "USD 50m",
+        "USD 100m",
+        "USD 200m",
+        "No cap"
+      ],
+      "answer": 2,
+      "explain": "USD 200 million."
+    },
+    {
+      "id": "a14",
+      "area": "m1",
+      "type": "tf",
+      "q": "Accredited investors are subject to the USD 150,000 minimum ticket.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False — accredited investors have no minimum ticket."
+    },
+    {
+      "id": "a15",
+      "area": "m2",
+      "type": "mcq",
+      "q": "Additional fund-management KMP is triggered at AUM of…",
+      "options": [
+        "USD 100m",
+        "USD 500m",
+        "USD 1bn (ex-FoF)",
+        "USD 5bn"
+      ],
+      "answer": 2,
+      "explain": "USD 1 billion excluding fund-of-funds AUM."
+    },
+    {
+      "id": "a16",
+      "area": "m2",
+      "type": "mcq",
+      "q": "For a professionally-qualified Compliance Officer, minimum experience is…",
+      "options": [
+        "1 yr",
+        "2 yrs",
+        "3 yrs",
+        "5 yrs"
+      ],
+      "answer": 2,
+      "explain": "Three years."
+    },
+    {
+      "id": "a17",
+      "area": "m3",
+      "type": "tf",
+      "q": "A restricted-scheme PPM is 'approved' by IFSCA in the retail sense.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explain": "False — it is 'taken on record' for private schemes."
+    },
+    {
+      "id": "a18",
+      "area": "m4",
+      "type": "mcq",
+      "q": "The Designated Director under PMLA is…",
+      "options": [
+        "The custodian",
+        "A senior-management AML responsibility",
+        "The valuer",
+        "The RM"
+      ],
+      "answer": 1,
+      "explain": "Senior AML responsibility for the reporting entity."
+    },
+    {
+      "id": "a19",
+      "area": "m6",
+      "type": "mcq",
+      "q": "A change in KMP is which type of reporting?",
+      "options": [
+        "Periodic",
+        "Event-based",
+        "None",
+        "Investor"
+      ],
+      "answer": 1,
+      "explain": "Event-based (triggered)."
+    },
+    {
+      "id": "a20",
+      "area": "m1",
+      "type": "mcq",
+      "q": "Which can undertake Portfolio Management Services?",
+      "options": [
+        "Authorised FME only",
+        "Registered FME (Non-Retail) and above",
+        "Retail only",
+        "None"
+      ],
+      "answer": 1,
+      "explain": "Registered FME (Non-Retail) can do PMS (and Retail, as a superset)."
+    }
+  ],
+  "readinessDimensions": [
+    {
+      "id": "reg",
+      "label": "Regulatory Knowledge"
+    },
+    {
+      "id": "recall",
+      "label": "Recall"
+    },
+    {
+      "id": "practical",
+      "label": "Practical Understanding"
+    },
+    {
+      "id": "interview",
+      "label": "Interview Knowledge"
+    },
+    {
+      "id": "role",
+      "label": "Role Understanding"
+    },
+    {
+      "id": "scenario",
+      "label": "Scenario Understanding"
+    }
+  ],
+  "quickChecks": {
+    "t_categories": [
+      {
+        "q": "How many FME categories exist under the IFSCA Fund Management Regulations?",
+        "options": [
+          "Two",
+          "Three",
+          "Four",
+          "Five"
+        ],
+        "answer": 1,
+        "explain": "Three: Authorised, Registered (Non-Retail), Registered (Retail)."
+      },
+      {
+        "q": "Which category may launch ETFs and public retail schemes?",
+        "options": [
+          "Authorised FME",
+          "Registered FME (Non-Retail)",
+          "Registered FME (Retail)",
+          "Any FME"
+        ],
+        "answer": 2,
+        "explain": "Only the Registered FME (Retail)."
+      },
+      {
+        "q": "A Single Family Investment Fund is run by which category?",
+        "options": [
+          "Authorised FME",
+          "Registered FME (Non-Retail)",
+          "Registered FME (Retail)",
+          "None"
+        ],
+        "answer": 0,
+        "explain": "The Authorised FME covers VCS and single-family investment funds."
+      },
+      {
+        "q": "Can an FME change its category on its own?",
+        "options": [
+          "Yes, anytime",
+          "No — needs prior IFSCA approval",
+          "Only once a year",
+          "Only downward"
+        ],
+        "answer": 1,
+        "explain": "A category change requires prior approval from IFSCA."
+      },
+      {
+        "q": "Which statement is true about the category hierarchy?",
+        "options": [
+          "Each category is fully separate",
+          "Retail can do everything the lower two can",
+          "Authorised is the widest",
+          "Non-Retail can run public schemes"
+        ],
+        "answer": 1,
+        "explain": "Each higher category is a superset of the lower ones."
+      }
+    ],
+    "t_networth": [
+      {
+        "q": "Minimum net worth for an Authorised FME?",
+        "options": [
+          "USD 75,000",
+          "USD 500,000",
+          "USD 1,000,000",
+          "USD 250,000"
+        ],
+        "answer": 0,
+        "explain": "USD 75,000."
+      },
+      {
+        "q": "Minimum net worth for a Registered FME (Non-Retail)?",
+        "options": [
+          "USD 75,000",
+          "USD 500,000",
+          "USD 1,000,000",
+          "USD 2,000,000"
+        ],
+        "answer": 1,
+        "explain": "USD 500,000."
+      },
+      {
+        "q": "Minimum net worth for a Registered FME (Retail)?",
+        "options": [
+          "USD 500,000",
+          "USD 750,000",
+          "USD 1,000,000",
+          "USD 1,500,000"
+        ],
+        "answer": 2,
+        "explain": "USD 1,000,000."
+      },
+      {
+        "q": "Net worth must be maintained…",
+        "options": [
+          "Only at registration",
+          "At all times",
+          "Only when raising a fund",
+          "Only for retail FMEs"
+        ],
+        "answer": 1,
+        "explain": "It is a continuing 'at all times' requirement."
+      },
+      {
+        "q": "A branch FME's net worth…",
+        "options": [
+          "Must be separate in IFSC only",
+          "May be maintained at parent level",
+          "Is not required",
+          "Is half the standard"
+        ],
+        "answer": 1,
+        "explain": "It may be maintained at the parent level, with the parent ensuring branch operating funds."
+      }
+    ],
+    "t_kmp": [
+      {
+        "q": "Every FME must designate a…",
+        "options": [
+          "Compliance Officer",
+          "Principal Officer",
+          "Designated Director",
+          "Custodian"
+        ],
+        "answer": 1,
+        "explain": "A Principal Officer is mandatory for every FME."
+      },
+      {
+        "q": "A Compliance Officer KMP is mandatory for…",
+        "options": [
+          "Every FME",
+          "A Registered FME",
+          "Only Retail FMEs",
+          "Only ≥USD 1bn AUM FMEs"
+        ],
+        "answer": 1,
+        "explain": "A Registered FME must appoint a Compliance Officer."
+      },
+      {
+        "q": "The additional fund-management KMP is triggered at AUM of…",
+        "options": [
+          "USD 100 million",
+          "USD 500 million",
+          "USD 1 billion (ex-FoF)",
+          "USD 5 billion"
+        ],
+        "answer": 2,
+        "explain": "AUM of at least USD 1 billion, excluding fund-of-funds AUM."
+      },
+      {
+        "q": "KMPs of an FME must be based…",
+        "options": [
+          "Anywhere in India",
+          "Out of the IFSC",
+          "At the parent",
+          "In any foreign jurisdiction"
+        ],
+        "answer": 1,
+        "explain": "They must be based out of the IFSC."
+      },
+      {
+        "q": "A Registered FME (Retail) must add a fund-management KMP…",
+        "options": [
+          "After 3 years",
+          "Before its first retail scheme/ETF offer document",
+          "Only if AUM ≥ USD 1bn",
+          "Never"
+        ],
+        "answer": 1,
+        "explain": "Before filing the offer document of its first retail scheme or ETF."
+      }
+    ],
+    "t_thresholds": [
+      {
+        "q": "Minimum ticket for a non-accredited investor in a restricted scheme?",
+        "options": [
+          "USD 40,000",
+          "USD 60,000",
+          "USD 150,000",
+          "USD 250,000"
+        ],
+        "answer": 2,
+        "explain": "USD 150,000 for a restricted scheme."
+      },
+      {
+        "q": "Maximum number of investors in a restricted scheme?",
+        "options": [
+          "100",
+          "500",
+          "1,000",
+          "Unlimited"
+        ],
+        "answer": 2,
+        "explain": "Capped at 1,000 investors."
+      },
+      {
+        "q": "Minimum corpus for a Venture Capital Scheme?",
+        "options": [
+          "USD 1 million",
+          "USD 3 million",
+          "USD 5 million",
+          "USD 10 million"
+        ],
+        "answer": 1,
+        "explain": "USD 3 million minimum corpus."
+      },
+      {
+        "q": "VCS corpus must not exceed…",
+        "options": [
+          "USD 50 million",
+          "USD 100 million",
+          "USD 200 million",
+          "No cap"
+        ],
+        "answer": 2,
+        "explain": "The VCS total corpus cannot exceed USD 200 million."
+      },
+      {
+        "q": "For an accredited investor, the minimum ticket…",
+        "options": [
+          "Is USD 150,000",
+          "Does not apply",
+          "Is USD 250,000",
+          "Is USD 1 million"
+        ],
+        "answer": 1,
+        "explain": "Accredited investors are exempt from the minimum-ticket floor."
+      }
+    ],
+    "t_po_role": [
+      {
+        "q": "The Principal Officer is responsible for…",
+        "options": [
+          "Only filings",
+          "Only fund management",
+          "The overall activities of the FME",
+          "Only AML"
+        ],
+        "answer": 2,
+        "explain": "Overall activities — fund management, risk and compliance."
+      },
+      {
+        "q": "Which is NOT part of the PO's stated remit?",
+        "options": [
+          "Fund management",
+          "Risk management",
+          "Compliance",
+          "External audit sign-off"
+        ],
+        "answer": 3,
+        "explain": "The remit is fund management, risk and compliance."
+      },
+      {
+        "q": "The PO must be based…",
+        "options": [
+          "At the parent",
+          "Out of the IFSC",
+          "Anywhere",
+          "In Mumbai"
+        ],
+        "answer": 1,
+        "explain": "In the IFSC, like the other KMPs."
+      },
+      {
+        "q": "Best framing of the PO role in an interview?",
+        "options": [
+          "Filing signatory",
+          "Ownership of the firm's regulatory posture",
+          "Back-office head",
+          "Marketing lead"
+        ],
+        "answer": 1,
+        "explain": "It's senior ownership of the FME's regulatory posture."
+      }
+    ],
+    "t_kmp_eligibility": [
+      {
+        "q": "Base experience requirement for a KMP?",
+        "options": [
+          "1 year",
+          "3 years",
+          "5 years",
+          "10 years"
+        ],
+        "answer": 2,
+        "explain": "At least five years of related experience in an eligible institution."
+      },
+      {
+        "q": "A PO with 15 years' fund-management experience may qualify on…",
+        "options": [
+          "No degree",
+          "A graduate degree in any field",
+          "Only a CFA",
+          "Only a law degree"
+        ],
+        "answer": 1,
+        "explain": "A graduate degree in any field suffices in that case."
+      },
+      {
+        "q": "For a Compliance Officer who is professionally qualified, experience drops to…",
+        "options": [
+          "1 year",
+          "2 years",
+          "3 years",
+          "5 years"
+        ],
+        "answer": 2,
+        "explain": "Three years where the CO holds a professional qualification."
+      },
+      {
+        "q": "Which additionally counts as a professional qualification for the CO specifically?",
+        "options": [
+          "MBA",
+          "LLB",
+          "B.Com",
+          "PhD"
+        ],
+        "answer": 1,
+        "explain": "For the CO, an LLB also counts (alongside CA/CS/CMA)."
+      },
+      {
+        "q": "The KMP experience clause was most recently…",
+        "options": [
+          "Unchanged since 2019",
+          "Substituted w.e.f. 30 Jan 2026",
+          "Repealed",
+          "Never notified"
+        ],
+        "answer": 1,
+        "explain": "Substituted by the 2026 amendment — cite it as current."
+      }
+    ],
+    "t_po_vs_co": [
+      {
+        "q": "The Compliance Officer is specifically responsible for…",
+        "options": [
+          "Overall FME activities",
+          "Compliance + risk implementation",
+          "Fund management",
+          "Investor relations"
+        ],
+        "answer": 1,
+        "explain": "Compliance with the regulations and implementing risk-management policies."
+      },
+      {
+        "q": "An Authorised FME…",
+        "options": [
+          "Must have a separate CO",
+          "May run on the PO alone",
+          "Needs two COs",
+          "Cannot have a PO"
+        ],
+        "answer": 1,
+        "explain": "It may operate without a separate Compliance Officer."
+      },
+      {
+        "q": "The right answer to 'must every FME have a CO?' is…",
+        "options": [
+          "Yes, always",
+          "No — it depends on category",
+          "Only for VCS",
+          "Only for family funds"
+        ],
+        "answer": 1,
+        "explain": "It depends on the FME category."
+      }
+    ],
+    "t_ppm_vs_offer": [
+      {
+        "q": "A placement memorandum (PPM) invites…",
+        "options": [
+          "The public",
+          "Accredited investors (private placement)",
+          "Only employees",
+          "Regulators"
+        ],
+        "answer": 1,
+        "explain": "Accredited investors, by private placement."
+      },
+      {
+        "q": "An offer document is used by…",
+        "options": [
+          "Any FME",
+          "A Registered FME (Retail)",
+          "An Authorised FME",
+          "A custodian"
+        ],
+        "answer": 1,
+        "explain": "A Registered FME (Retail) inviting the public."
+      },
+      {
+        "q": "The PPM is best described as…",
+        "options": [
+          "A marketing flyer",
+          "The investor's primary disclosure document",
+          "An internal memo",
+          "A regulator's approval"
+        ],
+        "answer": 1,
+        "explain": "It's the investor's primary disclosure document."
+      },
+      {
+        "q": "Calling a PPM a 'prospectus' is…",
+        "options": [
+          "Correct",
+          "A retail/public term — avoid it",
+          "Required",
+          "Preferred"
+        ],
+        "answer": 1,
+        "explain": "'Prospectus' is public/retail language; the PPM is a private-placement document."
+      }
+    ],
+    "t_pmla_po": [
+      {
+        "q": "The PMLA Principal Officer is responsible for…",
+        "options": [
+          "Overall FME activities",
+          "Furnishing information (e.g. STRs) to FIU-IND",
+          "Fund management",
+          "Valuation"
+        ],
+        "answer": 1,
+        "explain": "Reporting to FIU-IND under the PMLA framework."
+      },
+      {
+        "q": "The FME Principal Officer and PMLA Principal Officer are…",
+        "options": [
+          "Always the same person",
+          "Different roles that can be different people",
+          "The same title only for retail",
+          "Interchangeable by law"
+        ],
+        "answer": 1,
+        "explain": "Different roles; they can be different individuals."
+      },
+      {
+        "q": "Senior AML responsibility under PMLA sits with the…",
+        "options": [
+          "Custodian",
+          "Designated Director",
+          "Valuer",
+          "Auditor"
+        ],
+        "answer": 1,
+        "explain": "The Designated Director carries senior AML responsibility."
+      }
+    ],
+    "t_valuation_custodian": [
+      {
+        "q": "An FME must appoint an independent…",
+        "options": [
+          "Auditor only",
+          "Custodian (generally IFSC-based)",
+          "Distributor",
+          "Broker"
+        ],
+        "answer": 1,
+        "explain": "An independent custodian, generally based in IFSC."
+      },
+      {
+        "q": "Valuation must follow…",
+        "options": [
+          "Any method",
+          "The prescribed norms",
+          "The manager's discretion",
+          "Investor preference"
+        ],
+        "answer": 1,
+        "explain": "The prescribed valuation norms."
+      },
+      {
+        "q": "For a Compliance Officer, the key valuation points are…",
+        "options": [
+          "Price and marketing",
+          "Independence and timeliness",
+          "Speed only",
+          "Investor count"
+        ],
+        "answer": 1,
+        "explain": "Independence of the valuer and timeliness of reports."
+      }
+    ],
+    "t_reporting": [
+      {
+        "q": "Reporting obligations split into…",
+        "options": [
+          "Monthly and yearly",
+          "Periodic and event-based",
+          "Public and private",
+          "Internal and external"
+        ],
+        "answer": 1,
+        "explain": "Periodic (fixed cycle) and event-based (triggered)."
+      },
+      {
+        "q": "A change in KMP is an example of…",
+        "options": [
+          "Periodic reporting",
+          "Event-based reporting",
+          "No reporting",
+          "Investor reporting"
+        ],
+        "answer": 1,
+        "explain": "It's triggered by a specific event."
+      },
+      {
+        "q": "Some investor reporting runs…",
+        "options": [
+          "Daily",
+          "Quarterly, within a month of quarter end",
+          "Every 5 years",
+          "On request only"
+        ],
+        "answer": 1,
+        "explain": "Quarterly, within one month of quarter end."
+      }
+    ]
+  }
+}

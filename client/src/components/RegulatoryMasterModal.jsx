@@ -197,6 +197,100 @@ function LessonRenderer({ item, isCompleted, onToggleComplete }) {
   );
 }
 
+// ─── Flash Recall / Deck Renderer ─────────────────────────────────────────
+function FlashRecallRenderer({ item, isCompleted, onToggleComplete }) {
+  const [flipped, setFlipped] = useState(false);
+  const cards = [];
+  if (typeof item.cards === 'string' && item.cards.trim()) {
+    const blocks = item.cards.split('||').map(b => b.trim()).filter(Boolean);
+    blocks.forEach(b => {
+      const parts = b.split('|').map(p => p.trim()).filter(Boolean);
+      cards.push({ front: parts[0] || item.title || 'Flash Recall', back: parts.slice(1).join('\n') || parts[0] });
+    });
+  } else if (item.pairs && typeof item.pairs === 'string' && item.pairs.trim()) {
+    item.pairs.split(';').forEach(pair => {
+      const [f, b] = pair.split('=').map(s => s?.trim());
+      if (f) cards.push({ front: f, back: b || '' });
+    });
+  }
+
+  const defaultFront = item.question || item.title || 'Flash Recall Card';
+  const defaultBack = item.explanation || item.summary || item.meaning || 'Review statutory text and key thresholds for this concept.';
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-4 border-b border-line">
+        <div className="min-w-0">
+          <div className="flex flex-wrap gap-2 mb-2">
+            <TypeBadge type={item.type || 'flash_recall'} />
+            {item.concept && (
+              <span className="px-2 py-0.5 bg-paper border border-line text-ink-soft text-[10px] rounded-full">
+                {item.concept}
+              </span>
+            )}
+            {item.provision && (
+              <span className="px-2 py-0.5 bg-paper border border-line text-ink-soft text-[10px] rounded-full">
+                {item.provision}
+              </span>
+            )}
+          </div>
+          <h2 className="text-xl sm:text-2xl font-display text-forest-deep font-semibold leading-snug">
+            {item.question || item.title}
+          </h2>
+        </div>
+        <button
+          onClick={onToggleComplete}
+          className={`cursor-target flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all min-h-[44px] ${
+            isCompleted
+              ? 'bg-mint text-forest border border-mint-deep'
+              : 'bg-forest text-white hover:bg-leaf'
+          }`}
+        >
+          {isCompleted ? <><CheckCircle2 className="w-4 h-4 text-leaf" /> Done</> : <><Circle className="w-4 h-4" /> Mark Reviewed</>}
+        </button>
+      </div>
+
+      <div
+        onClick={() => setFlipped(!flipped)}
+        className="cursor-pointer bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white rounded-2xl p-6 sm:p-8 min-h-[240px] flex flex-col justify-between card-shadow hover-lift relative overflow-hidden transition-all select-none border border-slate-700"
+      >
+        <div className="flex justify-between items-center text-xs text-slate-400 font-mono">
+          <span className="uppercase tracking-widest text-[10px] text-amber-400 font-bold">⚡ Rapid Recall Deck</span>
+          <span>Tap anywhere to flip</span>
+        </div>
+        
+        <div className="my-auto py-4 text-center">
+          {!flipped ? (
+            <div className="text-lg sm:text-2xl font-semibold text-white leading-relaxed font-display">
+              {cards[0]?.front || defaultFront}
+            </div>
+          ) : (
+            <div className="text-sm sm:text-base text-slate-200 leading-relaxed font-sans animate-fade-in whitespace-pre-line text-left">
+              <strong className="block text-emerald-400 font-mono text-xs uppercase mb-2">Key Takeaway / Answer:</strong>
+              {cards[0]?.back || defaultBack}
+            </div>
+          )}
+        </div>
+
+        <div className="text-center text-[11px] text-slate-400 font-mono">
+          {flipped ? '✓ Flipped (Tap to hide)' : 'Tap card to reveal answer / details'}
+        </div>
+      </div>
+
+      {cards.length > 1 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          {cards.slice(1).map((c, i) => (
+            <div key={i} className="p-4 bg-white border border-line rounded-xl card-shadow">
+              <div className="text-xs font-bold text-forest-deep mb-1 font-display">{c.front}</div>
+              <div className="text-xs text-ink-soft leading-relaxed whitespace-pre-line">{c.back}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MCQ / Multiple-choice Renderer ──────────────────────────────────────
 function McqRenderer({ item, courseSlug, isCompleted, onAnswered }) {
   const { token } = useAuth();
@@ -222,10 +316,13 @@ function McqRenderer({ item, courseSlug, isCompleted, onAnswered }) {
     options.push({ k: 'A', t: 'True' }, { k: 'B', t: 'False' });
   }
 
+  // If no options and not fill, provide default true/false or answer review
+  const hasNoOptions = !isFill && options.length === 0;
+
   const handleSubmit = async () => {
     if (result) return;
     const answer = isFill ? fillText.trim() : selected;
-    if (!answer) return;
+    if (!answer && !hasNoOptions) return;
     setLoading(true);
     setError(null);
     try {
@@ -235,7 +332,7 @@ function McqRenderer({ item, courseSlug, isCompleted, onAnswered }) {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ uid: item.uid, answer }),
+        body: JSON.stringify({ uid: item.uid, answer: answer || 'A' }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Submission failed');
@@ -520,7 +617,8 @@ export default function RegulatoryMasterModal({ course, onClose }) {
     setCompletedSet(prev => new Set([...prev, uid]));
   };
 
-  const isLesson = (item) => item?.itemType === 'lesson' || item?.type === 'lesson' || !item?.question;
+  const isLesson = (item) => item?.itemType === 'lesson' || item?.type === 'lesson' || (!item?.question && !item?.title?.includes('Deck'));
+  const isFlashRecall = (item) => item?.type === 'flash_recall' || item?.itemType === 'flash_recall' || item?.question?.includes('Deck') || item?.title?.includes('Deck');
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
@@ -638,7 +736,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                 </div>
               </div>
             ) : activeItem ? (
-              isLesson(activeItem) ? (
+              isFlashRecall(activeItem) ? (
+                <FlashRecallRenderer
+                  item={activeItem}
+                  isCompleted={completedSet.has(activeItem.uid)}
+                  onToggleComplete={() => handleToggleLesson(activeItem.uid)}
+                />
+              ) : isLesson(activeItem) ? (
                 <LessonRenderer
                   item={activeItem}
                   isCompleted={completedSet.has(activeItem.uid)}
