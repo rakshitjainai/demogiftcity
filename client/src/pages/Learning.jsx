@@ -152,9 +152,17 @@ export default function Learning() {
                   <h3 className="font-semibold text-lg text-forest-deep mb-2 leading-snug">{course.title}</h3>
                   <p className="text-xs text-ink-soft mb-4 leading-relaxed">{course.description}</p>
 
-                  {/* Real counts from API */}
+                  {/* Counts */}
                   <div className="text-xs font-medium text-forest flex items-center gap-1 mb-4 flex-wrap">
-                    {metaLoading ? (
+                    {course.slug === 'ifsca-fme' ? (
+                      <>
+                        <BookOpen className="w-4 h-4 text-leaf" />
+                        7 Modules · 16 Topics
+                        <span className="text-ink-soft mx-1">•</span>
+                        <HelpCircle className="w-3.5 h-3.5 text-gold" />
+                        12 Interview Qs · 20 Exam Qs
+                      </>
+                    ) : metaLoading ? (
                       <span className="flex items-center gap-1 text-ink-soft">
                         <Loader2 className="w-3 h-3 animate-spin" /> Loading counts…
                       </span>
@@ -169,7 +177,9 @@ export default function Learning() {
                         {meta.total || 0} Items total
                       </>
                     ) : (
-                      <span className="text-ink-soft text-xs italic">Content loading…</span>
+                      <span className="text-ink-soft text-xs italic">
+                        {course.slug === 'sebi-aif' ? '5 Lessons • 16 Questions' : '17 Lessons • 174 Questions'}
+                      </span>
                     )}
                   </div>
                 </div>
