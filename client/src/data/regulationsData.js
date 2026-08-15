@@ -2,6 +2,7 @@ import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
 import ifscaFinanceCompanyPackage from './RegMate_IFSCA_Finance_Company_2021_FINAL.json';
 import ifscaInsuranceBusinessPackage from './RegMate_IFSCA_Registration_Insurance_Business_2021_FINAL.json';
 import ifscaPensionFundPackage from './RegMate_IFSCA_Pension_Fund_2026_FINAL.json';
+import ifscaListingPackage from './RegMate_IFSCA_Listing_2024_FINAL-2.json';
 import ifscaMgaPackage from './RegMate_IFSCA_MGA_2026_FINAL.json';
 
 const romanMap = {
@@ -163,6 +164,7 @@ function processSchema2Package(pkg, actSlug) {
 const financeCompanyActData = processSchema2Package(ifscaFinanceCompanyPackage, 'ifsca-finance-company-2021');
 const insuranceBusinessActData = processSchema2Package(ifscaInsuranceBusinessPackage, 'ifsca-registration-insurance-business-2021');
 const pensionFundActData = processSchema2Package(ifscaPensionFundPackage, 'ifsca-pension-fund-2026');
+const listingActData = processSchema2Package(ifscaListingPackage, 'ifsca-listing-2024');
 const mgaActData = processSchema2Package(ifscaMgaPackage, 'ifsca-mga-2026');
 
 export function getActDefinitions(actSlug) {
@@ -207,6 +209,20 @@ export const ACTS_DATA = {
   // IFSCA (MANAGING GENERAL AGENTS) REGULATIONS, 2026 | 6 Chapters + 4 Schedules
   // ══════════════════════════════════════════════════════════════════════════
   'ifsca-mga-2026': mgaActData,
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (LISTING) REGULATIONS, 2024 | 131 Provisions | 34 Definitions
+  // As amended up to 14 October 2025 — 0 Schedules
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-listing-2024': {
+    ...listingActData,
+    title: 'IFSCA (Listing) Regulations, 2024',
+    shortTitle: 'IFSCA Listing Regulations',
+    versionDate: 'As amended up to 14 October 2025',
+    status: 'Final',
+    verified: true,
+    verifiedDate: '14 October 2025',
+  },
 
   // ══════════════════════════════════════════════════════════════════════════
   // COMPANIES ACT, 2013  |  29 Chapters
