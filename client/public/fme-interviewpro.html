@@ -10,6 +10,94 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
+/* Existing styles */
+</style>
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  // Helper to fetch Razorpay key ID
+  async function getRazorpayKey() {
+    const res = await fetch('/api/payments/key-id');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to get Razorpay key');
+    return data.keyId;
+  }
+
+  // Generic checkout flow used by both buttons
+  async function startRazorpay({ productType, productId, onSuccess }) {
+    try {
+      const token = localStorage.getItem('regmate_token');
+      if (!token) throw new Error('Please sign in before making a purchase');
+
+      const keyId = await getRazorpayKey();
+
+      // Create order on backend
+      const orderRes = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          productType,
+          productId: productType === 'course' ? productId : 'full_access'
+        })
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok || !orderData.success) {
+        throw new Error(orderData.message || 'Order creation failed');
+      }
+
+      const options = {
+        key: keyId,
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
+        name: 'RegMate',
+        description: productType === 'membership'
+          ? 'RegMate All‑Access Annual Membership (1 Year)'
+          : `Regulatory Master – ${productId.toUpperCase()} Course Pass`,
+        image: 'https://demogiftcity.vercel.app/logoheader.jpeg',
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          // Verify payment on server
+          const verifyRes = await fetch('/api/payments/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              productType,
+              productId: productType === 'course' ? productId : 'full_access'
+            })
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyRes.ok && verifyData.success) {
+            if (onSuccess) onSuccess();
+          } else {
+            alert(verifyData.message || 'Payment verification failed');
+          }
+        },
+        prefill: {},
+        theme: { color: '#0B4D33' },
+        modal: { ondismiss: function() { console.log('Razorpay modal dismissed'); } }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (err) {
+        console.error('Payment failed', err);
+        alert(err.error?.description || 'Payment failed');
+      });
+      rzp.open();
+    } catch (e) {
+      console.error(e);
+      alert(e.message);
+    }
+  }
+</script>
 /* =========================================================================
    RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15
    Design system: regulatory intelligence app
@@ -2765,31 +2853,27 @@ window.RM = (function () {
 // grantPass function removed - using initiateCheckout
 
 
-    document.getElementById("buy-job-499").onclick = function() {
-  if (typeof window !== 'undefined' && typeof window.initiateCheckout === 'function') {
-    window.initiateCheckout({
-      productType: 'course',
-      productId: 'job_ready',
-      onSuccess: function() {
-        var m = document.getElementById('job-upgrade-modal');
-        if (m) m.remove();
-        render();
-      }
-    });
-  }
+    document.getElementById('buy-job-499').onclick = function() {
+  startRazorpay({
+    productType: 'course',
+    productId: 'job_ready',
+    onSuccess: function() {
+      var m = document.getElementById('job-upgrade-modal');
+      if (m) m.remove();
+      render();
+    }
+  });
 };
-document.getElementById("buy-job-1999").onclick = function() {
-  if (typeof window !== 'undefined' && typeof window.initiateCheckout === 'function') {
-    window.initiateCheckout({
-      productType: 'membership',
-      productId: 'full_access',
-      onSuccess: function() {
-        var m = document.getElementById('job-upgrade-modal');
-        if (m) m.remove();
-        render();
-      }
-    });
-  }
+document.getElementById('buy-job-1999').onclick = function() {
+  startRazorpay({
+    productType: 'membership',
+    productId: 'full_access',
+    onSuccess: function() {
+      var m = document.getElementById('job-upgrade-modal');
+      if (m) m.remove();
+      render();
+    }
+  });
 };
   }
 
