@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import { Search, ChevronDown, Menu, X, LogIn, Zap, LogOut, User as UserIcon, Award, BookOpen, LayoutDashboard, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';

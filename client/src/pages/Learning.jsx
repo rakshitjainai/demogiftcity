@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap } from 'lucide-react';
+import { PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap, Sparkles } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RegulatoryMasterModal from '../components/RegulatoryMasterModal';

@@ -4,7 +4,7 @@ import {
   ShieldAlert, Sparkles, Award, Loader2, AlertCircle, ChevronDown, ChevronLeft,
   ChevronRight, Zap, Target, Play, Brain, Shield, Clock, RotateCcw,
   Check, Eye, Filter, UserCheck, Flame, Scale, FileText, BarChart3,
-  ExternalLink, Layers, Lock, Crown
+  ExternalLink, Layers, Lock, Crown, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import LockOverlay from './LockOverlay';
@@ -192,12 +192,12 @@ class RegulatoryMasterErrorBoundary extends React.Component {
 
 // ─── Main Modal Component Inner ────────────────────────────────────────────
 function RegulatoryMasterModalInner({ course, onClose }) {
-  const { user, token, toggleCourseItem, isMember, hasCourseAccess, initiateCheckout } = useAuth();
+  const { user, token, toggleCourseItem, isMember, hasCourseAccess, hasAccess, initiateCheckout } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const isFME = (course?.code || '').toUpperCase().includes('FME') || (course?.slug || '').includes('fme');
   const resolvedSlug = isFME ? 'ifsca-fme' : (course?.slug || 'ifsca-cmi');
-  const isCourseOwned = isMember || hasCourseAccess(resolvedSlug) || user?.role === 'admin';
+  const isCourseOwned = Boolean(isMember || hasCourseAccess?.(resolvedSlug) || user?.role === 'admin');
 
   // BUG 3 FIX: Lock body scroll when modal is open (prevents mobile bleed-through)
   useEffect(() => {
