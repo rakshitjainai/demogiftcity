@@ -317,52 +317,59 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-forest-deep/80 backdrop-blur-sm overflow-hidden animate-fade-in"
+      className="fixed inset-0 z-[100] flex flex-col sm:items-center sm:justify-center p-0 sm:p-4 overflow-hidden animate-fade-in"
       style={{
         fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
         color: 'var(--ink)',
+        background: 'rgba(7, 51, 33, 0.85)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* App Shell Container — full-screen on mobile, constrained modal on desktop */}
-      {/* BUG 3 FIX: w-full h-[100dvh] on mobile ensures full-screen with no bleed-through */}
-      <div className="w-full max-w-5xl h-[100dvh] sm:h-[92vh] sm:max-h-[920px] bg-paper sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border border-line relative">
+      {/* App Shell Container — full-screen on mobile, elegant dialog on desktop */}
+      <div
+        className="w-full h-full sm:h-[90vh] sm:max-h-[920px] max-w-5xl bg-paper sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative sm:border border-line"
+        style={{
+          height: window.innerWidth < 640 ? '100dvh' : '90vh',
+          maxHeight: window.innerWidth < 640 ? '100dvh' : '920px',
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
 
         {/* ─── Topbar (Codex Design System) ─── */}
-        <header className="bg-forest-deep text-paper px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-sm shadow-xs flex-shrink-0 border border-leaf/30">
+        <header className="bg-forest-deep text-paper px-3 sm:px-6 py-3 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-xs sm:text-sm shadow-xs flex-shrink-0 border border-leaf/30">
               §
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-serif font-bold text-sm sm:text-base text-paper tracking-tight">
-                  RegMate Regulatory Master
-                </span>
-                <span className="px-2 py-0.5 bg-mint/15 text-mint text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-mint/20">
-                  {course?.code || 'IFSCA-FME'}
-                </span>
-              </div>
+            <div className="min-w-0 flex items-center gap-1.5 truncate">
+              <span className="font-serif font-bold text-xs sm:text-base text-paper tracking-tight truncate">
+                Regulatory Master
+              </span>
+              <span className="px-1.5 sm:px-2 py-0.5 bg-mint/15 text-mint text-[9px] sm:text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-mint/20 flex-shrink-0">
+                {course?.code || 'IFSCA-FME'}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             {isFME && (
               <button
                 onClick={() => setShowRoleModal(true)}
-                className="cursor-target px-3 py-1.5 bg-forest hover:bg-forest-deep text-mint border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[38px]"
+                className="cursor-target px-2.5 sm:px-3 py-1.5 bg-forest hover:bg-forest-deep text-mint border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[34px] sm:min-h-[38px]"
               >
-                <UserCheck className="w-3.5 h-3.5 text-gold-soft" />
+                <UserCheck className="w-3.5 h-3.5 text-gold-soft flex-shrink-0" />
                 <span className="hidden sm:inline text-xs font-semibold">{currentRole.name}</span>
                 <span className="sm:hidden font-mono text-[11px] font-bold">{currentRole.tag}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-mint/70" />
+                <ChevronDown className="w-3 h-3 text-mint/70 flex-shrink-0" />
               </button>
             )}
 
             <button
               onClick={onClose}
               aria-label="Close"
-              className="cursor-target p-2 rounded-xl hover:bg-white/10 text-mint/80 hover:text-white transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
+              className="cursor-target p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-mint/80 hover:text-white transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
@@ -397,7 +404,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
             <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
 
               {/* Hero Banner with Readiness Dial */}
-              <div className="bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white rounded-3xl p-5 sm:p-7 border border-leaf/30 card-shadow relative overflow-hidden">
+              <div
+                className="rounded-3xl p-5 sm:p-7 card-shadow relative overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 60%, var(--forest-deep) 100%)', border: '1px solid rgba(18,138,84,0.3)', color: '#ffffff' }}
+              >
                 <div className="flex justify-between items-start gap-4">
                   <div>
                     <span className="text-[10px] font-mono text-gold-soft uppercase tracking-widest block mb-1 font-bold">
@@ -650,7 +660,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                         {/* Layer 1: Why This Gets Asked (Signature dark forest card) */}
                         {topic.why && (
-                          <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 border border-leaf/30 card-shadow">
+                          <div
+                            className="rounded-2xl p-5 sm:p-6 card-shadow"
+                            style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%)', border: '1px solid rgba(18,138,84,0.3)', color: '#ffffff' }}
+                          >
                             <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold mb-2">
                               <Sparkles className="w-4 h-4 text-gold-soft" /> Why this gets asked in interviews
                             </div>
@@ -996,7 +1009,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                             {isLesson && (
                               <div className="space-y-4">
                                 {item.hook && (
-                                  <div className="p-4 bg-gradient-to-br from-forest-deep to-forest text-white rounded-xl text-xs sm:text-sm italic leading-relaxed">
+                                  <div
+                                    className="p-4 rounded-xl text-xs sm:text-sm italic leading-relaxed"
+                                    style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%)', color: '#ffffff' }}
+                                  >
                                     "{item.hook}"
                                   </div>
                                 )}
@@ -1455,15 +1471,21 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                  .filter(n => n.length > 0);
                                if (nodes.length === 0) return null;
                                return (
-                                 <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 space-y-3 card-shadow border border-leaf/30">
-                                   <div className="text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold flex items-center gap-1.5">
-                                     <Brain className="w-4 h-4 text-gold-soft" /> Remember The Structure (Mental Flow)
+                                 <div
+                                   className="rounded-2xl p-5 sm:p-6 space-y-3 card-shadow"
+                                   style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%)', border: '1px solid rgba(18,138,84,0.3)' }}
+                                 >
+                                   <div className="text-[10px] font-mono uppercase tracking-widest font-bold flex items-center gap-1.5" style={{ color: 'var(--gold-soft)' }}>
+                                     <Brain className="w-4 h-4" style={{ color: 'var(--gold-soft)' }} /> Remember The Structure (Mental Flow)
                                    </div>
                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
                                      {nodes.map((node, nIdx) => (
                                        <React.Fragment key={nIdx}>
-                                         {nIdx > 0 && <span className="text-gold-soft font-bold text-sm leading-none">→</span>}
-                                         <span className="px-3 py-1.5 bg-white/15 border border-white/25 rounded-xl text-xs font-mono font-semibold text-white leading-snug">
+                                         {nIdx > 0 && <span className="font-bold text-sm leading-none" style={{ color: 'var(--gold-soft)' }}>→</span>}
+                                         <span
+                                           className="px-3 py-1.5 rounded-xl text-xs font-mono font-semibold leading-snug"
+                                           style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', color: '#ffffff' }}
+                                         >
                                            {node}
                                          </span>
                                        </React.Fragment>
@@ -1583,7 +1605,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                       <div className="bg-white border border-line rounded-3xl overflow-hidden card-shadow">
                         {/* Setup Dark Header */}
-                        <div className="bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white p-6 sm:p-7 space-y-3">
+                        <div
+                          className="p-6 sm:p-7 space-y-3"
+                          style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 50%, var(--forest-deep) 100%)', color: '#ffffff' }}
+                        >
                           <span className="text-[10px] font-mono text-gold-soft uppercase tracking-widest font-bold">
                             {isSim ? `Job Simulation · ${item.role?.toUpperCase()} Role` : 'Judgement Scenario'}
                           </span>
@@ -1664,7 +1689,10 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
                               {/* Compliance Control Table */}
                               {item.control && (
-                                <div className="bg-gradient-to-br from-forest-deep to-forest text-white rounded-2xl p-5 sm:p-6 space-y-3 card-shadow border border-leaf/30">
+                                <div
+                                  className="rounded-2xl p-5 sm:p-6 space-y-3 card-shadow"
+                                  style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%)', border: '1px solid rgba(18,138,84,0.3)', color: '#ffffff' }}
+                                >
                                   <div className="text-[10px] font-mono uppercase tracking-widest text-gold-soft font-bold flex items-center gap-1.5">
                                     <Shield className="w-4 h-4 text-gold-soft" /> Structured Compliance Control
                                   </div>
@@ -1798,7 +1826,8 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                       {/* 3D Flashcard */}
                       <div
                         onClick={() => setFlashFlipped(!flashFlipped)}
-                        className="cursor-pointer bg-gradient-to-br from-forest-deep via-forest to-forest-deep text-white rounded-3xl p-6 sm:p-10 min-h-[280px] sm:min-h-[320px] flex flex-col justify-between border border-leaf/30 card-shadow hover-lift relative select-none"
+                        className="cursor-pointer rounded-3xl p-6 sm:p-10 min-h-[280px] sm:min-h-[320px] flex flex-col justify-between card-shadow hover-lift relative select-none"
+                        style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 50%, var(--forest-deep) 100%)', border: '1px solid rgba(18,138,84,0.3)', color: '#ffffff' }}
                       >
                         <div className="flex justify-between items-center text-xs text-mint/80 font-mono">
                           <span className="text-[10px] text-gold-soft uppercase font-bold tracking-widest">{card.cat}</span>
