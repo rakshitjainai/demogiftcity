@@ -75,8 +75,122 @@ function VerifyWarningBanner({ note }) {
   );
 }
 
-// ─── Main Modal Component ──────────────────────────────────────────────────
-export default function RegulatoryMasterModal({ course, onClose }) {
+// ─── Cards Normalizer Helper ────────────────────────────────────────────────
+// Safely converts both array of card objects and pipe-delimited card strings into uniform card objects
+function normalizeCards(cards) {
+  if (!cards) return [];
+  if (Array.isArray(cards)) return cards;
+  if (typeof cards === 'string') {
+    return cards.split('||').map((rawCard, idx) => {
+      const cardStr = rawCard.trim();
+      if (!cardStr) return null;
+      const parts = cardStr.split('|').map(p => p.trim());
+      let title = '';
+      let law = '';
+      let means = '';
+      let watch = '';
+      let tag = `Point ${idx + 1}`;
+
+      parts.forEach(part => {
+        const u = part.toUpperCase();
+        if (u.startsWith('LAW')) {
+          law = part.replace(/^LAW\s*:?/i, '').trim();
+        } else if (u.startsWith('PLAIN')) {
+          means = part.replace(/^PLAIN\s*:?/i, '').trim();
+        } else if (u.startsWith('WATCH')) {
+          watch = part.replace(/^WATCH\s*:?/i, '').trim();
+        } else if (!title) {
+          title = part;
+        }
+      });
+
+      if (title && title.includes(': LAW')) {
+        const [t, l] = title.split(': LAW');
+        title = t.trim();
+        if (!law && l) law = l.trim();
+      }
+
+      return { tag, title, law, means, watch };
+    }).filter(Boolean);
+  }
+  return [];
+}
+
+// ─── Regulatory Master Error Boundary ───────────────────────────────────────
+class RegulatoryMasterErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('RegulatoryMasterErrorBoundary caught an error:', error, errorInfo);
+    this.setState({ errorInfo });
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          style={{
+            fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
+            background: 'rgba(7, 51, 33, 0.88)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <div className="bg-paper rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-line shadow-2xl space-y-5 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center mx-auto">
+              <ShieldAlert className="w-7 h-7" />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-xl text-forest-deep">
+                Something went wrong loading this content
+              </h3>
+              <p className="text-xs sm:text-sm text-ink-soft mt-1.5 leading-relaxed">
+                An unexpected display issue occurred. You can retry safely or close this dialog.
+              </p>
+            </div>
+
+            {this.state.error && (
+              <div className="text-left p-3 bg-rose-50 border border-rose-200 rounded-xl text-[11px] font-mono text-rose-900 max-h-36 overflow-y-auto">
+                <strong>{this.state.error.toString()}</strong>
+              </div>
+            )}
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={this.handleReset}
+                className="flex-1 py-3 bg-mint hover:bg-mint-deep text-forest border border-mint-deep font-semibold text-xs sm:text-sm rounded-xl transition-colors min-h-[44px]"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={this.props.onClose}
+                className="flex-1 py-3 bg-forest hover:bg-forest-deep text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition-colors min-h-[44px]"
+              >
+                Close Modal
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// ─── Main Modal Component Inner ────────────────────────────────────────────
+function RegulatoryMasterModalInner({ course, onClose }) {
   const { user, token, toggleCourseItem, hasAccess } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
@@ -338,16 +452,16 @@ export default function RegulatoryMasterModal({ course, onClose }) {
       >
 
         {/* ─── Topbar (Codex Design System) ─── */}
-        <header className="bg-forest-deep text-paper px-3 sm:px-6 py-3 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20 gap-2">
+        <header className="bg-forest-deep text-white px-3 sm:px-6 py-3 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20 gap-2" style={{ color: '#ffffff' }}>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-xs sm:text-sm shadow-xs flex-shrink-0 border border-leaf/30">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-xs sm:text-sm shadow-xs flex-shrink-0 border border-leaf/30" style={{ color: 'var(--mint)' }}>
               §
             </div>
             <div className="min-w-0 flex items-center gap-1.5 truncate">
-              <span className="font-serif font-bold text-xs sm:text-base text-paper tracking-tight truncate">
+              <span className="font-serif font-bold text-xs sm:text-base text-white tracking-tight truncate" style={{ color: '#ffffff' }}>
                 Regulatory Master
               </span>
-              <span className="px-1.5 sm:px-2 py-0.5 bg-mint/15 text-mint text-[9px] sm:text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-mint/20 flex-shrink-0">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-white/15 text-white text-[9px] sm:text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-white/25 flex-shrink-0" style={{ color: '#ffffff' }}>
                 {course?.code || 'IFSCA-FME'}
               </span>
             </div>
@@ -357,19 +471,21 @@ export default function RegulatoryMasterModal({ course, onClose }) {
             {isFME && (
               <button
                 onClick={() => setShowRoleModal(true)}
-                className="cursor-target px-2.5 sm:px-3 py-1.5 bg-forest hover:bg-forest-deep text-mint border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[34px] sm:min-h-[38px]"
+                className="cursor-target px-2.5 sm:px-3 py-1.5 bg-forest hover:bg-forest-deep text-white border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[34px] sm:min-h-[38px]"
+                style={{ color: '#ffffff' }}
               >
-                <UserCheck className="w-3.5 h-3.5 text-gold-soft flex-shrink-0" />
-                <span className="hidden sm:inline text-xs font-semibold">{currentRole.name}</span>
-                <span className="sm:hidden font-mono text-[11px] font-bold">{currentRole.tag}</span>
-                <ChevronDown className="w-3 h-3 text-mint/70 flex-shrink-0" />
+                <UserCheck className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#FFE6A7' }} />
+                <span className="hidden sm:inline text-xs font-semibold" style={{ color: '#ffffff' }}>{currentRole.name}</span>
+                <span className="sm:hidden font-mono text-[11px] font-bold" style={{ color: '#ffffff' }}>{currentRole.tag}</span>
+                <ChevronDown className="w-3 h-3 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.7)' }} />
               </button>
             )}
 
             <button
               onClick={onClose}
               aria-label="Close"
-              className="cursor-target p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-mint/80 hover:text-white transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              className="cursor-target p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-white transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              style={{ color: '#ffffff' }}
             >
               <X className="w-5 h-5" />
             </button>
@@ -377,20 +493,20 @@ export default function RegulatoryMasterModal({ course, onClose }) {
         </header>
 
         {/* ─── Track / Role Sub-Bar ─── */}
-        <div className="bg-forest text-mint/90 px-4 sm:px-6 py-2 flex items-center justify-between text-xs border-b border-forest-deep flex-shrink-0">
+        <div className="bg-forest text-white px-4 sm:px-6 py-2 flex items-center justify-between text-xs border-b border-forest-deep flex-shrink-0" style={{ color: '#ffffff' }}>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 truncate">
-            <span className="text-[11px] font-mono text-gold-soft uppercase tracking-wider font-bold">
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold" style={{ color: '#FFE6A7' }}>
               {isFME ? `Focus: ${currentRole.tag} Role` : 'Mastery Track'}
             </span>
-            <span className="text-mint/40">•</span>
-            <span className="text-xs text-mint/90 truncate font-medium">
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>•</span>
+            <span className="text-xs truncate font-medium" style={{ color: '#ffffff' }}>
               {isFME ? currentRole.line : course?.title}
             </span>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0 font-mono text-[11px]">
-            <span className="text-mint/70">Readiness</span>
-            <span className="font-bold text-gold-soft">{readinessPct}%</span>
+            <span style={{ color: 'rgba(255,255,255,0.85)' }}>Readiness</span>
+            <span className="font-bold" style={{ color: '#FFE6A7' }}>{readinessPct}%</span>
           </div>
         </div>
 
@@ -1017,40 +1133,45 @@ export default function RegulatoryMasterModal({ course, onClose }) {
                                   </div>
                                 )}
 
-                                {item.cards && item.cards.length > 0 && (
-                                  <div className="space-y-3">
-                                    {item.cards.map((card, cIdx) => (
-                                      <div key={cIdx} className="p-4 rounded-xl bg-paper border border-line space-y-2.5">
-                                        {card.tag && (
-                                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-mint text-forest uppercase">
-                                            {card.tag}
-                                          </span>
-                                        )}
-                                        {card.title && <h3 className="font-bold text-sm text-forest-deep">{card.title}</h3>}
-                                        {card.law && (
-                                          <div className="p-3 bg-mint/40 border border-mint-deep rounded-lg text-xs font-mono text-forest-deep leading-relaxed">
-                                            <strong className="block text-[10px] uppercase text-forest mb-1">Statutory Law:</strong>
-                                            {card.law}
-                                          </div>
-                                        )}
-                                        {card.means && (
-                                          <p className="text-xs sm:text-sm text-ink leading-relaxed">
-                                            <strong className="text-forest-deep">Meaning: </strong>{card.means}
-                                          </p>
-                                        )}
-                                        {card.watch && (
-                                          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2">
-                                            <ShieldAlert className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                              <strong className="block text-[10px] uppercase font-bold text-amber-800">Practitioner Caution:</strong>
-                                              {card.watch}
+                                {/* Cards (Points / Concepts) */}
+                                {(() => {
+                                  const cardsList = normalizeCards(item.cards);
+                                  if (cardsList.length === 0) return null;
+                                  return (
+                                    <div className="space-y-3">
+                                      {cardsList.map((card, cIdx) => (
+                                        <div key={cIdx} className="p-4 rounded-xl bg-paper border border-line space-y-2.5">
+                                          {card.tag && (
+                                            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-mint text-forest uppercase">
+                                              {card.tag}
+                                            </span>
+                                          )}
+                                          {card.title && <h3 className="font-bold text-sm text-forest-deep">{card.title}</h3>}
+                                          {card.law && (
+                                            <div className="p-3 bg-mint/40 border border-mint-deep rounded-lg text-xs font-mono text-forest-deep leading-relaxed">
+                                              <strong className="block text-[10px] uppercase text-forest mb-1">Statutory Law:</strong>
+                                              {card.law}
                                             </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
+                                          )}
+                                          {card.means && (
+                                            <p className="text-xs sm:text-sm text-ink leading-relaxed">
+                                              <strong className="text-forest-deep">Meaning: </strong>{card.means}
+                                            </p>
+                                          )}
+                                          {card.watch && (
+                                            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2">
+                                              <ShieldAlert className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
+                                              <div>
+                                                <strong className="block text-[10px] uppercase font-bold text-amber-800">Practitioner Caution:</strong>
+                                                {card.watch}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                })()}
 
                                 {item.summary && (
                                   <div className="p-4 bg-paper border border-line rounded-xl text-xs sm:text-sm text-ink leading-relaxed">
@@ -2164,5 +2285,13 @@ export default function RegulatoryMasterModal({ course, onClose }) {
 
       </div>
     </div>
+  );
+}
+
+export default function RegulatoryMasterModal(props) {
+  return (
+    <RegulatoryMasterErrorBoundary onClose={props.onClose}>
+      <RegulatoryMasterModalInner {...props} />
+    </RegulatoryMasterErrorBoundary>
   );
 }
