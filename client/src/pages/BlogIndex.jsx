@@ -11,9 +11,18 @@ export default function BlogIndex() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Sort all posts by date descending (most recent first) across the entire dataset
+  const sortedPosts = useMemo(() => {
+    return [...postsSummary].sort((a, b) => {
+      const timeA = new Date(a.rawDate || a.date).getTime() || 0;
+      const timeB = new Date(b.rawDate || b.date).getTime() || 0;
+      return timeB - timeA;
+    });
+  }, []);
+
   // Filter posts based on category and search query
   const filteredPosts = useMemo(() => {
-    return postsSummary.filter(post => {
+    return sortedPosts.filter(post => {
       // Category filter
       const matchesCategory = selectedCategory === 'all' || 
         post.categories.some(cat => cat.slug === selectedCategory);
@@ -28,7 +37,7 @@ export default function BlogIndex() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [sortedPosts, selectedCategory, searchQuery]);
 
   // Reset to page 1 when search or category changes
   const handleCategoryChange = (slug) => {
@@ -81,12 +90,6 @@ export default function BlogIndex() {
         <p className="text-lg md:text-xl text-[var(--ink-soft)] max-w-3xl mx-auto leading-relaxed">
           Comprehensive collection of published insights on corporate law, GIFT IFSC regulations, IPR, business expansion, and creative living.
         </p>
-
-        {/* Total Dataset Counter Pill */}
-        <div className="mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--mint)] border border-[var(--line)] text-xs font-semibold text-[var(--forest)] shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-[var(--leaf)] animate-pulse"></span>
-          <span>Sourced from <strong>{postsSummary.length} Published WordPress Blog Posts</strong></span>
-        </div>
       </div>
 
       {/* Search & Filter Toolbar */}

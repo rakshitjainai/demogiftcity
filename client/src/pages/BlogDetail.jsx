@@ -17,7 +17,11 @@ export default function BlogDetail() {
 
     import('../data/posts.json')
       .then(module => {
-        const postsData = module.default;
+        const postsData = [...module.default].sort((a, b) => {
+          const timeA = new Date(a.rawDate || a.date).getTime() || 0;
+          const timeB = new Date(b.rawDate || b.date).getTime() || 0;
+          return timeB - timeA;
+        });
         const index = postsData.findIndex(p => p.slug === slug);
 
         if (index !== -1) {
