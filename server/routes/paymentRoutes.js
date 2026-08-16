@@ -115,6 +115,16 @@ router.post('/create-order', protect, async (req, res) => {
       }
     }
 
+    const key_id = process.env.RAZORPAY_KEY_ID;
+    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!key_id || !key_secret || key_id.includes('placeholder') || key_id.includes('your_key_id')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Razorpay API credentials (RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET) are not configured in server/.env or Render. Please add your rzp_test_ Key ID and Key Secret to proceed.'
+      });
+    }
+
     const amount = PRODUCT_PRICING[productType];
     const currency = 'INR';
     const cleanProductId = productType === 'course' ? productId : 'full_access';
@@ -132,40 +142,15 @@ router.post('/create-order', protect, async (req, res) => {
       }
     };
 
-    let orderId;
-    let orderAmount = amount;
-    let orderCurrency = currency;
-
-    const hasRealKeys = Boolean(
-      process.env.RAZORPAY_KEY_ID &&
-      process.env.RAZORPAY_KEY_SECRET &&
-      !process.env.RAZORPAY_KEY_ID.includes('placeholder') &&
-      !process.env.RAZORPAY_KEY_ID.includes('your_key_id')
-    );
-
-    if (hasRealKeys) {
-      try {
-        const razorpay = getRazorpayInstance();
-        const order = await razorpay.orders.create(orderOptions);
-        orderId = order.id;
-        orderAmount = order.amount;
-        orderCurrency = order.currency;
-      } catch (rzpErr) {
-        console.error('Razorpay API error creating order:', rzpErr);
-        throw new Error(rzpErr.error?.description || rzpErr.message || 'Razorpay order creation failed');
-      }
-    } else {
-      // Local dev/test fallback when keys not yet configured
-      orderId = `order_test_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-      console.log(`ℹ️ Created local test order ${orderId} (Razorpay keys not configured in local .env)`);
-    }
+    const razorpay = getRazorpayInstance();
+    const order = await razorpay.orders.create(orderOptions);
 
     // Save payment attempt in database for audit trail
     await Payment.create({
       userId: user._id,
-      razorpayOrderId: orderId,
-      amount: orderAmount,
-      currency: orderCurrency,
+      razorpayOrderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
       productType,
       productId: cleanProductId,
       status: 'created',
@@ -175,12 +160,12 @@ router.post('/create-order', protect, async (req, res) => {
 
     return res.json({
       success: true,
-      orderId,
-      amount: orderAmount,
-      currency: orderCurrency,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
       productType,
       productId: cleanProductId,
-      keyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+      keyId: key_id,
       user: {
         name: user.name,
         email: user.email,
@@ -213,7 +198,10 @@ router.post('/verify', protect, async (req, res) => {
       return res.status(400).json({ message: 'Missing required payment verification details.' });
     }
 
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || 'regmate_dev_test_secret_2026';
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keySecret) {
+      return res.status(500).json({ message: 'RAZORPAY_KEY_SECRET is not configured on the server.' });
+    }
 
     // HMAC SHA256 signature verification
     const bodyString = `${razorpay_order_id}|${razorpay_payment_id}`;

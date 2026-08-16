@@ -544,7 +544,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-paper flex flex-col h-[100dvh] overflow-hidden animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-paper/90 backdrop-blur-sm animate-fade-in"
       style={{
         fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
         color: 'var(--ink)',
