@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { startRazorpayCheckout } from '../utils/razorpay';
 
 const AuthContext = createContext();
 
@@ -385,77 +386,64 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Purchase pass or upgrade subscription
-  const buyPass = (passType) => {
-    const currentUser = user || {
-      id: 'local-user-' + Date.now(),
-      name: 'RegMate Member',
-      email: 'member@regmate.in',
-      role: 'member',
-    };
-
-    const currentSubscriptions = Array.isArray(currentUser.subscriptions)
-      ? [...currentUser.subscriptions]
-      : JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
-
-    if (!currentSubscriptions.includes(passType)) {
-      currentSubscriptions.push(passType);
+  // Real Razorpay Checkout flow (Server-verified)
+  const initiateCheckout = async ({
+    productType, // 'course' | 'membership'
+    productId,   // 'ifsca-cmi' | 'sebi-aif' | 'ifsca-fme' | 'full_access'
+    onSuccess,
+    onError,
+    onCancel
+  }) => {
+    if (!user) {
+      if (onError) onError(new Error('Please login or register to complete your purchase.'));
+      return;
     }
 
-    const updatedUser = {
-      ...currentUser,
-      subscriptions: currentSubscriptions,
-      membershipStatus: passType === 'full_access' ? 'active' : currentUser.membershipStatus || 'free',
-      subscriptionPlan: passType === 'full_access'
-        ? 'All-Access Pass (₹1,999/yr)'
-        : `${passType.replace(/_/g, ' ').toUpperCase()} Pass (₹499)`
-    };
-
-    setUser(updatedUser);
-    localStorage.setItem('regmate_user', JSON.stringify(updatedUser));
-    localStorage.setItem('regmate_subscriptions', JSON.stringify(currentSubscriptions));
-
-    // Send update message to job iframe if embedded
-    try {
-      const iframe = document.getElementById('job-iframe');
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({
-          type: 'SUBSCRIPTION_UPDATED',
-          subscriptions: currentSubscriptions,
-          isMember: updatedUser.membershipStatus === 'active'
-        }, '*');
+    await startRazorpayCheckout({
+      productType,
+      productId: productType === 'course' ? productId : 'full_access',
+      user,
+      onSuccess: async (verifyResponse) => {
+        // Refresh authenticated user state directly from Render backend
+        await refreshUser();
+        if (onSuccess) onSuccess(verifyResponse);
+      },
+      onError: (err) => {
+        console.error('Payment flow error:', err);
+        if (onError) onError(err);
+      },
+      onCancel: () => {
+        if (onCancel) onCancel();
       }
-    } catch (_) {}
-
-    return updatedUser;
+    });
   };
 
-  // Check section access with 2 free module/item quota
+  // Compatibility adapter replacing legacy mock buyPass with real Razorpay flow
+  const buyPass = (passType, courseSlug) => {
+    const productType = passType === 'full_access' ? 'membership' : 'course';
+    const productId = productType === 'course' ? (courseSlug || 'ifsca-cmi') : 'full_access';
+    return initiateCheckout({ productType, productId });
+  };
+
+  // Derive live membership status from server-provided expiration date
+  const isMember = Boolean(
+    user?.membership?.active ||
+    (user?.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date()) ||
+    user?.role === 'admin'
+  );
+
+  // Check whether user has access to a specific course
+  const hasCourseAccess = (courseSlug) => {
+    if (isMember) return true;
+    if (!user) return false;
+    return (user.coursePurchases || []).some(p => p.courseSlug === courseSlug);
+  };
+
+  // Check section access
   const hasAccess = (sectionKey, itemIndex = 0) => {
-    if (user?.membershipStatus === 'active' || user?.subscriptions?.includes('full_access')) {
-      return true;
-    }
-
-    // First 2 modules/chapters/quizzes (index 0 and index 1) are free
-    if (itemIndex < 2) {
-      return true;
-    }
-
-    const subs = user?.subscriptions || JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
-    if (subs.includes('full_access')) return true;
-
-    if (sectionKey === 'job_ready' || sectionKey === 'job' || sectionKey === 'learn') {
-      return subs.includes('job_ready');
-    }
-
-    if (sectionKey === 'interactive_regulations' || sectionKey === 'regulations') {
-      return subs.includes('interactive_regulations');
-    }
-
-    if (sectionKey === 'quizzes' || sectionKey === 'diagnostic') {
-      return subs.includes('quizzes');
-    }
-
+    if (isMember) return true;
+    // Chapter / Lesson 1 (index 0) is free preview for all users
+    if (itemIndex < 1) return true;
     return false;
   };
 
@@ -477,7 +465,10 @@ export function AuthProvider({ children }) {
         saveReadingProgress,
         trackUsage,
         refreshUser,
+        initiateCheckout,
         buyPass,
+        isMember,
+        hasCourseAccess,
         hasAccess,
         isAuthenticated: !!user
       }}

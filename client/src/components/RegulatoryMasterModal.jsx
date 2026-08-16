@@ -192,11 +192,12 @@ class RegulatoryMasterErrorBoundary extends React.Component {
 
 // ─── Main Modal Component Inner ────────────────────────────────────────────
 function RegulatoryMasterModalInner({ course, onClose }) {
-  const { user, token, toggleCourseItem, hasAccess } = useAuth();
+  const { user, token, toggleCourseItem, isMember, hasCourseAccess, initiateCheckout } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const isFME = (course?.code || '').toUpperCase().includes('FME') || (course?.slug || '').includes('fme');
   const resolvedSlug = isFME ? 'ifsca-fme' : (course?.slug || 'ifsca-cmi');
+  const isCourseOwned = isMember || hasCourseAccess(resolvedSlug) || user?.role === 'admin';
 
   // BUG 3 FIX: Lock body scroll when modal is open (prevents mobile bleed-through)
   useEffect(() => {
@@ -621,6 +622,19 @@ function RegulatoryMasterModalInner({ course, onClose }) {
             {readinessPct}%
           </div>
 
+          {/* Unlock Course CTA */}
+          {!isCourseOwned && (
+            <button
+              onClick={() => initiateCheckout({ productType: 'course', productId: resolvedSlug })}
+              className="px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white rounded-xl text-xs font-bold shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap min-h-[36px]"
+              title="Unlock All Chapters in this Course"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+              <span className="hidden sm:inline">Unlock Course (₹499)</span>
+              <span className="sm:hidden">₹499</span>
+            </button>
+          )}
+
           {/* Exit Learning Button (Placed in Top Controller) */}
           <button
             onClick={onClose}
@@ -641,6 +655,59 @@ function RegulatoryMasterModalInner({ course, onClose }) {
         {/* ================================================================= */}
         {activeTab === 'home' && (() => {
           const currentTopic = topicsList[topicIndex] || topicsList[0];
+
+          // Gating for Chapters > 1 (Chapter 1 is free preview)
+          if (topicIndex > 0 && !isCourseOwned) {
+            return (
+              <div className="py-8 sm:py-12 px-4 max-w-2xl mx-auto text-center animate-fade-in">
+                <div className="bg-white rounded-3xl p-6 sm:p-10 border-2 border-gold/30 shadow-xl space-y-6 text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto shadow-inner">
+                    <Lock className="w-7 h-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-mono font-bold uppercase tracking-wider">
+                      Premium Chapter · Chapter {topicIndex + 1}
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-forest-deep">
+                      {currentTopic.title}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-ink-soft max-w-md mx-auto leading-relaxed">
+                      Chapter 1 is free to explore. To access Chapter {topicIndex + 1} and all remaining statutory lessons, practitioner notes, and questions, choose a plan below.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <button
+                      onClick={() => initiateCheckout({ productType: 'course', productId: resolvedSlug })}
+                      className="p-5 rounded-2xl bg-forest hover:bg-forest-deep text-white font-bold text-sm shadow-md transition-all flex flex-col items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span className="text-base font-bold">Buy Course Pass</span>
+                      <span className="text-xs text-emerald-200 font-mono">₹499 · One-Time</span>
+                      <span className="text-[11px] text-emerald-100/80 mt-1">Unlock all {topicsList.length} chapters</span>
+                    </button>
+
+                    <button
+                      onClick={() => initiateCheckout({ productType: 'membership', productId: 'full_access' })}
+                      className="p-5 rounded-2xl bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-sm shadow-md transition-all flex flex-col items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span className="text-base font-bold flex items-center gap-1.5">
+                        Get All-Access <Sparkles className="w-4 h-4 text-amber-200" />
+                      </span>
+                      <span className="text-xs text-amber-200 font-mono">₹1,999 · 1 Year Access</span>
+                      <span className="text-[11px] text-amber-100/80 mt-1">Unlock all courses & tools</span>
+                    </button>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-ink-soft">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Instant activation via Razorpay · 100% secure</span>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
           const stepNumber = regLearnStep === 'understand' ? 1 : regLearnStep === 'walkthrough' ? 2 : regLearnStep === 'remember' ? 3 : 4;
           const totalSteps = 4;
 

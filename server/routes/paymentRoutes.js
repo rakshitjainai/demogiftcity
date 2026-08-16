@@ -1,0 +1,364 @@
+import express from 'express';
+import crypto from 'crypto';
+import Razorpay from 'razorpay';
+import { protect } from '../middleware/auth.js';
+import User from '../models/User.js';
+import Payment from '../models/Payment.js';
+
+const router = express.Router();
+
+// Helper to instantiate Razorpay client
+function getRazorpayInstance() {
+  const key_id = process.env.RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+
+  if (!key_id || !key_secret) {
+    console.warn('⚠️ Razorpay credentials not found in environment. Payment orders will fail unless configured.');
+  }
+
+  return new Razorpay({
+    key_id: key_id || 'rzp_test_placeholder',
+    key_secret: key_secret || 'rzp_secret_placeholder',
+  });
+}
+
+// Pricing rules (Server-side source of truth — never trust client amounts)
+const PRODUCT_PRICING = {
+  course: 49900,      // ₹499 in paise
+  membership: 199900  // ₹1,999 in paise (1 year access)
+};
+
+const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme'];
+
+// ─── GET /api/payments/key-id ─────────────────────────────────────────────
+// Exposes only the public Razorpay Key ID to the client
+router.get('/key-id', (req, res) => {
+  return res.json({
+    keyId: process.env.RAZORPAY_KEY_ID || ''
+  });
+});
+
+// ─── GET /api/payments/my-access ──────────────────────────────────────────
+// Returns authenticated user's current live access entitlements
+router.get('/my-access', protect, async (req, res) => {
+  try {
+    const user = req.user;
+    const now = new Date();
+
+    const isMember = Boolean(
+      user.membership &&
+      user.membership.expiresAt &&
+      new Date(user.membership.expiresAt) > now
+    );
+
+    const purchasedCourses = (user.coursePurchases || []).map(p => p.courseSlug);
+    const accessibleCourses = isMember ? [...VALID_COURSES] : purchasedCourses;
+
+    return res.json({
+      success: true,
+      userId: user._id,
+      isMember,
+      membership: {
+        active: isMember,
+        expiresAt: user.membership?.expiresAt || null,
+        purchasedAt: user.membership?.purchasedAt || null,
+        daysRemaining: isMember ? Math.ceil((new Date(user.membership.expiresAt) - now) / (1000 * 60 * 60 * 24)) : 0
+      },
+      purchasedCourses,
+      accessibleCourses
+    });
+  } catch (error) {
+    console.error('Error fetching user access:', error);
+    return res.status(500).json({ message: 'Failed to retrieve access entitlements' });
+  }
+});
+
+// ─── POST /api/payments/create-order ──────────────────────────────────────
+// Step 1: Create Razorpay Order with server-decided amount and anti-duplicate checks
+router.post('/create-order', protect, async (req, res) => {
+  try {
+    const user = req.user;
+    const { productType, productId } = req.body;
+
+    if (!productType || !['course', 'membership'].includes(productType)) {
+      return res.status(400).json({ message: "Invalid productType. Must be 'course' or 'membership'." });
+    }
+
+    if (productType === 'course') {
+      if (!productId || !VALID_COURSES.includes(productId)) {
+        return res.status(400).json({ message: `Invalid course ID. Supported courses: ${VALID_COURSES.join(', ')}` });
+      }
+    }
+
+    const now = new Date();
+
+    // Check if user already has an active All-Access Membership
+    const hasActiveMembership = Boolean(
+      user.membership &&
+      user.membership.expiresAt &&
+      new Date(user.membership.expiresAt) > now
+    );
+
+    if (hasActiveMembership) {
+      return res.status(400).json({
+        message: 'You already have an active RegMate All-Access Membership granting full access to all courses and tools.'
+      });
+    }
+
+    // Check if user already purchased this specific course
+    if (productType === 'course') {
+      const alreadyBought = (user.coursePurchases || []).some(p => p.courseSlug === productId);
+      if (alreadyBought) {
+        return res.status(400).json({
+          message: 'You have already purchased this course. Your access is active.'
+        });
+      }
+    }
+
+    const amount = PRODUCT_PRICING[productType];
+    const currency = 'INR';
+    const cleanProductId = productType === 'course' ? productId : 'full_access';
+
+    const razorpay = getRazorpayInstance();
+    const receipt = `rcpt_${user._id.toString().slice(-6)}_${Date.now()}`;
+
+    const orderOptions = {
+      amount,
+      currency,
+      receipt,
+      notes: {
+        userId: user._id.toString(),
+        userEmail: user.email,
+        productType,
+        productId: cleanProductId
+      }
+    };
+
+    const order = await razorpay.orders.create(orderOptions);
+
+    // Save payment attempt in database for audit trail
+    await Payment.create({
+      userId: user._id,
+      razorpayOrderId: order.id,
+      amount,
+      currency,
+      productType,
+      productId: cleanProductId,
+      status: 'created',
+      receipt,
+      notes: orderOptions.notes
+    });
+
+    return res.json({
+      success: true,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      productType,
+      productId: cleanProductId,
+      keyId: process.env.RAZORPAY_KEY_ID || '',
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone || ''
+      }
+    });
+
+  } catch (error) {
+    console.error('Error creating Razorpay order:', error);
+    return res.status(500).json({
+      message: error.message || 'Failed to create payment order. Please check Razorpay configuration.'
+    });
+  }
+});
+
+// ─── POST /api/payments/verify ────────────────────────────────────────────
+// Step 3: Verify Payment Signature via HMAC-SHA256 and grant access
+router.post('/verify', protect, async (req, res) => {
+  try {
+    const user = req.user;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      productType,
+      productId
+    } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ message: 'Missing required payment verification details.' });
+    }
+
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keySecret) {
+      return res.status(500).json({ message: 'Razorpay secret key not configured on server.' });
+    }
+
+    // HMAC SHA256 signature verification
+    const bodyString = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expectedSignature = crypto
+      .createHmac('sha256', keySecret)
+      .update(bodyString)
+      .digest('hex');
+
+    if (expectedSignature !== razorpay_signature) {
+      console.warn(`❌ Signature mismatch for order ${razorpay_order_id}`);
+      
+      // Update Payment record to failed
+      await Payment.findOneAndUpdate(
+        { razorpayOrderId: razorpay_order_id },
+        {
+          razorpayPaymentId,
+          razorpaySignature,
+          status: 'failed',
+          errorDetails: { message: 'Signature verification mismatch' }
+        }
+      );
+
+      return res.status(400).json({
+        success: false,
+        message: 'Payment verification failed: Invalid signature.'
+      });
+    }
+
+    // Update payment record in database
+    const paymentRecord = await Payment.findOneAndUpdate(
+      { razorpayOrderId: razorpay_order_id },
+      {
+        razorpayPaymentId,
+        razorpaySignature,
+        status: 'captured',
+        verifiedAt: new Date()
+      },
+      { new: true, upsert: true }
+    );
+
+    // Grant entitlements on User model
+    const now = new Date();
+    const cleanProductType = productType || paymentRecord?.productType || 'membership';
+    const cleanProductId = productId || paymentRecord?.productId || 'full_access';
+
+    if (cleanProductType === 'membership') {
+      const expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000); // 365 days
+      user.membership = {
+        active: true,
+        expiresAt,
+        paymentId: razorpay_payment_id,
+        purchasedAt: now
+      };
+      user.membershipStatus = 'active';
+      user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
+    } else if (cleanProductType === 'course') {
+      const existingIndex = (user.coursePurchases || []).findIndex(p => p.courseSlug === cleanProductId);
+      if (existingIndex === -1) {
+        user.coursePurchases.push({
+          courseSlug: cleanProductId,
+          paymentId: razorpay_payment_id,
+          amount: 499,
+          purchasedAt: now
+        });
+      }
+    }
+
+    await user.save();
+
+    console.log(`✅ Payment verified & access granted for User ${user._id} (${cleanProductType}: ${cleanProductId})`);
+
+    return res.json({
+      success: true,
+      message: 'Payment verified successfully and access unlocked!',
+      user: user.toAuthJSON()
+    });
+
+  } catch (error) {
+    console.error('Error verifying payment:', error);
+    return res.status(500).json({ message: 'Internal server error verifying payment.' });
+  }
+});
+
+// ─── POST /api/payments/webhook ───────────────────────────────────────────
+// Step 4: Webhook Endpoint (Independent source of truth & fallback)
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const signature = req.headers['x-razorpay-signature'];
+
+    // Verify webhook signature if secret configured
+    if (webhookSecret && signature) {
+      const payloadString = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      const expectedSignature = crypto
+        .createHmac('sha256', webhookSecret)
+        .update(payloadString)
+        .digest('hex');
+
+      if (signature !== expectedSignature) {
+        console.warn('❌ Invalid Razorpay Webhook signature');
+        return res.status(400).json({ message: 'Invalid webhook signature' });
+      }
+    }
+
+    const payload = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const event = payload.event;
+
+    console.log(`🔔 Razorpay Webhook received event: ${event}`);
+
+    if (event === 'payment.captured' || event === 'order.paid') {
+      const paymentObj = payload.payload?.payment?.entity || {};
+      const orderId = paymentObj.order_id;
+      const paymentId = paymentObj.id;
+      const notes = paymentObj.notes || {};
+      const userId = notes.userId;
+      const productType = notes.productType;
+      const productId = notes.productId;
+
+      if (userId) {
+        const user = await User.findById(userId);
+        if (user) {
+          const now = new Date();
+          if (productType === 'membership') {
+            const expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+            user.membership = {
+              active: true,
+              expiresAt,
+              paymentId,
+              purchasedAt: now
+            };
+            user.membershipStatus = 'active';
+            user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
+          } else if (productType === 'course' && productId) {
+            const alreadyPresent = (user.coursePurchases || []).some(p => p.courseSlug === productId);
+            if (!alreadyPresent) {
+              user.coursePurchases.push({
+                courseSlug: productId,
+                paymentId,
+                amount: 499,
+                purchasedAt: now
+              });
+            }
+          }
+          await user.save();
+          console.log(`✅ Webhook processed: Granted ${productType} (${productId}) to User ${userId}`);
+        }
+      }
+
+      if (orderId) {
+        await Payment.findOneAndUpdate(
+          { razorpayOrderId: orderId },
+          {
+            razorpayPaymentId: paymentId,
+            status: 'captured',
+            verifiedAt: new Date()
+          }
+        );
+      }
+    }
+
+    return res.json({ status: 'ok' });
+
+  } catch (error) {
+    console.error('Error handling webhook:', error);
+    return res.status(500).json({ message: 'Webhook processing error' });
+  }
+});
+
+export default router;

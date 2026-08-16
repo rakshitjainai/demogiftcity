@@ -2,11 +2,36 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
 import { protect } from '../middleware/auth.js';
 import User from '../models/User.js';
 
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Helper to determine if user has unlocked access to this course
+async function resolveUserAccess(req, courseSlug) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'regmate_jwt_secret_key_2026_secure');
+      const user = await User.findById(decoded.id);
+      if (user) {
+        if (user.role === 'admin') return { hasAccess: true, isMember: true, user };
+        const isMember = Boolean(
+          user.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date()
+        );
+        if (isMember) return { hasAccess: true, isMember: true, user };
+        const hasBought = (user.coursePurchases || []).some(p => p.courseSlug === courseSlug);
+        if (hasBought) return { hasAccess: true, isMember: false, user };
+        return { hasAccess: false, isMember: false, user };
+      }
+    } catch (e) {
+      // Ignore token decode error and treat as unauthenticated
+    }
+  }
+  return { hasAccess: false, isMember: false, user: null };
+}
 
 // ─── Content file mapping ──────────────────────────────────────────────────
 const COURSE_FILES = {
@@ -56,12 +81,14 @@ function sanitizeItem(item) {
 }
 
 // ─── GET /api/regulatory-master/:courseSlug/meta ───────────────────────────
-// Returns course metadata, chapter list, and item counts — NO answer data
-router.get('/:courseSlug/meta', (req, res) => {
+// Returns course metadata, chapter list, item counts, and live user access status
+router.get('/:courseSlug/meta', async (req, res) => {
   const course = loadCourse(req.params.courseSlug);
   if (!course) {
     return res.status(404).json({ message: 'Course not found' });
   }
+
+  const { hasAccess, isMember, user } = await resolveUserAccess(req, req.params.courseSlug);
 
   // Build chapter map from concepts (group by chapter)
   const chapterMap = {};
@@ -75,6 +102,7 @@ router.get('/:courseSlug/meta', (req, res) => {
         lessonCount: 0,
         questionCount: 0,
         totalItems: 0,
+        isLocked: chNo > 1 ? !hasAccess : false
       };
     }
   });
@@ -90,6 +118,7 @@ router.get('/:courseSlug/meta', (req, res) => {
         lessonCount: 0,
         questionCount: 0,
         totalItems: 0,
+        isLocked: chNo > 1 ? !hasAccess : false
       };
     }
     if (q.type === 'lesson' || q.itemType === 'lesson') {
@@ -111,6 +140,7 @@ router.get('/:courseSlug/meta', (req, res) => {
         lessonCount: 0,
         questionCount: 0,
         totalItems: 0,
+        isLocked: chNo > 1 ? !hasAccess : false
       };
     }
     chapterMap[chNo].lessonCount += 1;
@@ -125,18 +155,24 @@ router.get('/:courseSlug/meta', (req, res) => {
     source: course.source || '',
     counts: course.counts || {},
     chapters,
+    userAccess: {
+      hasAccess,
+      isMember,
+      isAuthenticated: Boolean(user)
+    }
   });
 });
 
 // ─── GET /api/regulatory-master/:courseSlug/items ─────────────────────────
 // Returns ALL items (lessons + questions) stripped of answer fields.
 // Optional query: ?type=lesson|mcq|all  ?chapter=1
-router.get('/:courseSlug/items', (req, res) => {
+router.get('/:courseSlug/items', async (req, res) => {
   const course = loadCourse(req.params.courseSlug);
   if (!course) {
     return res.status(404).json({ message: 'Course not found' });
   }
 
+  const { hasAccess, isMember } = await resolveUserAccess(req, req.params.courseSlug);
   const typeFilter = req.query.type || 'all';
   const chapterFilter = req.query.chapter ? parseInt(req.query.chapter, 10) : null;
 
@@ -148,13 +184,13 @@ router.get('/:courseSlug/items', (req, res) => {
     const chNo = les.chapterNo || les.module_no || 1;
     if (chapterFilter && chNo !== chapterFilter) return;
     // Pass through all lesson fields, normalising the chapter field
-    // FME/AIF have hook/cards/summary/tip at top-level; CMI nests them in payload
     const item = sanitizeItem({
       ...les,
       itemType: 'lesson',
       chapterNo: chNo,
       module_no: chNo,
       module_name: les.chapter_name || les.module_name || '',
+      isLocked: chNo > 1 ? !hasAccess : false
     });
     allItems.push(item);
   });
@@ -168,7 +204,10 @@ router.get('/:courseSlug/items', (req, res) => {
     if (typeFilter === 'lesson' && !isLesson) return;
     if (typeFilter === 'mcq' && isLesson) return;
 
-    allItems.push(sanitizeItem(q));
+    allItems.push({
+      ...sanitizeItem(q),
+      isLocked: chNo > 1 ? !hasAccess : false
+    });
   });
 
   // Sort by chapter then UID
@@ -179,35 +218,50 @@ router.get('/:courseSlug/items', (req, res) => {
     return (a.uid || '').localeCompare(b.uid || '');
   });
 
-  return res.json({ courseSlug: req.params.courseSlug, items: allItems, total: allItems.length });
+  return res.json({
+    courseSlug: req.params.courseSlug,
+    items: allItems,
+    total: allItems.length,
+    hasAccess,
+    isMember
+  });
 });
 
 // ─── GET /api/regulatory-master/:courseSlug/items/:uid ────────────────────
 // Returns a single sanitized item by UID
-router.get('/:courseSlug/items/:uid', (req, res) => {
+router.get('/:courseSlug/items/:uid', async (req, res) => {
   const course = loadCourse(req.params.courseSlug);
   if (!course) return res.status(404).json({ message: 'Course not found' });
 
+  const { hasAccess } = await resolveUserAccess(req, req.params.courseSlug);
   const uid = req.params.uid;
 
   // Search lessons
   const lesson = (course.lessons || []).find(l => l.uid === uid);
   if (lesson) {
-    return res.json(sanitizeItem({ ...lesson, itemType: 'lesson' }));
+    const chNo = lesson.chapterNo || lesson.module_no || 1;
+    return res.json({
+      ...sanitizeItem({ ...lesson, itemType: 'lesson' }),
+      isLocked: chNo > 1 ? !hasAccess : false
+    });
   }
 
   // Search questions
   const question = (course.questions || []).find(q => q.uid === uid);
   if (question) {
-    return res.json(sanitizeItem(question));
+    const chNo = question.module_no || 1;
+    return res.json({
+      ...sanitizeItem(question),
+      isLocked: chNo > 1 ? !hasAccess : false
+    });
   }
 
   return res.status(404).json({ message: 'Item not found' });
 });
 
 // ─── POST /api/regulatory-master/:courseSlug/submit-answer ─────────────────
-// Auth optional. Receives user's answer, checks server-side, returns result.
-// NEVER sends correct_key/explanation on the serve path — only here after submission.
+// Receives user's answer, checks server-side, returns result.
+// Enforces access restriction on chapters > 1.
 router.post('/:courseSlug/submit-answer', async (req, res) => {
   try {
     const { uid, answer } = req.body;
@@ -222,6 +276,15 @@ router.post('/:courseSlug/submit-answer', async (req, res) => {
     const item = (course.questions || []).find(q => q.uid === uid);
     if (!item) {
       return res.status(404).json({ message: 'Question not found' });
+    }
+
+    const chNo = item.module_no || 1;
+    const { hasAccess } = await resolveUserAccess(req, req.params.courseSlug);
+    if (chNo > 1 && !hasAccess) {
+      return res.status(403).json({
+        message: 'This chapter requires purchasing the course or upgrading to RegMate All-Access Membership.',
+        locked: true
+      });
     }
 
     const correctKey = item.correct_key || item.blanks || item.pairs;

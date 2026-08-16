@@ -5,12 +5,18 @@ import { useAuth } from '../context/AuthContext';
 
 export default function PremiumBlock() {
   const navigate = useNavigate();
-  const { user, buyPass } = useAuth();
-  const isMember = user?.membershipStatus === 'active' || user?.subscriptions?.includes('full_access');
+  const { user, isMember, initiateCheckout } = useAuth();
 
   const handleBecomeMember = () => {
-    buyPass('full_access');
-    navigate('/membership');
+    if (!user) {
+      navigate('/membership');
+      return;
+    }
+    initiateCheckout({
+      productType: 'membership',
+      productId: 'full_access',
+      onSuccess: () => navigate('/membership')
+    });
   };
 
   return (

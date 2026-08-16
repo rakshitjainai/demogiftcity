@@ -6,67 +6,87 @@ export default function UpgradeModal({
   isOpen,
   onClose,
   sectionKey = 'job_ready', // 'job_ready' | 'interactive_regulations' | 'quizzes'
+  courseSlug,
   title,
   message
 }) {
-  const { buyPass } = useAuth();
+  const { initiateCheckout, user } = useAuth();
   const [successMsg, setSuccessMsg] = useState(null);
+  const [checkoutError, setCheckoutError] = useState(null);
+  const [loadingType, setLoadingType] = useState(null);
 
   if (!isOpen) return null;
 
   // Determine section specific pass info
   const getSectionDetails = () => {
+    if (courseSlug) {
+      const names = {
+        'ifsca-cmi': 'IFSCA Capital Market Intermediaries Pass',
+        'sebi-aif': 'SEBI Alternative Investment Funds Pass',
+        'ifsca-fme': 'IFSCA Fund Management Entities Pass'
+      };
+      return {
+        passId: courseSlug,
+        productType: 'course',
+        productId: courseSlug,
+        name: names[courseSlug] || `${courseSlug.toUpperCase()} Course Pass`,
+        price: '₹499',
+        scope: `${(courseSlug || '').toUpperCase()} Regulatory Master Course`,
+        description: `Unlock all chapters, practitioner notes, questions, and case scenarios in ${(courseSlug || '').toUpperCase()}.`
+      };
+    }
+
     switch (sectionKey) {
-      case 'exam_ready':
-      case 'mock_test':
+      case 'sebi-aif':
+      case 'ifsca-cmi':
+      case 'ifsca-fme':
         return {
-          passId: 'exam_ready',
-          name: 'ExamReady Mock Test Pass',
+          passId: sectionKey,
+          productType: 'course',
+          productId: sectionKey,
+          name: `${sectionKey.toUpperCase()} Course Pass`,
           price: '₹499',
-          scope: 'ExamReady Mock Test Section',
-          description: 'Unlock complete 100-question CMI exam simulation, detailed question reviews, topic breakdowns, and negative marking analysis.'
+          scope: `${sectionKey.toUpperCase()} Regulatory Master`,
+          description: 'Unlock complete chapter curriculum, practitioner guidance, and assessments.'
         };
-      case 'interactive_regulations':
-      case 'regulations':
-        return {
-          passId: 'interactive_regulations',
-          name: 'Interactive Regulations Pass',
-          price: '₹499',
-          scope: 'Complete Regulations',
-          description: 'Unlock all chapters, statutory provisions, practical explanations, and risk points across all regulations.'
-        };
-      case 'quizzes':
-      case 'diagnostic':
-        return {
-          passId: 'quizzes',
-          name: 'Quizzes & Diagnostics Pass',
-          price: '₹499',
-          scope: 'Complete Quizzes Section',
-          description: 'Unlock all quiz topics, diagnostic assessments, and detailed answer explanations.'
-        };
-      case 'job_ready':
-      case 'job':
-      case 'learn':
       default:
         return {
-          passId: 'job_ready',
-          name: 'FME & Job Interview Ready Pass',
+          passId: 'ifsca-cmi',
+          productType: 'course',
+          productId: 'ifsca-cmi',
+          name: 'Regulatory Master Single Course Pass',
           price: '₹499',
-          scope: 'Complete Job Section',
-          description: 'Unlock all 7 Fund Management & CMI modules, interview Q&A, case judgements, and simulations.'
+          scope: 'Selected Regulatory Course',
+          description: 'Unlock all 17 chapters, statutory analyses, compliance notes, and diagnostic questions.'
         };
     }
   };
 
   const sectionDetails = getSectionDetails();
 
-  const handlePurchase = (passId) => {
-    buyPass(passId);
-    setSuccessMsg(passId === 'full_access' ? '🎉 All-Access Membership Unlocked!' : `🎉 ${sectionDetails.name} Unlocked!`);
-    setTimeout(() => {
-      setSuccessMsg(null);
-      if (onClose) onClose();
-    }, 1200);
+  const handlePurchase = async (type, prodId) => {
+    setCheckoutError(null);
+    setLoadingType(type);
+
+    await initiateCheckout({
+      productType: type,
+      productId: prodId || (type === 'course' ? sectionDetails.productId : 'full_access'),
+      onSuccess: (data) => {
+        setLoadingType(null);
+        setSuccessMsg(type === 'membership' ? '🎉 All-Access Membership Unlocked for 1 Year!' : `🎉 ${sectionDetails.name} Unlocked!`);
+        setTimeout(() => {
+          setSuccessMsg(null);
+          if (onClose) onClose();
+        }, 1500);
+      },
+      onError: (err) => {
+        setLoadingType(null);
+        setCheckoutError(err.message || 'Payment initiation failed.');
+      },
+      onCancel: () => {
+        setLoadingType(null);
+      }
+    });
   };
 
   return (
@@ -150,10 +170,11 @@ export default function UpgradeModal({
               </div>
 
               <button
-                onClick={() => handlePurchase(sectionDetails.passId)}
-                className="cursor-target w-full py-3 bg-forest text-white font-bold rounded-xl text-xs sm:text-sm hover:bg-forest-deep transition-all shadow-md flex items-center justify-center gap-2"
+                onClick={() => handlePurchase('course', sectionDetails.productId)}
+                disabled={loadingType === 'course'}
+                className="cursor-target w-full py-3 bg-forest text-white font-bold rounded-xl text-xs sm:text-sm hover:bg-forest-deep transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <span>Buy Section Pass — ₹499</span>
+                <span>{loadingType === 'course' ? 'Opening Checkout...' : `Buy Course Pass — ₹499`}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -204,10 +225,11 @@ export default function UpgradeModal({
               </div>
 
               <button
-                onClick={() => handlePurchase('full_access')}
-                className="cursor-target w-full py-3 bg-gradient-to-r from-amber-600 via-gold to-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm hover:brightness-105 transition-all shadow-lg flex items-center justify-center gap-2"
+                onClick={() => handlePurchase('membership', 'full_access')}
+                disabled={loadingType === 'membership'}
+                className="cursor-target w-full py-3 bg-gradient-to-r from-amber-600 via-gold to-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm hover:brightness-105 transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <span>Get Full Access — ₹1,999/yr</span>
+                <span>{loadingType === 'membership' ? 'Opening Checkout...' : 'Get Full Access — ₹1,999/yr'}</span>
                 <Sparkles className="w-4 h-4" />
               </button>
             </div>

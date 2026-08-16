@@ -51,7 +51,7 @@ const COURSES = [
 ];
 
 export default function Learning() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isMember, hasCourseAccess, initiateCheckout } = useAuth();
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [searchParams] = useSearchParams();
 
@@ -136,16 +136,21 @@ export default function Learning() {
             Deep-dive structured learning: statutory text, practitioner lessons, and diagnostic questions — all from real regulatory content, served securely.
           </p>
         </div>
-        <div className="flex gap-3 sm:gap-4 flex-wrap">
-          <Link
-            to="/my-learning"
-            className="cursor-target px-4 sm:px-5 py-2.5 bg-paper border border-forest text-forest rounded-full font-medium hover-lift text-sm sm:text-base min-h-[44px] flex items-center"
-          >
-            My Learning
-          </Link>
+
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {!isMember && (
+            <button
+              onClick={() => initiateCheckout({ productType: 'membership', productId: 'full_access' })}
+              className="cursor-target inline-flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer min-h-[44px]"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Get All-Access — ₹1,999/yr</span>
+            </button>
+          )}
+
           <Link
             to="/exam-ready"
-            className="cursor-target px-4 sm:px-5 py-2.5 bg-forest text-white rounded-full font-medium hover-lift text-sm sm:text-base min-h-[44px] flex items-center gap-2"
+            className="cursor-target inline-flex items-center gap-1.5 px-4 py-2.5 bg-forest text-white font-medium text-xs rounded-xl hover:bg-forest-deep transition-colors min-h-[44px]"
           >
             <GraduationCap className="w-4 h-4" />
             ExamReady Mock Test
@@ -158,6 +163,7 @@ export default function Learning() {
         {COURSES.map(course => {
           const meta = courseMeta[course.slug];
           const { completed, total, pct } = getCourseProgress(course.slug);
+          const isOwned = isMember || hasCourseAccess(course.slug) || user?.role === 'admin';
 
           return (
             <div
@@ -173,11 +179,18 @@ export default function Learning() {
                   <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase tracking-wider">
                     {course.code}
                   </span>
-                  {course.badge && (
-                    <span className="px-2.5 py-0.5 bg-gold/20 text-forest text-xs font-bold rounded-full">
-                      {course.badge}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    {isOwned && (
+                      <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full">
+                        Enrolled ✓
+                      </span>
+                    )}
+                    {course.badge && (
+                      <span className="px-2.5 py-0.5 bg-gold/20 text-forest text-xs font-bold rounded-full">
+                        {course.badge}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Title & description */}
@@ -187,15 +200,7 @@ export default function Learning() {
 
                   {/* Counts */}
                   <div className="text-xs font-medium text-forest flex items-center gap-1 mb-4 flex-wrap">
-                    {course.slug === 'ifsca-fme' ? (
-                      <>
-                        <BookOpen className="w-4 h-4 text-leaf" />
-                        7 Modules · 16 Topics
-                        <span className="text-ink-soft mx-1">•</span>
-                        <HelpCircle className="w-3.5 h-3.5 text-gold" />
-                        12 Interview Qs · 20 Exam Qs
-                      </>
-                    ) : metaLoading ? (
+                    {metaLoading ? (
                       <span className="flex items-center gap-1 text-ink-soft">
                         <Loader2 className="w-3 h-3 animate-spin" /> Loading counts…
                       </span>
@@ -206,18 +211,16 @@ export default function Learning() {
                         <span className="text-ink-soft mx-1">•</span>
                         <HelpCircle className="w-3.5 h-3.5 text-gold" />
                         {meta.questions || 0} Questions
-                        <span className="text-ink-soft mx-1">•</span>
-                        {meta.total || 0} Items total
                       </>
                     ) : (
                       <span className="text-ink-soft text-xs italic">
-                        {course.slug === 'sebi-aif' ? '5 Lessons • 16 Questions' : '17 Lessons • 174 Questions'}
+                        {course.slug === 'sebi-aif' ? '14 Lessons • 63 Questions' : '17-35 Lessons • 32-102 Questions'}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Progress */}
+                {/* Progress & Actions */}
                 <div className="space-y-3 mt-auto border-t border-line pt-4">
                   <div className="flex justify-between text-xs font-medium text-ink-soft">
                     <span>Course Completion</span>
@@ -233,13 +236,32 @@ export default function Learning() {
                     <p className="text-[10px] text-ink-soft">{completed} of {total} items completed</p>
                   )}
 
-                  <button
-                    onClick={() => setSelectedCourse(course)}
-                    className="cursor-target mt-2 w-full flex items-center justify-center gap-2 py-3 bg-mint text-forest font-medium rounded-xl hover:bg-mint-deep transition-colors min-h-[48px] text-sm"
-                  >
-                    <PlayCircle className="w-4 h-4" />
-                    {pct > 0 ? 'Continue Learning' : 'Start Learning'}
-                  </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <button
+                      onClick={() => setSelectedCourse(course)}
+                      className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-mint text-forest font-bold rounded-xl hover:bg-mint-deep transition-colors min-h-[44px] text-xs"
+                    >
+                      <PlayCircle className="w-4 h-4 text-leaf" />
+                      <span>{isOwned ? (pct > 0 ? 'Continue' : 'Start Course') : 'Preview Ch 1'}</span>
+                    </button>
+
+                    {!isOwned ? (
+                      <button
+                        onClick={() => initiateCheckout({ productType: 'course', productId: course.slug })}
+                        className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-forest hover:bg-forest-deep text-white font-bold rounded-xl transition-colors min-h-[44px] text-xs shadow-xs"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Buy Course (₹499)</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setSelectedCourse(course)}
+                        className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 text-emerald-800 font-bold rounded-xl border border-emerald-200 min-h-[44px] text-xs"
+                      >
+                        <span>Full Access Active ✓</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

@@ -36,7 +36,7 @@ import { LATEST_UPDATES, LATEST_BLOGS } from '../data/mockData';
 import coursesData from '../data/courses.json';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isMember, initiateCheckout } = useAuth();
   const navigate = useNavigate();
 
   const [showBookmarksModal, setShowBookmarksModal] = useState(false);
@@ -127,7 +127,7 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-2 flex-wrap mt-2 md:mt-0">
           <span className="px-3 py-1 bg-[var(--mint)] border border-[var(--mint-deep)] text-[var(--forest)] text-xs font-bold rounded-full uppercase tracking-wider">
-            {user?.role === 'admin' ? 'Administrator' : 'Active License Member'}
+            {isMember ? 'All-Access Active' : (user?.role === 'admin' ? 'Administrator' : 'Free Tier')}
           </span>
           <button 
             onClick={() => navigate('/interactive-regulations')}
@@ -137,6 +137,34 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+
+      {/* ─── ALL-ACCESS MEMBERSHIP CTA BANNER (IF NOT ACTIVE MEMBER) ─── */}
+      {!isMember && (
+        <div className="bg-gradient-to-r from-[#073321] via-[#0b4d32] to-[#073321] text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="absolute -top-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="space-y-2 relative z-10 text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-mono font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" /> All-Access Pass (1 Year)
+            </div>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-white leading-tight">
+              Unlock All 3 Regulatory Master Courses, ExamReady &amp; Compliance Tools
+            </h2>
+            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-xl">
+              Get unlimited access across IFSCA-CMI, SEBI-AIF, IFSCA-FME, 100-Question ExamReady Simulator, and all IFSC compliance tools for ₹1,999/year.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 relative z-10 flex-shrink-0 w-full md:w-auto">
+            <button
+              onClick={() => initiateCheckout({ productType: 'membership', productId: 'full_access' })}
+              className="w-full md:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+            >
+              <span>Upgrade Now — ₹1,999/yr</span>
+              <Sparkles className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ─── TOP SECTION: PRIMARY ACTIONS + LEARNING SNAPSHOT ─────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

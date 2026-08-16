@@ -50,6 +50,20 @@ const examReadyAttemptSchema = new mongoose.Schema({
   passStatus: { type: Boolean }
 }, { _id: false });
 
+const coursePurchaseSchema = new mongoose.Schema({
+  courseSlug: { type: String, required: true },
+  paymentId: { type: String },
+  amount: { type: Number, default: 499 },
+  purchasedAt: { type: Date, default: Date.now }
+}, { _id: false });
+
+const membershipSchema = new mongoose.Schema({
+  active: { type: Boolean, default: false },
+  expiresAt: { type: Date, default: null },
+  paymentId: { type: String, default: null },
+  purchasedAt: { type: Date, default: null }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -61,6 +75,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: 'member' },
     membershipStatus: { type: String, enum: ['free', 'active', 'expired'], default: 'free' },
     subscriptionPlan: { type: String, default: 'Free Tier' },
+    membership: { type: membershipSchema, default: () => ({ active: false, expiresAt: null }) },
+    coursePurchases: [coursePurchaseSchema],
     quizQuestionsAnswered: { type: Number, default: 0 },
     chaptersRead: [{ type: String }],
     quizProgress: [quizProgressSchema],
@@ -75,6 +91,13 @@ const userSchema = new mongoose.Schema(
 
 // Method to safely return user object without password
 userSchema.methods.toAuthJSON = function () {
+  const isMembershipActive = Boolean(
+    this.membership?.expiresAt && new Date(this.membership.expiresAt) > new Date()
+  );
+  const derivedStatus = isMembershipActive
+    ? 'active'
+    : (this.membership?.expiresAt ? 'expired' : (this.membershipStatus || 'free'));
+
   return {
     id: this._id,
     name: this.name,
@@ -82,8 +105,15 @@ userSchema.methods.toAuthJSON = function () {
     phone: this.phone || '',
     picture: this.picture,
     role: this.role || 'member',
-    membershipStatus: this.membershipStatus || 'free',
-    subscriptionPlan: this.subscriptionPlan || 'Free Tier',
+    membershipStatus: derivedStatus,
+    subscriptionPlan: isMembershipActive ? (this.subscriptionPlan || 'RegMate All-Access (₹1,999/yr)') : 'Free Tier',
+    membership: {
+      active: isMembershipActive,
+      expiresAt: this.membership?.expiresAt || null,
+      paymentId: this.membership?.paymentId || null,
+      purchasedAt: this.membership?.purchasedAt || null
+    },
+    coursePurchases: this.coursePurchases || [],
     quizQuestionsAnswered: this.quizQuestionsAnswered || 0,
     chaptersRead: this.chaptersRead || [],
     quizProgress: this.quizProgress || [],

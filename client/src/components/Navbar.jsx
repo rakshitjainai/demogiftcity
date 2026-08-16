@@ -25,7 +25,7 @@ const SUB_ITEM_ROUTES = {
 };
 
 export default function Navbar({ onOpenSearch, onOpenAuth }) {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isMember, initiateCheckout, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null); // label of open desktop dropdown
@@ -165,11 +165,23 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
             </button>
 
             {isAuthenticated ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer min-h-[40px]"
-                >
+              <div className="flex items-center gap-2">
+                {!isMember && (
+                  <button
+                    onClick={() => initiateCheckout({ productType: 'membership', productId: 'full_access' })}
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-xs rounded-full shadow-xs transition-all cursor-pointer whitespace-nowrap min-h-[38px]"
+                    title="Upgrade to Annual All-Access Membership"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                    <span>Upgrade (₹1,999)</span>
+                  </button>
+                )}
+
+                <div className="relative">
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer min-h-[40px]"
+                  >
                   {user?.picture ? (
                     <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full" />
                   ) : (
@@ -192,6 +204,19 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                       <p className="text-xs font-bold text-slate-900 truncate">{user?.name}</p>
                       <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
                     </div>
+
+                    {!isMember && (
+                      <button
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          initiateCheckout({ productType: 'membership', productId: 'full_access' });
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 flex items-center gap-2 transition-colors cursor-pointer border-b border-amber-200/60"
+                      >
+                        <Sparkles className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                        <span>Upgrade to All-Access (₹1,999)</span>
+                      </button>
+                    )}
 
                     <Link
                       to="/dashboard"
@@ -254,6 +279,7 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                     </button>
                   </div>
                 )}
+                </div>
               </div>
             ) : (
               <>
