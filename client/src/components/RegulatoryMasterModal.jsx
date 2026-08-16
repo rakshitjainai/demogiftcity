@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import LockOverlay from './LockOverlay';
 import UpgradeModal from './UpgradeModal';
 import fmeContent from '../data/regmate-fme-content.json';
+import coursesData from '../data/courses.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -461,87 +462,102 @@ function RegulatoryMasterModalInner({ course, onClose }) {
         practiceAnswer: fmeContent.quickChecks[t.id]?.[0]?.answer ?? 0,
         practiceExplain: fmeContent.quickChecks[t.id]?.[0]?.explain || 'Statutory compliance is enforced scheme-by-scheme.',
         rememberBody: Array.isArray(t.takeaway) ? t.takeaway.join('; ') + '.' : (t.explanation || 'Key compliance takeaway.'),
-        rememberComplianceTip: t.practicalPoint || 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+        rememberComplianceTip: t.practicalPoint || 'Verify requirements against live circulars and statutory filings.',
       }));
+    }
+
+    // Direct authentic extraction from courses.json for IFSCA-CMI and SEBI-AIF
+    const courseObj = coursesData?.[resolvedSlug] || coursesData?.['ifsca-cmi'];
+    if (courseObj?.chapters && courseObj.chapters.length > 0) {
+      return courseObj.chapters.map((ch) => {
+        const primaryLesson = ch.lessons?.[0] || {};
+        const p = primaryLesson.payload || {};
+        const cards = normalizeCards(p.cards || []);
+        const primaryQ = ch.questions?.[0] || {};
+        const qp = primaryQ.payload || {};
+        const rawOptions = qp.options || [];
+        const qOptions = Array.isArray(rawOptions)
+          ? rawOptions.map(o => (typeof o === 'string' ? o : o.t || o.k || ''))
+          : ['Option A: Mandatory statutory filing', 'Option B: Umbrella entity exemption', 'Option C: Voluntary guideline', 'Option D: Case-by-case waiver'];
+
+        const understandBody = p.hook || p.meaning || p.summary || (cards.length > 0 ? cards.map(c => `${c.title}: ${c.means || c.law}`).join(' ') : 'Statutory overview and operational framework.');
+        const understandCalloutTitle = cards[0]?.tag || (p.importance ? 'WHY THIS MATTERS' : 'CORE STATUTORY PRINCIPLE');
+        const understandCalloutBody = cards[0]?.law || p.importance || p.meaning || p.reg_text || 'Ensure complete compliance with statutory requirements.';
+        const walkthroughBody = p.summary || p.practitioner_note || (cards.length > 0 ? cards.map(c => c.means || c.law).join(' ') : 'Review operational guidelines and regulatory workflows.');
+        const walkthroughCalloutTitle = 'PRACTITIONER NOTE';
+        const walkthroughCalloutBody = p.tip || p.practitioner_note || (cards[0]?.watch ? `Watch: ${cards[0].watch}` : 'Verify all regulatory filings and disclosures before execution.');
+        const practiceQuestion = qp.q || primaryQ.title || `What is the core regulatory mandate under Chapter ${ch.num} (${ch.title})?`;
+        const practiceExplain = qp.scenario || p.tip || p.summary || 'Statutory compliance is enforced per regulation.';
+        const rememberBody = p.summary || p.takeaway || (cards.length > 0 ? cards.map(c => `${c.title}: ${c.means || c.law}`).join('; ') : understandBody);
+        const rememberComplianceTip = p.tip || p.practitioner_note || 'Verify all regulatory thresholds against the latest circulars.';
+
+        return {
+          id: primaryLesson.uid || `ch_${ch.num}`,
+          chapterNo: ch.num,
+          title: ch.title,
+          band: ch.band || '',
+          sourceRef: primaryLesson.provision ? `Reg. ${primaryLesson.provision} - ${courseObj.title}` : `Chapter ${ch.num} - ${courseObj.title}`,
+          understandBody,
+          understandCalloutTitle,
+          understandCalloutBody,
+          walkthroughBody,
+          walkthroughCalloutTitle,
+          walkthroughCalloutBody,
+          practiceQuestion,
+          practiceOptions: qOptions.length > 0 ? qOptions : ['Option A: Strict compliance per scheme', 'Option B: Umbrella fund level exemption', 'Option C: Voluntary guideline', 'Option D: Exempt for accredited investors'],
+          practiceAnswer: 0,
+          practiceExplain,
+          rememberBody,
+          rememberComplianceTip,
+          cards,
+          totalLessons: ch.lessons?.length || 0,
+          totalQuestions: ch.questions?.length || 0,
+        };
+      });
     }
 
     if (cmiItems && cmiItems.length > 0) {
       return cmiItems.map((item, idx) => ({
         id: item.uid || item._id || `cmi_${idx}`,
-        title: item.title || item.question || 'Statutory Mandate',
-        sourceRef: item.provision ? `Reg. ${item.provision} - ${course?.title || 'SEBI AIF'}` : `Reg. 10 - ${course?.title || 'SEBI (AIF) Regulations, 2012 (consolidated)'}`,
-        understandBody: item.explanation || item.summary || 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
-        understandCalloutTitle: 'KEY STATUTORY REQUIREMENT',
-        understandCalloutBody: item.statutoryText || 'All fund managers must verify compliance prior to issuing unit certificates or onboarding investors.',
-        walkthroughBody: item.practicalNote || 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+        title: item.title || item.question || `Chapter ${idx + 1}`,
+        sourceRef: item.provision ? `Reg. ${item.provision} - ${course?.title || 'Regulatory Master'}` : `Item ${idx + 1}`,
+        understandBody: item.explanation || item.summary || item.title || 'Statutory compliance requirement.',
+        understandCalloutTitle: 'STATUTORY REQUIREMENT',
+        understandCalloutBody: item.statutoryText || 'Verify requirements against live circulars and regulations.',
+        walkthroughBody: item.practicalNote || item.summary || 'Review operational processes and compliance guidelines.',
         walkthroughCalloutTitle: 'PRACTITIONER NOTE',
-        walkthroughCalloutBody: 'Ensure all scheme documents and PPM disclosures align with SEBI/IFSCA filings.',
-        practiceQuestion: item.question || `What is the statutory requirement under ${item.provision || 'Reg. 10'}?`,
+        walkthroughCalloutBody: 'Ensure all documentation aligns with regulatory filings.',
+        practiceQuestion: item.question || `What is the statutory requirement under ${item.provision || 'this chapter'}?`,
         practiceOptions: [item.option_A, item.option_B, item.option_C, item.option_D].filter(Boolean).length > 0
           ? [item.option_A, item.option_B, item.option_C, item.option_D].filter(Boolean)
-          : ['Rs. 20 Crore', 'Rs. 5 Crore', 'Rs. 50 Crore', 'Rs. 10 Crore'],
+          : ['Mandatory compliance', 'Voluntary guideline', 'Exempted category', 'Conditional waiver'],
         practiceAnswer: 0,
-        practiceExplain: item.explanation || 'Statutory rules apply per scheme.',
-        rememberBody: item.summary || 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
-        rememberComplianceTip: 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+        practiceExplain: item.explanation || 'Statutory compliance is enforced per regulation.',
+        rememberBody: item.summary || item.title || 'Core regulatory takeaway.',
+        rememberComplianceTip: 'Verify all regulatory thresholds against the latest circulars.',
       }));
     }
 
-    // Default matching screenshot for SEBI AIF / CMI
-    return [
-      {
-        id: 'sebi_aif_ch1',
-        title: 'One-minute summary',
-        sourceRef: 'Reg. 10 - SEBI (AIF) Regulations, 2012 (consolidated)',
-        understandBody: 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
-        understandCalloutTitle: 'WHY THIS MATTERS',
-        understandCalloutBody: 'The four gates determine whether an AIF scheme can be launched and registered with SEBI.',
-        walkthroughBody: 'In practice, compliance officers evaluate the four gates scheme by scheme. Corpus and investor limits apply independently to each scheme under the AIF umbrella.',
-        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
-        walkthroughCalloutBody: 'Do not aggregate investor limits across different schemes of the same AIF.',
-        practiceQuestion: 'What is the minimum corpus required for a standard SEBI AIF scheme (non-social impact fund)?',
-        practiceOptions: ['Rs. 20 Crore', 'Rs. 5 Crore', 'Rs. 50 Crore', 'Rs. 10 Crore'],
-        practiceAnswer: 0,
-        practiceExplain: 'Reg. 10 specifies minimum corpus of 20 crore per scheme (5 crore for social impact funds).',
-        rememberBody: 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
-        rememberComplianceTip: 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
-      },
-      {
-        id: 'sebi_aif_ch2',
-        title: 'Placement Memorandum & Scheme Validity',
-        sourceRef: 'Reg. 11 & 12 - SEBI (AIF) Regulations, 2012',
-        understandBody: 'An AIF may raise funds from any investor whether Indian, foreign or non-resident by way of issue of units through private placement. Every scheme issued by an AIF must file a Placement Memorandum with SEBI.',
-        understandCalloutTitle: 'PPM MANDATE',
-        understandCalloutBody: 'PPM must set out investment strategy, target investors, fee structure, and risk disclosures.',
-        walkthroughBody: 'The PPM is filed with SEBI along with merchant banker certification 30 days prior to launch. First close must be declared within 12 months.',
-        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
-        walkthroughCalloutBody: 'Failing to declare first close within 12 months requires re-filing or fee top-up.',
-        practiceQuestion: 'Within how many months must an AIF declare its first close after SEBI PPM filing?',
-        practiceOptions: ['12 Months', '6 Months', '24 Months', '3 Months'],
-        practiceAnswer: 0,
-        practiceExplain: 'SEBI circulars require first close within 12 months of PPM filing confirmation.',
-      }
-    ];
-  }, [isFME, cmiItems, course]);
+    return [];
+  }, [isFME, cmiItems, course, resolvedSlug]);
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-paper overflow-y-auto overscroll-y-contain scroll-smooth flex flex-col min-h-screen animate-fade-in"
+      className="fixed inset-0 z-[100] bg-paper flex flex-col h-[100dvh] overflow-hidden animate-fade-in"
       style={{
         fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
         color: 'var(--ink)',
-        WebkitOverflowScrolling: 'touch',
       }}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      {/* ─── Unified Top Header Controller (All Navigation Options At Top) ─── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 sm:px-8 py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-2xs flex-shrink-0">
+      {/* ─── Unified Top Header Controller (Strict Non-Overlapping Header) ─── */}
+      <header className="bg-white border-b border-slate-200 px-3 sm:px-8 py-2.5 sm:py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 shadow-2xs flex-shrink-0 z-30">
         {/* Left: Logo, Title & Chapter Back Button */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 font-bold text-lg text-[#073321]">
-            <span className="text-[#073321] font-serif text-xl sm:text-2xl font-extrabold tracking-tight">RegLearn</span>
+        <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 font-bold text-base sm:text-lg text-[#073321]">
+            <span className="text-[#073321] font-serif text-lg sm:text-2xl font-extrabold tracking-tight">RegLearn</span>
             <span className="text-slate-300 font-light">•</span>
-            <span className="text-[#073321] font-bold text-sm sm:text-base">{course?.title || 'SEBI AIF'}</span>
+            <span className="text-[#073321] font-bold text-xs sm:text-base line-clamp-1">{course?.title || 'Regulatory Master'}</span>
           </div>
 
           {(selectedTopicId || activeTab === 'home') && (
@@ -550,7 +566,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                 setSelectedTopicId(null);
                 setActiveTab('modules');
               }}
-              className="px-2.5 py-1 bg-slate-100 border border-slate-300 rounded-lg text-xs font-bold text-[#073321] hover:bg-slate-200 flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+              className="px-2.5 py-1 bg-slate-100 border border-slate-300 rounded-lg text-xs font-bold text-[#073321] hover:bg-slate-200 flex items-center gap-1 cursor-pointer transition-colors shadow-2xs min-h-[36px]"
             >
               ← Chapters List
             </button>
@@ -564,7 +580,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
               setSelectedTopicId(null);
               setActiveTab('modules');
             }}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer bg-[#073321] text-white shadow-2xs hover:bg-[#052819] flex items-center gap-2"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer bg-[#073321] text-white shadow-2xs hover:bg-[#052819] flex items-center gap-2 min-h-[36px]"
           >
             <BookOpen className="w-4 h-4 text-emerald-300" />
             <span>Chapter Modules</span>
@@ -572,7 +588,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
         </div>
 
         {/* Right: Chapter Select, XP & Exit Learning Button */}
-        <div className="flex items-center justify-end gap-2.5 flex-shrink-0">
+        <div className="flex items-center justify-end gap-2 flex-shrink-0">
           {(selectedTopicId || activeTab === 'home') && (
             <select
               value={topicIndex}
@@ -585,7 +601,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                 setRegLearnStep('understand');
                 setPracticeSelectedOption(null);
               }}
-              className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-[#073321] focus:outline-none focus:border-forest truncate max-w-[130px] sm:max-w-[170px]"
+              className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-[#073321] focus:outline-none focus:border-forest truncate max-w-[120px] sm:max-w-[170px] min-h-[36px]"
             >
               {topicsList.map((t, idx) => (
                 <option key={t.id || idx} value={idx}>
@@ -596,12 +612,12 @@ function RegulatoryMasterModalInner({ course, onClose }) {
           )}
 
           {/* XP Badge */}
-          <div className="bg-[#073321] text-white px-2.5 py-1 rounded-full text-xs font-mono font-bold">
+          <div className="bg-[#073321] text-white px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-mono font-bold whitespace-nowrap">
             {completedSet.size * 25} XP
           </div>
 
           {/* Readiness Percentage Badge */}
-          <div className="w-8 h-8 rounded-full border-2 border-amber-600/80 text-amber-700 font-mono font-bold text-xs flex items-center justify-center bg-amber-50">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-amber-600/80 text-amber-700 font-mono font-bold text-[11px] sm:text-xs flex items-center justify-center bg-amber-50 flex-shrink-0">
             {readinessPct}%
           </div>
 
@@ -609,16 +625,16 @@ function RegulatoryMasterModalInner({ course, onClose }) {
           <button
             onClick={onClose}
             aria-label="Exit Learning"
-            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 sm:px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer min-h-[36px]"
           >
-            <span>Exit Learning</span>
+            <span>Exit</span>
             <X className="w-4 h-4 text-rose-600" />
           </button>
         </div>
       </header>
 
-      {/* ─── Main Content Body (Full Scrollable Area) ─── */}
-      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-8 space-y-6 pb-24">
+      {/* ─── Main Content Body (Dedicated Scrollable Viewport with Safe Padding) ─── */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-8 space-y-6 pb-32 overflow-y-auto overscroll-y-contain">
 
         {/* ================================================================= */}
         {/* TAB: HOME / REGLEARN INTERACTIVE CARD VIEW                       */}
@@ -770,13 +786,50 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-sans">
-                    {regLearnStep === 'remember'
-                      ? currentTopic.rememberBody
-                      : regLearnStep === 'walkthrough'
-                      ? currentTopic.walkthroughBody
-                      : currentTopic.understandBody}
-                  </p>
+                  <div className="space-y-4 text-left">
+                    <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-sans">
+                      {regLearnStep === 'remember'
+                        ? currentTopic.rememberBody
+                        : regLearnStep === 'walkthrough'
+                        ? currentTopic.walkthroughBody
+                        : currentTopic.understandBody}
+                    </p>
+
+                    {/* Rich Codex Cards breakdown if available */}
+                    {regLearnStep === 'understand' && currentTopic.cards && currentTopic.cards.length > 0 && (
+                      <div className="space-y-3 pt-2">
+                        {currentTopic.cards.map((card, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200 text-left space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
+                                {card.tag || `Point ${cIdx + 1}`}
+                              </span>
+                              <span className="text-xs font-semibold text-slate-900">{card.title}</span>
+                            </div>
+                            {card.law && (
+                              <p className="text-xs text-slate-700 font-sans italic border-l-2 border-emerald-600 pl-2.5 py-0.5">
+                                "{card.law}"
+                              </p>
+                            )}
+                            {card.means && (
+                              <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                                <strong className="text-slate-800 font-medium">In practice: </strong>{card.means}
+                              </p>
+                            )}
+                            {card.watch && (
+                              <div className="text-[11px] text-amber-900 bg-amber-50 rounded-xl p-2 border border-amber-200 font-sans leading-relaxed">
+                                <strong className="font-mono text-amber-800 uppercase tracking-wider text-[9px] block mb-0.5">⚠ Watch Out</strong>
+                                {card.watch}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* Compliance Tip Box */}

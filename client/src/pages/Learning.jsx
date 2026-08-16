@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RegulatoryMasterModal from '../components/RegulatoryMasterModal';
 import LockOverlay from '../components/LockOverlay';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-// Course definitions — metadata only, NO fake progress numbers
+// Course definitions with accurate curriculum counts
 const COURSES = [
   {
     id: 'mod-cmi',
@@ -18,6 +18,9 @@ const COURSES = [
     badge: 'Updated 2026',
     color: 'from-slate-900 via-slate-800 to-blue-900',
     accentColor: 'bg-blue-500',
+    totalChapters: 17,
+    totalLessons: 35,
+    totalQuestions: 102,
   },
   {
     id: 'mod-fme',
@@ -28,6 +31,9 @@ const COURSES = [
     badge: 'Most Popular',
     color: 'from-emerald-900 via-emerald-800 to-teal-900',
     accentColor: 'bg-emerald-500',
+    totalChapters: 7,
+    totalLessons: 16,
+    totalQuestions: 32,
   },
   {
     id: 'mod-aif',
@@ -35,15 +41,30 @@ const COURSES = [
     slug: 'sebi-aif',
     title: 'SEBI (Alternative Investment Funds) Regulations, 2012',
     description: 'Comprehensive coverage of Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, valuation, and GARUDA filings.',
-    badge: 'New Content',
+    badge: 'Consolidated 2026',
     color: 'from-amber-900 via-amber-800 to-orange-900',
     accentColor: 'bg-amber-500',
+    totalChapters: 14,
+    totalLessons: 14,
+    totalQuestions: 63,
   },
 ];
 
 export default function Learning() {
   const { user, isAuthenticated } = useAuth();
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  // Auto-launch modal if query param (e.g. ?course=ifsca-cmi) is provided
+  useEffect(() => {
+    const courseParam = searchParams.get('course') || searchParams.get('track') || searchParams.get('slug');
+    if (courseParam) {
+      const match = COURSES.find(c => c.slug === courseParam || c.code.toLowerCase() === courseParam.toLowerCase() || c.id === courseParam);
+      if (match) {
+        setSelectedCourse(match);
+      }
+    }
+  }, [searchParams]);
 
   if (!isAuthenticated) {
     return (

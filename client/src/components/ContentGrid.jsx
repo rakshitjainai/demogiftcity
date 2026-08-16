@@ -183,17 +183,18 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
 
             <div className="flex flex-col gap-3">
               {LEARNING_MODULES.map((mod) => {
-                const totalLessons = mod.chapters?.length || 0;
-                const userProgress = user?.learningProgress?.find(p => p.moduleId === mod.id);
-                const completedCount = userProgress ? (userProgress.completedLessons?.length || 0) : 0;
-                const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+                const totalChapters = mod.totalChapters || mod.chapters?.length || 1;
+                const totalLessons = mod.totalLessons || mod.chapters?.length || 1;
+                const courseProgress = user?.courseProgress?.find(p => p.courseSlug === mod.slug || p.courseSlug === mod.id);
+                const completedCount = courseProgress ? (courseProgress.completedItems?.length || 0) : (user?.learningProgress?.find(p => p.moduleId === mod.id)?.completedLessons?.length || 0);
+                const progressPct = totalChapters > 0 ? Math.min(100, Math.round((completedCount / totalChapters) * 100)) : 0;
 
                 return (
-                  <div
+                  <Link
                     key={mod.id}
-                    onClick={() => onSelectModule?.(mod)}
-                    className={`rounded-2xl p-4 cursor-pointer group transition-all hover:scale-[1.02] relative overflow-hidden ${mod.color}`}
-                    style={{ border: `1px solid` }}
+                    to={`/learning?course=${mod.slug}`}
+                    className={`rounded-2xl p-4 cursor-pointer group transition-all hover:scale-[1.02] relative overflow-hidden block no-underline ${mod.color}`}
+                    style={{ border: `1px solid`, textDecoration: 'none' }}
                   >
                     {/* Corner glow decoration */}
                     <div
@@ -230,7 +231,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                     {/* Dynamic Progress Bar */}
                     <div className="space-y-1">
                       <div className="flex items-center justify-between text-[11px] text-white/75 font-medium">
-                        <span>{user ? `${completedCount}/${totalLessons} Lessons` : `0/${totalLessons} Lessons`}</span>
+                        <span>{user ? `${completedCount}/${totalChapters} Chapters (${totalLessons} Lessons)` : `${totalChapters} Chapters · ${totalLessons} Lessons`}</span>
                         <span className="font-bold text-white">
                           {user ? `${progressPct}% Complete` : 'Sign in to track'}
                         </span>
@@ -245,7 +246,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                         />
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

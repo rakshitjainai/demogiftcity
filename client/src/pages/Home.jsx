@@ -63,7 +63,7 @@ export default function Home() {
       <ContentGrid
         onSelectArticle={(a) => setSelectedArticle(a)}
         onSelectUpdate={(u) => setSelectedArticle(u)}
-        onSelectModule={(m) => setSelectedToolTitle(m.title)}
+        onSelectModule={(m) => navigate(`/learning?course=${m.slug}`)}
       />
 
       <ToolsScroller

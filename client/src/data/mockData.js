@@ -129,29 +129,28 @@ export const LEARNING_MODULES = [
     slug: "ifsca-cmi",
     color: "bg-slate-900 text-blue-100 border-blue-800",
     accentBg: "bg-blue-600",
-    badge: "Updated 2025",
+    badge: "Updated 2026",
+    totalChapters: 17,
+    totalLessons: 35,
     description: "In-depth guide covering regulatory approvals, net worth thresholds, governance, client onboarding, and statutory returns for GIFT City intermediaries.",
     chapters: [
-      {
-        num: 1,
-        title: "Registration Framework & Net Worth Requirements",
-        desc: "Covers eligibility, registration procedure, and net worth thresholds across Intermediary categories (Broker-Dealers, Custodians, Investment Advisers, RTAs, Debenture Trustees)."
-      },
-      {
-        num: 2,
-        title: "Governance, Principal Officer & Compliance Officer",
-        desc: "Mandatory qualifications, appointment timelines, board oversight, risk management committee structures, and internal audit requirements."
-      },
-      {
-        num: 3,
-        title: "Code of Conduct & Client Protection",
-        desc: "Client onboarding protocols, KYC/AML norms, conflict of interest management, risk disclosures, and transparent fee structuring."
-      },
-      {
-        num: 4,
-        title: "Statutory Filings, Inspections & Enforcement",
-        desc: "Quarterly and annual return filings, compliance certificates, regulatory inspection procedures, and statutory penalty framework."
-      }
+      { num: 1, title: "The CMI Landscape & Registration", desc: "Registrable activities, unified registration framework, form of entity, and perpetual validity." },
+      { num: 2, title: "The Net Worth Framework", desc: "Category-wise net worth thresholds, liquid assets requirement, and continuous compliance obligations." },
+      { num: 3, title: "Fit & Proper, Principal Officer & Compliance Officer", desc: "Mandatory qualification criteria, dual appointment rules, and key managerial accountability." },
+      { num: 4, title: "Conduct & Code of Conduct", desc: "Common conduct spine, client protection standards, conflict management, and fair dealing." },
+      { num: 5, title: "Governance & Operational Resilience", desc: "Internal controls, risk management framework, business continuity, and cybersecurity." },
+      { num: 6, title: "Inspection & Enforcement", desc: "Authority powers, search and seizure, suspension protocols, and administrative penalties." },
+      { num: 7, title: "Broker-Dealers & Clearing Members", desc: "Exchange registration, liquid capital adequacy, margin rules, and trade settlement." },
+      { num: 8, title: "Credit Rating Agencies", desc: "Rating lifecycle, rating committees, disclosure standards, and conflict separation." },
+      { num: 9, title: "Custodians", desc: "Custodial agreements, segregation of client securities, and safe custody norms." },
+      { num: 10, title: "Debenture Trustees", desc: "Trust deed execution, security creation, default monitoring, and nominee directorship." },
+      { num: 11, title: "Depository Participants", desc: "Beneficial owner segregation, daily reconciliation with depository, and system integrity." },
+      { num: 12, title: "Distributors", desc: "Permitted distribution channels, institutional vs non-institutional investors, and fee caps." },
+      { num: 13, title: "ESG Ratings & Data Products Providers", desc: "Methodology transparency, conflict management, and comply-or-explain conduct." },
+      { num: 14, title: "Investment Advisers", desc: "Fiduciary obligations, fee-only model, suitability assessment, and client agreements." },
+      { num: 15, title: "Investment Bankers", desc: "Issue management, due diligence certificates, underwriting commitments, and disclosures." },
+      { num: 16, title: "Research Entities", desc: "Research report standards, public appearance disclosures, and registration exemptions." },
+      { num: 17, title: "The Common-or-Entity Gauntlet", desc: "Distinguishing universal CMI obligations from activity-specific requirements." }
     ]
   },
   {
@@ -161,33 +160,37 @@ export const LEARNING_MODULES = [
     slug: "sebi-aif",
     color: "bg-amber-950 text-amber-100 border-amber-800",
     accentBg: "bg-amber-600",
-    badge: "New Topic",
+    badge: "Consolidated 2026",
+    totalChapters: 14,
+    totalLessons: 14,
     description: "Comprehensive 14-chapter interactive course covering Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, valuation, and GARUDA filings.",
     chapters: [
-      { num: 1, title: "Introduction to Alternative Investment Funds (AIFs) & Regulatory Framework", desc: "Understanding the legal concept of AIFs, private pool of capital, regulatory evolution, and SEBI mandate." },
-      { num: 2, title: "Categorization of AIFs — Category I, II & III Funds", desc: "Detailed breakdown of fund classifications, tax pass-through status, and target investment strategies." },
-      { num: 3, title: "Specialised Vehicles — Angel Funds, VC Funds & Infrastructure Funds", desc: "Eligibility norms, minimum ticket sizes, angel investor qualification, and special concessions." },
-      { num: 4, title: "Registration Process, Fit & Proper Criteria & Sponsor Commitments", desc: "Filing Form A, key managerial personnel requirements, sponsor skin-in-the-game obligations, and corpus targets." },
-      { num: 5, title: "Private Placement Memorandum (PPM) & Fund Structuring", desc: "PPM drafting guidelines, standard template disclosures, fee caps, and SEBI audit of PPM terms." },
-      { num: 6, title: "Investment Conditions & Concentration Limits across AIF Categories", desc: "Maximum exposure per investee company, unlisted securities mandate, debt restrictions, and leverage rules." },
-      { num: 7, title: "Accredited Investors & Large Value Funds (LVFs) Operational Norms", desc: "Net worth thresholds for accreditation, relaxation in PPM audit, flexible investment tenure, and co-investments." },
-      { num: 8, title: "Valuation Principles & Net Asset Value (NAV) Calculation", desc: "Independent valuation policies, frequency of valuation, standards (IPEV/ICAI), and auditor appointment." },
-      { num: 9, title: "Governance Framework & Investment Committee Oversight", desc: "Responsibilities of Key Management Personnel, Investment Committee liability, and fiduciary duties." },
-      { num: 10, title: "Code of Conduct for Fund Managers, Trustees & Key Personnel", desc: "Ethics, conflict management, priority in trades, gifts policy, and insider trading prohibitions." },
-      { num: 11, title: "Listing of AIF Units, Dematerialisation & Secondary Market Transfers", desc: "Mandatory demat of AIF units, private placement listing on stock exchanges, and transfer restrictions." },
-      { num: 12, title: "SEBI Reporting Framework, GARUDA Portal & Periodic Disclosures", desc: "Quarterly reporting on SEBI portal, CTR/STR submissions, investor communication, and annual compliance audit." },
-      { num: 13, title: "Co-investment Structures & Portfolio Management Protocols", desc: "Co-investment portfolio manager (CPM) route, sidecar vehicles, and pro-rata investment rules." },
-      { num: 14, title: "Winding Up, Liquidation Scheme & Investor Exit Options", desc: "In-specie distribution, liquidation period extensions, dissolution period, and regulatory approval for exit." }
+      { num: 1, title: "Fund Architecture: Corpus, Ticket & Investors", desc: "Four gating thresholds per scheme, corpus rules, accredited investor carve-outs, and demat units." },
+      { num: 2, title: "Structure & Tenure by Category", desc: "Close-ended vs open-ended funds, minimum tenure norms, and extension protocols." },
+      { num: 3, title: "Continuing Interest of Manager & Sponsor", desc: "Skin in the game requirements, unencumbered commitments, and pro-rata distribution rules." },
+      { num: 4, title: "Category III: Leverage & Disclosure", desc: "Leverage limits, risk management protocols, comprehensive investor disclosures, and derivative usage." },
+      { num: 5, title: "Valuation & Manager Responsibility", desc: "Independent valuation policies, IPEV/ICAI valuation standards, and audit frequencies." },
+      { num: 6, title: "Categories I, II & III: Taxonomy & Sub-Categories", desc: "Taxonomy, sub-categories (VCF, SME, Social Impact, Infra, Angel), and pass-through taxation." },
+      { num: 7, title: "Registration & Eligibility", desc: "Form A filing, fit and proper criteria, key managerial personnel experience, and corpus targets." },
+      { num: 8, title: "Investment Conditions & Concentration Limits", desc: "Maximum single investee exposure, unlisted securities mandate, and temporary deployment rules." },
+      { num: 9, title: "Placement Memorandum & GARUDA Green Channel", desc: "PPM drafting, standard template disclosures, merchant banker due diligence, and GARUDA portal filing." },
+      { num: 10, title: "Investor Onboarding, Accreditation & Co-investment", desc: "Accreditation criteria, Large Value Funds (LVFs) relaxations, and co-investment manager framework." },
+      { num: 11, title: "General Obligations & Investment Committee Oversight", desc: "Key management fiduciary duties, Investment Committee liability, and conflict management." },
+      { num: 12, title: "Dematerialisation, Valuation & Investor Rights", desc: "Mandatory demat of units, secondary market transfer rules, and periodic performance reporting." },
+      { num: 13, title: "Winding Up, Inspection & Default", desc: "In-specie distribution, liquidation period extensions, dissolution period, and regulatory approval." },
+      { num: 14, title: "Amendment & Circular Tracker (2022-2026)", desc: "Recent statutory amendments, master circular updates, and regulatory transition milestones." }
     ]
   },
   {
     id: "mod-fme",
     code: "IFSCA-FME",
-    title: "IFSCA Fund Management Regulations, 2025",
+    title: "IFSCA (Fund Management) Regulations, 2025",
     slug: "ifsca-fme",
     color: "bg-emerald-900 text-emerald-100 border-emerald-700",
     accentBg: "bg-emerald-600",
     badge: "Most Popular",
+    totalChapters: 7,
+    totalLessons: 16,
     description: "Masterclass on setting up Fund Management Entities (FMEs), registering Venture Capital Schemes, Portfolio Management Services, and ESG funds in GIFT City.",
     chapters: [
       { num: 1, title: "Types of FMEs & Registration Framework", desc: "Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail) capital norms and eligibility." },
@@ -196,12 +199,7 @@ export const LEARNING_MODULES = [
       { num: 4, title: "Special Situation Funds & Distressed Assets", desc: "Investment in stressed assets, Resolution Plans under IBC, acquisition of non-performing loans (NPLs)." },
       { num: 5, title: "ESG & Sustainable Investment Framework", desc: "Mandatory ESG disclosures, green washing prevention, stewardship responsibilities, and sustainability reporting." },
       { num: 6, title: "Family Investment Funds (FIFs) in GIFT City", desc: "Single Family Office structuring, minimum corpus ($10Mn), permitted asset classes, and self-managed funds." },
-      { num: 7, title: "Portfolio Management Services & Multi-Family Offices", desc: "PMS agreements, discretionary vs non-discretionary mandates, advisory services, and fee disclosures." },
-      { num: 8, title: "Investment Trusts (REITs & InvITs) Manager Framework", desc: "Public and private placement of REITs/InvITs, sponsor commitment, and valuation norms." },
-      { num: 9, title: "Accredited Investors & Sovereign Investment Vehicles", desc: "Eligibility criteria for accredited investors, accreditation agencies, and waiver of regulatory caps." },
-      { num: 10, title: "Risk Management, Internal Audit & Custody Norms", desc: "Appointment of independent custodian, risk management policy, valuation policies, and internal controls." },
-      { num: 11, title: "Code of Conduct & Conflict of Interest Management", desc: "Fiduciary duties, priority in allocation of investments, personal trading rules, and gifts policy." },
-      { num: 12, title: "Statutory Reporting, Inspections & Enforcement", desc: "Periodic return filings to IFSCA, regulatory audit, inspection procedures, and administrative penalties." }
+      { num: 7, title: "Portfolio Management Services & Multi-Family Offices", desc: "PMS agreements, discretionary vs non-discretionary mandates, advisory services, and fee disclosures." }
     ]
   }
 ];
