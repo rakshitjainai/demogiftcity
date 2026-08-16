@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import KnowledgeHub from './pages/KnowledgeHub';
@@ -23,7 +23,7 @@ import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
 import ExamReady from './pages/ExamReady';
 
-import Jobs from './pages/Jobs';
+import FMEInterviewPro from './pages/FMEInterviewPro';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -41,7 +41,8 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
+          <Route path="fme-interviewpro" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
+          <Route path="jobs" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
           <Route
             path="admin"
             element={
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="exam-ready" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
           <Route path="tools" element={<ProtectedRoute><ToolsIndex /></ProtectedRoute>} />
           <Route path="tools/:slug" element={<ProtectedRoute><ToolDetail /></ProtectedRoute>} />
+          <Route path="compliance-tools" element={<Navigate to="/tools" replace />} />
           <Route path="templates" element={<Templates />} />
           <Route path="blog" element={<BlogIndex />} />
           <Route path="blog/:slug" element={<BlogDetail />} />
@@ -76,6 +78,7 @@ export default function App() {
           <Route path="member-dashboard" element={<AuthGated pageName="Member Dashboard" />} />
           <Route path="profile" element={<AuthGated pageName="My Profile" />} />
           <Route path="login" element={<AuthGated pageName="Login" />} />
+          <Route path="register" element={<AuthGated pageName="Register" />} />
         </Route>
       </Routes>
     </div>

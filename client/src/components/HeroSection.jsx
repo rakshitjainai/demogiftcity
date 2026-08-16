@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, ArrowRight } from 'lucide-react';
 import CodexVisual from './HeroIllustration';
 import DesktopHeroSection from './DesktopHeroSection';
@@ -75,12 +76,12 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
 
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-4 pt-4">
-                <a href="/knowledge-hub" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--forest)', color: 'white', boxShadow: '0 4px 12px rgba(11,77,51,0.3)' }}>
+                <Link to="/knowledge-hub" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--forest)', color: 'white', boxShadow: '0 4px 12px rgba(11,77,51,0.3)' }}>
                   Explore Knowledge Hub
-                </a>
-                <a href="/register" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--paper)', color: 'var(--forest)', border: '1.5px solid var(--forest)' }}>
+                </Link>
+                <Link to="/membership" className="cursor-target px-6 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover-lift min-h-[52px] inline-flex items-center" style={{ background: 'var(--paper)', color: 'var(--forest)', border: '1.5px solid var(--forest)' }}>
                   Join RegMate
-                </a>
+                </Link>
               </div>
 
               {/* Popular pill tags */}

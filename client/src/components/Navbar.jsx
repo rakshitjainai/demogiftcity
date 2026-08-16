@@ -20,8 +20,9 @@ const SUB_ITEM_ROUTES = {
   'Board Meeting Planner': '/tools/board-meeting-planner',
   'ESOP Calculator': '/tools/esop-calculator',
   'AML Risk Assessment': '/tools/aml-risk-assessment',
-  'Jobs': '/jobs',
-  'Products': '/jobs'
+  'FME-InterviewPro': '/fme-interviewpro',
+  'Jobs': '/fme-interviewpro',
+  'Products': '/fme-interviewpro'
 };
 
 export default function Navbar({ onOpenSearch, onOpenAuth }) {

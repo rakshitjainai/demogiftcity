@@ -5,10 +5,10 @@ import { LATEST_UPDATES, LATEST_BLOGS, COMPLIANCE_TOOLS } from '../data/mockData
 
 // Extended searchable items list
 const SEARCH_COLLECTIONS = [
-  ...LATEST_UPDATES.map(u => ({ ...u, type: 'update', path: `/news/${u.id}` })),
-  ...LATEST_BLOGS.map(b => ({ ...b, type: 'blog', path: `/blog/${b.id}` })),
-  ...COMPLIANCE_TOOLS.map(t => ({ ...t, type: 'tool', path: `/tools/${t.id}` })),
-  { id: 'job-fme', title: 'IFSCA FME JobReady & Interview Simulator', category: 'Products / Jobs', summary: 'Preparation tool & simulation engine for Fund Management Entity (FME) regulatory interviews', type: 'job', path: '/jobs' },
+  ...LATEST_UPDATES.map(u => ({ ...u, type: 'update', path: `/news/article-${u.id}` })),
+  ...LATEST_BLOGS.map(b => ({ ...b, type: 'blog', path: `/blog/${b.slug || b.id}` })),
+  ...COMPLIANCE_TOOLS.map(t => ({ ...t, type: 'tool', path: `/tools/${t.slug}` })),
+  { id: 'job-fme', title: 'IFSCA FME-InterviewPro Simulator', category: 'Products / FME-InterviewPro', summary: 'Role-weighted interview simulator & preparation engine for GIFT IFSC FME compliance roles', type: 'job', path: '/fme-interviewpro' },
   { id: 'reg-ifsca-fme', title: 'IFSCA Fund Management Regulations 2022', category: 'Interactive Regulations', summary: 'Detailed chapter-wise regulations for Authorised and Registered FMEs in GIFT City', type: 'regulation', path: '/interactive-regulations' },
   { id: 'reg-sebi-aif', title: 'SEBI (Alternative Investment Funds) Regulations', category: 'Interactive Regulations', summary: 'Category I, II, III AIF operational, compliance, and filing rules', type: 'regulation', path: '/interactive-regulations' },
   { id: 'quiz-ifsca-cmi', title: 'IFSCA Capital Markets & Intermediaries Quiz', category: 'Practice Quizzes', summary: '100+ diagnostic questions covering CMI regulations in GIFT IFSC', type: 'quiz', path: '/quizzes' },
@@ -103,7 +103,7 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
                 Type keywords such as <strong className="text-slate-700">"IFSCA"</strong>, <strong className="text-slate-700">"FME"</strong>, <strong className="text-slate-700">"AIF"</strong>, or <strong className="text-slate-700">"AML"</strong> to filter across RegMate.
               </p>
               <div className="flex flex-wrap gap-2 justify-center pt-2">
-                {['IFSCA FME', 'SEBI AIF', 'Aircraft Leasing', 'ESOP', 'Jobs'].map(tag => (
+                {['IFSCA FME', 'SEBI AIF', 'Aircraft Leasing', 'ESOP', 'FME-InterviewPro'].map(tag => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}

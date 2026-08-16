@@ -287,10 +287,10 @@ export const NAV_LINKS = [
   },
   {
     label: "Products",
-    href: "/jobs",
+    href: "/fme-interviewpro",
     hasDropdown: true,
     subItems: [
-      "Jobs"
+      "FME-InterviewPro"
     ]
   },
   { label: "Templates", href: "/templates", hasDropdown: false },

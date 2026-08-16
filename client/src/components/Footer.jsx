@@ -8,15 +8,15 @@ const FOOTER_NAV = [
   {
     heading: 'Knowledge',
     links: [
-      { label: 'Interactive Regulations', href: '/knowledge-hub' },
-      { label: 'Quizzes', href: '/knowledge-hub' },
-      { label: 'Learning', href: '/knowledge-hub' },
+      { label: 'Interactive Regulations', href: '/interactive-regulations' },
+      { label: 'Quizzes', href: '/quizzes' },
+      { label: 'Learning', href: '/learning' },
     ]
   },
   {
     heading: 'Resources',
     links: [
-      { label: 'Compliance Tools', href: '/compliance-tools' },
+      { label: 'Compliance Tools', href: '/tools' },
       { label: 'Templates', href: '/templates' },
       { label: 'Blog', href: '/blog' },
       { label: 'News', href: '/news' },

@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#16203A" />
+<title>RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15</title>
+<meta name="description" content="Role-weighted, source-backed interview preparation for Compliance Officer, Principal Officer and Legal & Compliance roles at GIFT IFSC fund managers." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* =========================================================================
+   RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15
+   Design system: regulatory intelligence app
+   Navy structure · brass signal accent · mono source-chips · mobile-first
+   ========================================================================= */
+
+:root{
+  /* palette ------------------------------------------------------------- */
+  --ink:#101A2E;            /* immersive dark canvas */
+  --ink-2:#16223A;          /* dark surface */
+  --navy:#16203A;           /* structural: top bar, bottom nav */
+  --navy-line:#26324F;
+  --bg:#F4F6FA;             /* app canvas (light) */
+  --surface:#FFFFFF;
+  --surface-2:#FBFCFE;
+  --line:#E4E8F0;
+  --line-2:#EDF0F6;
+
+  --text:#182338;          /* primary text on light */
+  --text-2:#4B5A75;        /* secondary */
+  --text-3:#8A97AD;        /* tertiary / captions */
+  --on-dark:#EAF0FA;
+  --on-dark-2:#9DB0CE;
+
+  --accent:#C6863A;        /* brass signal */
+  --accent-2:#B0722B;
+  --accent-soft:#F6ECDD;
+  --accent-line:#EAD6BB;
+
+  --critical:#B4462F;
+  --high:#C6863A;
+  --medium:#3F7A8C;
+  --low:#7C8AA3;
+  --success:#2E8768;
+  --success-soft:#E4F3ED;
+  --warn:#9A6A16;
+  --warn-soft:#FBF2DC;
+
+  /* type ---------------------------------------------------------------- */
+  --display:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* geometry ------------------------------------------------------------ */
+  --app-w:100%;
+  --app-max-w:1240px;
+  --r-lg:18px; --r-md:14px; --r-sm:10px;
+  --pad:20px;
+  --shadow:0 1px 2px rgba(16,26,46,.05),0 8px 24px rgba(16,26,46,.06);
+  --shadow-lg:0 12px 40px rgba(16,26,46,.16);
+  --nav-h:64px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--body);
+  color:var(--text);
+  background:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+h1,h2,h3,h4{margin:0;font-family:var(--display);font-weight:600;letter-spacing:-.01em;color:var(--text)}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ---- app shell --------------------------------------------------------- */
+.app{
+  position:relative;
+  width:100%;
+  max-width:var(--app-max-w);
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--bg);
+  box-shadow:0 0 0 1px var(--navy-line), 0 30px 80px rgba(16,26,46,.30);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+@media(min-width:1024px){
+  body{padding:0;background:var(--ink)}
+  .app{border-radius:0;min-height:100vh}
+  .qa-grid{grid-template-columns:repeat(4, 1fr)!important;gap:14px!important}
+  .start{max-width:100%!important;margin:0!important;padding:48px 40px!important;width:100%!important}
+  .start h1{font-size:42px!important}
+  .screen{padding:30px 40px calc(var(--nav-h) + 36px)!important}
+  .dash-hero{padding:28px 32px!important}
+}
+
+/* topbar */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:var(--navy);color:var(--on-dark);
+  padding:12px var(--pad);
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--navy-line);
+}
+.topbar .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.02em}
+.topbar .mark{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+  background:linear-gradient(150deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;font-size:14px;font-family:var(--display)}
+.topbar .ctx{margin-left:auto;text-align:right;line-height:1.15}
+.topbar .ctx .role{font-size:12.5px;font-weight:600;color:#fff}
+.topbar .ctx .tl{font-size:10.5px;color:var(--on-dark-2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em}
+.topbar.hidden{display:none}
+
+/* scroll area */
+.screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:var(--pad) var(--pad) calc(var(--nav-h) + 28px)}
+.screen.no-nav{padding-bottom:28px}
+.screen.immersive{background:var(--ink);color:var(--on-dark)}
+.screen.immersive h1,.screen.immersive h2,.screen.immersive h3{color:#fff}
+
+/* eyebrow / mono labels */
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:500}
+.immersive .eyebrow{color:var(--on-dark-2)}
+
+/* ---- reusable atoms ---------------------------------------------------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.pad{padding:var(--pad)}
+.stack>*+*{margin-top:12px}
+.muted{color:var(--text-2)}
+.tiny{font-size:12px}
+.center{text-align:center}
+.row{display:flex;align-items:center;gap:10px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grow{flex:1}
+.divider{height:1px;background:var(--line-2);margin:14px 0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:600;font-size:15px;padding:14px 20px;border-radius:var(--r-md);
+  transition:transform .06s ease, background .15s ease, box-shadow .15s ease;width:100%}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(198,134,58,.28)}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-dark{background:var(--navy);color:#fff}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-soft{background:var(--accent-soft);color:var(--accent-2);border:1px solid var(--accent-line)}
+.btn-inline{width:auto;padding:11px 16px;font-size:14px}
+.btn-sm{padding:9px 14px;font-size:13.5px;width:auto}
+
+/* pills / chips */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+  padding:4px 9px;border-radius:999px;letter-spacing:.02em}
+.pill-critical{background:rgba(180,70,47,.10);color:var(--critical)}
+.pill-high{background:var(--accent-soft);color:var(--accent-2)}
+.pill-medium{background:rgba(63,122,140,.12);color:var(--medium)}
+.pill-low{background:rgba(124,138,163,.14);color:var(--low)}
+.pill-type{background:#EEF2F9;color:var(--text-2)}
+.chip-src{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;
+  color:var(--text-2);background:var(--surface-2);border:1px solid var(--line);
+  padding:5px 9px;border-radius:7px;letter-spacing:.01em}
+.chip-src .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.chip-src.verify{color:var(--warn);background:var(--warn-soft);border-color:#EBD9AE}
+.chip-src.verify .dot{background:var(--warn)}
+
+.verify-banner{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);
+  border:1px solid #EBD9AE;color:#6E4E10;padding:11px 13px;border-radius:var(--r-sm);font-size:12.5px;line-height:1.45}
+.verify-banner b{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em}
+
+/* ======================================================================
+   START SCREEN
+   ====================================================================== */
+.start{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(160deg, #16203A 0%, #101A2E 50%, #0B132B 100%);color:var(--on-dark);padding:36px var(--pad) 32px}
+.start .top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.start .top .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;color:#fff;font-size:17px}
+.start .mark{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(150deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;font-family:var(--display);box-shadow:0 4px 12px rgba(198,134,58,.35)}
+.start .hero{margin:auto 0;padding:24px 0}
+.start .product{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;display:inline-flex;align-items:center;gap:8px;background:rgba(198,134,58,.12);border:1px solid rgba(198,134,58,.25);padding:6px 14px;border-radius:999px}
+.start h1{font-size:36px;line-height:1.12;color:#fff;letter-spacing:-.02em;font-weight:700}
+.start .sub{margin-top:18px;color:var(--on-dark-2);font-size:16px;line-height:1.6;max-width:54ch}
+.start .quote{margin-top:24px;padding:14px 18px;background:rgba(255,255,255,.04);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;color:#D8E2F2;font-size:14.5px;line-height:1.55}
+.start .cta-wrap{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+@media(min-width:640px){
+  .start .cta-wrap{flex-direction:row;align-items:center}
+  .start .btn-primary, .start .btn-ghost{width:auto;padding:14px 28px}
+}
+.start .btn-primary{background:linear-gradient(135deg, #C6863A, #B0722B);color:#fff;box-shadow:0 8px 24px rgba(198,134,58,.4)}
+.start .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.20)}
+.start .btn-ghost:hover{background:rgba(255,255,255,.12)}
+.start .foot{margin-top:24px;text-align:center;font-size:12px;color:var(--on-dark-2);font-family:var(--mono);letter-spacing:.03em;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+
+/* ======================================================================
+   REGISTRATION
+   ====================================================================== */
+.reg-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow)}
+.reg-label{display:block;font-size:12px;font-weight:700;color:var(--text-2);margin:0 0 7px}
+.reg-input{width:100%;padding:14px 14px;border:1.5px solid var(--line);border-radius:var(--r-md);font:inherit;color:var(--text);background:#fff;outline:none;margin-bottom:14px}
+.reg-input:focus{border-color:var(--accent)}
+.reg-note{font-size:12px;color:var(--text-2);line-height:1.5;margin-top:10px}
+.reg-error{background:rgba(180,70,47,.08);border:1px solid rgba(180,70,47,.2);color:var(--critical);padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
+.reg-success{background:var(--success-soft);border:1px solid rgba(46,135,104,.2);color:#245e4b;padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
+
+/* ======================================================================
+   ONBOARDING
+   ====================================================================== */
+.ob-head{margin-bottom:16px}
+.ob-progress{display:flex;gap:6px;margin-bottom:20px}
+.ob-progress span{height:4px;border-radius:2px;flex:1;background:var(--line)}
+.ob-progress span.done{background:var(--accent)}
+.ob-q{font-size:21px;line-height:1.25;margin-bottom:4px}
+.ob-hint{color:var(--text-2);font-size:13.5px;margin-bottom:18px}
+.opt{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:var(--r-md);padding:16px 16px;display:flex;align-items:center;gap:13px;
+  transition:border-color .12s ease, background .12s ease; margin-bottom:10px}
+.opt:hover{border-color:var(--accent-line);background:var(--surface-2)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt .tick{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
+.opt.sel .tick{background:var(--accent);border-color:var(--accent);color:#fff}
+.opt .o-title{font-weight:600;font-size:15px}
+.opt .o-sub{font-size:12.5px;color:var(--text-2);margin-top:2px}
+.opt .o-ic{width:38px;height:38px;border-radius:10px;background:#EEF2F9;display:grid;place-items:center;flex:none;color:var(--navy)}
+.opt.sel .o-ic{background:#fff;color:var(--accent-2)}
+.ob-actions{margin-top:8px;display:flex;gap:10px}
+.ob-back{flex:none;width:auto;padding:14px 16px}
+
+/* ======================================================================
+   DASHBOARD
+   ====================================================================== */
+.dash-hero{background:linear-gradient(160deg,#1B2A49,#16203A);color:#fff;border-radius:var(--r-lg);
+  padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.dash-hero .eyebrow{color:var(--on-dark-2)}
+.dash-hero .row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.dash-hero .role-name{font-family:var(--display);font-size:19px;font-weight:600;margin-top:4px}
+.dash-hero .tl{font-size:12.5px;color:var(--on-dark-2);margin-top:3px}
+.mode-chip{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(198,134,58,.18);color:#E7C89B;border:1px solid rgba(198,134,58,.35);padding:5px 9px;border-radius:7px;white-space:nowrap}
+
+/* readiness dial (signature element) */
+.dial-wrap{display:flex;align-items:center;gap:18px;margin-top:18px}
+.dial{position:relative;width:96px;height:96px;flex:none}
+.dial svg{transform:rotate(-90deg)}
+.dial .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .num{font-family:var(--display);font-size:26px;font-weight:600;color:#fff;line-height:1}
+.dial .pct{font-size:10px;color:var(--on-dark-2);font-family:var(--mono);margin-top:2px}
+.dial-meta{flex:1}
+.dial-meta .label{font-size:12.5px;color:var(--on-dark-2)}
+.dial-meta .status{font-size:15px;font-weight:600;color:#fff;margin-top:2px}
+.dial-meta .rec{margin-top:10px;font-size:12.5px;color:#D8E2F2;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);border-radius:9px;padding:9px 11px;line-height:1.4}
+.dial-meta .rec b{color:var(--accent);font-weight:600}
+
+.section-title{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 12px}
+.section-title h3{font-size:16px}
+.section-title .link{font-size:12.5px;color:var(--accent-2);font-weight:600}
+
+/* priority topic list */
+.ptopic{display:flex;align-items:center;gap:13px;padding:14px 15px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:9px;text-align:left;width:100%;
+  transition:border-color .12s ease,transform .06s ease}
+.ptopic:hover{border-color:var(--accent-line)}
+.ptopic:active{transform:translateY(1px)}
+.ptopic .no{font-family:var(--mono);font-size:13px;color:var(--text-3);width:22px;flex:none}
+.ptopic .body{flex:1;min-width:0}
+.ptopic .t{font-weight:600;font-size:14.5px;line-height:1.2}
+.ptopic .s{font-size:12px;color:var(--text-2);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptopic .bar{height:5px;border-radius:3px;background:var(--line-2);margin-top:8px;overflow:hidden}
+.ptopic .bar>i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.ptopic .chev{color:var(--text-3);flex:none}
+
+/* quick action grid */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:15px 14px;text-align:left;
+  transition:border-color .12s ease,transform .06s ease}
+.qa:hover{border-color:var(--accent-line)}
+.qa:active{transform:translateY(1px)}
+.qa .qa-ic{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent-2);display:grid;place-items:center;margin-bottom:9px}
+.qa .qa-t{font-weight:600;font-size:14px}
+.qa .qa-s{font-size:11.5px;color:var(--text-2);margin-top:2px}
+
+/* mode banner */
+.mode-banner{display:flex;gap:12px;align-items:flex-start;background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:16px 17px;margin-top:20px}
+.mode-banner .mb-ic{width:36px;height:36px;border-radius:9px;background:rgba(198,134,58,.2);color:var(--accent);display:grid;place-items:center;flex:none}
+.mode-banner .mb-t{font-weight:600;font-size:14.5px;color:#fff}
+.mode-banner .mb-s{font-size:12.5px;color:var(--on-dark-2);margin-top:3px;line-height:1.45}
+
+/* ======================================================================
+   LEARN / MODULES
+   ====================================================================== */
+.screen-head{margin-bottom:16px}
+.screen-head h2{font-size:23px}
+.screen-head .sub{color:var(--text-2);font-size:13.5px;margin-top:4px}
+
+.module{display:flex;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);margin-bottom:11px;text-align:left;width:100%;transition:border-color .12s ease,transform .06s ease}
+.module:hover{border-color:var(--accent-line)}
+.module:active{transform:translateY(1px)}
+.module .m-no{font-family:var(--display);font-size:20px;font-weight:600;color:var(--accent);width:30px;flex:none;line-height:1}
+.module .m-body{flex:1;min-width:0}
+.module .m-t{font-weight:600;font-size:15.5px;line-height:1.2}
+.module .m-s{font-size:12.5px;color:var(--text-2);margin-top:4px;line-height:1.4}
+.module .m-meta{display:flex;gap:8px;align-items:center;margin-top:10px}
+.module .m-count{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+
+/* topic view */
+.topic-nav{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);font-weight:600;width:auto;padding:8px 12px 8px 8px;border-radius:9px}
+.back:hover{background:var(--surface-2)}
+.topic-head{margin-bottom:6px}
+.topic-head h2{font-size:22px;line-height:1.2}
+.topic-head .m-ref{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.layer{margin-top:18px}
+.layer .l-label{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.layer .l-label .l-ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none;
+  background:var(--accent-soft);color:var(--accent-2)}
+.layer .l-label .l-txt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);font-weight:600}
+.layer p{font-size:14.5px;line-height:1.6;color:var(--text)}
+.layer.why{background:var(--ink);color:#fff;border-radius:var(--r-md);padding:16px}
+.layer.why p{color:#D8E2F2}
+.layer.why .l-txt{color:var(--accent)}
+.layer.why .l-ic{background:rgba(198,134,58,.2);color:var(--accent)}
+.layer.practical{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:16px}
+.layer.example{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-md);padding:16px}
+.layer.example p{color:var(--text-2)}
+
+.case-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;margin-top:18px}
+.case-card .cc-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line-2);font-size:13px}
+.case-card .cc-row:last-child{border-bottom:none}
+.case-card .cc-k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);width:96px;flex:none;padding-top:2px}
+.case-card .cc-v{flex:1;line-height:1.45}
+
+.takeaway{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--r-md);padding:16px;margin-top:18px}
+.takeaway .tk-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.takeaway ul{margin:0;padding:0;list-style:none}
+.takeaway li{position:relative;padding:5px 0 5px 20px;font-size:13.5px;line-height:1.45;color:#5A431F}
+.takeaway li::before{content:"";position:absolute;left:2px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* ======================================================================
+   PRACTICE / INTERVIEW QUESTIONS  (Think → Reveal → Remember)
+   ====================================================================== */
+.filter-bar{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin:0 calc(-1*var(--pad));padding-left:var(--pad);padding-right:var(--pad)}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter{flex:none;font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--text-2);white-space:nowrap}
+.filter.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+.q-progress{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:12px;font-family:var(--mono)}
+.q-progress .pbar{flex:1;height:4px;background:var(--line);border-radius:2px;margin:0 12px;overflow:hidden}
+.q-progress .pbar>i{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .3s ease}
+
+/* the interview card */
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.qcard .q-top{padding:18px 18px 0}
+.qcard .q-tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.qcard .q-text{font-size:19px;line-height:1.32;font-family:var(--display);font-weight:600;letter-spacing:-.01em}
+.think{margin:18px 18px 0;padding:16px;border:1px dashed var(--accent-line);background:var(--accent-soft);border-radius:var(--r-md);text-align:center}
+.think .th-t{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);font-weight:600}
+.think .th-s{font-size:12.5px;color:#7A5B2A;margin-top:6px}
+.reveal-btn{margin:16px 18px 18px;padding:15px;font-weight:600}
+
+/* revealed answer */
+.answer{padding:2px 18px 18px}
+.answer .a-block{margin-top:16px}
+.answer .a-label{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-2);margin-bottom:9px}
+.answer .a-label .ln{flex:1;height:1px;background:var(--line-2)}
+.answer .how p{font-size:15px;line-height:1.62;color:var(--text)}
+.answer .len-badge{font-size:10px;font-family:var(--mono);color:var(--accent-2);background:var(--accent-soft);padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em}
+
+.remember{background:var(--ink);color:#fff;border-radius:var(--r-md);padding:15px 16px;margin-top:16px}
+.remember .r-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.remember .r-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.remember .r-node{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:6px 10px;font-size:12.5px;font-weight:600}
+.remember .r-arrow{color:var(--accent);font-size:12px}
+
+.mini{border:1px solid var(--line);border-radius:var(--r-md);padding:13px 14px;margin-top:12px;background:var(--surface)}
+.mini .mi-h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;margin-bottom:6px}
+.mini .mi-h .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;flex:none}
+.mini.trap{background:rgba(180,70,47,.05);border-color:rgba(180,70,47,.2)}
+.mini.trap .ic{background:rgba(180,70,47,.14);color:var(--critical)}
+.mini.trap .mi-h{color:var(--critical)}
+.mini.tip .ic{background:var(--accent-soft);color:var(--accent-2)}
+.mini.tip .mi-h{color:var(--accent-2)}
+.mini.test .ic{background:rgba(63,122,140,.14);color:var(--medium)}
+.mini.test .mi-h{color:var(--medium)}
+.mini p{font-size:13px;line-height:1.5;color:var(--text)}
+.mini .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.mini .tags .pill{background:rgba(63,122,140,.1);color:var(--medium)}
+
+.q-foot{display:flex;gap:10px;margin-top:18px}
+
+/* ======================================================================
+   SCENARIO / SIMULATION
+   ====================================================================== */
+.scn-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.scn-setup{background:linear-gradient(160deg,#1B2A49,#16203A);color:#fff;padding:20px}
+.scn-setup .eyebrow{color:var(--on-dark-2);margin-bottom:10px;display:block}
+.scn-setup .s-text{font-size:15.5px;line-height:1.5;color:#EAF0FA}
+.scn-setup .s-q{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-family:var(--display);font-weight:600;font-size:17px;color:#fff}
+.scn-body{padding:18px}
+.approach-steps{counter-reset:step;margin-top:4px}
+.approach-steps .st{display:flex;gap:13px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.approach-steps .st:last-child{border-bottom:none}
+.approach-steps .st .n{counter-increment:step;width:26px;height:26px;border-radius:8px;background:var(--accent-soft);color:var(--accent-2);
+  font-family:var(--display);font-weight:600;font-size:13px;display:grid;place-items:center;flex:none}
+.approach-steps .st .n::before{content:counter(step)}
+.approach-steps .st p{font-size:14px;line-height:1.5;padding-top:3px}
+
+.sim-facts{display:grid;gap:10px;margin-top:4px}
+.sim-fact{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 13px}
+.sim-fact .sf-k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px}
+.sim-fact .sf-v{font-size:13.5px;line-height:1.45}
+.sim-fact.mistake{background:rgba(180,70,47,.05);border-color:rgba(180,70,47,.2)}
+.sim-fact.mistake .sf-k{color:var(--critical)}
+
+/* compliance control card */
+.control{background:var(--ink);color:#fff;border-radius:var(--r-md);padding:16px;margin-top:16px}
+.control .ctl-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.control .ctl-flow{display:grid;gap:0}
+.control .cf-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08);align-items:flex-start}
+.control .cf-row:last-child{border-bottom:none}
+.control .cf-k{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--on-dark-2);width:96px;flex:none;padding-top:2px}
+.control .cf-v{flex:1;font-size:13px;line-height:1.4;color:#EAF0FA}
+
+/* ======================================================================
+   RAPID RECALL
+   ====================================================================== */
+.recall-mode{display:flex;gap:13px;align-items:center;padding:16px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);margin-bottom:10px;text-align:left;width:100%;transition:border-color .12s ease}
+.recall-mode:hover{border-color:var(--accent-line)}
+.recall-mode .rm-time{width:52px;height:52px;border-radius:12px;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
+.recall-mode .rm-time .n{font-family:var(--display);font-size:19px;font-weight:600;line-height:1}
+.recall-mode .rm-time .u{font-size:9px;color:var(--on-dark-2);font-family:var(--mono);text-transform:uppercase}
+.recall-mode .rm-t{font-weight:600;font-size:15px}
+.recall-mode .rm-s{font-size:12.5px;color:var(--text-2);margin-top:3px;line-height:1.4}
+
+/* flashcard */
+.flash-wrap{display:flex;flex-direction:column;min-height:60vh}
+.flash-count{text-align:center;font-family:var(--mono);font-size:12px;color:var(--text-2);margin-bottom:14px}
+.flash{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);
+  display:flex;flex-direction:column;justify-content:center;padding:28px 22px;text-align:center;min-height:280px;cursor:pointer;position:relative}
+.flash .fc-cat{position:absolute;top:16px;left:0;right:0;text-align:center}
+.flash .fc-term{font-family:var(--display);font-size:24px;font-weight:600;line-height:1.2}
+.flash .fc-def{font-size:15.5px;line-height:1.55;color:var(--text-2)}
+.flash .fc-hint{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono);letter-spacing:.05em}
+.flash-nav{display:flex;gap:10px;margin-top:16px}
+
+/* ======================================================================
+   ASSESSMENT
+   ====================================================================== */
+.assess-opt{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);
+  padding:15px 16px;margin-bottom:10px;font-size:14.5px;font-weight:500;display:flex;align-items:center;gap:12px;transition:border-color .12s}
+.assess-opt:hover{border-color:var(--accent-line)}
+.assess-opt .a-key{width:26px;height:26px;border-radius:7px;background:#EEF2F9;color:var(--text-2);font-weight:700;font-size:13px;display:grid;place-items:center;flex:none;font-family:var(--display)}
+.assess-opt.correct{border-color:var(--success);background:var(--success-soft)}
+.assess-opt.correct .a-key{background:var(--success);color:#fff}
+.assess-opt.wrong{border-color:var(--critical);background:rgba(180,70,47,.06)}
+.assess-opt.wrong .a-key{background:var(--critical);color:#fff}
+.assess-opt:disabled{cursor:default}
+.assess-explain{font-size:13px;line-height:1.5;color:var(--text-2);background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:var(--r-sm);padding:12px 13px;margin:2px 0 14px}
+.assess-explain b{color:var(--text)}
+
+/* results */
+.result-score{text-align:center;padding:10px 0 6px}
+.result-score .rs-num{font-family:var(--display);font-size:52px;font-weight:600;line-height:1;color:var(--navy)}
+.result-score .rs-of{font-size:15px;color:var(--text-2)}
+.area-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.area-row:last-child{border-bottom:none}
+.area-row .ar-name{font-weight:600;font-size:14px;flex:1}
+.area-row .ar-bar{width:96px;height:6px;background:var(--line-2);border-radius:3px;overflow:hidden;flex:none}
+.area-row .ar-bar>i{display:block;height:100%;border-radius:3px}
+.area-row .ar-pct{font-family:var(--mono);font-size:12px;color:var(--text-2);width:38px;text-align:right;flex:none}
+
+/* ======================================================================
+   PROGRESS / READINESS
+   ====================================================================== */
+.big-dial{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
+.big-dial .bd{position:relative;width:160px;height:160px}
+.big-dial svg{transform:rotate(-90deg)}
+.big-dial .bd .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.big-dial .bd .num{font-family:var(--display);font-size:44px;font-weight:600;color:var(--navy);line-height:1}
+.big-dial .bd .lab{font-size:11px;font-family:var(--mono);color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.big-dial .caption{margin-top:12px;font-size:13px;color:var(--text-2);text-align:center;max-width:30ch}
+
+.dim-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line-2)}
+.dim-row:last-child{border-bottom:none}
+.dim-row .d-name{font-size:14px;font-weight:600;flex:1}
+.dim-row .d-track{width:110px;height:7px;background:var(--line-2);border-radius:4px;overflow:hidden;flex:none}
+.dim-row .d-track>i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .5s ease}
+.dim-row .d-val{font-family:var(--mono);font-size:12px;color:var(--text-2);width:34px;text-align:right;flex:none}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:8px}
+.tag-list .tg{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:8px}
+.tag-list .tg.strong{background:var(--success-soft);color:var(--success)}
+.tag-list .tg.weak{background:var(--accent-soft);color:var(--accent-2)}
+
+/* ======================================================================
+   BOTTOM NAV
+   ====================================================================== */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--navy);
+  display:flex;border-top:1px solid var(--navy-line);z-index:40}
+.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--on-dark-2);padding-top:4px}
+.bottom-nav button .bn-ic{width:22px;height:22px}
+.bottom-nav button .bn-l{font-size:10px;font-weight:600;letter-spacing:.01em}
+.bottom-nav button.on{color:#fff}
+.bottom-nav button.on .bn-ic{color:var(--accent)}
+
+/* empty / toast */
+.empty{text-align:center;padding:40px 20px;color:var(--text-2)}
+.empty .e-ic{width:52px;height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;margin:0 auto 14px;color:var(--text-3)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 16px);z-index:80;
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  box-shadow:var(--shadow-lg);opacity:0;transition:opacity .25s ease,transform .25s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+@media(min-width:1024px){.toast{bottom:80px}}
+
+/* fade-in */
+.fade{animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.reveal-anim{animation:reveal .32s ease}
+@keyframes reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+
+<style id="regmate-premium-theme">
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+:root{
+  --ink:#142B1A; --ink-2:#2E4D38; --navy:#142B1A; --navy-line:#2A4832;
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F4F8F4;
+  --line:#E2E8F0; --line-2:#CBD5E1; --text:#0D2000; --text-2:#2E4D38; --text-3:#5C7363;
+  --on-dark:#142B1A; --on-dark-2:#2E4D38;
+  --accent:#C6863A; --accent-2:#B0722B; --accent-soft:#FDF8EC; --accent-line:#EAD6BB;
+  --critical:#EF4444; --high:#D4AF37; --medium:#2563EB; --low:#64748B;
+  --success:#2E6B34; --success-soft:#EAF5E9; --warn:#D97706; --warn-soft:#FEF3C7;
+  --display:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  --shadow:0 1px 3px rgba(0,0,0,0.05),0 10px 25px rgba(0,0,0,0.03);
+  --shadow-lg:0 10px 30px rgba(0,0,0,0.08);
+}
+
+body{background:#FFFFFF!important;font-family:var(--body);color:#0D2000;margin:0;padding:0}
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.03em;color:#0D2000}
+
+/* Text color contrast fixes for white backgrounds */
+.screen, .screen p, .screen span, .screen div, .screen li, .screen h1, .screen h2, .screen h3, .screen h4,
+.card, .card p, .card span, .card div, .card h1, .card h2, .card h3, .card h4,
+.module, .module p, .module span, .module div, .module h3, .module h4,
+.ptopic, .ptopic p, .ptopic span, .ptopic div, .ptopic h3, .ptopic h4,
+.qa, .qa p, .qa span, .qa div, .qa h3, .qa h4,
+.qcard, .qcard p, .qcard span, .qcard div,
+.scn-card, .scn-card p, .scn-card span, .scn-card div,
+.reg-card, .reg-card p, .reg-card span, .reg-card div,
+.stat-val, .stat-lbl, .meta, .desc, .sub, .text-muted, .text-soft {
+  color: #142B1A !important;
+}
+
+.sub, .desc, .meta, .text-muted, .text-soft, .eyebrow, .sf-card p, .dash-hero p {
+  color: #2E4D38 !important;
+}
+
+.topbar, .topbar *, .btn-primary, .btn-primary *, .btn-dark, .btn-dark * {
+  color: #FFFFFF !important;
+}
+.topbar .brand, .topbar .brand * {
+  color: #FFFFFF !important;
+}
+
+button, .btn, .ptopic, .qa, .module, .opt, .d-tab, .filter, [data-go], [data-nav], [data-topic], [data-module], [data-action], [data-opt-field] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* App Full Width (Starts from Left with normal padding, NO tablet frame, NO side margins) */
+.app{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  min-height:100vh!important;
+  background:#FFFFFF!important;
+}
+
+.topbar{
+  background:#142B1A!important;
+  border-bottom:1px solid #2A4832!important;
+  padding:14px 28px!important;
+  color:#FFFFFF!important;
+}
+.topbar .brand{font-weight:800;letter-spacing:-.03em;color:#FFFFFF}
+.topbar .mark,.start .mark{display:none!important}
+
+.start{
+  background:#FFFFFF!important;
+  color:#0D2000!important;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:24px 32px!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  gap:20px!important;
+}
+
+.start-main-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:24px;
+  max-width:100%!important;
+  width:100%!important;
+  margin:0!important;
+  padding:8px 0;
+}
+
+@media(min-width:769px){
+  .start-main-grid{
+    grid-template-columns:1.1fr 1fr!important;
+    align-items:stretch!important;
+    gap:28px!important;
+  }
+}
+
+.hero{
+  background:linear-gradient(135deg, #FDFBF7 0%, #F4F8F4 100%)!important;
+  border:1px solid #EAD6BB!important;
+  border-radius:20px!important;
+  padding:32px 36px!important;
+  box-shadow:0 10px 30px rgba(20,43,26,0.05)!important;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.start .product{
+  color:#C6863A!important;
+  font-weight:800!important;
+  border:1px solid #EAD6BB!important;
+  background:#FDF8EC!important;
+  padding:6px 14px!important;
+  border-radius:99px!important;
+  font-size:12px!important;
+  letter-spacing:0.05em!important;
+  text-transform:uppercase!important;
+  display:inline-block!important;
+  width:fit-content!important;
+}
+
+.start h1{
+  font-family:'Playfair Display',Georgia,serif;
+  font-weight:800;
+  letter-spacing:-.03em;
+  color:#142B1A!important;
+  font-size:38px!important;
+  line-height:1.2!important;
+  margin:18px 0 14px!important;
+}
+
+.start .sub{
+  color:#2E4D38!important;
+  font-size:15.5px!important;
+  line-height:1.6!important;
+  margin-bottom:24px!important;
+}
+
+.start-feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px;
+  width:100%;
+}
+
+.sf-card{
+  background:#FFFFFF!important;
+  border:1px solid #E2E8F0!important;
+  border-radius:16px!important;
+  padding:22px 22px!important;
+  color:#142B1A!important;
+  box-shadow:0 4px 16px rgba(0,0,0,0.03)!important;
+  transition:all 0.25s ease!important;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.sf-card:hover{
+  border-color:#C6863A!important;
+  box-shadow:0 8px 24px rgba(198,134,58,0.12)!important;
+  transform:translateY(-3px)!important;
+}
+.sf-card h3, .sf-card h4, .sf-card .sf-title{
+  color:#142B1A!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  margin-bottom:6px!important;
+}
+.sf-card p, .sf-card span, .sf-card .sf-desc{
+  color:#2E4D38!important;
+  font-size:13.5px!important;
+  line-height:1.5!important;
+}
+
+.start .foot{
+  background:#FDFBF7!important;
+  border:1px solid #EAD6BB!important;
+  border-radius:12px!important;
+  padding:12px 20px!important;
+  color:#2E4D38!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  text-align:center!important;
+  margin-top:auto!important;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#2E6B34 0%,#142B1A 100%)!important;
+  color:#FFFFFF!important;
+  border:1px solid #D4AF37!important;
+  box-shadow:0 6px 18px rgba(46,107,52,.35)!important;
+  font-weight:700!important;
+}
+.btn-primary:hover{background:#142B1A!important}
+.btn-dark{background:#142B1A!important;color:#FFFFFF!important;border:1px solid #2A4832!important}
+.btn-soft{background:#EAF5E9!important;color:#2E6B34!important;border-color:#A7F3D0!important}
+
+.screen{
+  padding:28px 32px 48px!important;
+  max-width:100%!important;
+  margin:0!important;
+  width:100%!important;
+  background:#FFFFFF!important;
+}
+
+.dash-hero{
+  background:linear-gradient(135deg, #FDFBF7 0%, #F4F8F4 100%)!important;
+  color:#142B1A!important;
+  border-radius:18px!important;
+  padding:28px!important;
+  border:1px solid #C6863A!important;
+  box-shadow:0 6px 20px rgba(20,43,26,0.06)!important;
+}
+.dash-hero h1, .dash-hero h2, .dash-hero h3{color:#142B1A!important}
+.dash-hero p, .dash-hero span{color:#2E4D38!important}
+
+.card, .module, .ptopic, .qa, .qcard, .scn-card, .reg-card{
+  background:#FFFFFF!important;
+  border:1px solid #E2E8F0!important;
+  border-radius:14px!important;
+  box-shadow:0 2px 8px rgba(0,0,0,0.03)!important;
+}
+
+.ptopic:hover, .qa:hover, .module:hover{
+  border-color:#C6863A!important;
+  box-shadow:0 8px 24px rgba(198,134,58,0.12)!important;
+  transform:translateY(-2px)!important;
+}
+
+.dash-grid-layout{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:24px;
+  margin-top:24px;
+  width:100%;
+}
+
+.learn-modules-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+  margin-top:18px;
+  width:100%;
+}
+
+.desktop-nav-tabs{display:none}
+
+@media(min-width:769px){
+  .dash-grid-layout{
+    grid-template-columns:1.4fr 1fr;
+  }
+  .learn-modules-grid{
+    grid-template-columns:repeat(auto-fill, minmax(360px, 1fr));
+  }
+  .start-main-grid{
+    grid-template-columns:1.2fr 1fr;
+    align-items:center;
+    gap:48px;
+    max-width:100%;
+    width:100%;
+  }
+  .desktop-nav-tabs{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(255,255,255,0.1);
+    padding:4px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .d-tab{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 16px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:600;
+    color:rgba(255,255,255,0.75);
+    transition:all .15s ease;
+  }
+  .d-tab:hover{
+    color:#FFF;
+    background:rgba(255,255,255,0.15);
+  }
+  .d-tab.on{
+    color:#FFF;
+    background:#2E6B34!important;
+    box-shadow:0 2px 10px rgba(46,107,52,0.4)!important;
+  }
+  .d-tab-ic{
+    width:16px;
+    height:16px;
+    display:flex;
+    align-items:center;
+  }
+  .bottom-nav{display:none!important}
+}
+
+@media(max-width:600px){
+  :root{--pad:16px}
+  .screen{padding-left:16px!important;padding-right:16px!important}
+  .start{padding-left:18px!important;padding-right:18px!important}
+  .start h1{font-size:32px;line-height:1.1}
+  h1{font-size:26px}
+  h2{font-size:20px}
+  h3{font-size:17px}
+  .btn{min-height:48px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/* =========================================================================
+   RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15 (GIFT IFSC)
+   Regulatory content data (prototype)
+
+   SOURCING NOTE
+   - Modules 1, 2, 3, 6 are grounded in the text of the
+     IFSCA (Fund Management) Regulations, 2025 (amended up to 30 Jan 2026)
+     supplied in the project. Source refs use "FM Regs 2025, reg. X".
+   - Modules 4 (AML/PMLA) and 5 (FEMA) draw on the general framework.
+     The uploaded PMLA/FEMA files are scanned images (no extractable text),
+     so those items are tagged verify:true and shown as
+     "SAMPLE CONTENT — VERIFY AGAINST SOURCE" in the UI.
+   - This is a preparation aid, not legal advice. Always confirm current
+     thresholds/timelines against the live regulation before an interview.
+
+   The whole file is one plain data object so it maps cleanly onto the
+   WordPress data model later (Product > Role > Module > Topic > Knowledge
+   Object > Question > Scenario > Simulation > Control > Assessment).
+   ========================================================================= */
+window.RM = (function () {
+  // role-weight helpers ----------------------------------------------------
+  const W = { "very-high": 4, high: 3, medium: 2, low: 1 };
+  const P = { critical: 4, high: 3, medium: 2, low: 1 };
+
+  const roles = [
+    {
+      id: "co", name: "Compliance Officer", tag: "CO",
+      line: "Ongoing compliance, AML/CFT, monitoring, reporting.",
+      focus: ["Ongoing compliance", "AML / CFT / KYC", "Reporting & filings",
+              "Compliance calendar", "Monitoring & escalation"]
+    },
+    {
+      id: "po", name: "Principal Officer", tag: "PO",
+      line: "Registration, fit & proper, accountability, judgement.",
+      focus: ["Registration & eligibility", "Fit & proper", "Accountability",
+              "Senior regulatory judgement", "Difficult scenarios"]
+    },
+    {
+      id: "lc", name: "Legal & Compliance", tag: "L&C",
+      line: "Scheme documents, PPM, disclosure, cross-border.",
+      focus: ["Scheme documentation & PPM", "Investor documentation",
+              "Disclosure", "Cross-border structuring", "Regulatory interpretation"]
+    }
+  ];
+
+  const experience = [
+    { id: "fresher", label: "Fresher / 0–2 yrs" },
+    { id: "3-5", label: "3–5 years" },
+    { id: "5-10", label: "5–10 years" },
+    { id: "10+", label: "10+ years" }
+  ];
+
+  const backgrounds = [
+    "Company Secretarial", "Legal", "Compliance", "Finance / CA",
+    "Banking / Financial Services", "Fund / Investment Management", "Other"
+  ];
+
+  const timelines = [
+    { id: "today", label: "Today", mode: "tonight", note: "A few hours" },
+    { id: "tomorrow", label: "Tomorrow", mode: "tonight", note: "Tonight-focused" },
+    { id: "2-3", label: "In 2–3 days", mode: "twoday", note: "Core + practice" },
+    { id: "4-7", label: "In 4–7 days", mode: "deep", note: "Full path" },
+    { id: "prep", label: "Just preparing", mode: "deep", note: "No fixed date" }
+  ];
+
+  const modes = {
+    tonight: { id: "tonight", label: "Tonight Mode", blurb: "Highest-value concepts, definitions, thresholds and the questions that get asked most. Skip the long tail." },
+    twoday:  { id: "twoday",  label: "2-Day Prep",   blurb: "Complete core modules, deeper explanations, scenarios, role-weighted questions and an assessment." },
+    deep:    { id: "deep",    label: "Deep Prep",    blurb: "Everything in 2-Day Prep plus cases, simulations and repeated recall over several days." }
+  };
+
+  // ------------------------------------------------------------------ MODULES
+  const modules = [
+    { id: "m1", no: "01", title: "FME Regulatory Framework",
+      summary: "Categories, registration, eligibility, net worth, permitted activities, key thresholds." },
+    { id: "m2", no: "02", title: "Principal Officer & Compliance Officer",
+      summary: "Who they are, eligibility, fit & proper, accountability, PO vs CO, interview traps." },
+    { id: "m3", no: "03", title: "Scheme Documentation & PPM",
+      summary: "Placement memorandum vs offer document, private placement, onboarding, disclosure." },
+    { id: "m4", no: "04", title: "AML / CFT / KYC",
+      summary: "PMLA obligations, CDD/EDD, beneficial ownership, STR, Principal Officer vs Designated Director." },
+    { id: "m5", no: "05", title: "FEMA & Cross-Border Fund Issues",
+      summary: "IFSC as a jurisdiction, inflows/outflows, downstream, round-tripping awareness." },
+    { id: "m6", no: "06", title: "Reporting, Valuation & Compliance Calendar",
+      summary: "Periodic and event-based reporting, valuation, custodian, ongoing obligations." },
+    { id: "m7", no: "07", title: "Cases, Enforcement & Developments",
+      summary: "How to read an enforcement action and turn it into a compliance lesson." }
+  ];
+
+  // ------------------------------------------------------------------- TOPICS
+  // Each topic is a knowledge object. Layers used where they add value.
+  const topics = {
+    /* ---- Module 1 ------------------------------------------------------- */
+    t_categories: {
+      id: "t_categories", moduleId: "m1", title: "The three FME categories",
+      priority: "critical", roleWeight: { co: "high", po: "very-high", lc: "high" },
+      source: "FM Regs 2025, reg. 3(4)", verify: false,
+      why: "This is the opening question in almost every FME interview. It shows whether you understand the licensing spine of GIFT IFSC fund management — everything else hangs off which category the FME holds.",
+      explanation: "Under the IFSCA (Fund Management) Regulations, 2025, a fund manager in IFSC registers as one of three categories of Fund Management Entity (FME): Authorised FME, Registered FME (Non-Retail), and Registered FME (Retail). The category decides who you can raise money from, what schemes you can run and what activities you may undertake. Each higher category can also do everything the lower ones can.",
+      practicalPoint: "In practice the category is chosen up front based on the business plan — retail vs accredited/private-placement money, and whether the firm wants PMS, REIT/InvIT or ETF activity. You cannot quietly switch category later; a change needs prior IFSCA approval.",
+      example: "A boutique setting up a single venture capital scheme for a handful of accredited investors would register as an Authorised FME. A firm running restricted schemes plus portfolio management would take Registered FME (Non-Retail). A house planning public retail schemes or ETFs needs Registered FME (Retail).",
+      takeaway: [
+        "Authorised FME → VCS / Single Family Investment Fund (private placement)",
+        "Registered FME (Non-Retail) → restricted schemes + PMS + private REIT/InvIT",
+        "Registered FME (Retail) → retail schemes, public REIT/InvIT, ETFs",
+        "Higher category = superset of the lower ones",
+        "Category change needs prior IFSCA approval"
+      ]
+    },
+    t_networth: {
+      id: "t_networth", moduleId: "m1", title: "Net worth requirements",
+      priority: "high", roleWeight: { co: "medium", po: "high", lc: "medium" },
+      source: "FM Regs 2025, Second Schedule", verify: false,
+      why: "A clean thresholds question. Interviewers use it to check that you actually know the numbers, not just the concepts.",
+      explanation: "The minimum net worth is tied to the FME category: Authorised FME USD 75,000; Registered FME (Non-Retail) USD 500,000; Registered FME (Retail) USD 1,000,000. It must be maintained at all times, not just at registration.",
+      practicalPoint: "A branch can maintain net worth at the parent level, but the parent must ensure funds for the branch's day-to-day operations. This net worth is separate from, and in addition to, net worth needed for any other regulated activity the group runs.",
+      takeaway: [
+        "Authorised — USD 75,000",
+        "Non-Retail — USD 500,000",
+        "Retail — USD 1,000,000",
+        "'At all times', not just at entry",
+        "Separate from other-activity net worth"
+      ]
+    },
+    t_kmp: {
+      id: "t_kmp", moduleId: "m1", title: "KMP structure of an FME",
+      priority: "critical", roleWeight: { co: "very-high", po: "very-high", lc: "high" },
+      source: "FM Regs 2025, reg. 7", verify: false,
+      why: "Tests whether you understand the governance backbone — who must be appointed, and when a firm needs more than a Principal Officer.",
+      explanation: "Every FME must designate a Principal Officer responsible for the overall activities of the FME — fund management, risk management and compliance. A Registered FME must additionally appoint one KMP as Compliance Officer. A Registered FME (Retail) must also appoint an additional KMP for fund management before filing its first retail scheme or ETF offer document. Any FME managing AUM of at least USD 1 billion (excluding fund-of-funds AUM) must appoint an additional fund-management KMP within six months of the financial year end.",
+      practicalPoint: "All these KMPs must be based out of the IFSC. The structure scales with the business: a small Authorised FME may run on a Principal Officer alone; a large retail house will carry a PO, a Compliance Officer and separate fund-management KMPs.",
+      takeaway: [
+        "Every FME → Principal Officer",
+        "Registered FME → + Compliance Officer",
+        "Registered FME (Retail) → + fund-management KMP",
+        "AUM ≥ USD 1bn (ex-FoF) → + fund-management KMP",
+        "All KMPs based in IFSC"
+      ]
+    },
+    t_thresholds: {
+      id: "t_thresholds", moduleId: "m1", title: "Investor & corpus thresholds",
+      priority: "high", roleWeight: { co: "medium", po: "high", lc: "very-high" },
+      source: "FM Regs 2025, reg. 2 & scheme chapters", verify: false,
+      why: "Cross-checks that you can separate 'who can invest' from 'how big the fund must be' — a common area where candidates blur the numbers.",
+      explanation: "Restricted schemes are for accredited investors or investors putting in at least USD 150,000, and are capped at 1,000 investors. The minimum corpus for a Venture Capital Scheme and for restricted schemes is USD 3 million; a VCS corpus must not exceed USD 200 million.",
+      practicalPoint: "Accredited-investor status removes the minimum-ticket floor. Employees and directors of the FME investing in the scheme are subject to a lower minimum. Always state whether a number is an investor-eligibility threshold or a fund-size threshold.",
+      takeaway: [
+        "Restricted scheme investor floor — USD 150,000",
+        "Max 1,000 investors in a restricted scheme",
+        "VCS / restricted scheme min corpus — USD 3 million",
+        "VCS corpus cap — USD 200 million",
+        "Accredited investor = no minimum ticket"
+      ]
+    },
+
+    /* ---- Module 2 ------------------------------------------------------- */
+    t_po_role: {
+      id: "t_po_role", moduleId: "m2", title: "The Principal Officer's mandate",
+      priority: "critical", roleWeight: { co: "high", po: "very-high", lc: "medium" },
+      source: "FM Regs 2025, reg. 7(1)", verify: false,
+      why: "If you are interviewing for PO, this is the question. It tests whether you grasp the breadth of the accountability you would be taking on.",
+      explanation: "The Principal Officer is responsible for the overall activities of the FME — including, but not limited to, fund management, risk management and compliance. It is a single point of senior accountability across the firm, not a narrow function.",
+      practicalPoint: "In an interview, don't reduce the PO to 'the person who signs filings'. Frame it as ownership of the firm's regulatory posture: making sure the FME operates within its category, its KMP structure is intact, and issues are escalated and resolved.",
+      takeaway: [
+        "PO owns overall FME activities",
+        "Spans fund management, risk and compliance",
+        "Single senior accountability point",
+        "Must be based in IFSC",
+        "Not merely a filing signatory"
+      ]
+    },
+    t_kmp_eligibility: {
+      id: "t_kmp_eligibility", moduleId: "m2", title: "KMP eligibility — qualification & experience",
+      priority: "high", roleWeight: { co: "high", po: "high", lc: "medium" },
+      source: "FM Regs 2025, reg. 7(5) (amended w.e.f. 30 Jan 2026)", verify: false,
+      why: "Interviewers check whether you know the actual eligibility bar — and the shortcuts that apply to a Compliance Officer.",
+      explanation: "A KMP generally needs a professional qualification or a post-graduate degree/diploma (minimum one year) in finance, law, accountancy, business, commerce, economics, capital markets, banking, insurance or actuarial science — or a CFA/FRM — plus at least five years of related experience in an eligible institution. A Principal Officer with 15 years of fund-management experience can qualify on a graduate degree in any field.",
+      practicalPoint: "For the Compliance Officer, the experience requirement drops to three years where the person holds a professional qualification. Professional qualification includes ICAI / ICSI / ICMAI membership — and for the Compliance Officer, an LLB also counts. This clause was substituted by the 2026 amendment, so quote it as the current position.",
+      takeaway: [
+        "Base: professional qual / PG degree + 5 yrs experience",
+        "PO with 15 yrs FM experience → graduate in any field",
+        "Compliance Officer → 3 yrs if professionally qualified",
+        "CA / CS / CMA count; LLB counts for CO",
+        "Amended w.e.f. 30 Jan 2026 — cite as current"
+      ]
+    },
+    t_fit_proper: {
+      id: "t_fit_proper", moduleId: "m2", title: "Fit & proper — a continuing test",
+      priority: "high", roleWeight: { co: "high", po: "very-high", lc: "medium" },
+      source: "FM Regs 2025, fit & proper provisions", verify: false,
+      why: "A judgement question dressed as a knowledge question. Interviewers want to see that you treat fit & proper as ongoing, not a one-time box.",
+      explanation: "The FME, its directors, KMPs and controlling shareholders must be fit and proper persons at all times. It covers integrity, competence, financial soundness and absence of relevant regulatory or criminal findings.",
+      practicalPoint: "The phrase that matters is 'at all times'. If a director is later found not fit and proper by a regulatory order, that has consequences for the FME — so monitoring the status of key persons is a live compliance task, not a registration formality.",
+      takeaway: [
+        "Applies to FME, directors, KMPs, controlling shareholders",
+        "'At all times' — continuing obligation",
+        "Covers integrity, competence, soundness, record",
+        "A later adverse order affects standing",
+        "Monitoring status is a live compliance task"
+      ]
+    },
+    t_po_vs_co: {
+      id: "t_po_vs_co", moduleId: "m2", title: "PO vs Compliance Officer",
+      priority: "critical", roleWeight: { co: "very-high", po: "high", lc: "medium" },
+      source: "FM Regs 2025, reg. 7(1)–(2)", verify: false,
+      why: "A favourite distinction question. It separates candidates who memorised titles from those who understand the governance design.",
+      explanation: "The Principal Officer owns the overall activities of the FME. The Compliance Officer — a mandatory additional KMP for a Registered FME — is specifically responsible for compliance with the regulations and for implementing risk-management policies and practices. The PO's remit is broad; the CO's is focused on the compliance and risk function.",
+      practicalPoint: "An Authorised FME may not have a separate Compliance Officer at all — the PO carries compliance. So the right answer depends on the FME category. Say that, and you show you understand the structure rather than a slogan.",
+      takeaway: [
+        "PO = overall activities of the FME",
+        "CO = compliance + risk implementation",
+        "CO is mandatory for a Registered FME",
+        "Authorised FME may run on PO alone",
+        "Answer depends on FME category"
+      ]
+    },
+
+    /* ---- Module 3 ------------------------------------------------------- */
+    t_ppm_vs_offer: {
+      id: "t_ppm_vs_offer", moduleId: "m3", title: "Placement memorandum vs offer document",
+      priority: "critical", roleWeight: { co: "medium", po: "high", lc: "very-high" },
+      source: "FM Regs 2025, reg. 2 (definitions)", verify: false,
+      why: "The core documentation distinction. For a Legal & Compliance role this is fundamental — mixing up the two signals you don't understand private vs public fund raising.",
+      explanation: "A placement memorandum (the PPM) is the document by which an FME invites accredited investors — it belongs to private placement. An offer document is how a Registered FME (Retail) invites the public. The right document follows the FME category and the type of scheme.",
+      practicalPoint: "The PPM is the investor's primary disclosure document: strategy, risks, fees, conflicts, terms. Getting disclosure right in the PPM is where most of the legal-and-compliance work sits for non-retail funds.",
+      takeaway: [
+        "PPM = private placement, accredited investors",
+        "Offer document = public, Retail FME",
+        "Document follows category and scheme type",
+        "PPM is the investor's primary disclosure",
+        "Disclosure quality is the core L&C job"
+      ]
+    },
+    t_ppm_filing: {
+      id: "t_ppm_filing", moduleId: "m3", title: "Filing & 'taken on record'",
+      priority: "medium", roleWeight: { co: "medium", po: "medium", lc: "high" },
+      source: "FM Regs 2025, scheme filing provisions", verify: false,
+      why: "Tests process literacy — whether you know a PPM is filed and taken on record, not 'approved' in the retail sense.",
+      explanation: "For restricted / VCS schemes the FME files the placement memorandum with IFSCA along with the fee; the scheme proceeds once the memorandum is taken on record, and the FME must incorporate any changes IFSCA communicates. A memorandum has a validity window within which the FME must reach first close.",
+      practicalPoint: "Language matters in interviews: say the PPM is 'taken on record' for private schemes rather than 'approved'. Note that failing to reach minimum corpus within the window has consequences, including options to extend on paying part of a fresh filing fee.",
+      verifyNote: "Exact validity periods and fee percentages vary by scheme chapter — confirm the specific numbers against the relevant chapter before quoting them.",
+      takeaway: [
+        "PPM filed with IFSCA + fee",
+        "Scheme proceeds once 'taken on record'",
+        "Incorporate IFSCA's communicated changes",
+        "First close within the validity window",
+        "Say 'taken on record', not 'approved'"
+      ]
+    },
+
+    /* ---- Module 4 (VERIFY) --------------------------------------------- */
+    t_pmla_po: {
+      id: "t_pmla_po", moduleId: "m4", title: "FME Principal Officer vs PMLA Principal Officer",
+      priority: "critical", roleWeight: { co: "very-high", po: "high", lc: "medium" },
+      source: "PMLA, 2002 & PML Rules (general framework)", verify: true,
+      why: "One of the most common trap questions in a compliance interview. Two very different roles share the same title.",
+      explanation: "The Principal Officer under the FME regulations owns the overall activities of the FME. The Principal Officer under the PMLA framework is the officer responsible for furnishing information — such as suspicious transaction reports — to FIU-IND. The PMLA framework also requires a Designated Director, who bears senior responsibility for the reporting entity's AML compliance.",
+      practicalPoint: "They can be different people. In an interview, name both roles, say what each is responsible for, and note that the Designated Director sits at senior-management level while the PMLA Principal Officer is the operational reporting point.",
+      verifyNote: "Focus on the distinction between the two roles and the reporting responsibility.",
+      takeaway: [
+        "FME PO → overall FME activities (FM Regs)",
+        "PMLA PO → reporting to FIU-IND (STRs etc.)",
+        "Designated Director → senior AML responsibility",
+        "They can be different individuals",
+        "Don't collapse the two roles"
+      ]
+    },
+    t_cdd_edd: {
+      id: "t_cdd_edd", moduleId: "m4", title: "CDD, EDD and beneficial ownership",
+      priority: "high", roleWeight: { co: "very-high", po: "medium", lc: "medium" },
+      source: "PML Rules / AML guidelines (general framework)", verify: true,
+      why: "Bread-and-butter for a Compliance Officer. Interviewers want to hear the logic: risk-based due diligence, and who you look through to.",
+      explanation: "Customer Due Diligence means identifying and verifying the client and understanding the purpose of the relationship. Enhanced Due Diligence applies to higher-risk clients — for example PEPs or complex structures. Beneficial ownership means identifying the natural persons who ultimately own or control the client, not stopping at the immediate entity.",
+      practicalPoint: "The point interviewers listen for is 'risk-based'. You don't apply the same intensity to everyone; you calibrate. And you always look through layers to the ultimate beneficial owner.",
+      verifyNote: "Apply a risk-based CDD/EDD approach and identify the ultimate beneficial owner.",
+      takeaway: [
+        "CDD = identify + verify + understand purpose",
+        "EDD = extra scrutiny for higher-risk clients",
+        "BO = ultimate natural persons in control",
+        "Approach is risk-based, not uniform",
+        "Look through the structure"
+      ]
+    },
+
+    /* ---- Module 5 (VERIFY) --------------------------------------------- */
+    t_ifsc_fema: {
+      id: "t_ifsc_fema", moduleId: "m5", title: "How IFSC sits within FEMA",
+      priority: "medium", roleWeight: { co: "medium", po: "medium", lc: "very-high" },
+      source: "FEMA, 1999 & IFSC framework (general)", verify: true,
+      why: "For cross-border and legal roles, interviewers test whether you understand why GIFT IFSC is treated differently for exchange-control purposes.",
+      explanation: "An IFSC unit is, for many purposes, treated as a person resident outside India under the exchange-control framework, which is what lets GIFT IFSC operate as an offshore-in-onshore jurisdiction. Fund flows in and out, and downstream investment into India, run through this lens.",
+      practicalPoint: "Frame it as 'why the structure exists': the FEMA treatment is what allows an IFSC fund to raise and deploy foreign capital efficiently. Then flag round-tripping as the risk regulators watch — capital leaving India and returning dressed as foreign investment.",
+      verifyNote: "Explain the FEMA framework at a principle level and focus on genuine, documented cross-border flows.",
+      takeaway: [
+        "IFSC unit ≈ non-resident for many FEMA purposes",
+        "Enables offshore-in-onshore fund structures",
+        "Inflows / outflows / downstream run through FEMA",
+        "Round-tripping is the watched risk",
+        "Explain the 'why', flag the risk"
+      ]
+    },
+
+    /* ---- Module 6 ------------------------------------------------------- */
+    t_valuation_custodian: {
+      id: "t_valuation_custodian", moduleId: "m6", title: "Valuation & the independent custodian",
+      priority: "high", roleWeight: { co: "high", po: "medium", lc: "medium" },
+      source: "FM Regs 2025, reg. 132 & valuation provisions", verify: false,
+      why: "Tests the ongoing-obligations side of the job — the things that keep a fund compliant after launch.",
+      explanation: "An FME must appoint an independent custodian, generally based in IFSC, for the securities it manages. Valuation must follow the prescribed norms; for certain schemes a valuation report is prepared periodically (for example, a half-yearly report within one month of the period end).",
+      practicalPoint: "For a Compliance Officer this is calendar work: independence of the custodian and valuer, timeliness of valuation reports, and making sure reports aren't stale when relied upon.",
+      verifyNote: "Exact valuation frequencies differ by scheme type — confirm the specific frequency for the scheme in question.",
+      takeaway: [
+        "Independent custodian, generally IFSC-based",
+        "Custodian not mandatory for some FoF setups",
+        "Valuation follows prescribed norms",
+        "Reports on a defined cycle, filed on time",
+        "Independence + timeliness are the compliance points"
+      ]
+    },
+    t_reporting: {
+      id: "t_reporting", moduleId: "m6", title: "Periodic & event-based reporting",
+      priority: "high", roleWeight: { co: "very-high", po: "medium", lc: "medium" },
+      source: "FM Regs 2025, reporting provisions", verify: false,
+      why: "Directly tests a Compliance Officer's core deliverable — knowing what's periodic, what's event-driven, and roughly when things are due.",
+      explanation: "Compliance splits into periodic reporting (regular investor and regulatory reporting on a set cycle) and event-based reporting (things triggered by a specific event — a change in KMP, a material change, a filing). Investor reporting for certain services runs at least quarterly, within a month of quarter end.",
+      practicalPoint: "In an interview, structure the answer as two buckets — periodic vs event-based — then give one concrete example of each. That structure alone signals that you'd run a real compliance calendar.",
+      takeaway: [
+        "Two buckets: periodic and event-based",
+        "Periodic runs on a fixed cycle",
+        "Event-based is triggered by a specific change",
+        "Some investor reporting is quarterly (+1 month)",
+        "A compliance calendar ties it together"
+      ]
+    },
+
+    /* ---- Module 7 ------------------------------------------------------- */
+    t_reading_enforcement: {
+      id: "t_reading_enforcement", moduleId: "m7", title: "How to read an enforcement action",
+      priority: "medium", roleWeight: { co: "high", po: "high", lc: "high" },
+      source: "Method (apply to authoritative orders)", verify: false,
+      why: "Interviewers sometimes hand you a real order and ask 'what went wrong here?'. They're testing whether you can extract a lesson without over-reading the order.",
+      explanation: "Read any enforcement action in five moves: the facts, the specific provision breached, the deficiency the regulator identified, the consequence, and the lesson. Keep the lesson tied to what the order actually establishes.",
+      practicalPoint: "The discipline is not to inflate an order into a broad legal principle. Say what the FME did, which obligation it missed, and what control would have prevented it — nothing wider than the order supports.",
+      case: {
+        title: "Illustrative pattern (not a specific order)",
+        facts: "An FME onboarded investors before beneficial-ownership verification was complete.",
+        issue: "AML/KYC obligation not met before the relationship proceeded.",
+        deficiency: "Onboarding control allowed the file to advance with a gap.",
+        consequence: "Regulatory observation; remediation of the onboarding process.",
+        lesson: "Make BO verification a hard gate before onboarding can proceed."
+      },
+      verifyNote: "Use the five-step method: facts, obligation, deficiency, consequence and control lesson.",
+      takeaway: [
+        "Facts → provision → deficiency → consequence → lesson",
+        "Tie the lesson to what the order establishes",
+        "Don't inflate an order into a legal principle",
+        "Always end on the control that prevents recurrence"
+      ]
+    }
+  };
+
+  const moduleTopics = {
+    m1: ["t_categories", "t_networth", "t_kmp", "t_thresholds"],
+    m2: ["t_po_role", "t_kmp_eligibility", "t_fit_proper", "t_po_vs_co"],
+    m3: ["t_ppm_vs_offer", "t_ppm_filing"],
+    m4: ["t_pmla_po", "t_cdd_edd"],
+    m5: ["t_ifsc_fema"],
+    m6: ["t_valuation_custodian", "t_reporting"],
+    m7: ["t_reading_enforcement"]
+  };
+
+  // ---------------------------------------------------------------- QUESTIONS
+  const qTypes = {
+    knowledge: "Knowledge", concept: "Concept", practical: "Practical",
+    scenario: "Scenario", trap: "Trap", role: "Role", cross: "Cross-Regulatory"
+  };
+
+  const questions = [
+    {
+      id: "q_categories", moduleId: "m1", type: "knowledge", length: "strong",
+      priority: "critical", roleWeight: { co: "high", po: "very-high", lc: "high" },
+      q: "What are the different categories of FME under the current IFSCA framework?",
+      answer: "Under the IFSCA Fund Management Regulations there are three categories of Fund Management Entity. An Authorised FME runs venture capital schemes or a single-family investment fund, raising from accredited investors by private placement. A Registered FME (Non-Retail) runs restricted schemes for accredited or above-threshold investors, and can also do portfolio management and private-placement REITs and InvITs. A Registered FME (Retail) can run retail schemes for the public, do public REITs and InvITs, and launch ETFs. Each higher category can also do everything the lower ones can.",
+      remember: ["Three categories", "Authorised → VCS / family fund", "Non-Retail → restricted + PMS + private REIT/InvIT", "Retail → public schemes + ETFs", "Higher = superset"],
+      trap: "Don't say there are 'AIF categories' — that's the domestic SEBI AIF vocabulary. In IFSC the licence is the FME category; scheme types sit under it.",
+      testing: ["Regulatory knowledge", "Ability to distinguish similar concepts"],
+      tip: "Lead with 'there are three categories', then take them in order. Structure signals confidence."
+    },
+    {
+      id: "q_po_co", moduleId: "m2", type: "concept", length: "strong",
+      priority: "critical", roleWeight: { co: "very-high", po: "high", lc: "medium" },
+      q: "What is the difference between the Principal Officer and the Compliance Officer of an FME?",
+      answer: "The Principal Officer is responsible for the overall activities of the FME — fund management, risk and compliance together. The Compliance Officer is a separate KMP, mandatory for a Registered FME, who is specifically responsible for compliance with the regulations and for implementing the firm's risk-management policies. So the PO's remit is broad and the CO's is focused. In a smaller Authorised FME there may be no separate Compliance Officer at all — the Principal Officer carries that too.",
+      remember: ["PO = overall FME activities", "CO = compliance + risk implementation", "CO mandatory for Registered FME", "Authorised FME may run on PO alone", "Answer depends on category"],
+      trap: "Don't imply every FME must have a Compliance Officer. It depends on the FME category.",
+      testing: ["Role awareness", "Ability to distinguish similar concepts"],
+      tip: "End by tying it to category — that's what separates a memorised answer from an understood one."
+    },
+    {
+      id: "q_pmla_po", moduleId: "m4", type: "trap", length: "strong",
+      priority: "critical", roleWeight: { co: "very-high", po: "high", lc: "medium" },
+      q: "Is the Principal Officer of an FME the same as the Principal Officer under the PMLA?",
+      answer: "No — they share a title but they're different roles. The Principal Officer under the FME regulations owns the overall activities of the FME. The Principal Officer under the PMLA framework is the person responsible for furnishing information, like suspicious transaction reports, to FIU-IND. The PMLA framework also has a Designated Director at senior-management level for AML responsibility. The two Principal Officers can be different people, and you shouldn't treat them as one.",
+      remember: ["Same title, different roles", "FME PO → overall activities", "PMLA PO → reporting to FIU-IND", "Designated Director → senior AML responsibility", "Can be different people"],
+      trap: "The whole question is the trap — candidates instinctively say 'yes, same person'. It isn't necessarily.",
+      testing: ["Ability to distinguish similar concepts", "Cross-framework awareness"],
+      tip: "Answer 'no' clearly, then explain both. A confident distinction here is a strong signal.",
+      verify: true,
+      verifyNote: "AML detail — verify against PMLA / PML Rules."
+    },
+    {
+      id: "q_ppm", moduleId: "m3", type: "knowledge", length: "short",
+      priority: "high", roleWeight: { co: "medium", po: "high", lc: "very-high" },
+      q: "What is a PPM and how is it different from an offer document?",
+      answer: "A PPM — placement memorandum — is the document an FME uses to invite accredited investors into a private-placement scheme. An offer document is what a Registered FME (Retail) uses to invite the public. So the PPM is the private-placement disclosure document, and the offer document is the retail one. The PPM is the investor's main source of information on strategy, risks, fees and terms.",
+      remember: ["PPM → private placement, accredited investors", "Offer document → public, Retail FME", "PPM = primary investor disclosure", "Document follows category & scheme"],
+      trap: "Don't call the PPM a 'prospectus' — that's retail/public language.",
+      testing: ["Regulatory knowledge", "Practical understanding"],
+      tip: "Anchor the difference on private vs public. Everything else follows."
+    },
+    {
+      id: "q_networth", moduleId: "m1", type: "knowledge", length: "short",
+      priority: "high", roleWeight: { co: "medium", po: "high", lc: "low" },
+      q: "What are the net worth requirements for the three FME categories?",
+      answer: "Net worth tracks the category: an Authorised FME needs USD 75,000, a Registered FME (Non-Retail) needs USD 500,000, and a Registered FME (Retail) needs USD 1,000,000. It has to be maintained at all times, and it's separate from any net worth needed for other regulated activities.",
+      remember: ["Authorised — 75k", "Non-Retail — 500k", "Retail — 1m", "'At all times'", "Separate from other activities"],
+      trap: "It's 'at all times', not just at registration — say that and you show you understand it as an ongoing obligation.",
+      testing: ["Regulatory knowledge"],
+      tip: "If you blank on a number, give the ranking — Authorised lowest, Retail highest — then the figures."
+    },
+    {
+      id: "q_kmp_eligibility", moduleId: "m2", type: "knowledge", length: "strong",
+      priority: "high", roleWeight: { co: "high", po: "high", lc: "medium" },
+      q: "What qualification and experience does a KMP of an FME need?",
+      answer: "Broadly, a KMP needs a professional qualification or a post-graduate degree or diploma in a relevant field — finance, law, accountancy, business, economics and so on — or a CFA or FRM, plus around five years of related experience in an eligible institution. A Principal Officer with fifteen years of fund-management experience can qualify on a graduate degree in any field. For the Compliance Officer, the experience requirement is lower — three years where the person is professionally qualified.",
+      remember: ["Professional qual / relevant PG + ~5 yrs", "CFA / FRM count", "PO with 15 yrs FM → any graduate degree", "CO → 3 yrs if professionally qualified", "CA/CS/CMA count; LLB for CO"],
+      trap: "The lower experience bar is specific to the Compliance Officer — don't apply it to every KMP.",
+      testing: ["Regulatory knowledge", "Role awareness"],
+      tip: "Note it was amended in Jan 2026 — showing you track amendments is a plus.",
+      verify: false
+    },
+    {
+      id: "q_transaction", moduleId: "m1", type: "scenario", length: "deeper",
+      priority: "high", roleWeight: { co: "very-high", po: "high", lc: "high" },
+      q: "As Compliance Officer, the business team wants to push a transaction you think may breach a regulatory limit. How do you handle it?",
+      answer: "First I'd establish the facts precisely — what exactly is proposed, the amounts, the counterparties. Then I'd identify the specific obligation or limit that's in play and assess how close we are to breaching it. If there's genuine regulatory risk, I don't just say no — I explain the issue to the business, look for a compliant way to achieve the commercial goal, and escalate to the Principal Officer where the call is significant. Whatever we decide, I document the rationale, and if the transaction can't proceed compliantly, it doesn't proceed.",
+      remember: ["Facts", "→ Regulation", "→ Risk", "→ Escalation", "→ Action + documentation"],
+      trap: "Don't answer as either a pushover ('I'd let it go') or a blocker ('I'd just refuse'). Show structured judgement.",
+      testing: ["Judgement", "Accountability", "Practical understanding", "Communication ability"],
+      tip: "Say the framework out loud — facts, regulation, risk, escalation, action, documentation. It shows you think like a compliance professional."
+    },
+    {
+      id: "q_category_change", moduleId: "m1", type: "practical", length: "short",
+      priority: "medium", roleWeight: { co: "medium", po: "high", lc: "medium" },
+      q: "An FME registered as Authorised now wants to run restricted schemes. Can it just start?",
+      answer: "No. Restricted schemes sit under the Registered FME (Non-Retail) category, so the firm would need to be in that category. An FME can't change its category on its own — that needs prior approval from IFSCA. So the practical answer is: apply to move category first, then run the restricted schemes.",
+      remember: ["Restricted schemes → Non-Retail category", "Can't self-upgrade", "Category change needs IFSCA approval", "Approval first, activity second"],
+      trap: "Don't assume 'higher category can do lower activities' means you can drift upward freely — moving up needs approval.",
+      testing: ["Practical understanding", "Regulatory knowledge"],
+      tip: "Answer the yes/no first, then the 'because'. Interviewers like a clear position followed by the reason."
+    },
+    {
+      id: "q_fit_proper", moduleId: "m2", type: "role", length: "short",
+      priority: "medium", roleWeight: { co: "high", po: "very-high", lc: "medium" },
+      q: "One of the FME's directors is named in an adverse regulatory order. As Principal Officer, why should you care?",
+      answer: "Because fit and proper is a continuing test — the FME, its directors, KMPs and controlling shareholders have to remain fit and proper at all times, not just at registration. An adverse order against a director can affect that standing and therefore the FME. So as Principal Officer I'd treat monitoring the status of key persons as a live compliance task, assess the impact of the order, and act on it rather than filing it away.",
+      remember: ["Fit & proper is continuing", "Applies to directors & KMPs too", "Adverse order can affect the FME", "Monitoring is a live task", "Assess and act"],
+      trap: "Don't treat fit & proper as a one-time registration check — the phrase is 'at all times'.",
+      testing: ["Accountability", "Judgement", "Role awareness"],
+      tip: "Own it as your responsibility. For a PO role, showing you take personal accountability matters as much as the rule."
+    },
+    {
+      id: "q_round_tripping", moduleId: "m5", type: "cross", length: "strong",
+      priority: "medium", roleWeight: { co: "medium", po: "medium", lc: "very-high" },
+      q: "Why do regulators worry about round-tripping in IFSC fund structures?",
+      answer: "Because an IFSC unit is treated as non-resident for many exchange-control purposes, which is what makes offshore-in-onshore structures work. The concern is that this treatment could be misused — Indian capital leaving the country and coming back dressed as foreign investment to get a benefit it shouldn't. So when you structure a fund, you want the flows to be genuine and well-documented, and you watch for arrangements that look like capital simply doing a round trip.",
+      remember: ["IFSC ≈ non-resident for FEMA purposes", "Enables offshore-in-onshore funds", "Round-tripping = capital leaving & returning as 'foreign'", "Risk = misuse of the treatment", "Structure genuine, documented flows"],
+      trap: "Don't overstate specifics — if you're not sure of an exact FEMA provision, explain the principle rather than inventing a rule.",
+      testing: ["Cross-framework awareness", "Judgement"],
+      tip: "This is a principle question — lead with why the structure exists, then name the risk.",
+      verify: true,
+      verifyNote: "FEMA detail — verify against FEMA / current notifications."
+    },
+    {
+      id: "q_bo_onboarding", moduleId: "m4", type: "practical", length: "short",
+      priority: "high", roleWeight: { co: "very-high", po: "medium", lc: "medium" },
+      q: "An onboarding file is missing beneficial-ownership information. Can the investor be onboarded?",
+      answer: "Not until the beneficial ownership is established. CDD requires you to identify the natural persons who ultimately own or control the investor, and that has to be done before the relationship proceeds. So I'd hold onboarding, go back for the missing information, and only clear the file once BO is verified. It's a hard gate, not a formality you complete later.",
+      remember: ["BO must be established first", "Look through to natural persons", "Hold onboarding until complete", "Hard gate, not a later step", "Document the resolution"],
+      trap: "Don't say 'onboard now, collect later' — that's exactly the control failure enforcement actions flag.",
+      testing: ["Practical understanding", "Judgement"],
+      tip: "Frame BO verification as a gate. That single word signals you understand controls.",
+      verify: true,
+      verifyNote: "AML detail — verify against PML Rules."
+    },
+    {
+      id: "q_reporting", moduleId: "m6", type: "concept", length: "short",
+      priority: "medium", roleWeight: { co: "very-high", po: "medium", lc: "low" },
+      q: "How would you describe the reporting obligations of an FME?",
+      answer: "I'd split them into two buckets. Periodic reporting runs on a fixed cycle — regular investor and regulatory reporting; for some services that's quarterly, within a month of quarter end. Event-based reporting is triggered by a specific event, like a change in a KMP or a material change to a scheme. Running both well is basically a compliance calendar — knowing what's due, when, and what triggers a filing.",
+      remember: ["Two buckets: periodic + event-based", "Periodic = fixed cycle", "Event-based = triggered by a change", "Some reporting quarterly (+1 month)", "Calendar ties it together"],
+      trap: "Don't list random filings — the interviewer wants the structure, not a memory dump.",
+      testing: ["Practical understanding", "Communication ability"],
+      tip: "The two-bucket structure is the whole answer. Give one concrete example of each."
+    }
+  ];
+
+  // ---------------------------------------------------------------- SCENARIOS
+  const scenarios = [
+    {
+      id: "s_transaction", role: "co", moduleId: "m1",
+      setup: "You are the Compliance Officer of an FME. The business team wants to proceed with a transaction, but you identify a possible regulatory issue.",
+      prompt: "What would you do first?",
+      steps: [
+        "Establish the facts — what exactly is proposed, amounts, counterparties.",
+        "Identify the applicable regulation or limit that's in play.",
+        "Assess the issue — how real and how serious is the risk?",
+        "Escalate to the Principal Officer where the decision is significant.",
+        "Document the analysis and the decision.",
+        "Take the required action — proceed compliantly, restructure, or stop."
+      ],
+      remember: ["FACTS", "→ REGULATION", "→ RISK", "→ ESCALATION", "→ ACTION", "→ DOCUMENTATION"],
+      considerations: "The mistake candidates make is jumping to a verdict before establishing facts. Facts first, always."
+    },
+    {
+      id: "s_onboarding", role: "co", moduleId: "m4",
+      setup: "You are the Compliance Officer. An investor onboarding file has incomplete beneficial-ownership information.",
+      prompt: "What should happen next?",
+      steps: [
+        "Establish what's missing — which BO details, and why.",
+        "Recognise the obligation — BO must be verified before onboarding.",
+        "Hold the file — onboarding doesn't proceed on a gap.",
+        "Request the missing information from the investor / introducer.",
+        "Verify beneficial ownership to the natural persons in control.",
+        "Only then clear the file, and document the resolution."
+      ],
+      remember: ["MISSING", "→ OBLIGATION", "→ HOLD", "→ REQUEST", "→ VERIFY", "→ CLEAR + DOCUMENT"],
+      considerations: "Treat BO verification as a hard gate. 'Onboard now, verify later' is the exact failure pattern regulators cite.",
+      verify: true, verifyNote: "AML specifics — verify against PML Rules."
+    },
+    {
+      id: "s_ppm_disclosure", role: "lc", moduleId: "m3",
+      setup: "You are in Legal & Compliance. The fund team wants to launch a restricted scheme quickly and asks whether the PPM disclosures can be 'tidied up later'.",
+      prompt: "How do you respond?",
+      steps: [
+        "Establish the timeline pressure and what's actually incomplete.",
+        "Identify the obligation — the PPM is the investor's primary disclosure.",
+        "Assess the risk — thin disclosure is a live regulatory and litigation exposure.",
+        "Push back constructively — disclosure is finalised before filing, not after.",
+        "Escalate to the PO if the business insists on cutting corners.",
+        "Document the position you took."
+      ],
+      remember: ["The PPM is disclosure, not a formality", "Finalise before filing", "Thin disclosure = real exposure", "Constructive push-back", "Document your position"],
+      considerations: "For an L&C role, interviewers want to see you protect disclosure quality under commercial pressure."
+    }
+  ];
+
+  // -------------------------------------------------------------- SIMULATIONS
+  const simulations = [
+    {
+      id: "sim_onboarding", role: "co",
+      title: "The incomplete onboarding file",
+      setup: "You are the Compliance Officer. An investor onboarding file reaches you with incomplete beneficial-ownership information, and the relationship manager is keen to close this week.",
+      prompt: "What should happen next?",
+      obligation: "CDD requires beneficial ownership to be identified and verified before the relationship proceeds.",
+      action: "Hold onboarding, request the missing BO information, verify to the ultimate natural persons, then clear and document.",
+      mistake: "Onboarding first and 'verifying later' to meet the RM's deadline.",
+      control: {
+        trigger: "New investor onboarding",
+        obligation: "Beneficial ownership verified before onboarding",
+        person: "Compliance Officer",
+        action: "BO check to natural-person level",
+        timeline: "Before the relationship proceeds",
+        approval: "Compliance sign-off",
+        filing: "Onboarding record",
+        evidence: "Verified BO documentation on file",
+        monitoring: "Periodic file review / sampling"
+      },
+      verify: true, verifyNote: "AML specifics — verify against PML Rules."
+    },
+    {
+      id: "sim_kmp_departure", role: "po",
+      title: "A KMP resigns",
+      setup: "You are the Principal Officer. Your Compliance Officer — the firm's only Compliance Officer KMP — resigns with immediate effect.",
+      prompt: "What should happen next?",
+      obligation: "A Registered FME must have a Compliance Officer KMP; changes to KMPs must follow the manner specified by IFSCA.",
+      action: "Assess the gap, arrange interim cover for the compliance function, begin identifying an eligible replacement, and notify/file the KMP change as required.",
+      mistake: "Leaving the Compliance Officer seat empty while continuing regulated activity as if nothing changed.",
+      control: {
+        trigger: "Compliance Officer resignation",
+        obligation: "Maintain required KMP structure",
+        person: "Principal Officer",
+        action: "Interim cover + eligible replacement + KMP-change filing",
+        timeline: "Promptly, per IFSCA's specified manner",
+        approval: "PO / board",
+        filing: "KMP change notification",
+        evidence: "Appointment records + filing acknowledgement",
+        monitoring: "KMP register kept current"
+      }
+    }
+  ];
+
+  // ---------------------------------------------------------------- CONTROLS
+  const controls = [
+    {
+      id: "c_onboarding", title: "Investor onboarding — BO gate",
+      trigger: "New investor onboarding begins",
+      obligation: "Beneficial ownership identified & verified before onboarding",
+      person: "Compliance Officer",
+      action: "Run CDD; look through to ultimate natural persons; apply EDD if higher-risk",
+      timeline: "Complete before the relationship proceeds",
+      approval: "Compliance sign-off",
+      filing: "Onboarding record retained",
+      evidence: "Verified BO documents on file",
+      monitoring: "Periodic sampling of onboarding files",
+      source: "PML Rules / AML framework", verify: true
+    },
+    {
+      id: "c_kmp", title: "KMP change control",
+      trigger: "A KMP is appointed or resigns",
+      obligation: "Maintain the KMP structure required for the FME category",
+      person: "Principal Officer",
+      action: "Confirm eligibility of replacement; arrange interim cover; file the change",
+      timeline: "In the manner and time specified by IFSCA",
+      approval: "PO / board",
+      filing: "KMP-change notification to IFSCA",
+      evidence: "Appointment letter + filing acknowledgement",
+      monitoring: "KMP register reviewed each quarter",
+      source: "FM Regs 2025, reg. 7", verify: false
+    },
+    {
+      id: "c_valuation", title: "Periodic valuation control",
+      trigger: "Valuation period ends",
+      obligation: "Value scheme assets per prescribed norms and report on time",
+      person: "Compliance Officer / appointed valuer",
+      action: "Obtain valuation from independent valuer; check independence & timeliness",
+      timeline: "Within the prescribed window (e.g. half-yearly report within one month)",
+      approval: "Compliance review",
+      filing: "Valuation report retained / shared with investors",
+      evidence: "Dated valuation report + independence confirmation",
+      monitoring: "Calendar reminder; report not stale when relied on",
+      source: "FM Regs 2025, valuation provisions", verify: false
+    }
+  ];
+
+  // ------------------------------------------------------------------- RECALL
+  const recall = {
+    definitions: [
+      { term: "FME", def: "Fund Management Entity — the licensed fund manager in IFSC. Three categories." },
+      { term: "Authorised FME", def: "VCS or single-family investment fund; private placement to accredited investors." },
+      { term: "Registered FME (Non-Retail)", def: "Restricted schemes + PMS + private-placement REIT/InvIT." },
+      { term: "Registered FME (Retail)", def: "Retail schemes for the public; public REIT/InvIT; ETFs." },
+      { term: "PPM", def: "Placement memorandum — private-placement disclosure document for accredited investors." },
+      { term: "Offer document", def: "Public disclosure document used by a Registered FME (Retail)." },
+      { term: "Principal Officer", def: "KMP responsible for the overall activities of the FME." },
+      { term: "Compliance Officer", def: "KMP responsible for compliance + risk implementation (mandatory for Registered FME)." },
+      { term: "Fit & proper", def: "Continuing 'at all times' standard for FME, directors, KMPs, controlling shareholders." }
+    ],
+    thresholds: [
+      { k: "Authorised FME net worth", v: "USD 75,000" },
+      { k: "Non-Retail net worth", v: "USD 500,000" },
+      { k: "Retail net worth", v: "USD 1,000,000" },
+      { k: "Restricted scheme investor floor", v: "USD 150,000" },
+      { k: "Max investors (restricted)", v: "1,000" },
+      { k: "VCS / restricted min corpus", v: "USD 3 million" },
+      { k: "VCS corpus cap", v: "USD 200 million" },
+      { k: "Additional fund-mgmt KMP trigger", v: "AUM ≥ USD 1 billion (ex-FoF)" }
+    ],
+    timelines: [
+      { k: "Additional KMP after ≥USD 1bn AUM", v: "Within 6 months of FY end" },
+      { k: "Some investor reporting", v: "Quarterly, within 1 month of quarter end" },
+      { k: "Half-yearly valuation report (illustrative)", v: "Within 1 month of period end" }
+    ],
+    distinctions: [
+      { a: "FME Principal Officer", b: "PMLA Principal Officer", note: "Overall FME activities vs reporting to FIU-IND. Can be different people." },
+      { a: "Principal Officer", b: "Compliance Officer", note: "Overall activities vs compliance + risk. CO mandatory for Registered FME." },
+      { a: "PPM", b: "Offer document", note: "Private placement / accredited vs public / retail." },
+      { a: "FME category", b: "Scheme type", note: "Licence vs the product that sits under it." }
+    ],
+    traps: [
+      "Calling FME categories 'AIF categories' (that's SEBI/domestic language).",
+      "Assuming every FME needs a Compliance Officer — depends on category.",
+      "Treating fit & proper as a one-time check — it's 'at all times'.",
+      "Saying the PPM is 'approved' — for private schemes it's 'taken on record'.",
+      "Collapsing the FME PO and the PMLA PO into one role."
+    ],
+    modes: [
+      { id: "r5",  label: "5-Minute Recall",     mins: 5,  desc: "Definitions + top thresholds only.", includes: ["definitions", "thresholds"] },
+      { id: "r15", label: "15-Minute Revision",   mins: 15, desc: "Definitions, thresholds, timelines, distinctions.", includes: ["definitions", "thresholds", "timelines", "distinctions"] },
+      { id: "r30", label: "30-Minute Interview Mode", mins: 30, desc: "Everything, plus the common traps.", includes: ["definitions", "thresholds", "timelines", "distinctions", "traps"] },
+      { id: "night", label: "Night Before",       mins: 20, desc: "Distinctions + traps + key thresholds.", includes: ["distinctions", "traps", "thresholds"] },
+      { id: "final", label: "Final 10 Minutes",   mins: 10, desc: "Traps + the numbers most likely to be asked.", includes: ["traps", "thresholds"] }
+    ]
+  };
+
+  // -------------------------------------------------------------- ASSESSMENT
+  const areas = {
+    m1: "FME Framework", m2: "PO / CO", m3: "PPM", m4: "AML / CFT",
+    m5: "FEMA", m6: "Reporting"
+  };
+
+  const assessment = [
+    { id: "a1", area: "m1", type: "mcq",
+      q: "How many categories of FME are there under the IFSCA Fund Management Regulations?",
+      options: ["Two", "Three", "Four", "Five"], answer: 1,
+      explain: "Three: Authorised FME, Registered FME (Non-Retail), Registered FME (Retail)." },
+    { id: "a2", area: "m1", type: "mcq",
+      q: "Which category can launch ETFs and run public retail schemes?",
+      options: ["Authorised FME", "Registered FME (Non-Retail)", "Registered FME (Retail)", "Any FME"], answer: 2,
+      explain: "Only the Registered FME (Retail) can run retail schemes and ETFs." },
+    { id: "a3", area: "m1", type: "mcq",
+      q: "Minimum net worth for a Registered FME (Retail)?",
+      options: ["USD 75,000", "USD 500,000", "USD 1,000,000", "USD 2,000,000"], answer: 2,
+      explain: "USD 1,000,000 — the highest of the three, matching the retail category." },
+    { id: "a4", area: "m2", type: "tf",
+      q: "Every FME must appoint a separate Compliance Officer.",
+      options: ["True", "False"], answer: 1,
+      explain: "False. The Compliance Officer is mandatory for a Registered FME; an Authorised FME may run on the Principal Officer alone." },
+    { id: "a5", area: "m2", type: "mcq",
+      q: "The Principal Officer of an FME is responsible for…",
+      options: ["Only regulatory filings", "Only fund management", "The overall activities of the FME", "Only AML reporting"], answer: 2,
+      explain: "The overall activities of the FME — fund management, risk and compliance." },
+    { id: "a6", area: "m2", type: "tf",
+      q: "Fit & proper is only tested at the time of registration.",
+      options: ["True", "False"], answer: 1,
+      explain: "False. It is a continuing 'at all times' obligation." },
+    { id: "a7", area: "m3", type: "mcq",
+      q: "A placement memorandum (PPM) is used to invite…",
+      options: ["The general public", "Accredited investors (private placement)", "Only employees", "Foreign governments"], answer: 1,
+      explain: "The PPM is the private-placement document for accredited investors; the offer document is the public/retail one." },
+    { id: "a8", area: "m4", type: "tf",
+      q: "The FME Principal Officer and the PMLA Principal Officer are always the same person.",
+      options: ["True", "False"], answer: 1,
+      explain: "False. They are different roles and can be different people. (Verify AML detail against PMLA.)" },
+    { id: "a9", area: "m4", type: "scenario",
+      q: "An onboarding file lacks beneficial-ownership information. The correct action is to…",
+      options: ["Onboard now, verify later", "Hold onboarding until BO is verified", "Escalate to the business team to decide", "Ignore it for small investors"], answer: 1,
+      explain: "Hold onboarding — BO verification is a gate before the relationship proceeds. (Verify against PML Rules.)" },
+    { id: "a10", area: "m1", type: "mcq",
+      q: "Minimum investment for an investor in a restricted scheme (non-accredited)?",
+      options: ["USD 40,000", "USD 60,000", "USD 150,000", "USD 250,000"], answer: 2,
+      explain: "USD 150,000 for a restricted scheme; accredited investors have no minimum ticket." },
+    { id: "a11", area: "m6", type: "mcq",
+      q: "Reporting obligations are best described as…",
+      options: ["All annual", "Periodic and event-based", "Only on request", "Only at wind-up"], answer: 1,
+      explain: "Two buckets — periodic (fixed cycle) and event-based (triggered by a change)." },
+    { id: "a12", area: "m1", type: "tf",
+      q: "An FME can change its category whenever it wants, without approval.",
+      options: ["True", "False"], answer: 1,
+      explain: "False. A category change needs prior approval from IFSCA." }
+  ];
+
+  // ---------------------------------------------------------------- READINESS
+  // dimensions used on the Progress screen
+  const readinessDimensions = [
+    { id: "reg",       label: "Regulatory Knowledge" },
+    { id: "recall",    label: "Recall" },
+    { id: "practical", label: "Practical Understanding" },
+    { id: "interview", label: "Interview Knowledge" },
+    { id: "role",      label: "Role Understanding" },
+    { id: "scenario",  label: "Scenario Understanding" }
+  ];
+
+  return {
+    W, P, roles, experience, backgrounds, timelines, modes,
+    modules, topics, moduleTopics, qTypes, questions,
+    scenarios, simulations, controls, recall, areas, assessment,
+    readinessDimensions
+  };
+})();
+</script>
+<script>
+/* =========================================================================
+   RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15
+   Application engine (vanilla JS, no framework)
+
+   Structured so it maps onto the WordPress plugin later:
+   - state / store    -> user + progress tables
+   - RM data          -> content post-types / tables
+   - view router      -> shortcode-rendered front-end app
+   - readiness engine -> readiness scoring service
+   ========================================================================= */
+(function () {
+  "use strict";
+  var D = window.RM;
+  var STORE_KEY = "regmate_fme_v1";
+
+  /* ---------------------------------------------------------------- STATE */
+  var defaultState = {
+    view: "start",
+    registered: false,
+    onboarded: false,
+    candidateId: null, candidateCode: null, accessToken: null,
+    candidateName: "", candidateMobile: "", candidateEmail: "",
+    role: null, experience: null, background: null, timeline: null,
+    // transient view params
+    moduleId: null, topicId: null,
+    qFilter: "all", qIndex: 0,
+    scnTab: "scenarios",
+    recallMode: null, flashIndex: 0, flashFlipped: false,
+    assessIndex: 0, assessAnswers: {},
+    progress: {
+      topics: {}, questions: {}, scenarios: {}, sims: {},
+      recall: {}, assessment: null
+    }
+  };
+  var state = load();
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        var merged = Object.assign({}, defaultState, s);
+        // SECURITY / CORRECTNESS: a localStorage flag is NOT proof of a valid
+        // session. If we have a stored token, boot into validation and let the
+        // backend decide; otherwise always begin at registration.
+        merged.view = (s.candidateId && s.accessToken) ? "boot" : "start";
+        return merged;
+      }
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(defaultState));
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        registered: state.registered, onboarded: state.onboarded,
+        candidateId: state.candidateId, candidateCode: state.candidateCode, accessToken: state.accessToken,
+        candidateName: state.candidateName, candidateMobile: state.candidateMobile, candidateEmail: state.candidateEmail,
+        role: state.role, experience: state.experience, background: state.background, timeline: state.timeline, progress: state.progress
+      }));
+    } catch (e) {}
+  }
+
+  /* -------------------------------------------------------------- BACKEND */
+  var API_BASE = "/Regmate-backend/api/";
+  function apiCall(action, payload) {
+    var controller = window.AbortController ? new AbortController() : null;
+    var timer = controller ? setTimeout(function(){ controller.abort(); }, 12000) : null;
+    var params = new URLSearchParams();
+    Object.keys(payload || {}).forEach(function(key){
+      var value = payload[key];
+      if (value === null || typeof value === "undefined") return;
+      if (typeof value === "object") value = JSON.stringify(value);
+      params.append(key, String(value));
+    });
+    var endpointMap = {
+      register: "register.php", login: "login.php",
+      profile: "profile.php", progress: "progress.php",
+      event: "event.php", resume: "resume.php", ping: "ping.php"
+    };
+    var endpoint = endpointMap[action] || (action + ".php");
+    return fetch(API_BASE + endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "Accept": "application/json"
+      },
+      body: params.toString(),
+      signal: controller ? controller.signal : undefined
+    }).then(function (r) {
+      return r.text().then(function(txt){
+        if (timer) clearTimeout(timer);
+        var data;
+        try { data = JSON.parse(txt); } catch(e) {
+          throw new Error("RegMate backend returned an invalid response (HTTP " + r.status + "). Please check the backend API.");
+        }
+        if (!r.ok) throw new Error(data.message || "RegMate backend error (HTTP " + r.status + ").");
+        return data;
+      });
+    }).catch(function(err){
+      if (timer) clearTimeout(timer);
+      if (err && err.name === "AbortError") throw new Error("The RegMate server took too long to respond. Please try again.");
+      throw err;
+    });
+  }
+  function authPayload(extra) {
+    return Object.assign({ candidate_id: state.candidateId, access_token: state.accessToken }, extra || {});
+  }
+  function track(eventName, extra) {
+    if (!state.registered || !state.candidateId || !state.accessToken) return;
+    apiCall("event", authPayload(Object.assign({ event_name: eventName }, extra || {}))).catch(function(){});
+  }
+  function syncProgress(page, section, index) {
+    if (!state.registered || !state.candidateId || !state.accessToken) return;
+    apiCall("progress", authPayload({ page: page, section: section || "", index: Number(index || 0) })).catch(function(){});
+  }
+  function syncProfile() {
+    if (!state.registered || !state.candidateId || !state.accessToken) return;
+    apiCall("profile", authPayload({ role: state.role, experience: state.experience, interview_timing: state.timeline })).catch(function(){});
+  }
+
+  /* ---------------------------------------------------------------- ICONS */
+  function ic(name, cls) {
+    var p = {
+      shield: '<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>',
+      book: '<path d="M4 5.5A2.5 2.5 0 016.5 3H20v15H6.5A2.5 2.5 0 004 20.5V5.5z"/><path d="M20 18H6.5A2.5 2.5 0 004 20.5"/>',
+      target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+      layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+      chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+      bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
+      chevR: '<path d="M9 6l6 6-6 6"/>',
+      chevL: '<path d="M15 6l-6 6 6 6"/>',
+      arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+      check: '<path d="M20 6L9 17l-5-5"/>',
+      home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+      brain: '<path d="M9 3a3 3 0 00-3 3 3 3 0 00-2 5 3 3 0 001 5 3 3 0 006 1V4a3 3 0 00-2-1z"/><path d="M15 3a3 3 0 013 3 3 3 0 012 5 3 3 0 01-1 5 3 3 0 01-6 1"/>',
+      eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+      alert: '<path d="M12 3l9 16H3l9-16z"/><path d="M12 10v4M12 17h.01"/>',
+      bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0012 3z"/>',
+      gauge: '<path d="M12 13l4-4"/><path d="M4 18a8 8 0 1116 0"/>',
+      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      doc: '<path d="M6 2h8l4 4v16H6V2z"/><path d="M14 2v4h4"/>',
+      scale: '<path d="M12 3v18M7 21h10M6 7h12M6 7l-3 6a3 3 0 006 0L6 7zM18 7l-3 6a3 3 0 006 0l-3-6z"/>',
+      play: '<path d="M6 4l14 8-14 8V4z"/>',
+      lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>',
+      globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+      flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+      refresh: '<path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 10a8 8 0 00-14-3M4 14a8 8 0 0014 3"/>'
+    };
+    return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">' + (p[name] || '') + '</svg>';
+  }
+
+  /* ------------------------------------------------------------- HELPERS */
+  function el(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function role() { return D.roles.find(function (r) { return r.id === state.role; }) || D.roles[0]; }
+  function timeline() { return D.timelines.find(function (t) { return t.id === state.timeline; }); }
+  function currentMode() { var t = timeline(); return D.modes[t ? t.mode : "twoday"]; }
+  function priClass(p) { return "pill pill-" + p; }
+  function weightLabel(w) { return { "very-high": "VERY HIGH", high: "HIGH", medium: "MEDIUM", low: "LOW" }[w]; }
+
+  // role-weighted, priority-ordered topics
+  function rankedTopics(opts) {
+    opts = opts || {};
+    var rid = state.role || "co";
+    var list = Object.keys(D.topics).map(function (k) { return D.topics[k]; });
+    list = list.map(function (t) {
+      var rw = D.W[t.roleWeight[rid]] || 1;
+      var pr = D.P[t.priority] || 1;
+      return { t: t, score: rw * 2 + pr };
+    });
+    if (opts.tonight) list = list.filter(function (x) { return x.t.priority === "critical" || x.t.priority === "high"; });
+    list.sort(function (a, b) { return b.score - a.score; });
+    return list.map(function (x) { return x.t; });
+  }
+
+  function moduleForTopic(id) { return D.modules.find(function (m) { return m.id === D.topics[id].moduleId; }); }
+
+  /* --------------------------------------------------------- READINESS */
+  function readiness() {
+    var rid = state.role || "co";
+    // profile baseline
+    var base = 32;
+    var expMap = { fresher: 0, "3-5": 6, "5-10": 10, "10+": 14 };
+    base += expMap[state.experience] || 0;
+    // background alignment small nudge
+    if (["Compliance", "Legal", "Fund / Investment Management", "Finance / CA"].indexOf(state.background) > -1) base += 4;
+
+    var pg = state.progress;
+    var topicCount = Object.keys(D.topics).length;
+    var qCount = D.questions.length;
+    var scnCount = D.scenarios.length + D.simulations.length;
+    var recallCount = D.recall.modes.length;
+
+    var reg = Math.min(100, base + Object.keys(pg.topics).length / topicCount * 60);
+    var interview = Math.min(100, base + Object.keys(pg.questions).length / qCount * 62);
+    var practical = Math.min(100, base + Object.keys(pg.scenarios).length / D.scenarios.length * 55);
+    var scenario = Math.min(100, base + (Object.keys(pg.scenarios).length + Object.keys(pg.sims).length) / scnCount * 58);
+    var recall = Math.min(100, base - 6 + Object.keys(pg.recall).length / recallCount * 66);
+    // role understanding grows with role-weighted topics + sims
+    var roleU = Math.min(100, base + 8 + (Object.keys(pg.topics).length + Object.keys(pg.sims).length) / (topicCount + D.simulations.length) * 55);
+    // assessment lifts interview + reg if taken
+    if (pg.assessment) {
+      var f = pg.assessment.score / pg.assessment.total;
+      interview = Math.min(100, interview + f * 12);
+      reg = Math.min(100, reg + f * 10);
+    }
+
+    var dims = [
+      { id: "reg", label: "Regulatory Knowledge", v: Math.round(reg) },
+      { id: "recall", label: "Recall", v: Math.round(recall) },
+      { id: "practical", label: "Practical Understanding", v: Math.round(practical) },
+      { id: "interview", label: "Interview Knowledge", v: Math.round(interview) },
+      { id: "role", label: "Role Understanding", v: Math.round(roleU) },
+      { id: "scenario", label: "Scenario Understanding", v: Math.round(scenario) }
+    ];
+    var overall = Math.round(dims.reduce(function (a, d) { return a + d.v; }, 0) / dims.length);
+
+    // strong / weak by module coverage
+    var byMod = {};
+    D.modules.forEach(function (m) { byMod[m.id] = { seen: 0, total: 0, title: m.title }; });
+    Object.keys(D.topics).forEach(function (k) {
+      var t = D.topics[k]; byMod[t.moduleId].total++;
+      if (pg.topics[k]) byMod[t.moduleId].seen++;
+    });
+    var strong = [], weak = [];
+    Object.keys(byMod).forEach(function (mid) {
+      var b = byMod[mid]; if (!b.total) return;
+      var pct = b.seen / b.total;
+      if (pct >= 0.66) strong.push(b.title); else if (pct < 0.34) weak.push(b.title);
+    });
+    return { overall: overall, dims: dims, strong: strong, weak: weak };
+  }
+
+  /* ------------------------------------------------------ SVG DIAL */
+  function dial(pct, size, stroke, dark) {
+    var r = (size - stroke) / 2, c = size / 2, circ = 2 * Math.PI * r;
+    var off = circ * (1 - pct / 100);
+    var track = dark ? "rgba(255,255,255,.12)" : "#E4E8F0";
+    return '<svg width="' + size + '" height="' + size + '">' +
+      '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="' + track + '" stroke-width="' + stroke + '"/>' +
+      '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="var(--accent)" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + off + '"/>' +
+      '</svg>';
+  }
+
+  /* ---------------------------------------------------------- ROUTER */
+  var root;
+  function detectLoggedInUser() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var pName = params.get("name") || localStorage.getItem("regmate_user_name") || "";
+      var pEmail = params.get("email") || localStorage.getItem("regmate_user_email") || "";
+
+      if (pName && !state.candidateName) {
+        state.candidateName = pName;
+        localStorage.setItem("regmate_user_name", pName);
+      }
+      if (pEmail && !state.candidateEmail) {
+        state.candidateEmail = pEmail;
+        localStorage.setItem("regmate_user_email", pEmail);
+      }
+      if (state.candidateName || state.candidateEmail) {
+        state.registered = true;
+        if (!state.candidateId) {
+          state.candidateId = "usr_" + (state.candidateEmail ? state.candidateEmail.replace(/[^a-zA-Z0-9]/g, "") : Date.now());
+        }
+      }
+    } catch (e) {}
+  }
+
+  function viewBoot() {
+    return '<div class="app"><div class="start" style="justify-content:center;text-align:center">' +
+      '<div><div class="brand" style="justify-content:center"><span class="mark">R</span>&nbsp;RegMate</div>' +
+      '<p class="sub" style="margin:18px auto 0">Checking your session…</p></div></div></div>';
+  }
+  function clearSessionToStart() {
+    state.registered = false; state.onboarded = false;
+    state.candidateId = null; state.candidateCode = null; state.accessToken = null;
+    state.role = null; state.experience = null; state.timeline = null;
+    save(); go("start");
+  }
+  function validateSession() {
+    detectLoggedInUser();
+    render(); // show the boot splash first
+    if (state.registered && (state.candidateName || state.candidateEmail)) {
+      save();
+      go(state.onboarded ? "dash" : "onboarding");
+      return;
+    }
+    if (!state.candidateId || !state.accessToken) { clearSessionToStart(); return; }
+    apiCall("resume", { candidate_id: state.candidateId, access_token: state.accessToken })
+      .then(function (res) {
+        if (!res || !res.ok || !res.candidate) { clearSessionToStart(); return; }
+        var c = res.candidate;
+        state.registered = true;
+        state.candidateId = c.id; state.candidateCode = c.code;
+        state.candidateName = c.name; state.candidateMobile = c.mobile; state.candidateEmail = c.email;
+        state.role = c.role || null; state.experience = c.experience || null; state.timeline = c.interview_timing || null;
+        state.onboarded = !!(c.role && c.experience && c.interview_timing);
+        save();
+        go(state.onboarded ? "dash" : "onboarding");
+      })
+      .catch(function (err) {
+        var msg = (err && err.message) || "";
+        // Explicit auth failure -> stale/invalid session -> registration.
+        if (/unauthor/i.test(msg) || /HTTP 401/.test(msg) || /HTTP 404/.test(msg)) { clearSessionToStart(); return; }
+        // Transient network/timeout: don't punish a valid user. Keep stored
+        // routing ONLY if the profile looks complete; else go to registration.
+        if (state.role && state.experience && state.timeline) { state.registered = true; state.onboarded = true; go("dash"); }
+        else { clearSessionToStart(); }
+      });
+  }
+  function go(view, params) {
+    if (params) Object.assign(state, params);
+    state.view = view;
+    syncProgress(view, state.moduleId || state.qFilter || "", state.qIndex || 0);
+    render();
+    var sc = document.querySelector(".screen");
+    if (sc) sc.scrollTop = 0;
+  }
+  window.__rmGo = go;
+
+  function render() {
+    var v = state.view;
+    var showChrome = state.onboarded && ["dash", "learn", "topic", "practice", "simulate", "progress", "recall", "flash", "assess", "assessResult"].indexOf(v) > -1;
+    var html = "";
+    if (v === "boot") html = viewBoot();
+    else if (v === "start") html = viewStart();
+    else if (v === "register") html = viewRegister();
+    else if (v === "resume") html = viewResume();
+    else if (v === "onboarding") html = viewOnboarding();
+    else {
+      html = '<div class="app">';
+      html += showChrome ? topbar() : "";
+      html += '<div class="screen ' + (["flash"].indexOf(v) > -1 ? "immersive" : "") + '">';
+      switch (v) {
+        case "dash": html += viewDash(); break;
+        case "learn": html += viewLearn(); break;
+        case "topic": html += viewTopic(); break;
+        case "practice": html += viewPractice(); break;
+        case "simulate": html += viewSimulate(); break;
+        case "progress": html += viewProgress(); break;
+        case "recall": html += viewRecall(); break;
+        case "flash": html += viewFlash(); break;
+        case "assess": html += viewAssess(); break;
+        case "assessResult": html += viewAssessResult(); break;
+        default: html += viewDash();
+      }
+      html += "</div>";
+      html += showChrome ? bottomNav() : "";
+      html += "</div>";
+    }
+    root.innerHTML = html;
+    bind();
+  }
+
+  /* ============================================================ SCREENS */
+
+  function viewStart() {
+    detectLoggedInUser();
+    var isUserLoggedIn = !!(state.candidateName || state.candidateEmail);
+    var firstName = state.candidateName ? state.candidateName.split(" ")[0] : "Candidate";
+
+    return '<div class="app" style="background:var(--ink);min-height:100vh"><div class="start">' +
+      '<div class="top"><div class="brand"><span class="mark">R</span>RegMate</div></div>' +
+      '<div class="start-main-grid">' +
+      '<div class="hero">' +
+      '<div class="product">FME Interview Ready · GIFT IFSC</div>' +
+      '<h1>Get ready for the job,<br>not just the exam.</h1>' +
+      '<p class="sub">Role-weighted, source-backed preparation for Compliance Officer, Principal Officer and Legal &amp; Compliance interviews at GIFT IFSC fund managers.</p>' +
+      '<div class="cta-wrap">' +
+      '<button class="btn btn-primary" data-go="register">' + (isUserLoggedIn ? ('Start Preparation as ' + esc(firstName) + ' ' + wrapIc("arrow", 18)) : ('Start preparation ' + wrapIc("arrow", 18))) + '</button>' +
+      (!isUserLoggedIn ? '<button class="btn btn-ghost" data-go="resume">Resume my preparation</button>' : '') +
+      '</div>' +
+      '</div>' +
+      '<div class="start-feature-grid">' +
+      '<div class="sf-card"><div class="sf-title">🎯 3 Role Specializations</div><div class="sf-desc">Tailored interview focus for Compliance Officers, Principal Officers &amp; Legal Leads</div></div>' +
+      '<div class="sf-card"><div class="sf-title">📚 7 FME Core Modules</div><div class="sf-desc">Comprehensive coverage of IFSCA Fund Management Entity regulations</div></div>' +
+      '<div class="sf-card"><div class="sf-title">⚡ Real-world Scenarios</div><div class="sf-desc">Think → Reveal → Apply method for actual GIFT IFSC operational challenges</div></div>' +
+      '<div class="sf-card"><div class="sf-title">📊 Live Readiness Score</div><div class="sf-desc">Track domain readiness &amp; identify gaps before walking into your interview</div></div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="foot">7 modules · Think → Reveal → Remember · Readiness score</div>' +
+      '</div></div>';
+  }
+
+  function wrapIc(name, s) { return '<span style="width:' + (s || 18) + 'px;height:' + (s || 18) + 'px;display:inline-flex">' + ic(name) + '</span>'; }
+
+  /* ---- registration ---- */
+  function viewRegister() {
+    return '<div class="app"><div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div><div class="ctx"><div class="role">Registration</div><div class="tl">Step 1 · Your details</div></div></div>' +
+      '<div class="screen no-nav fade"><div class="screen-head"><h2>Start your RegMate journey</h2><p class="sub">Enter your details once. Your preparation progress can then be saved and resumed.</p></div>' +
+      '<div class="reg-card">' +
+      (state._regError ? '<div class="reg-error">' + esc(state._regError) + '</div>' : '') +
+      '<label class="reg-label">Name</label><input id="regName" class="reg-input" autocomplete="name" placeholder="Your full name" value="' + esc(state.candidateName) + '">' +
+      '<label class="reg-label">Mobile</label><input id="regMobile" class="reg-input" inputmode="tel" autocomplete="tel" placeholder="Your mobile number" value="' + esc(state.candidateMobile) + '">' +
+      '<label class="reg-label">Email</label><input id="regEmail" class="reg-input" type="email" autocomplete="email" placeholder="Your email address" value="' + esc(state.candidateEmail) + '">' +
+      '<button class="btn btn-primary" data-register>Continue to profile ' + wrapIc("arrow",18) + '</button>' +
+      '<div class="reg-note">Your details are used to create your RegMate profile and save your preparation progress.</div></div>' +
+      '<div class="q-foot"><button class="btn btn-ghost" data-go="start">Back</button></div></div></div>';
+  }
+
+  /* ---- resume login ---- */
+  function viewResume() {
+    return '<div class="app"><div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div><div class="ctx"><div class="role">Resume</div><div class="tl">Continue your preparation</div></div></div>' +
+      '<div class="screen no-nav fade"><div class="screen-head"><h2>Welcome back</h2><p class="sub">Enter the same email and mobile number you used when you registered.</p></div>' +
+      '<div class="reg-card">' +
+      (state._loginError ? '<div class="reg-error">' + esc(state._loginError) + '</div>' : '') +
+      '<label class="reg-label">Email</label><input id="loginEmail" class="reg-input" type="email" autocomplete="email" placeholder="Your registered email" value="' + esc(state.candidateEmail || '') + '">' +
+      '<label class="reg-label">Mobile</label><input id="loginMobile" class="reg-input" inputmode="tel" autocomplete="tel" placeholder="Your registered mobile" value="' + esc(state.candidateMobile || '') + '">' +
+      '<button class="btn btn-primary" data-login>Resume my preparation ' + wrapIc("arrow",18) + '</button>' +
+      '<div class="reg-note">Your saved progress is linked to your RegMate profile.</div></div>' +
+      '<div class="q-foot"><button class="btn btn-ghost" data-go="start">Back</button></div></div></div>';
+  }
+
+  /* ---- onboarding ---- */
+  var obSteps = ["role", "experience", "background", "timeline"];
+  function viewOnboarding() {
+    var step = state._obStep || 0;
+    var key = obSteps[step];
+    var body = "";
+    var prog = '<div class="ob-progress">' + obSteps.map(function (_, i) { return '<span class="' + (i <= step ? "done" : "") + '"></span>'; }).join("") + "</div>";
+
+    if (key === "role") {
+      body = qHead("Which role are you preparing for?", "One shared FME core, weighted to your role.") +
+        D.roles.map(function (r) {
+          return optCard("role", r.id, r.name, r.line, state.role === r.id, r.id === "co" ? "shield" : r.id === "po" ? "target" : "scale");
+        }).join("");
+    } else if (key === "experience") {
+      body = qHead("How much experience do you have?", "This calibrates depth and your starting readiness.") +
+        D.experience.map(function (e) { return optCard("experience", e.id, e.label, "", state.experience === e.id); }).join("");
+    } else if (key === "background") {
+      body = qHead("What's your background?", "Helps us pitch explanations at the right level.") +
+        D.backgrounds.map(function (b) { return optCard("background", b, b, "", state.background === b); }).join("");
+    } else if (key === "timeline") {
+      body = qHead("When is your interview?", "We'll recommend the right preparation mode.") +
+        D.timelines.map(function (t) { return optCard("timeline", t.id, t.label, t.note, state.timeline === t.id); }).join("");
+    }
+
+    var val = state[key];
+    var isLast = step === obSteps.length - 1;
+    var actions = '<div class="ob-actions">' +
+      (step > 0 ? '<button class="btn btn-ghost ob-back" data-ob-back>' + wrapIc("chevL", 18) + '</button>' : "") +
+      '<button class="btn btn-primary grow" data-ob-next ' + (val ? "" : "disabled style=opacity:.5") + '>' +
+      (isLast ? "Build my prep" : "Continue") + " " + wrapIc("arrow", 18) + '</button></div>';
+
+    return '<div class="app">' +
+      '<div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div>' +
+      '<div class="ctx"><div class="role">Onboarding</div><div class="tl">Step ' + (step + 1) + ' / 4</div></div></div>' +
+      '<div class="screen no-nav fade">' + prog + body + actions + '</div></div>';
+  }
+  function qHead(q, hint) { return '<div class="ob-head"><div class="ob-q">' + q + '</div><div class="ob-hint">' + hint + "</div></div>"; }
+  function optCard(field, val, title, sub, sel, icon) {
+    return '<button class="opt ' + (sel ? "sel" : "") + '" data-opt-field="' + field + '" data-opt-val="' + esc(val) + '">' +
+      (icon ? '<span class="o-ic">' + wrapIc(icon, 20) + '</span>' : "") +
+      '<span class="grow"><span class="o-title">' + esc(title) + "</span>" + (sub ? '<span class="o-sub">' + esc(sub) + "</span>" : "") + "</span>" +
+      '<span class="tick">' + (sel ? wrapIc("check", 13) : "") + "</span></button>";
+  }
+
+  /* ---- topbar & bottom nav ---- */
+  function topbar() {
+    var r = role(), t = timeline();
+    var items = [
+      { id: "dash", label: "Home", icon: "home" },
+      { id: "learn", label: "Learn", icon: "book" },
+      { id: "practice", label: "Practice", icon: "brain" },
+      { id: "simulate", label: "Simulate", icon: "play" },
+      { id: "progress", label: "Progress", icon: "gauge" }
+    ];
+    var active = state.view;
+    if (["topic"].indexOf(active) > -1) active = "learn";
+    if (["recall", "flash", "assess", "assessResult"].indexOf(active) > -1) active = "dash";
+
+    var desktopTabs = '<div class="desktop-nav-tabs">' + items.map(function(it) {
+      return '<button class="d-tab ' + (active === it.id ? "on" : "") + '" data-nav="' + it.id + '">' +
+        '<span class="d-tab-ic">' + ic(it.icon) + '</span><span>' + it.label + '</span></button>';
+    }).join("") + '</div>';
+
+    return '<div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div>' +
+      desktopTabs +
+      '</div>';
+  }
+  function bottomNav() {
+    var items = [
+      { id: "dash", label: "Home", icon: "home" },
+      { id: "learn", label: "Learn", icon: "book" },
+      { id: "practice", label: "Practice", icon: "brain" },
+      { id: "simulate", label: "Simulate", icon: "play" },
+      { id: "progress", label: "Progress", icon: "gauge" }
+    ];
+    var active = state.view;
+    if (["topic"].indexOf(active) > -1) active = "learn";
+    if (["recall", "flash", "assess", "assessResult"].indexOf(active) > -1) active = "dash";
+    return '<div class="bottom-nav">' + items.map(function (it) {
+      return '<button class="' + (active === it.id ? "on" : "") + '" data-nav="' + it.id + '">' +
+        '<span class="bn-ic">' + ic(it.icon) + '</span><span class="bn-l">' + it.label + "</span></button>";
+    }).join("") + "</div>";
+  }
+
+  /* ---- dashboard ---- */
+  function viewDash() {
+    var r = role(), t = timeline(), mode = currentMode(), rd = readiness();
+    var status = rd.overall >= 75 ? "On track" : rd.overall >= 55 ? "Getting there" : "Early stage";
+    var weakest = rd.dims.slice().sort(function (a, b) { return a.v - b.v; })[0];
+    var recMap = { reg: ["m1", "FME Framework"], recall: ["recall", "Rapid Recall"], practical: ["simulate", "Scenarios"], interview: ["practice", "Interview Questions"], role: ["learn", "your role modules"], scenario: ["simulate", "Simulations"] };
+    var rec = recMap[weakest.id];
+
+    var tops = rankedTopics().slice(0, 5);
+    var topsHtml = tops.map(function (tp, i) {
+      var done = !!state.progress.topics[tp.id];
+      return '<button class="ptopic" data-topic="' + tp.id + '">' +
+        '<span class="no">' + String(i + 1).padStart(2, "0") + "</span>" +
+        '<span class="body"><span class="t">' + esc(tp.title) + "</span>" +
+        '<span class="s">' + esc(moduleForTopic(tp.id).title) + "</span>" +
+        '<span class="bar"><i style="width:' + (done ? 100 : 0) + '%"></i></span></span>' +
+        '<span class="' + priClass(tp.priority) + '" style="flex:none">' + tp.priority.toUpperCase() + "</span>" +
+        '<span class="chev">' + wrapIc("chevR", 16) + "</span></button>";
+    }).join("");
+
+    return '<div class="fade">' +
+      // hero
+      '<div class="dash-hero"><span class="eyebrow">Your FME interview prep</span>' +
+      '<div class="row-top"><div><div class="role-name">' + r.name + '</div><div class="tl">Interview ' + (t ? t.label.toLowerCase() : "—") + " · " + (state.experience ? D.experience.find(function (e) { return e.id === state.experience; }).label : "") + '</div></div>' +
+      '<div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-sm btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.05)" data-change-profile>Change profile</button><span class="mode-chip">' + mode.label + "</span></div></div>" +
+      '<div class="dial-wrap"><div class="dial">' + dial(rd.overall, 96, 9, true) +
+      '<div class="val"><span class="num">' + rd.overall + '</span><span class="pct">% ready</span></div></div>' +
+      '<div class="dial-meta"><div class="label">Readiness Score</div><div class="status">' + status + "</div>" +
+      '<div class="rec">Next: <b>' + esc(weakest.label) + "</b> is your weakest area — " +
+      '<span data-nav="' + rec[0] + '" data-topic-jump="' + (rec[0] === "m1" ? "m1" : "") + '" style="text-decoration:underline;cursor:pointer">work on ' + esc(rec[1]) + "</span>.</div></div></div></div>" +
+
+      // mode banner
+      '<div class="mode-banner"><span class="mb-ic">' + wrapIc(t && t.mode === "tonight" ? "bolt" : "layers", 20) + "</span>" +
+      '<div><div class="mb-t">' + mode.label + ' recommended</div><div class="mb-s">' + esc(mode.blurb) + "</div></div></div>" +
+
+      '<div class="dash-grid-layout">' +
+      '<div class="dash-left-col">' +
+      '<div class="section-title"><h3>Priority topics</h3><span class="link" data-nav="learn">All modules</span></div>' +
+      topsHtml +
+      '</div>' +
+
+      '<div class="dash-right-col">' +
+      '<div class="section-title"><h3>Jump in</h3></div>' +
+      '<div class="qa-grid">' +
+      qaCard("recall", "5-Minute Recall", "Definitions & thresholds", "bolt", { recallMode: "r5", view: "flash", flashIndex: 0 }) +
+      qaCard("practice", "Interview Questions", "Think → Reveal", "brain", { view: "practice" }) +
+      qaCard("simulate", "Scenarios", "Judgement practice", "target", { view: "simulate", scnTab: "scenarios" }) +
+      qaCard("assess", "Assessment", "Check your gaps", "check", { view: "assess", assessIndex: 0, assessAnswers: {} }) +
+      '</div>' +
+      '<button class="btn btn-dark" style="margin-top:18px;width:100%" data-nav="learn">Continue preparation ' + wrapIc("arrow", 18) + '</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }
+  function qaCard(nav, t, s, icon, params) {
+    return '<button class="qa" data-action=\'' + JSON.stringify(params) + '\'>' +
+      '<span class="qa-ic">' + wrapIc(icon, 18) + "</span>" +
+      '<div class="qa-t">' + t + '</div><div class="qa-s">' + s + "</div></button>";
+  }
+
+  /* ---- learn (module list) ---- */
+  function viewLearn() {
+    var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+    var userObj = JSON.parse(localStorage.getItem('regmate_user') || '{}');
+    var isSubscribed = userObj.membershipStatus === 'active' || subs.indexOf('job_ready') > -1 || subs.indexOf('full_access') > -1;
+
+    var mods = D.modules.map(function (m, idx) {
+      var ts = D.moduleTopics[m.id] || [];
+      var unlocked = idx < 2 || isSubscribed;
+
+      return '<button class="module" data-module="' + m.id + '" data-unlocked="' + unlocked + '">' +
+        '<span class="m-no">' + m.no + '</span>' +
+        '<span class="m-body"><span class="m-t" style="display:flex;align-items:center;gap:8px">' + esc(m.title) + (!unlocked ? ' <span style="font-size:10px;background:#FEF3C7;color:#92400E;padding:2px 7px;border-radius:4px;font-family:var(--mono);font-weight:700">🔒 LOCKED</span>' : '') + "</span>" +
+        '<span class="m-s">' + esc(m.summary) + "</span>" +
+        '<span class="m-meta"><span class="m-count">' + ts.length + " topic" + (ts.length > 1 ? "s" : "") + "</span></span></span>" +
+        '<span class="chev" style="align-self:center;color:var(--text-3)">' + (!unlocked ? '🔒' : wrapIc("chevR", 18)) + "</span></button>";
+    }).join("");
+    // when a module is opened, show its topics inline
+    if (state.moduleId) {
+      var m = D.modules.find(function (x) { return x.id === state.moduleId; });
+      var ts = (D.moduleTopics[state.moduleId] || []).map(function (id) { return D.topics[id]; });
+      var rid = state.role;
+      var list = ts.map(function (tp) {
+        var done = !!state.progress.topics[tp.id];
+        return '<button class="ptopic" data-topic="' + tp.id + '">' +
+          '<span class="body"><span class="t">' + esc(tp.title) + "</span>" +
+          '<span class="s" style="white-space:normal">' + esc(tp.why.slice(0, 74)) + "…</span></span>" +
+          (done ? '<span class="pill pill-medium" style="flex:none;background:var(--success-soft);color:var(--success)">Seen</span>' : '<span class="pill" style="flex:none;background:#EEF2F9;color:var(--text-2)">' + weightLabel(tp.roleWeight[rid]) + "</span>") +
+          '<span class="chev">' + wrapIc("chevR", 16) + "</span></button>";
+      }).join("");
+      return '<div class="fade"><div class="topic-nav"><button class="back" data-nav="learn">' + wrapIc("chevL", 16) + " Modules</button></div>" +
+        '<div class="screen-head"><span class="eyebrow">Module ' + m.no + '</span><h2>' + esc(m.title) + '</h2><p class="sub">' + esc(m.summary) + "</p></div>" +
+        list + "</div>";
+    }
+    return '<div class="fade"><div class="screen-head"><h2>Learn</h2><p class="sub">Seven modules. First 2 modules are free preview. Unlock all modules with a membership pass.</p></div><div class="learn-modules-grid">' + mods + "</div></div>";
+  }
+
+  /* ---- topic view ---- */
+  function viewTopic() {
+    var t = D.topics[state.topicId];
+    var m = moduleForTopic(t.id);
+    state.progress.topics[t.id] = true; save(); track("lesson_completed", { section_name: m.id, item_title: t.title }); syncProgress("topic", t.id, 0);
+
+    var h = '<div class="fade"><div class="topic-nav"><button class="back" data-back-module="' + m.id + '">' + wrapIc("chevL", 16) + " " + esc(m.title) + "</button></div>";
+    h += '<div class="topic-head"><span class="eyebrow">Module ' + m.no + " · " + esc(m.title) + '</span><h2>' + esc(t.title) + '</h2>' +
+      '<div class="m-ref">' + srcChip(t) + '<span class="' + priClass(t.priority) + '">' + t.priority.toUpperCase() + " priority</span></div></div>";
+
+
+    h += layer("why", "Why this matters", "target", "<p>" + esc(t.why) + "</p>");
+    h += layer("", "Explanation", "book", "<p>" + esc(t.explanation) + "</p>");
+    if (t.practicalPoint) h += layer("practical", "Practical point", "bulb", "<p>" + esc(t.practicalPoint) + "</p>");
+    if (t.example) h += layer("example", "Example", "layers", "<p>" + esc(t.example) + "</p>");
+    if (t.case) {
+      var c = t.case;
+      h += '<div class="case-card"><div class="l-label"><span class="l-ic">' + wrapIc("scale", 15) + '</span><span class="l-txt">Case — ' + esc(c.title) + "</span></div>";
+      [["Facts", c.facts], ["Issue", c.issue], ["Deficiency", c.deficiency], ["Consequence", c.consequence], ["Lesson", c.lesson]].forEach(function (r) {
+        h += '<div class="cc-row"><span class="cc-k">' + r[0] + '</span><span class="cc-v">' + esc(r[1]) + "</span></div>";
+      });
+      h += "</div>";
+    }
+    // key takeaway
+    h += '<div class="takeaway"><div class="tk-h">' + wrapIc("check", 13) + " Key takeaway</div><ul>" +
+      t.takeaway.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
+
+    // next topic in module
+    var ids = D.moduleTopics[m.id];
+    var idx = ids.indexOf(t.id);
+    h += '<div class="q-foot">';
+    if (idx < ids.length - 1) h += '<button class="btn btn-primary" data-topic="' + ids[idx + 1] + '">Next topic ' + wrapIc("arrow", 18) + "</button>";
+    else h += '<button class="btn btn-primary" data-nav="practice">Practice questions ' + wrapIc("arrow", 18) + "</button>";
+    h += "</div></div>";
+    return h;
+  }
+  function layer(cls, label, icon, inner) {
+    return '<div class="layer ' + cls + '">' + (label ? '<div class="l-label"><span class="l-ic">' + wrapIc(icon, 15) + '</span><span class="l-txt">' + label + "</span></div>" : "") + inner + "</div>";
+  }
+  function srcChip(t) {
+    return '<span class="chip-src ' + (t.verify ? "verify" : "") + '"><span class="dot"></span>' + esc(t.source) + "</span>";
+  }
+  function verifyBanner(note) { return ""; }
+
+  /* ---- practice (interview questions) ---- */
+  function filteredQuestions() {
+    var rid = state.role;
+    var list = D.questions.slice();
+    if (state.qFilter !== "all") list = list.filter(function (q) { return q.type === state.qFilter; });
+    // sort by role weight desc then priority
+    list.sort(function (a, b) {
+      var wa = (D.W[a.roleWeight[rid]] || 1) * 2 + (D.P[a.priority] || 1);
+      var wb = (D.W[b.roleWeight[rid]] || 1) * 2 + (D.P[b.priority] || 1);
+      return wb - wa;
+    });
+    return list;
+  }
+  function viewPractice() {
+    var list = filteredQuestions();
+    var filters = [["all", "All"]].concat(Object.keys(D.qTypes).map(function (k) { return [k, D.qTypes[k]]; }));
+    var bar = '<div class="filter-bar">' + filters.map(function (f) {
+      return '<button class="filter ' + (state.qFilter === f[0] ? "on" : "") + '" data-qfilter="' + f[0] + '">' + f[1] + "</button>";
+    }).join("") + "</div>";
+
+    if (!list.length) return '<div class="fade"><div class="screen-head"><h2>Interview Questions</h2></div>' + bar + emptyState("No questions for this filter", "Try another question type.") + "</div>";
+
+    if (state.qIndex >= list.length) state.qIndex = 0;
+    var q = list[state.qIndex];
+    var revealed = !!state._reveal;
+
+    var head = '<div class="screen-head"><h2>Interview Questions</h2><p class="sub">Think first. Then reveal how a strong candidate would answer.</p></div>';
+    var prog = '<div class="q-progress"><span>' + String(state.qIndex + 1).padStart(2, "0") + " / " + String(list.length).padStart(2, "0") + '</span><span class="pbar"><i style="width:' + ((state.qIndex + 1) / list.length * 100) + '%"></i></span><span>' + D.qTypes[q.type] + "</span></div>";
+
+    var card = '<div class="qcard fade"><div class="q-top"><div class="q-tags">' +
+      '<span class="pill pill-type">' + D.qTypes[q.type] + "</span>" +
+      '<span class="' + priClass(q.priority) + '">' + q.priority.toUpperCase() + "</span>" +
+      '<span class="pill" style="background:#EEF2F9;color:var(--text-2)">Role fit: ' + weightLabel(q.roleWeight[state.role]) + "</span>" +
+      "</div>" +
+      '<div class="q-text">' + esc(q.q) + "</div></div>";
+
+    if (!revealed) {
+      card += '<div class="think"><div class="th-t">Think about your answer</div><div class="th-s">Frame it in your head — out loud if you can — before you reveal.</div></div>' +
+        '<button class="btn btn-primary reveal-btn" data-reveal>' + wrapIc("eye", 18) + " Reveal how to answer</button>";
+    } else {
+      state.progress.questions[q.id] = true; save();
+      card += '<div class="answer reveal-anim">';
+  
+      card += '<div class="a-block how"><div class="a-label">' + wrapIc("eye", 13) + ' How to answer <span class="len-badge">' + q.length + " answer</span><span class=ln></span></div><p>" + esc(q.answer) + "</p></div>";
+      // remember flow
+      card += '<div class="remember"><div class="r-h">' + wrapIc("brain", 13) + " Remember</div><div class=\"r-flow\">" +
+        q.remember.map(function (n, i) { return (i ? '<span class="r-arrow">→</span>' : "") + '<span class="r-node">' + esc(n.replace(/^→\s*/, "")) + "</span>"; }).join("") + "</div></div>";
+      if (q.trap) card += mini("trap", "alert", "Common trap", "<p>" + esc(q.trap) + "</p>");
+      if (q.testing) card += mini("test", "target", "What the interviewer is testing", '<div class="tags">' + q.testing.map(function (x) { return '<span class="pill">' + esc(x) + "</span>"; }).join("") + "</div>");
+      if (q.tip) card += mini("tip", "bulb", "Interview tip", "<p>" + esc(q.tip) + "</p>");
+      card += "</div>";
+    }
+    card += "</div>";
+
+    var foot = '<div class="q-foot">' +
+      (state.qIndex > 0 ? '<button class="btn btn-ghost btn-inline" data-qprev>' + wrapIc("chevL", 16) + "</button>" : "") +
+      '<button class="btn ' + (revealed ? "btn-primary" : "btn-ghost") + ' grow" data-qnext>' + (state.qIndex < list.length - 1 ? "Next question" : "Back to start") + " " + wrapIc("arrow", 18) + "</button></div>";
+
+    return '<div class="fade">' + head + bar + prog + card + foot + "</div>";
+  }
+  function mini(cls, icon, title, inner) {
+    return '<div class="mini ' + cls + '"><div class="mi-h"><span class="ic">' + wrapIc(icon, 13) + "</span>" + title + "</div>" + inner + "</div>";
+  }
+
+  /* ---- simulate (scenarios + job simulations) ---- */
+  function viewSimulate() {
+    var tab = state.scnTab || "scenarios";
+    var toggle = '<div class="filter-bar" style="margin-bottom:14px">' +
+      '<button class="filter ' + (tab === "scenarios" ? "on" : "") + '" data-scntab="scenarios">Scenarios</button>' +
+      '<button class="filter ' + (tab === "sims" ? "on" : "") + '" data-scntab="sims">Job Simulations</button></div>';
+    var head = '<div class="screen-head"><h2>Simulate</h2><p class="sub">Step inside the job. Think about your move, then reveal the professional approach.</p></div>';
+
+    var body;
+    if (state._scnOpen) {
+      body = tab === "scenarios" ? renderScenario(state._scnOpen) : renderSim(state._scnOpen);
+    } else {
+      var items = tab === "scenarios" ? D.scenarios : D.simulations;
+      body = items.map(function (s) {
+        var r = D.roles.find(function (x) { return x.id === s.role; });
+        var done = tab === "scenarios" ? state.progress.scenarios[s.id] : state.progress.sims[s.id];
+        return '<button class="module" data-scn="' + s.id + '">' +
+          '<span class="m-no">' + wrapIc(tab === "scenarios" ? "target" : "play", 20) + "</span>" +
+          '<span class="m-body"><span class="m-t">' + esc(s.title || s.setup.slice(0, 42) + "…") + "</span>" +
+          '<span class="m-s">' + esc((s.setup).slice(0, 96)) + "…</span>" +
+          '<span class="m-meta"><span class="pill" style="background:#EEF2F9;color:var(--text-2)">' + r.tag + "</span>" +
+          (done ? '<span class="m-count" style="color:var(--success)">✓ done</span>' : "") + "</span></span>" +
+          '<span class="chev" style="align-self:center;color:var(--text-3)">' + wrapIc("chevR", 18) + "</span></button>";
+      }).join("");
+    }
+    return '<div class="fade">' + head + toggle + body + "</div>";
+  }
+  function renderScenario(id) {
+    var s = D.scenarios.find(function (x) { return x.id === id; });
+    var revealed = !!state._scnReveal;
+    var h = '<div class="topic-nav"><button class="back" data-scnback>' + wrapIc("chevL", 16) + " All scenarios</button></div>";
+    h += '<div class="scn-card"><div class="scn-setup"><span class="eyebrow">Scenario</span>' +
+      '<div class="s-text">' + esc(s.setup) + '</div><div class="s-q">' + esc(s.prompt) + "</div></div>";
+
+    h += '<div class="scn-body">';
+    if (!revealed) {
+      h += '<div class="think"><div class="th-t">Think it through</div><div class="th-s">What is your first move — and why?</div></div>' +
+        '<button class="btn btn-primary reveal-btn" style="margin:14px 0 0" data-scnreveal>' + wrapIc("eye", 18) + " Reveal how to approach</button>";
+    } else {
+      state.progress.scenarios[s.id] = true; save(); track("scenario_completed", { section_name: "scenario", item_title: s.prompt });
+      h += '<div class="reveal-anim"><div class="a-label" style="margin-bottom:6px">' + wrapIc("eye", 13) + " How to approach this<span class=ln></span></div>" +
+        '<div class="approach-steps">' + s.steps.map(function (st) { return '<div class="st"><span class="n"></span><p>' + esc(st) + "</p></div>"; }).join("") + "</div>";
+      h += '<div class="remember"><div class="r-h">' + wrapIc("brain", 13) + " Remember</div><div class=\"r-flow\">" +
+        s.remember.map(function (n, i) { return (i ? '<span class="r-arrow">→</span>' : "") + '<span class="r-node">' + esc(n.replace(/^→\s*/, "")) + "</span>"; }).join("") + "</div></div>";
+      if (s.considerations) h += mini("tip", "bulb", "What they're really looking for", "<p>" + esc(s.considerations) + "</p>");
+      h += "</div>";
+    }
+    h += "</div></div>";
+    return h;
+  }
+  function renderSim(id) {
+    var s = D.simulations.find(function (x) { return x.id === id; });
+    var revealed = !!state._scnReveal;
+    var h = '<div class="topic-nav"><button class="back" data-scnback>' + wrapIc("chevL", 16) + " All simulations</button></div>";
+    h += '<div class="scn-card"><div class="scn-setup"><span class="eyebrow">Job Simulation · ' + D.roles.find(function (r) { return r.id === s.role; }).name + '</span>' +
+      '<div class="s-text">' + esc(s.setup) + '</div><div class="s-q">' + esc(s.prompt) + "</div></div>";
+
+    h += '<div class="scn-body">';
+    if (!revealed) {
+      h += '<div class="think"><div class="th-t">What would you do first?</div><div class="th-s">Take a moment before revealing.</div></div>' +
+        '<button class="btn btn-primary reveal-btn" style="margin:14px 0 0" data-scnreveal>' + wrapIc("eye", 18) + " Reveal approach</button>";
+    } else {
+      state.progress.sims[s.id] = true; save(); track("simulation_completed", { section_name: "simulation", item_title: s.title || s.prompt });
+      h += '<div class="reveal-anim"><div class="sim-facts">' +
+        simFact("Applicable obligation", s.obligation) +
+        simFact("Practical action", s.action) +
+        simFactMistake(s.mistake) + "</div>";
+      // compliance control
+      h += control(s.control);
+      h += "</div>";
+    }
+    h += "</div></div>";
+    return h;
+  }
+  function simFact(k, v) { return '<div class="sim-fact"><div class="sf-k">' + k + '</div><div class="sf-v">' + esc(v) + "</div></div>"; }
+  function simFactMistake(v) { return '<div class="sim-fact mistake"><div class="sf-k">Common mistake</div><div class="sf-v">' + esc(v) + "</div></div>"; }
+  function control(c) {
+    var rows = [["Trigger", c.trigger], ["Obligation", c.obligation], ["Responsible", c.person], ["Action", c.action], ["Timeline", c.timeline], ["Approval", c.approval], ["Filing", c.filing], ["Evidence", c.evidence], ["Monitoring", c.monitoring]];
+    return '<div class="control"><div class="ctl-h">' + wrapIc("shield", 13) + " Compliance control</div><div class=\"ctl-flow\">" +
+      rows.map(function (r) { return '<div class="cf-row"><span class="cf-k">' + r[0] + '</span><span class="cf-v">' + esc(r[1]) + "</span></div>"; }).join("") + "</div></div>";
+  }
+
+  /* ---- rapid recall ---- */
+  function viewRecall() {
+    var head = '<div class="screen-head"><h2>Rapid Recall</h2><p class="sub">Short, sharp revision. Tap through definitions, thresholds and traps.</p></div>';
+    var modes = D.recall.modes.map(function (m) {
+      var done = state.progress.recall[m.id];
+      return '<button class="recall-mode" data-recall="' + m.id + '">' +
+        '<span class="rm-time"><span class="n">' + m.mins + '</span><span class="u">min</span></span>' +
+        '<span class="grow"><span class="rm-t">' + esc(m.label) + (done ? ' <span style="color:var(--success);font-size:12px">✓</span>' : "") + "</span>" +
+        '<span class="rm-s">' + esc(m.desc) + "</span></span>" +
+        '<span class="chev" style="color:var(--text-3)">' + wrapIc("chevR", 18) + "</span></button>";
+    }).join("");
+    return '<div class="fade"><div class="topic-nav"><button class="back" data-nav="dash">' + wrapIc("chevL", 16) + " Home</button></div>" + head + modes + "</div>";
+  }
+
+  function recallCards(modeId) {
+    var m = D.recall.modes.find(function (x) { return x.id === modeId; });
+    var cards = [];
+    m.includes.forEach(function (grp) {
+      if (grp === "definitions") D.recall.definitions.forEach(function (d) { cards.push({ cat: "Definition", front: d.term, back: d.def }); });
+      if (grp === "thresholds") D.recall.thresholds.forEach(function (d) { cards.push({ cat: "Threshold", front: d.k, back: d.v }); });
+      if (grp === "timelines") D.recall.timelines.forEach(function (d) { cards.push({ cat: "Timeline", front: d.k, back: d.v }); });
+      if (grp === "distinctions") D.recall.distinctions.forEach(function (d) { cards.push({ cat: "Distinction", front: d.a + "  vs  " + d.b, back: d.note }); });
+      if (grp === "traps") D.recall.traps.forEach(function (d) { cards.push({ cat: "Common trap", front: "Avoid this", back: d }); });
+    });
+    return cards;
+  }
+  function viewFlash() {
+    var m = D.recall.modes.find(function (x) { return x.id === state.recallMode; });
+    var cards = recallCards(state.recallMode);
+    if (state.flashIndex >= cards.length) {
+      state.progress.recall[state.recallMode] = true; save(); track("recall_completed", { section_name: state.recallMode });
+      return '<div class="fade" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;text-align:center">' +
+        '<div style="width:64px;height:64px;border-radius:18px;background:rgba(198,134,58,.2);color:var(--accent);display:grid;place-items:center;margin:0 auto 18px">' + wrapIc("check", 30) + "</div>" +
+        '<h2 style="color:#fff">' + esc(m.label) + " complete</h2>" +
+        '<p style="color:var(--on-dark-2);margin-top:8px">You reviewed ' + cards.length + " cards. That counts toward your recall score.</p>" +
+        '<div style="max-width:280px;margin:24px auto 0;width:100%"><button class="btn btn-primary" data-recall="' + state.recallMode + '">Run again</button>' +
+        '<button class="btn btn-ghost" style="margin-top:10px;color:#fff;border-color:rgba(255,255,255,.2)" data-recall-back>Other recall modes</button></div></div>';
+    }
+    var c = cards[state.flashIndex];
+    var flipped = state.flashFlipped;
+    return '<div class="fade flash-wrap">' +
+      '<div class="topic-nav"><button class="back" data-recall-back style="color:var(--on-dark-2)">' + wrapIc("chevL", 16) + " " + esc(m.label) + "</button></div>" +
+      '<div class="flash-count">' + (state.flashIndex + 1) + " / " + cards.length + "</div>" +
+      '<div class="flash" data-flip><div class="fc-cat"><span class="eyebrow">' + c.cat + "</span></div>" +
+      (flipped ? '<div class="fc-def reveal-anim">' + esc(c.back) + "</div>" : '<div class="fc-term">' + esc(c.front) + "</div>") +
+      '<div class="fc-hint">' + (flipped ? "" : "Tap to reveal") + "</div></div>" +
+      '<div class="flash-nav">' +
+      '<button class="btn btn-ghost btn-inline" style="color:#fff;border-color:rgba(255,255,255,.2)" data-flash-prev>' + wrapIc("chevL", 16) + "</button>" +
+      '<button class="btn btn-primary grow" data-flash-next>' + (state.flashIndex < cards.length - 1 ? "Next card" : "Finish") + " " + wrapIc("arrow", 18) + "</button></div></div>";
+  }
+
+  /* ---- assessment ---- */
+  function viewAssess() {
+    var items = D.assessment;
+    var i = state.assessIndex;
+    var q = items[i];
+    var answered = state.assessAnswers.hasOwnProperty(q.id);
+    var chosen = state.assessAnswers[q.id];
+
+    var head = '<div class="screen-head"><div class="topic-nav" style="margin-bottom:8px"><button class="back" data-nav="dash">' + wrapIc("chevL", 16) + " Home</button></div><h2>Assessment</h2></div>";
+    var prog = '<div class="q-progress"><span>' + String(i + 1).padStart(2, "0") + " / " + String(items.length).padStart(2, "0") + '</span><span class="pbar"><i style="width:' + ((i + 1) / items.length * 100) + '%"></i></span><span>' + (D.areas[q.area] || "") + "</span></div>";
+
+    var card = '<div class="qcard fade" style="padding:18px">' +
+      '<div class="q-tags"><span class="pill pill-type">' + ({ mcq: "Multiple choice", tf: "True / False", scenario: "Scenario" }[q.type]) + "</span></div>" +
+      '<div class="q-text" style="font-size:17px;margin-bottom:16px">' + esc(q.q) + "</div>";
+
+    var keys = ["A", "B", "C", "D"];
+    card += q.options.map(function (opt, idx) {
+      var cls = "assess-opt";
+      if (answered) {
+        if (idx === q.answer) cls += " correct";
+        else if (idx === chosen) cls += " wrong";
+      }
+      return '<button class="' + cls + '" ' + (answered ? "disabled" : "") + ' data-assess-opt="' + idx + '">' +
+        '<span class="a-key">' + keys[idx] + "</span><span>" + esc(opt) + "</span>" +
+        (answered && idx === q.answer ? '<span style="margin-left:auto;color:var(--success)">' + wrapIc("check", 16) + "</span>" : "") + "</button>";
+    }).join("");
+
+    if (answered) {
+      card += '<div class="assess-explain reveal-anim"><b>' + (chosen === q.answer ? "Correct. " : "Not quite. ") + "</b>" + esc(q.explain) + "</div>";
+      card += '<button class="btn btn-primary" data-assess-next>' + (i < items.length - 1 ? "Next question" : "See results") + " " + wrapIc("arrow", 18) + "</button>";
+    }
+    card += "</div>";
+    return '<div class="fade">' + head + prog + card + "</div>";
+  }
+  function viewAssessResult() {
+    var items = D.assessment;
+    var byArea = {}, correct = 0;
+    items.forEach(function (q) {
+      var a = state.assessAnswers[q.id];
+      var ok = a === q.answer; if (ok) correct++;
+      var area = D.areas[q.area] || "Other";
+      byArea[area] = byArea[area] || { c: 0, t: 0 };
+      byArea[area].t++; if (ok) byArea[area].c++;
+    });
+    state.progress.assessment = { score: correct, total: items.length, byArea: byArea }; save(); track("assessment_completed", { score: correct, metadata: { total: items.length, byArea: byArea } });
+
+    var strong = [], weak = [];
+    Object.keys(byArea).forEach(function (a) { var b = byArea[a]; (b.c / b.t >= 0.6 ? strong : weak).push(a); });
+
+    var pct = Math.round(correct / items.length * 100);
+    var areaRows = Object.keys(byArea).map(function (a) {
+      var b = byArea[a], p = Math.round(b.c / b.t * 100);
+      var col = p >= 60 ? "var(--success)" : p >= 34 ? "var(--accent)" : "var(--critical)";
+      return '<div class="area-row"><span class="ar-name">' + esc(a) + '</span><span class="ar-bar"><i style="width:' + p + "%;background:" + col + '"></i></span><span class="ar-pct">' + p + "%</span></div>";
+    }).join("");
+
+    var recArea = weak[0] || Object.keys(byArea).sort(function (x, y) { return byArea[x].c / byArea[x].t - byArea[y].c / byArea[y].t; })[0];
+
+    return '<div class="fade"><div class="screen-head"><h2>Your results</h2></div>' +
+      '<div class="card pad center"><div class="result-score"><span class="rs-num">' + correct + '</span><span class="rs-of"> / ' + items.length + "</span></div>" +
+      '<div class="muted tiny" style="margin-top:2px">' + pct + "% correct</div></div>" +
+      '<div class="section-title"><h3>By area</h3></div><div class="card pad">' + areaRows + "</div>" +
+      (strong.length ? '<div class="section-title"><h3>Strong areas</h3></div><div class="tag-list">' + strong.map(function (s) { return '<span class="tg strong">' + esc(s) + "</span>"; }).join("") + "</div>" : "") +
+      (weak.length ? '<div class="section-title"><h3>Needs revision</h3></div><div class="tag-list">' + weak.map(function (s) { return '<span class="tg weak">' + esc(s) + "</span>"; }).join("") + "</div>" : "") +
+      '<div class="mode-banner" style="margin-top:22px"><span class="mb-ic">' + wrapIc("bolt", 20) + '</span><div><div class="mb-t">Recommended next</div><div class="mb-s">Revise <b style="color:#fff">' + esc(recArea) + '</b> — then take a 15-Minute Revision before your interview.</div></div></div>' +
+      '<div class="q-foot"><button class="btn btn-ghost" data-action=\'{"view":"assess","assessIndex":0,"assessAnswers":{}}\'>Retake</button><button class="btn btn-primary grow" data-nav="progress">View readiness ' + wrapIc("arrow", 18) + "</button></div></div>";
+  }
+
+  /* ---- progress / readiness ---- */
+  function viewProgress() {
+    var rd = readiness();
+    var r = role();
+    var dims = rd.dims.map(function (d) {
+      return '<div class="dim-row"><span class="d-name">' + esc(d.label) + '</span><span class="d-track"><i style="width:' + d.v + '%"></i></span><span class="d-val">' + d.v + "</span></div>";
+    }).join("");
+    var caption = rd.overall >= 75 ? "You're in good shape. Keep sharp with rapid recall." :
+      rd.overall >= 55 ? "Solid base. Close the gaps below before the interview." :
+        "Early stage — work through the priority topics and questions.";
+
+    var h = '<div class="fade"><div class="screen-head"><h2>Readiness</h2><p class="sub">A preparation indicator — not a prediction of the outcome.</p></div>';
+    h += '<div class="card pad"><div class="big-dial"><div class="bd">' + dial(rd.overall, 160, 12, false) +
+      '<div class="val"><span class="num">' + rd.overall + '</span><span class="lab">' + r.tag + " · % ready</span></div></div>" +
+      '<div class="caption">' + caption + "</div></div></div>";
+
+    h += '<div class="section-title"><h3>Dimensions</h3></div><div class="card pad">' + dims + "</div>";
+
+    if (rd.strong.length) h += '<div class="section-title"><h3>Strong</h3></div><div class="tag-list">' + rd.strong.map(function (s) { return '<span class="tg strong">' + esc(s) + "</span>"; }).join("") + "</div>";
+    if (rd.weak.length) h += '<div class="section-title"><h3>Needs revision</h3></div><div class="tag-list">' + rd.weak.map(function (s) { return '<span class="tg weak">' + esc(s) + "</span>"; }).join("") + "</div>";
+
+    var wk = rd.dims.slice().sort(function (a, b) { return a.v - b.v; })[0];
+    var map = { reg: { view: "learn" }, recall: { view: "recall" }, practical: { view: "simulate", scnTab: "scenarios" }, interview: { view: "practice" }, role: { view: "learn" }, scenario: { view: "simulate", scnTab: "sims" } };
+    h += '<div class="mode-banner" style="margin-top:22px"><span class="mb-ic">' + wrapIc("target", 20) + '</span><div><div class="mb-t">Focus here next</div><div class="mb-s">' + esc(wk.label) + ' is your lowest dimension.</div></div></div>' +
+      '<button class="btn btn-primary" style="margin-top:12px" data-action=\'' + JSON.stringify(map[wk.id]) + '\'>Work on ' + esc(wk.label) + " " + wrapIc("arrow", 18) + '</button>';
+
+    h += '<div class="divider" style="margin-top:26px"></div><button class="btn btn-ghost" data-reset>' + wrapIc("refresh", 16) + " Reset my progress</button></div>";
+    return h;
+  }
+
+  function emptyState(t, s) {
+    return '<div class="empty"><div class="e-ic">' + wrapIc("book", 22) + "</div><div style=\"font-weight:600;color:var(--text)\">" + t + "</div><div class=tiny style=\"margin-top:4px\">" + s + "</div></div>";
+  }
+
+  /* ------------------------------------------------------------ TOAST */
+  var toastEl;
+  function toast(msg) {
+    if (!toastEl) { toastEl = document.createElement("div"); toastEl.className = "toast"; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.classList.remove("show"); }, 1600);
+  }
+
+  /* --------------------------------------------------------- BINDINGS */
+  function bind() {
+    // generic go
+    q("[data-go]").forEach(function (b) {
+      b.onclick = function () {
+        var g = b.getAttribute("data-go");
+        detectLoggedInUser();
+        if (g === "register") {
+          if (state.registered || state.candidateName || state.candidateEmail) {
+            state.registered = true;
+            state._obStep = 0;
+            save();
+            go(state.onboarded ? "dash" : "onboarding");
+          } else {
+            state._regError = "";
+            go("register");
+          }
+        }
+        else if (g === "start") { go("start"); }
+        else if (g === "resume") {
+          if (state.registered || state.candidateName || state.candidateEmail) {
+            state.registered = true;
+            save();
+            go(state.onboarded ? "dash" : "onboarding");
+          } else {
+            go("resume");
+          }
+        }
+        else if (g === "onboarding") { state._obStep = 0; go("onboarding"); }
+      };
+    });
+
+    var rb = el0("[data-register]");
+    if (rb) rb.onclick = function () {
+      var _btn = this;
+      var name = (el0("#regName") || {}).value || "";
+      var mobile = (el0("#regMobile") || {}).value || "";
+      var email = (el0("#regEmail") || {}).value || "";
+      if (!name.trim() || !mobile.trim() || !email.trim()) { state._regError = "Please enter your name, mobile number and email."; render(); return; }
+      if (_btn) { _btn.disabled = true; _btn.textContent = "Creating your profile…"; }
+      apiCall("register", { name:name.trim(), mobile:mobile.trim(), email:email.trim() }).then(function (res) {
+        if (!res.ok) throw new Error(res.message || "Registration failed");
+        state.registered = true; state.candidateId = res.candidate_id; state.candidateCode = res.candidate_code; state.accessToken = res.access_token;
+        state.candidateName = name.trim(); state.candidateMobile = mobile.trim(); state.candidateEmail = email.trim();
+        state._regError = ""; state._obStep = 0; save(); track("registration_completed"); go("onboarding");
+      }).catch(function (err) {
+        state._regError = err.message || "Unable to register. Please try again.";
+        render();
+      });
+    };
+
+    var lb = el0("[data-login]");
+    if (lb) lb.onclick = function () {
+      var _btn = this;
+      var email = (el0("#loginEmail") || {}).value || "";
+      var mobile = (el0("#loginMobile") || {}).value || "";
+      if (!email.trim() || !mobile.trim()) { state._loginError = "Please enter the email and mobile number used for registration."; render(); return; }
+      if (_btn) { _btn.disabled = true; _btn.textContent = "Finding your profile…"; }
+      apiCall("login", { email: email.trim(), mobile: mobile.trim() }).then(function(res){
+        if(!res.ok) throw new Error(res.message || "Details not found");
+        state.registered=true; state.onboarded=true; state.candidateId=res.candidate_id; state.candidateCode=res.candidate_code; state.accessToken=res.access_token;
+        state.candidateName=res.name; state.candidateMobile=res.mobile; state.candidateEmail=res.email; state.role=res.role; state.experience=res.experience; state.timeline=res.interview_timing;
+        state._loginError=""; save(); track("resume_login"); toast("Welcome back, " + res.name.split(" ")[0]); go("dash");
+      }).catch(function(err){ state._loginError=err.message || "Unable to find your profile."; render(); });
+    };
+
+    var cp = el0("[data-change-profile]");
+    if (cp) cp.onclick = function () {
+      state.progress = JSON.parse(JSON.stringify(defaultState.progress));
+      state.assessAnswers = {}; state.assessIndex = 0; state._obStep = 0; state.onboarded = false;
+      save(); track("profile_restart"); go("onboarding");
+    };
+
+    // onboarding option select
+    q("[data-opt-field]").forEach(function (b) {
+      b.onclick = function () {
+        var f = b.getAttribute("data-opt-field"), val = b.getAttribute("data-opt-val");
+        state[f] = val; save(); if (f === "role" || f === "experience" || f === "timeline") syncProfile(); render();
+      };
+    });
+    var next = el0("[data-ob-next]");
+    if (next) next.onclick = function () {
+      if (state._obStep < obSteps.length - 1) { state._obStep++; render(); }
+      else { state.onboarded = true; save(); syncProfile(); track("profile_completed", { metadata: { role: state.role, experience: state.experience, interview_timing: state.timeline } }); toast("Your prep is ready"); go("dash"); }
+    };
+    var back = el0("[data-ob-back]");
+    if (back) back.onclick = function () { if (state._obStep > 0) { state._obStep--; render(); } };
+
+    // bottom nav
+    q("[data-nav]").forEach(function (b) {
+      b.onclick = function () {
+        var t = b.getAttribute("data-nav");
+        if (t === "learn") state.moduleId = null;
+        if (t === "simulate") state._scnOpen = null;
+        if (t === "m1") { state.moduleId = "m1"; go("learn"); return; }
+        // reset per-view transient state
+        if (t === "practice") state._reveal = false;
+        if (t === "simulate") state._scnReveal = false;
+        go(t);
+      };
+    });
+
+    // generic action (json params)
+    q("[data-action]").forEach(function (b) {
+      b.onclick = function () {
+        var p = JSON.parse(b.getAttribute("data-action"));
+        if (p.view === "flash") { state.flashFlipped = false; }
+        if (p.view === "practice") state._reveal = false;
+        if (p.recallMode) state.recallMode = p.recallMode;
+        state._scnOpen = null;
+        go(p.view, p);
+      };
+    });
+
+    // modules & topics
+    q("[data-module]").forEach(function (b) {
+      b.onclick = function () {
+        var isUnlocked = b.getAttribute("data-unlocked") === "true";
+        if (!isUnlocked) {
+          showJobUpgradeModal();
+        } else {
+          state.moduleId = b.getAttribute("data-module");
+          go("learn");
+        }
+      };
+    });
+    q("[data-topic]").forEach(function (b) {
+      b.onclick = function () {
+        var tpId = b.getAttribute("data-topic");
+        var m = moduleForTopic(tpId);
+        var idx = D.modules.findIndex(function(x) { return x.id === m.id; });
+        var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+        var userObj = JSON.parse(localStorage.getItem('regmate_user') || '{}');
+        var isSubscribed = userObj.membershipStatus === 'active' || subs.indexOf('job_ready') > -1 || subs.indexOf('full_access') > -1;
+        if (idx >= 2 && !isSubscribed) {
+          showJobUpgradeModal();
+        } else {
+          go("topic", { topicId: tpId });
+        }
+      };
+    });
+    q("[data-back-module]").forEach(function (b) { b.onclick = function () { state.moduleId = b.getAttribute("data-back-module"); go("learn"); }; });
+    q("[data-topic-jump]").forEach(function (b) {
+      b.onclick = function () {
+        var m = b.getAttribute("data-topic-jump");
+        if (m) {
+          var idx = D.modules.findIndex(function(x) { return x.id === m; });
+          var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+          var userObj = JSON.parse(localStorage.getItem('regmate_user') || '{}');
+          var isSubscribed = userObj.membershipStatus === 'active' || subs.indexOf('job_ready') > -1 || subs.indexOf('full_access') > -1;
+          if (idx >= 2 && !isSubscribed) {
+            showJobUpgradeModal();
+          } else {
+            state.moduleId = m; go("learn");
+          }
+        }
+      };
+    });
+
+  function showJobUpgradeModal() {
+    var modalHtml = '<div id="job-upgrade-modal" style="position:fixed;inset:0;z-index:999;background:rgba(15,23,42,0.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;">' +
+      '<div style="background:#fff;border-radius:24px;max-width:620px;width:100%;padding:28px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);position:relative;">' +
+      '<button id="close-job-modal" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#64748B;">✕</button>' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+      '<div style="width:40px;height:40px;border-radius:12px;background:#FEF3C7;color:#D97706;display:grid;place-items:center;font-size:20px;">🔒</div>' +
+      '<div><div style="font-size:11px;font-weight:800;color:#D97706;text-transform:uppercase;letter-spacing:0.05em">Free Preview Limit Reached (2 Modules Free)</div>' +
+      '<h2 style="font-size:20px;font-weight:800;color:#0F172A;margin:0">Unlock All JobReady Modules</h2></div></div>' +
+      '<p style="font-size:13px;color:#475569;margin-bottom:20px">Choose an option below to unlock all 7 Fund Management & CMI modules immediately.</p>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">' +
+      '<div style="background:#F8FAFC;border:2px solid #E2E8F0;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;">' +
+      '<div><div style="font-size:10px;font-weight:800;color:#475569;text-transform:uppercase">Option 1</div><h3 style="font-size:16px;font-weight:800;color:#0F172A;margin:4px 0">FME Interview Ready Pass</h3>' +
+      '<p style="font-size:11px;color:#64748B">Unlock all Job & Interview Ready modules.</p>' +
+      '<div style="font-size:24px;font-weight:800;color:#0F172A;margin:12px 0">₹499</div></div>' +
+      '<button id="buy-job-499" style="width:100%;padding:10px;background:#0F172A;color:#fff;border-radius:10px;font-weight:700;font-size:12px;border:none;cursor:pointer">Buy Pass — ₹499</button></div>' +
+      '<div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;position:relative;">' +
+      '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#F59E0B;color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase">Best Value</div>' +
+      '<div><div style="font-size:10px;font-weight:800;color:#B45309;text-transform:uppercase">Option 2</div><h3 style="font-size:16px;font-weight:800;color:#0F172A;margin:4px 0">RegMate All-Access Pass</h3>' +
+      '<p style="font-size:11px;color:#64748B">Full access to site: Jobs, Regulations, Quizzes.</p>' +
+      '<div style="font-size:24px;font-weight:800;color:#0F172A;margin:12px 0">₹1,999<span style="font-size:11px;color:#64748B">/yr</span></div></div>' +
+      '<button id="buy-job-1999" style="width:100%;padding:10px;background:#D97706;color:#fff;border-radius:10px;font-weight:700;font-size:12px;border:none;cursor:pointer">Get Full Access — ₹1,999/yr</button></div>' +
+      '</div></div></div>';
+
+    var existing = document.getElementById("job-upgrade-modal");
+    if (existing) existing.remove();
+
+    var div = document.createElement("div");
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div.firstElementChild);
+
+    document.getElementById("close-job-modal").onclick = function() {
+      var m = document.getElementById("job-upgrade-modal");
+      if (m) m.remove();
+    };
+
+    var grantPass = function(passId) {
+      var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+      if (subs.indexOf(passId) === -1) subs.push(passId);
+      localStorage.setItem('regmate_subscriptions', JSON.stringify(subs));
+
+      var u = JSON.parse(localStorage.getItem('regmate_user') || '{}');
+      if (passId === 'full_access') u.membershipStatus = 'active';
+      localStorage.setItem('regmate_user', JSON.stringify(u));
+
+      var m = document.getElementById("job-upgrade-modal");
+      if (m) m.remove();
+
+      render();
+    };
+
+    document.getElementById("buy-job-499").onclick = function() { grantPass('job_ready'); };
+    document.getElementById("buy-job-1999").onclick = function() { grantPass('full_access'); };
+  }
+
+    // practice
+    q("[data-qfilter]").forEach(function (b) { b.onclick = function () { state.qFilter = b.getAttribute("data-qfilter"); state.qIndex = 0; state._reveal = false; render(); }; });
+    var rev = el0("[data-reveal]"); if (rev) rev.onclick = function () { state._reveal = true; render(); };
+    var qn = el0("[data-qnext]"); if (qn) qn.onclick = function () {
+      var list = filteredQuestions();
+      state.qIndex = state.qIndex < list.length - 1 ? state.qIndex + 1 : 0;
+      state._reveal = false; render();
+    };
+    var qp = el0("[data-qprev]"); if (qp) qp.onclick = function () { if (state.qIndex > 0) state.qIndex--; state._reveal = false; render(); };
+
+    // simulate
+    q("[data-scntab]").forEach(function (b) { b.onclick = function () { state.scnTab = b.getAttribute("data-scntab"); state._scnOpen = null; state._scnReveal = false; render(); }; });
+    q("[data-scn]").forEach(function (b) { b.onclick = function () { state._scnOpen = b.getAttribute("data-scn"); state._scnReveal = false; render(); }; });
+    var sb = el0("[data-scnback]"); if (sb) sb.onclick = function () { state._scnOpen = null; state._scnReveal = false; render(); };
+    var sr = el0("[data-scnreveal]"); if (sr) sr.onclick = function () { state._scnReveal = true; render(); };
+
+    // recall
+    q("[data-recall]").forEach(function (b) { b.onclick = function () { state.recallMode = b.getAttribute("data-recall"); state.flashIndex = 0; state.flashFlipped = false; go("flash"); }; });
+    var rb = el0("[data-recall-back]"); if (rb) rb.onclick = function () { go("recall"); };
+    var flip = el0("[data-flip]"); if (flip) flip.onclick = function () { state.flashFlipped = !state.flashFlipped; render(); };
+    var fn = el0("[data-flash-next]"); if (fn) fn.onclick = function () { state.flashIndex++; state.flashFlipped = false; render(); };
+    var fp = el0("[data-flash-prev]"); if (fp) fp.onclick = function () { if (state.flashIndex > 0) state.flashIndex--; state.flashFlipped = false; render(); };
+
+    // assessment
+    q("[data-assess-opt]").forEach(function (b) {
+      b.onclick = function () {
+        var items = D.assessment, qq = items[state.assessIndex];
+        if (state.assessAnswers.hasOwnProperty(qq.id)) return;
+        state.assessAnswers[qq.id] = parseInt(b.getAttribute("data-assess-opt"), 10);
+        save(); track("assessment_answered", { section_name: qq.area, item_title: qq.q, item_index: state.assessIndex }); render();
+      };
+    });
+    var an = el0("[data-assess-next]"); if (an) an.onclick = function () {
+      if (state.assessIndex < D.assessment.length - 1) { state.assessIndex++; render(); }
+      else go("assessResult");
+    };
+
+    // reset
+    var rs = el0("[data-reset]"); if (rs) rs.onclick = function () {
+      if (confirm("Reset all progress? Your role and profile stay.")) {
+        state.progress = JSON.parse(JSON.stringify(defaultState.progress));
+        state.assessAnswers = {}; state.assessIndex = 0; save(); toast("Progress reset"); go("progress");
+      }
+    };
+  }
+  function q(sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); }
+  function el0(sel) { return root.querySelector(sel); }
+
+  /* ------------------------------------------------------------- INIT */
+  document.addEventListener("DOMContentLoaded", function () {
+    root = document.getElementById("root");
+    if (state.view === "boot") { validateSession(); }
+    else { render(); }
+
+    window.addEventListener('mousemove', function(e) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'IFRAME_MOUSE_MOVE',
+          clientX: e.clientX,
+          clientY: e.clientY
+        }, '*');
+      }
+    }, { passive: true });
+  });
+})();
+</script>
+</body>
+</html>

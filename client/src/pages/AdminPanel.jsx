@@ -153,7 +153,7 @@ export default function AdminPanel() {
               { id: 'users', label: 'Users Directory', icon: Users, badge: users.length },
               { id: 'knowledge', label: 'Knowledge Hub', icon: BookOpen },
               { id: 'membership', label: 'Membership Tiers', icon: Crown },
-              { id: 'jobs', label: 'Jobs Activity', icon: Briefcase },
+              { id: 'jobs', label: 'FME-InterviewPro Activity', icon: Briefcase },
               { id: 'search', label: 'Search & Insights', icon: Search }
             ].map(item => {
               const Icon = item.icon;
@@ -214,7 +214,7 @@ export default function AdminPanel() {
               {activeTab === 'users' && 'Registered Users Management'}
               {activeTab === 'knowledge' && 'Knowledge Hub & Reading Metrics'}
               {activeTab === 'membership' && 'Membership & Subscription Analytics'}
-              {activeTab === 'jobs' && 'Job Product & Activity Metrics'}
+              {activeTab === 'jobs' && 'FME-InterviewPro Product & Activity Metrics'}
               {activeTab === 'search' && 'Search & Content Performance Insights'}
             </h1>
           </div>
