@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   X, CheckCircle2, Circle, BookOpen, HelpCircle, ArrowLeft, ArrowRight,
-  ShieldAlert, Sparkles, Award, Loader2, AlertCircle, ChevronDown,
+  ShieldAlert, Sparkles, Award, Loader2, AlertCircle, ChevronDown, ChevronLeft,
   ChevronRight, Zap, Target, Play, Brain, Shield, Clock, RotateCcw,
   Check, Eye, Filter, UserCheck, Flame, Scale, FileText, BarChart3,
-  ExternalLink, Layers, Lock
+  ExternalLink, Layers, Lock, Crown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import LockOverlay from './LockOverlay';
@@ -204,8 +204,12 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  // Tab navigation: 'home' | 'modules' | 'practice' | 'scenarios' | 'recall' | 'assess'
-  const [activeTab, setActiveTab] = useState('home');
+  // Tab navigation: default to 'modules' (Syllabus/Chapter List overview first!)
+  const [activeTab, setActiveTab] = useState('modules');
+  const [regLearnStep, setRegLearnStep] = useState('understand');
+  const [topicIndex, setTopicIndex] = useState(0);
+  const [practiceSelectedOption, setPracticeSelectedOption] = useState(null);
+  const [chaptersPage, setChaptersPage] = useState(0);
 
   // Role selector (for FME: 'co', 'po', 'lc')
   const [selectedRole, setSelectedRole] = useState(() => {
@@ -219,6 +223,16 @@ function RegulatoryMasterModalInner({ course, onClose }) {
   // FME Module / Topic drilldown state
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
+
+  // Reset view to Chapter List overview whenever modal opens or course changes
+  useEffect(() => {
+    setActiveTab('modules');
+    setSelectedTopicId(null);
+    setSelectedModuleId(null);
+    setTopicIndex(0);
+    setPracticeSelectedOption(null);
+    setChaptersPage(0);
+  }, [course]);
 
   // Practice Questions state
   const [questionFilter, setQuestionFilter] = useState('all');
@@ -429,283 +443,540 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     }
   }, [isFME, completedSet, assessCompleted, assessAnswers, cmiItems]);
 
+  // Build RegLearn topics list for active course
+  const topicsList = useMemo(() => {
+    if (isFME) {
+      return Object.values(fmeContent.topics).map((t) => ({
+        id: t.id,
+        title: t.title,
+        sourceRef: t.source || 'IFSCA (Fund Management) Regulations, 2025',
+        understandBody: t.explanation,
+        understandCalloutTitle: 'WHY THIS MATTERS',
+        understandCalloutBody: t.why,
+        walkthroughBody: t.practicalPoint || t.example || 'Review statutory thresholds and filing requirements prior to scheme launch.',
+        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
+        walkthroughCalloutBody: t.example || t.practicalPoint || 'Category selection determines permitted activities, AUM limits, and KMP appointments.',
+        practiceQuestion: fmeContent.quickChecks[t.id]?.[0]?.q || `What is the core requirement under ${t.title}?`,
+        practiceOptions: fmeContent.quickChecks[t.id]?.[0]?.options || ['Option A: Strict compliance per scheme', 'Option B: Umbrella fund level exemption', 'Option C: Voluntary guideline', 'Option D: Exempt for accredited investors'],
+        practiceAnswer: fmeContent.quickChecks[t.id]?.[0]?.answer ?? 0,
+        practiceExplain: fmeContent.quickChecks[t.id]?.[0]?.explain || 'Statutory compliance is enforced scheme-by-scheme.',
+        rememberBody: Array.isArray(t.takeaway) ? t.takeaway.join('; ') + '.' : (t.explanation || 'Key compliance takeaway.'),
+        rememberComplianceTip: t.practicalPoint || 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+      }));
+    }
+
+    if (cmiItems && cmiItems.length > 0) {
+      return cmiItems.map((item, idx) => ({
+        id: item.uid || item._id || `cmi_${idx}`,
+        title: item.title || item.question || 'Statutory Mandate',
+        sourceRef: item.provision ? `Reg. ${item.provision} - ${course?.title || 'SEBI AIF'}` : `Reg. 10 - ${course?.title || 'SEBI (AIF) Regulations, 2012 (consolidated)'}`,
+        understandBody: item.explanation || item.summary || 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
+        understandCalloutTitle: 'KEY STATUTORY REQUIREMENT',
+        understandCalloutBody: item.statutoryText || 'All fund managers must verify compliance prior to issuing unit certificates or onboarding investors.',
+        walkthroughBody: item.practicalNote || 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
+        walkthroughCalloutBody: 'Ensure all scheme documents and PPM disclosures align with SEBI/IFSCA filings.',
+        practiceQuestion: item.question || `What is the statutory requirement under ${item.provision || 'Reg. 10'}?`,
+        practiceOptions: [item.option_A, item.option_B, item.option_C, item.option_D].filter(Boolean).length > 0
+          ? [item.option_A, item.option_B, item.option_C, item.option_D].filter(Boolean)
+          : ['Rs. 20 Crore', 'Rs. 5 Crore', 'Rs. 50 Crore', 'Rs. 10 Crore'],
+        practiceAnswer: 0,
+        practiceExplain: item.explanation || 'Statutory rules apply per scheme.',
+        rememberBody: item.summary || 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
+        rememberComplianceTip: 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+      }));
+    }
+
+    // Default matching screenshot for SEBI AIF / CMI
+    return [
+      {
+        id: 'sebi_aif_ch1',
+        title: 'One-minute summary',
+        sourceRef: 'Reg. 10 - SEBI (AIF) Regulations, 2012 (consolidated)',
+        understandBody: 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
+        understandCalloutTitle: 'WHY THIS MATTERS',
+        understandCalloutBody: 'The four gates determine whether an AIF scheme can be launched and registered with SEBI.',
+        walkthroughBody: 'In practice, compliance officers evaluate the four gates scheme by scheme. Corpus and investor limits apply independently to each scheme under the AIF umbrella.',
+        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
+        walkthroughCalloutBody: 'Do not aggregate investor limits across different schemes of the same AIF.',
+        practiceQuestion: 'What is the minimum corpus required for a standard SEBI AIF scheme (non-social impact fund)?',
+        practiceOptions: ['Rs. 20 Crore', 'Rs. 5 Crore', 'Rs. 50 Crore', 'Rs. 10 Crore'],
+        practiceAnswer: 0,
+        practiceExplain: 'Reg. 10 specifies minimum corpus of 20 crore per scheme (5 crore for social impact funds).',
+        rememberBody: 'Four gates per scheme: corpus twenty crore (five crore for a social impact fund); minimum investment one crore, twenty-five lakh for employees and directors, and disapplied entirely for an accredited investor; not more than one thousand investors; and units issued in dematerialised form.',
+        rememberComplianceTip: 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.',
+      },
+      {
+        id: 'sebi_aif_ch2',
+        title: 'Placement Memorandum & Scheme Validity',
+        sourceRef: 'Reg. 11 & 12 - SEBI (AIF) Regulations, 2012',
+        understandBody: 'An AIF may raise funds from any investor whether Indian, foreign or non-resident by way of issue of units through private placement. Every scheme issued by an AIF must file a Placement Memorandum with SEBI.',
+        understandCalloutTitle: 'PPM MANDATE',
+        understandCalloutBody: 'PPM must set out investment strategy, target investors, fee structure, and risk disclosures.',
+        walkthroughBody: 'The PPM is filed with SEBI along with merchant banker certification 30 days prior to launch. First close must be declared within 12 months.',
+        walkthroughCalloutTitle: 'PRACTITIONER NOTE',
+        walkthroughCalloutBody: 'Failing to declare first close within 12 months requires re-filing or fee top-up.',
+        practiceQuestion: 'Within how many months must an AIF declare its first close after SEBI PPM filing?',
+        practiceOptions: ['12 Months', '6 Months', '24 Months', '3 Months'],
+        practiceAnswer: 0,
+        practiceExplain: 'SEBI circulars require first close within 12 months of PPM filing confirmation.',
+      }
+    ];
+  }, [isFME, cmiItems, course]);
+
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col sm:items-center sm:justify-center p-0 sm:p-4 overflow-hidden animate-fade-in"
+      className="fixed inset-0 z-[100] bg-paper overflow-y-auto overscroll-y-contain scroll-smooth flex flex-col min-h-screen animate-fade-in"
       style={{
         fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
         color: 'var(--ink)',
-        background: 'rgba(7, 51, 33, 0.85)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        WebkitOverflowScrolling: 'touch',
       }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onMouseDown={(e) => e.stopPropagation()}
     >
-      {/* App Shell Container — full-screen on mobile, elegant dialog on desktop */}
-      <div
-        className="w-full h-full sm:h-[90vh] sm:max-h-[920px] max-w-5xl bg-paper sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative sm:border border-line"
-        style={{
-          height: window.innerWidth < 640 ? '100dvh' : '90vh',
-          maxHeight: window.innerWidth < 640 ? '100dvh' : '920px',
-        }}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-
-        {/* ─── Topbar (Codex Design System) ─── */}
-        <header className="bg-forest-deep text-white px-3 sm:px-6 py-3 flex items-center justify-between border-b border-forest/40 flex-shrink-0 z-20 gap-2" style={{ color: '#ffffff' }}>
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-forest text-mint flex items-center justify-center font-serif font-bold text-xs sm:text-sm shadow-xs flex-shrink-0 border border-leaf/30" style={{ color: 'var(--mint)' }}>
-              §
-            </div>
-            <div className="min-w-0 flex items-center gap-1.5 truncate">
-              <span className="font-serif font-bold text-xs sm:text-base text-white tracking-tight truncate" style={{ color: '#ffffff' }}>
-                Regulatory Master
-              </span>
-              <span className="px-1.5 sm:px-2 py-0.5 bg-white/15 text-white text-[9px] sm:text-[10px] font-mono font-semibold rounded-full uppercase tracking-wider border border-white/25 flex-shrink-0" style={{ color: '#ffffff' }}>
-                {course?.code || 'IFSCA-FME'}
-              </span>
-            </div>
+      {/* ─── Unified Top Header Controller (All Navigation Options At Top) ─── */}
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 sm:px-8 py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-2xs flex-shrink-0">
+        {/* Left: Logo, Title & Chapter Back Button */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 font-bold text-lg text-[#073321]">
+            <span className="text-[#073321] font-serif text-xl sm:text-2xl font-extrabold tracking-tight">RegLearn</span>
+            <span className="text-slate-300 font-light">•</span>
+            <span className="text-[#073321] font-bold text-sm sm:text-base">{course?.title || 'SEBI AIF'}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {isFME && (
-              <button
-                onClick={() => setShowRoleModal(true)}
-                className="cursor-target px-2.5 sm:px-3 py-1.5 bg-forest hover:bg-forest-deep text-white border border-leaf/40 rounded-xl text-xs flex items-center gap-1.5 transition-all font-medium min-h-[34px] sm:min-h-[38px]"
-                style={{ color: '#ffffff' }}
-              >
-                <UserCheck className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#FFE6A7' }} />
-                <span className="hidden sm:inline text-xs font-semibold" style={{ color: '#ffffff' }}>{currentRole.name}</span>
-                <span className="sm:hidden font-mono text-[11px] font-bold" style={{ color: '#ffffff' }}>{currentRole.tag}</span>
-                <ChevronDown className="w-3 h-3 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.7)' }} />
-              </button>
-            )}
-
+          {(selectedTopicId || activeTab === 'home') && (
             <button
-              onClick={onClose}
-              aria-label="Close"
-              className="cursor-target p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-white transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-              style={{ color: '#ffffff' }}
+              onClick={() => {
+                setSelectedTopicId(null);
+                setActiveTab('modules');
+              }}
+              className="px-2.5 py-1 bg-slate-100 border border-slate-300 rounded-lg text-xs font-bold text-[#073321] hover:bg-slate-200 flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
             >
-              <X className="w-5 h-5" />
+              ← Chapters List
             </button>
-          </div>
-        </header>
-
-        {/* ─── Track / Role Sub-Bar ─── */}
-        <div className="bg-forest text-white px-4 sm:px-6 py-2 flex items-center justify-between text-xs border-b border-forest-deep flex-shrink-0" style={{ color: '#ffffff' }}>
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0 truncate">
-            <span className="text-[11px] font-mono uppercase tracking-wider font-bold" style={{ color: '#FFE6A7' }}>
-              {isFME ? `Focus: ${currentRole.tag} Role` : 'Mastery Track'}
-            </span>
-            <span style={{ color: 'rgba(255,255,255,0.5)' }}>•</span>
-            <span className="text-xs truncate font-medium" style={{ color: '#ffffff' }}>
-              {isFME ? currentRole.line : course?.title}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 flex-shrink-0 font-mono text-[11px]">
-            <span style={{ color: 'rgba(255,255,255,0.85)' }}>Readiness</span>
-            <span className="font-bold" style={{ color: '#FFE6A7' }}>{readinessPct}%</span>
-          </div>
+          )}
         </div>
 
-        {/* ─── Main Content Body (with safe bottom padding) ─── */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-5 pb-24 sm:pb-28">
+        {/* Center: Controller Navigation Tabs */}
+        <div className="flex items-center justify-center gap-1 self-center md:self-auto">
+          <button
+            onClick={() => {
+              setSelectedTopicId(null);
+              setActiveTab('modules');
+            }}
+            className="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer bg-[#073321] text-white shadow-2xs hover:bg-[#052819] flex items-center gap-2"
+          >
+            <BookOpen className="w-4 h-4 text-emerald-300" />
+            <span>Chapter Modules</span>
+          </button>
+        </div>
 
-          {/* ================================================================= */}
-          {/* TAB: HOME / DASHBOARD                                            */}
-          {/* ================================================================= */}
-          {activeTab === 'home' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+        {/* Right: Chapter Select, XP & Exit Learning Button */}
+        <div className="flex items-center justify-end gap-2.5 flex-shrink-0">
+          {(selectedTopicId || activeTab === 'home') && (
+            <select
+              value={topicIndex}
+              onChange={(e) => {
+                const idx = Number(e.target.value);
+                setTopicIndex(idx);
+                const selectedT = topicsList[idx];
+                if (selectedT) setSelectedTopicId(selectedT.id);
+                setActiveTab('home');
+                setRegLearnStep('understand');
+                setPracticeSelectedOption(null);
+              }}
+              className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-[#073321] focus:outline-none focus:border-forest truncate max-w-[130px] sm:max-w-[170px]"
+            >
+              {topicsList.map((t, idx) => (
+                <option key={t.id || idx} value={idx}>
+                  Ch {idx + 1}: {t.title} {completedSet.has(t.id) ? '✓' : ''}
+                </option>
+              ))}
+            </select>
+          )}
 
-              {/* Hero Banner with Readiness Dial */}
-              <div
-                className="rounded-3xl p-5 sm:p-7 card-shadow relative overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 60%, var(--forest-deep) 100%)', border: '1px solid rgba(18,138,84,0.3)', color: '#ffffff' }}
-              >
-                <div className="flex justify-between items-start gap-4">
-                  <div>
-                    <span className="text-[10px] font-mono text-gold-soft uppercase tracking-widest block mb-1 font-bold">
-                      Target Role · {isFME ? currentRole.tag : 'Practitioner'}
-                    </span>
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight">
-                      {isFME ? currentRole.name : course?.title}
-                    </h1>
-                    <p className="text-xs sm:text-sm text-mint/85 mt-2 max-w-xl leading-relaxed">
-                      {isFME ? 'Role-weighted, statutory-backed interview preparation with real case judgements.' : course?.description}
+          {/* XP Badge */}
+          <div className="bg-[#073321] text-white px-2.5 py-1 rounded-full text-xs font-mono font-bold">
+            {completedSet.size * 25} XP
+          </div>
+
+          {/* Readiness Percentage Badge */}
+          <div className="w-8 h-8 rounded-full border-2 border-amber-600/80 text-amber-700 font-mono font-bold text-xs flex items-center justify-center bg-amber-50">
+            {readinessPct}%
+          </div>
+
+          {/* Exit Learning Button (Placed in Top Controller) */}
+          <button
+            onClick={onClose}
+            aria-label="Exit Learning"
+            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <span>Exit Learning</span>
+            <X className="w-4 h-4 text-rose-600" />
+          </button>
+        </div>
+      </header>
+
+      {/* ─── Main Content Body (Full Scrollable Area) ─── */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-8 space-y-6 pb-24">
+
+        {/* ================================================================= */}
+        {/* TAB: HOME / REGLEARN INTERACTIVE CARD VIEW                       */}
+        {/* ================================================================= */}
+        {activeTab === 'home' && (() => {
+          const currentTopic = topicsList[topicIndex] || topicsList[0];
+          const stepNumber = regLearnStep === 'understand' ? 1 : regLearnStep === 'walkthrough' ? 2 : regLearnStep === 'remember' ? 3 : 4;
+          const totalSteps = 4;
+
+          const handleNextStep = () => {
+            if (regLearnStep === 'understand') {
+              setRegLearnStep('walkthrough');
+            } else if (regLearnStep === 'walkthrough') {
+              setRegLearnStep('remember');
+            } else if (regLearnStep === 'remember') {
+              setRegLearnStep('practice');
+              setPracticeSelectedOption(null);
+            } else if (regLearnStep === 'practice') {
+              handleToggleComplete(currentTopic.id);
+              setPracticeSelectedOption(null);
+              if (topicIndex < topicsList.length - 1) {
+                const nextIdx = topicIndex + 1;
+                setTopicIndex(nextIdx);
+                const nextT = topicsList[nextIdx];
+                if (nextT) setSelectedTopicId(nextT.id);
+                setRegLearnStep('understand');
+              } else {
+                setSelectedTopicId(null);
+                setActiveTab('modules');
+              }
+            }
+          };
+
+          return (
+            <div className="py-6 sm:py-10 px-4 max-w-3xl mx-auto space-y-6 animate-fade-in">
+              {/* ─── The Main RegLearn Card ─── */}
+              <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm space-y-6 text-left relative">
+
+                {/* ─── 4 Stepper Tabs (Ordered: Understand -> Walkthrough -> Remember -> Practice) ─── */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl mx-auto">
+                  {[
+                    { id: 'understand', label: 'Understand' },
+                    { id: 'walkthrough', label: 'Walkthrough' },
+                    { id: 'remember', label: 'Remember' },
+                    { id: 'practice', label: 'Practice' },
+                  ].map((s) => {
+                    const isActive = regLearnStep === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => {
+                          setRegLearnStep(s.id);
+                          setPracticeSelectedOption(null);
+                        }}
+                        className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all text-center border cursor-pointer ${
+                          isActive
+                            ? 'bg-[#E6F4ED] text-[#073321] border-[#073321] font-bold shadow-xs'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-forest hover:text-forest'
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Screen indicator */}
+                <div className="text-center font-mono text-xs text-slate-400 font-semibold">
+                  Step {stepNumber} / {totalSteps}
+                </div>
+
+                {/* Eyebrow */}
+                <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#073321]">
+                  {regLearnStep.toUpperCase()}
+                </div>
+
+                {/* Heading */}
+                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#073321] tracking-tight leading-tight">
+                  {regLearnStep === 'remember' ? 'One-Minute Summary & Traps' : currentTopic.title}
+                </h2>
+
+                {/* Content Body */}
+                {regLearnStep === 'practice' ? (
+                  <div className="space-y-4 pt-2 text-left">
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        Practice Assessment Question
+                      </span>
+                      <p className="text-sm sm:text-base font-semibold text-slate-900 leading-snug">
+                        {currentTopic.practiceQuestion}
+                      </p>
+                    </div>
+
+                    {/* Interactive Multiple Choice Options */}
+                    <div className="grid grid-cols-1 gap-2.5">
+                      {currentTopic.practiceOptions.map((opt, idx) => {
+                        const isSelected = practiceSelectedOption === idx;
+                        const isCorrect = idx === (currentTopic.practiceAnswer ?? 0);
+                        const hasChosen = practiceSelectedOption !== null;
+
+                        let btnStyles = 'border-slate-200 bg-white hover:border-[#073321] hover:bg-slate-50 text-slate-700';
+                        if (hasChosen) {
+                          if (isCorrect) {
+                            btnStyles = 'border-[#073321] bg-[#E6F4ED] text-[#073321] font-bold shadow-xs';
+                          } else if (isSelected) {
+                            btnStyles = 'border-rose-300 bg-rose-50 text-rose-800 font-semibold';
+                          } else {
+                            btnStyles = 'border-slate-200 bg-white opacity-60 text-slate-500';
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => setPracticeSelectedOption(idx)}
+                            className={`p-4 rounded-2xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between gap-3 cursor-pointer ${btnStyles}`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className={`w-6 h-6 rounded-lg flex items-center justify-center font-mono text-xs font-bold flex-shrink-0 ${
+                                hasChosen && isCorrect
+                                  ? 'bg-[#073321] text-white'
+                                  : hasChosen && isSelected
+                                  ? 'bg-rose-600 text-white'
+                                  : 'bg-slate-100 text-slate-600'
+                              }`}>
+                                {['A', 'B', 'C', 'D'][idx]}
+                              </span>
+                              <span className="leading-snug">{opt}</span>
+                            </div>
+                            {hasChosen && isCorrect && <Check className="w-5 h-5 text-[#073321] flex-shrink-0" />}
+                            {hasChosen && isSelected && !isCorrect && <X className="w-5 h-5 text-rose-600 flex-shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Instant Feedback Explanation Box */}
+                    {practiceSelectedOption !== null && (
+                      <div className={`p-4 rounded-2xl border text-xs sm:text-sm leading-relaxed space-y-1 ${
+                        practiceSelectedOption === (currentTopic.practiceAnswer ?? 0)
+                          ? 'bg-[#E6F4ED] border-[#073321] text-[#073321]'
+                          : 'bg-amber-50 border-amber-300 text-amber-900'
+                      }`}>
+                        <div className="font-mono font-bold uppercase text-[10px] tracking-wider">
+                          {practiceSelectedOption === (currentTopic.practiceAnswer ?? 0) ? '✓ Correct Answer' : '⚠ Statutory Explanation'}
+                        </div>
+                        <p>{currentTopic.practiceExplain || currentTopic.rememberComplianceTip}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-sans">
+                    {regLearnStep === 'remember'
+                      ? currentTopic.rememberBody
+                      : regLearnStep === 'walkthrough'
+                      ? currentTopic.walkthroughBody
+                      : currentTopic.understandBody}
+                  </p>
+                )}
+
+                {/* Compliance Tip Box */}
+                {(regLearnStep === 'remember' || regLearnStep === 'walkthrough' || regLearnStep === 'understand') && (
+                  <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-2xl p-5 space-y-1.5 text-left">
+                    <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#073321]">
+                      {regLearnStep === 'remember' ? 'COMPLIANCE TIP' : 'PRACTITIONER NOTE'}
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                      {regLearnStep === 'remember'
+                        ? (currentTopic.rememberComplianceTip || 'Check the four gates scheme by scheme, not fund by fund. The most common error in structuring is treating corpus and investor count as fund-level tests when the regulation applies them to each scheme.')
+                        : (currentTopic.walkthroughCalloutBody || currentTopic.understandCalloutBody)}
                     </p>
                   </div>
+                )}
 
-                  <span className="px-2.5 py-1 rounded-xl bg-gold/20 border border-gold/40 text-gold-soft font-mono text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
-                    {prepMode.toUpperCase()} MODE
+                {/* Statutory Reference Line */}
+                <div className="text-xs text-slate-400 font-mono pt-3 border-t border-slate-100 text-left">
+                  {currentTopic.sourceRef}
+                </div>
+
+                {/* Action Button */}
+                <div className="pt-2 text-left flex items-center justify-between gap-4">
+                  <button
+                    onClick={handleNextStep}
+                    className="bg-[#073321] hover:bg-[#052819] text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
+                  >
+                    {regLearnStep === 'practice'
+                      ? (topicIndex < topicsList.length - 1 ? 'Complete & Next Chapter →' : 'Finish Course →')
+                      : 'Continue →'}
+                  </button>
+
+                  <span className="text-xs font-mono text-slate-400">
+                    Chapter {topicIndex + 1} of {topicsList.length}
                   </span>
                 </div>
 
-                {/* Dial + Action row */}
-                <div className="mt-6 pt-5 border-t border-white/15 flex flex-col sm:flex-row items-center gap-5">
-                  <div className="flex items-center gap-4 w-full sm:w-auto">
-                    <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full border-4 border-white/15 border-t-gold-soft border-r-gold-soft flex items-center justify-center flex-shrink-0">
-                      <div className="text-center">
-                        <span className="font-serif text-lg sm:text-xl font-bold text-white block leading-none">
-                          {readinessPct}%
-                        </span>
-                        <span className="text-[8px] font-mono text-mint/70 uppercase">Score</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs sm:text-sm font-semibold text-white">Interview Readiness Status</div>
-                      <div className="text-[11px] text-mint/80 mt-0.5">
-                        {readinessPct < 30 ? 'Initial Calibration · Focus on High-Yield Modules' : readinessPct < 70 ? 'Intermediate · Reinforce Traps & Scenarios' : 'High Readiness · Ready for Final Mock'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="sm:ml-auto flex gap-3 w-full sm:w-auto">
-                    <button
-                      onClick={() => setActiveTab('practice')}
-                      className="cursor-target flex-1 sm:flex-none px-5 py-3 bg-gold hover:bg-gold/90 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 hover-lift min-h-[44px]"
-                    >
-                      <Target className="w-4 h-4" /> Start Interview Qs
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('modules')}
-                      className="cursor-target flex-1 sm:flex-none px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm rounded-xl border border-white/20 transition-all flex items-center justify-center gap-2 hover-lift min-h-[44px]"
-                    >
-                      <BookOpen className="w-4 h-4" /> Syllabus
-                    </button>
-                  </div>
-                </div>
               </div>
-
-              {/* Quick Action Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                <button
-                  onClick={() => setActiveTab('practice')}
-                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Target className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Interview Qs</div>
-                    <div className="text-[11px] text-ink-soft mt-0.5">Think → Reveal flow</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('scenarios')}
-                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Layers className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Simulations</div>
-                    <div className="text-[11px] text-ink-soft mt-0.5">Controls & scenarios</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('recall')}
-                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Brain className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Rapid Recall</div>
-                    <div className="text-[11px] text-ink-soft mt-0.5">Flip flashcards</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('assess')}
-                  className="cursor-target p-4 sm:p-5 bg-white border border-line hover:border-forest rounded-2xl text-left transition-all hover-lift card-shadow group min-h-[110px] flex flex-col justify-between"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-mint text-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                    <Award className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-serif font-bold text-sm sm:text-base text-forest-deep">Assessment</div>
-                    <div className="text-[11px] text-ink-soft mt-0.5">20-item scored test</div>
-                  </div>
-                </button>
-              </div>
-
-              {/* FME: Priority Topics for Selected Role */}
-              {isFME && (
-                <div className="bg-white border border-line rounded-2xl p-5 sm:p-6 card-shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="font-serif font-bold text-base sm:text-lg text-forest-deep">
-                        Priority Topics for {currentRole.name}
-                      </h3>
-                      <p className="text-xs text-ink-soft mt-0.5">Weighted by interview frequency and regulatory significance</p>
-                    </div>
-                    <button
-                      onClick={() => setActiveTab('modules')}
-                      className="text-xs font-semibold text-leaf hover:text-forest hover:underline"
-                    >
-                      View All
-                    </button>
-                  </div>
-
-                  <div className="space-y-2.5">
-                    {rolePriorityTopics.slice(0, 5).map((t, idx) => (
-                      <button
-                        key={t.id}
-                        onClick={() => {
-                          setSelectedModuleId(t.moduleId);
-                          setSelectedTopicId(t.id);
-                          setActiveTab('modules');
-                        }}
-                        className="cursor-target w-full p-3.5 sm:p-4 rounded-xl border border-line hover:border-forest bg-paper text-left flex items-center justify-between gap-3 transition-all hover-lift min-h-[56px]"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="font-serif text-sm font-bold text-forest w-6 text-center flex-shrink-0">
-                            {String(idx + 1).padStart(2, '0')}
-                          </span>
-                          <div className="min-w-0">
-                            <div className="font-semibold text-xs sm:text-sm text-forest-deep truncate">{t.title}</div>
-                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                              <PriorityPill priority={t.priority} />
-                              <RolePill roleTag={currentRole.tag} weight={t.weight} />
-                              {t.verify && (
-                                <span className="text-[10px] font-mono text-amber-800 font-semibold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
-                                  Verify
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-ink-soft flex-shrink-0" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Sourcing & Disclaimer Card */}
-              <div className="p-4 sm:p-5 bg-mint/50 border border-mint-deep rounded-2xl text-xs text-forest-deep leading-relaxed">
-                <div className="flex items-center gap-2 font-mono font-bold text-[10px] uppercase text-forest mb-1.5">
-                  <Shield className="w-4 h-4 text-leaf" /> Sourcing &amp; Regulatory Accuracy
-                </div>
-                <p>
-                  {isFME ? fmeContent._meta.disclaimer : 'Preparation aid, not legal advice. Always verify live regulation text, circulars, and official gazette notifications prior to regulatory filings or assessments.'}
-                </p>
-              </div>
-
             </div>
-          )}
+          );
+        })()}
 
-          {/* ================================================================= */}
-          {/* TAB: MODULES / SYLLABUS                                          */}
-          {/* ================================================================= */}
-          {activeTab === 'modules' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+        {/* ================================================================= */}
+        {/* TAB: MODULES / SYLLABUS (FIRST SHOW LIST OF ALL CHAPTERS)        */}
+        {/* ================================================================= */}
+        {activeTab === 'modules' && (
+          <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
+            {!selectedTopicId ? (
+              /* ─── Curriculum Chapter Overview List (Shown First) ─── */
+              <div className="space-y-6 text-left">
+                {(() => {
+                  const CHAPTERS_PER_PAGE = 5;
+                  const totalPages = Math.ceil(topicsList.length / CHAPTERS_PER_PAGE) || 1;
+                  const safePage = Math.min(chaptersPage, totalPages - 1);
+                  const visibleTopics = topicsList.slice(safePage * CHAPTERS_PER_PAGE, (safePage + 1) * CHAPTERS_PER_PAGE);
 
-              {isFME ? (
+                  return (
+                    <div className="space-y-6 max-w-4xl mx-auto pt-6 sm:pt-8">
+                      {/* Modern Glassmorphic Top Hero Header (No Outer Border, Distinct Aesthetics) */}
+                      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#073321] via-[#0b4d32] to-[#073321] text-white p-6 sm:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border-0">
+                        {/* Decorative Glow */}
+                        <div className="absolute -top-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                        <div className="space-y-2 relative z-10">
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-bold uppercase tracking-wider">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Statutory Curriculum
+                          </div>
+                          <h2 className="text-xl sm:text-2xl font-serif font-extrabold tracking-tight text-white leading-tight">
+                            {course?.title || 'Regulatory Master'} Chapters
+                          </h2>
+                          <p className="text-xs sm:text-sm text-emerald-100/90 font-sans max-w-md">
+                            Showing Chapters {safePage * CHAPTERS_PER_PAGE + 1}–{Math.min((safePage + 1) * CHAPTERS_PER_PAGE, topicsList.length)} of {topicsList.length} total modules
+                          </p>
+                        </div>
+
+                        {/* Modern Glassmorphic Arrow & Input Page Controller */}
+                        <div className="relative z-10 flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-2xl self-start md:self-auto shadow-lg">
+                          {/* Previous Page Arrow */}
+                          <button
+                            disabled={safePage === 0}
+                            onClick={() => setChaptersPage(p => Math.max(0, p - 1))}
+                            className={`p-2 rounded-xl transition-all cursor-pointer ${
+                              safePage === 0
+                                ? 'opacity-30 cursor-not-allowed text-white'
+                                : 'bg-white/15 hover:bg-white/30 text-white active:scale-95 shadow-2xs'
+                            }`}
+                            title="Previous Page"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+
+                          {/* Interactive Page Input */}
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-white px-2 whitespace-nowrap">
+                            <span className="text-emerald-200/90 font-mono text-xs uppercase leading-none">Page</span>
+                            <input
+                              type="number"
+                              min={1}
+                              max={totalPages}
+                              value={safePage + 1}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value, 10);
+                                if (!isNaN(val) && val >= 1 && val <= totalPages) {
+                                  setChaptersPage(val - 1);
+                                }
+                              }}
+                              className="w-12 h-7 text-center bg-white/20 border border-white/30 rounded-lg font-mono text-xs font-bold text-white focus:outline-none focus:ring-1 focus:ring-emerald-300 shadow-inner flex items-center justify-center p-0 leading-none"
+                            />
+                            <span className="text-emerald-200/90 font-mono text-xs leading-none">/ {totalPages}</span>
+                          </div>
+
+                          {/* Next Page Arrow */}
+                          <button
+                            disabled={safePage >= totalPages - 1}
+                            onClick={() => setChaptersPage(p => Math.min(totalPages - 1, p + 1))}
+                            className={`p-2 rounded-xl transition-all cursor-pointer ${
+                              safePage >= totalPages - 1
+                                ? 'opacity-30 cursor-not-allowed text-white'
+                                : 'bg-white/15 hover:bg-white/30 text-white active:scale-95 shadow-2xs'
+                            }`}
+                            title="Next Page"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Fixed Height Vertical List Container */}
+                      <div className="min-h-[460px] flex flex-col justify-start space-y-3">
+                        {visibleTopics.map((topic, offsetIdx) => {
+                          const idx = safePage * CHAPTERS_PER_PAGE + offsetIdx;
+                          const chNum = idx + 1;
+                          const isUnlocked = hasAccess ? hasAccess('job_ready', idx) : idx < 2;
+                          const isCompleted = completedSet.has(topic.id);
+
+                          return (
+                            <div
+                              key={topic.id || idx}
+                              onClick={() => {
+                                if (!isUnlocked) {
+                                  setShowUpgradeModal(true);
+                                } else {
+                                  setTopicIndex(idx);
+                                  setSelectedTopicId(topic.id);
+                                  setActiveTab('home');
+                                  setRegLearnStep('understand');
+                                  setPracticeSelectedOption(null);
+                                }
+                              }}
+                              className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-md ${
+                                !isUnlocked
+                                  ? 'bg-amber-50/40 border-amber-200/80 hover:border-amber-400'
+                                  : isCompleted
+                                  ? 'bg-white border-[#073321]/40 hover:border-[#073321]'
+                                  : 'bg-white border-slate-200 hover:border-[#073321]'
+                              }`}
+                            >
+                              <div className="space-y-1.5 min-w-0 flex-1">
+                                <div className="flex items-center gap-2.5 flex-wrap">
+                                  <span className="font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[#E6F4ED] text-[#073321]">
+                                    Chapter {chNum}
+                                  </span>
+                                  {!isUnlocked ? (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-mono text-[10px] font-bold">
+                                      <Crown className="w-3.5 h-3.5 text-amber-600" /> Premium Only
+                                    </span>
+                                  ) : isCompleted ? (
+                                    <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
+                                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Completed
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs font-mono text-slate-400">Ready to Learn</span>
+                                  )}
+                                </div>
+
+                                <h3 className="font-bold text-base text-[#073321] leading-snug">
+                                  {topic.title}
+                                </h3>
+                                <p className="text-xs text-slate-600 line-clamp-1 leading-relaxed font-sans">
+                                  {topic.understandBody ? topic.understandBody.slice(0, 130) + '...' : 'Explore core statutory provisions, compliance traps, and diagnostic questions.'}
+                                </p>
+                              </div>
+
+                              <div className="flex-shrink-0 self-end sm:self-center">
+                                <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shadow-2xs transition-all ${
+                                  !isUnlocked ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-[#073321] text-white hover:bg-[#052819]'
+                                }`}>
+                                  {!isUnlocked ? 'Unlock 👑' : 'Start Chapter →'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="space-y-6 max-w-6xl mx-auto">
+                {isFME ? (
                 // ─── FME Track Content (Modules -> Topics -> Multi-layer Card) ───
                 selectedTopicId ? (
                   // Single Topic View
@@ -1478,15 +1749,16 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                   ) : null}
                 </div>
               )}
-
             </div>
           )}
+        </div>
+      )}
 
           {/* ================================================================= */}
           {/* TAB: PRACTICE / QUESTIONS (Think → Reveal → Remember)             */}
           {/* ================================================================= */}
           {activeTab === 'practice' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
 
               {isFME ? (
                 (() => {
@@ -1677,7 +1949,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
           {/* TAB: SCENARIOS & SIMULATIONS                                      */}
           {/* ================================================================= */}
           {activeTab === 'scenarios' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
 
               {/* Sub-tab toggle */}
               <div className="flex items-center gap-2 p-1.5 bg-mint border border-mint-deep rounded-2xl w-fit">
@@ -1877,7 +2149,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
           {/* TAB: RAPID RECALL (Flashcards Deck)                              */}
           {/* ================================================================= */}
           {activeTab === 'recall' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
 
               {!recallMode ? (
                 // Mode Selection
@@ -2007,7 +2279,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
           {/* TAB: GRADED ASSESSMENT                                            */}
           {/* ================================================================= */}
           {activeTab === 'assess' && (
-            <div className="space-y-5 animate-fade-in max-w-4xl mx-auto">
+            <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
 
               {!assessCompleted ? (
                 (() => {
@@ -2168,63 +2440,48 @@ function RegulatoryMasterModalInner({ course, onClose }) {
             </div>
           )}
 
-        </main>
+          {/* ─── Modern Dark Emerald Regulatory Master Footer ─── */}
+          <footer className="mt-16 rounded-3xl bg-gradient-to-r from-[#073321] via-[#0b4d32] to-[#073321] text-white p-6 sm:p-8 space-y-6 max-w-6xl mx-auto shadow-xl border-0 relative overflow-hidden">
+            {/* Decorative Glow */}
+            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        {/* ─── Bottom Navigation Bar (Codex Theme) ─── */}
-        {/* BUG 6 FIX: Added Assess tab; active tab has bg-mint pill for clear visual indicator */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-line flex-shrink-0"
-             style={{ height: 'calc(56px + env(safe-area-inset-bottom, 0px))', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          <div className="h-14 flex items-center justify-around px-1 z-30">
-            {[
-              { id: 'home',      icon: <Brain className="w-4 h-4" />,   label: 'Home'     },
-              { id: 'modules',   icon: <BookOpen className="w-4 h-4" />, label: 'Modules'  },
-              { id: 'practice',  icon: <Target className="w-4 h-4" />,  label: 'Practice', fmeOnly: false },
-              { id: 'recall',    icon: <Zap className="w-4 h-4" />,     label: 'Recall',   fmeOnly: true  },
-              { id: 'assess',    icon: <Award className="w-4 h-4" />,   label: 'Assess',   fmeOnly: true  },
-            ]
-            .filter(t => !t.fmeOnly || isFME)
-            .map(t => (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                className={`cursor-target flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 transition-all min-h-[48px] rounded-xl mx-0.5 ${
-                  activeTab === t.id
-                    ? 'text-forest font-bold'
-                    : 'text-ink-soft hover:text-forest'
-                }`}
-              >
-                <div className={`p-1.5 rounded-xl transition-colors ${
-                  activeTab === t.id ? 'bg-mint text-forest shadow-xs' : ''
-                }`}>
-                  {t.icon}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-emerald-800/80 pb-6 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 text-emerald-300 flex items-center justify-center font-serif font-bold text-lg shadow-inner">
+                  §
                 </div>
-                <span className={`text-[9px] font-mono leading-none ${
-                  activeTab === t.id ? 'text-forest font-bold' : 'text-ink-soft'
-                }`}>{t.label}</span>
-              </button>
-            ))}
-            {/* Scenarios — not in the condensed mobile nav, accessible from Home tile */}
-            {isFME && (
-              <button
-                onClick={() => setActiveTab('scenarios')}
-                className={`cursor-target flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 transition-all min-h-[48px] rounded-xl mx-0.5 ${
-                  activeTab === 'scenarios'
-                    ? 'text-forest font-bold'
-                    : 'text-ink-soft hover:text-forest'
-                }`}
-              >
-                <div className={`p-1.5 rounded-xl transition-colors ${
-                  activeTab === 'scenarios' ? 'bg-mint text-forest shadow-xs' : ''
-                }`}>
-                  <Layers className="w-4 h-4" />
+                <div>
+                  <h4 className="font-serif font-bold text-white text-base leading-none">RegMate Regulatory Master</h4>
+                  <p className="text-xs text-emerald-200/80 mt-1">Structured Chapter-Wise Compliance &amp; Interview Learning System</p>
                 </div>
-                <span className={`text-[9px] font-mono leading-none ${
-                  activeTab === 'scenarios' ? 'text-forest font-bold' : 'text-ink-soft'
-                }`}>Cases</span>
-              </button>
-            )}
-          </div>
-        </nav>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={() => {
+                    setSelectedTopicId(null);
+                    setActiveTab('modules');
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white/15 hover:bg-white/30 text-white border border-white/20 shadow-2xs cursor-pointer flex items-center gap-2"
+                >
+                  <BookOpen className="w-4 h-4 text-emerald-300" />
+                  <span>Chapter Modules</span>
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5 text-white" /> Exit Learning
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-200/80 gap-2 relative z-10">
+              <span>© {new Date().getFullYear()} RegMate. All statutory learning modules consolidated for GIFT IFSC practitioners.</span>
+              <span className="font-mono text-[11px] text-amber-300 font-semibold">GIFT IFSC Compliance Regulations 2026</span>
+            </div>
+          </footer>
+
+        </main>
 
         {/* ─── Role Selection Modal ─── */}
         {showRoleModal && (
@@ -2284,9 +2541,8 @@ function RegulatoryMasterModalInner({ course, onClose }) {
         />
 
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 export default function RegulatoryMasterModal(props) {
   return (

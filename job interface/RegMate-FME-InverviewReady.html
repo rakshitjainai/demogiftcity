@@ -523,41 +523,86 @@ p{margin:0}
 <style id="regmate-premium-theme">
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
 :root{
-  --ink:#0B2F2A; --ink-2:#103C35; --navy:#0D3B35; --navy-line:#1D5149;
-  --bg:#F4F7F5; --surface:#FFFFFF; --surface-2:#F7FAF8;
-  --line:#DCE7E3; --line-2:#E8EFEC; --text:#18302C; --text-2:#526963; --text-3:#7C908A;
-  --on-dark:#F4FBF8; --on-dark-2:#B8CCC6;
-  --accent:#2E7D6B; --accent-2:#246656; --accent-soft:#E5F2ED; --accent-line:#C7E2D8;
-  --critical:#B43D35; --high:#A56B1F; --medium:#3B7180; --low:#72847E;
-  --success:#2C7A5B; --success-soft:#E5F3EC; --warn:#8A6419; --warn-soft:#FBF3DF;
+  --ink:#142B1A; --ink-2:#2E4D38; --navy:#142B1A; --navy-line:#2A4832;
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F4F8F4;
+  --line:#E2E8F0; --line-2:#CBD5E1; --text:#0D2000; --text-2:#2E4D38; --text-3:#5C7363;
+  --on-dark:#142B1A; --on-dark-2:#2E4D38;
+  --accent:#C6863A; --accent-2:#B0722B; --accent-soft:#FDF8EC; --accent-line:#EAD6BB;
+  --critical:#EF4444; --high:#D4AF37; --medium:#2563EB; --low:#64748B;
+  --success:#2E6B34; --success-soft:#EAF5E9; --warn:#D97706; --warn-soft:#FEF3C7;
   --display:'Manrope',Optima,'Avenir Next',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --mono:'SFMono-Regular',Consolas,'Liberation Mono',monospace;
-  --shadow:0 1px 2px rgba(11,47,42,.04),0 10px 30px rgba(11,47,42,.07);
-  --shadow-lg:0 18px 55px rgba(11,47,42,.18);
+  --shadow:0 1px 2px rgba(20,43,26,.04),0 10px 30px rgba(20,43,26,.07);
+  --shadow-lg:0 18px 55px rgba(20,43,26,.18);
 }
-body{background:radial-gradient(900px 420px at 50% -8%,#E2EEE9 0%,rgba(226,238,233,0) 65%),var(--bg);font-family:var(--body);color:var(--text)}
-h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.035em}
-.topbar{background:linear-gradient(135deg,#0B302B 0%,#12483F 100%);border-bottom-color:#1D5149}
+body{background:#FFFFFF!important;font-family:var(--body);color:var(--text)}
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.035em;color:#0D2000}
+
+/* Text color contrast fixes for white backgrounds */
+.screen, .screen p, .screen span, .screen div, .screen li, .screen h1, .screen h2, .screen h3, .screen h4,
+.card, .card p, .card span, .card div, .card h1, .card h2, .card h3, .card h4,
+.module, .module p, .module span, .module div, .module h3, .module h4,
+.ptopic, .ptopic p, .ptopic span, .ptopic div, .ptopic h3, .ptopic h4,
+.qa, .qa p, .qa span, .qa div, .qa h3, .qa h4,
+.qcard, .qcard p, .qcard span, .qcard div,
+.scn-card, .scn-card p, .scn-card span, .scn-card div,
+.reg-card, .reg-card p, .reg-card span, .reg-card div,
+.stat-val, .stat-lbl, .meta, .desc, .sub, .text-muted, .text-soft {
+  color: #142B1A !important;
+}
+
+.sub, .desc, .meta, .text-muted, .text-soft, .eyebrow, .sf-card p, .dash-hero p {
+  color: #2E4D38 !important;
+}
+
+.topbar, .topbar *, .btn-primary, .btn-primary *, .btn-dark, .btn-dark * {
+  color: #FFFFFF !important;
+}
+.topbar{background:linear-gradient(135deg,#142B1A 0%,#23472C 100%)!important;border-bottom-color:#2A4832!important}
 .topbar .brand{font-weight:800;letter-spacing:-.035em}
-.topbar .mark,.start .mark{background:linear-gradient(145deg,#4B9B87,#236656);box-shadow:0 5px 16px rgba(75,155,135,.25)}
-.btn-primary{background:linear-gradient(135deg,#2F806D,#236656);box-shadow:0 8px 20px rgba(35,102,86,.22);font-weight:800}
-.btn-primary:hover{background:#1F5D4E}
-.btn-dark{background:#0D3B35}
-.btn-soft{background:#E5F2ED;color:#246656;border-color:#C7E2D8}
-.start{background:radial-gradient(110% 70% at 50% 0%,#185447 0%,#0B2F2A 58%,#082720 100%)}
-.start .product{color:#77B9A7;font-weight:800}
-.start h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.045em}
-.start .sub{color:#C2D5D0}
-.card{border-color:#DCE7E3;box-shadow:var(--shadow)}
-.pill-high{background:#F5EEDC;color:#8A5A16}
-.pill-type{background:#EAF1EE;color:#526963}
-.chip-src .dot{background:#2E7D6B}
-.screen.immersive{background:#0B2F2A}
-.screen.immersive h1,.screen.immersive h2,.screen.immersive h3{color:#fff}
-.eyebrow{font-weight:700;color:#718780}
-.progress-bar{background:#DDEAE5!important}
-.progress-bar > *{background:#2E7D6B!important}
+.topbar .mark,.start .mark{display:none!important}
+.btn-primary{background:linear-gradient(135deg,#2E6B34,#142B1A)!important;box-shadow:0 8px 20px rgba(46,107,52,.22)!important;font-weight:800;border:1px solid #D4AF37!important}
+.btn-primary:hover{background:#142B1A!important}
+.btn-dark{background:#142B1A!important}
+.btn-soft{background:#EAF5E9!important;color:#2E6B34!important;border-color:#A7F3D0!important}
+.start{
+  background:#FFFFFF!important;
+  color:#0D2000!important;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:24px 32px!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  gap:20px!important;
+}
+.start .product{
+  color:#C6863A!important;
+  font-weight:800!important;
+  border:1px solid #EAD6BB!important;
+  background:#FDF8EC!important;
+  padding:6px 14px!important;
+  border-radius:99px!important;
+  font-size:12px!important;
+  letter-spacing:0.05em!important;
+  text-transform:uppercase!important;
+  display:inline-block!important;
+  width:fit-content!important;
+}
+.start h1{font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.045em;color:#142B1A!important}
+.start .sub{color:#2E4D38!important}
+.card{border-color:#E2E8F0!important;box-shadow:var(--shadow)!important;background:#FFFFFF!important}
+.pill-high{background:#FDF8EC!important;color:#B0722B!important}
+.pill-type{background:#EAF5E9!important;color:#2E6B34!important}
+.chip-src .dot{background:#C6863A!important}
+.screen.immersive{background:#FFFFFF!important;color:#0D2000!important}
+.screen.immersive h1,.screen.immersive h2,.screen.immersive h3{color:#142B1A!important}
+.eyebrow{font-weight:700;color:#5C7363!important}
+.progress-bar{background:#EAF5E9!important}
+.progress-bar > *{background:#2E6B34!important}
 .section-title,.page-title{font-weight:800}
 input,select,textarea{font-family:var(--body)!important}
 @media(max-width:600px){
@@ -1677,12 +1722,11 @@ window.RM = (function () {
 
   function viewStart() {
     return '<div class="app"><div class="start">' +
-      '<div class="top"><div class="brand"><span class="mark">R</span>RegMate <span style="color:var(--on-dark-2);font-weight:500">JobReady</span></div></div>' +
+      '<div class="top"><div class="brand"><span class="mark">R</span>RegMate</div></div>' +
       '<div class="hero">' +
       '<div class="product">FME Interview Ready · GIFT IFSC</div>' +
       '<h1>Get ready for the job,<br>not just the exam.</h1>' +
       '<p class="sub">Role-weighted, source-backed preparation for Compliance Officer, Principal Officer and Legal &amp; Compliance interviews at GIFT IFSC fund managers.</p>' +
-      '<blockquote class="quote">"Your interview is not a test of how much you studied. It is a test of how well you can think, explain and apply."</blockquote>' +
       '</div>' +
       '<div>' +
       '<div class="cta-wrap">' +
@@ -1769,9 +1813,7 @@ window.RM = (function () {
 
   /* ---- topbar & bottom nav ---- */
   function topbar() {
-    var r = role(), t = timeline();
-    return '<div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div>' +
-      '<div class="ctx"><div class="role">' + esc(r.name) + '</div><div class="tl">' + esc(state.candidateName || "Candidate") + ' · Interview ' + (t ? esc(t.label) : "—") + "</div></div></div>";
+    return '<div class="topbar"><div class="brand"><span class="mark">R</span>RegMate</div></div>';
   }
   function bottomNav() {
     var items = [

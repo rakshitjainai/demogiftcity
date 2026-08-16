@@ -71,9 +71,9 @@ function processSchema2Package(pkg, actSlug) {
 
   content.forEach((item, idx) => {
     const isSchedule = (item.chapter && item.chapter.toLowerCase().includes('schedule')) ||
-                       item.provision_type === 'schedule_form_or_annexure' ||
-                       (item.provision_number && String(item.provision_number).toLowerCase().includes('schedule')) ||
-                       (item.provision_heading && String(item.provision_heading).toLowerCase().includes('schedule'));
+      item.provision_type === 'schedule_form_or_annexure' ||
+      (item.provision_number && String(item.provision_number).toLowerCase().includes('schedule')) ||
+      (item.provision_heading && String(item.provision_heading).toLowerCase().includes('schedule'));
     if (isSchedule) {
       const schChapter = (item.provision_number && String(item.provision_number).toLowerCase().includes('schedule'))
         ? item.provision_number
@@ -173,6 +173,11 @@ export function getActDefinitions(actSlug) {
 
 export function getActSchedules(actSlug) {
   return ACT_SCHEDULES[actSlug] || [];
+}
+
+export function getActName(actSlug) {
+  if (!actSlug) return 'Regulation';
+  return ACTS_DATA[actSlug]?.title || ACTS_DATA[actSlug]?.shortTitle || actSlug;
 }
 
 // ─── Shared Regulations Data ───────────────────────────────────────────────
@@ -1447,9 +1452,4 @@ export function getChapter(actSlug, chapterNum) {
 export function getSections(actSlug, chapterNum) {
   const ch = getChapter(actSlug, chapterNum);
   return ch ? ch.sections : [];
-}
-
-// Helper: act display name
-export function getActName(actSlug) {
-  return ACTS_DATA[actSlug]?.title || actSlug;
 }

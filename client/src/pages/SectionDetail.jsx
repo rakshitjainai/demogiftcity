@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Sparkles, ShieldCheck, 
   FileText, CheckCircle2, AlertCircle, Bookmark, Tag, HelpCircle, Link2, 
   Search, BookOpen, Layers, ArrowLeft, Volume2, Share2, Printer, Download,
-  Check, CheckSquare, Zap
+  Check, CheckSquare, Zap, Crown
 } from 'lucide-react';
 import { ACTS_DATA, PROVISION_DETAILS, CROSS_REFERENCES_DATA, getActName } from '../data/regulationsData';
 import ActionToolbar from '../components/statutory/ActionToolbar';
@@ -55,12 +55,28 @@ function getHighlights(actSlug, chapterNum, sNum, provisionData) {
   ];
 }
 
+const ROMAN_MAP = {
+  'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
+  'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
+  'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'XVII': 17, 'XVIII': 18,
+  'XIX': 19, 'XX': 20
+};
+
+function parseChapterNum(val) {
+  if (val === null || val === undefined) return 1;
+  if (typeof val === 'number') return val;
+  const str = String(val).replace(/^chapter-/i, '').trim().toUpperCase();
+  if (ROMAN_MAP[str]) return ROMAN_MAP[str];
+  const parsed = parseInt(str, 10);
+  return isNaN(parsed) ? 1 : parsed;
+}
+
 export default function SectionDetail() {
   const { actSlug, chapter, sectionNum } = useParams();
   const { user, isAuthenticated, saveReadingProgress, trackUsage } = useAuth();
 
   const cleanChapter = chapter?.replace('chapter-', '') || '1';
-  const chapterNum = parseInt(cleanChapter, 10) || 1;
+  const chapterNum = parseChapterNum(chapter || cleanChapter);
   const chapterSlug = `${actSlug}/chapter-${chapterNum}`;
 
   // Auth & Membership Lock Checks
@@ -78,37 +94,59 @@ export default function SectionDetail() {
   const navigate = useNavigate();
   const isMember = user?.membershipStatus === 'active';
   const hasRegPass = user?.subscriptions?.includes('interactive_regulations') || user?.subscriptions?.includes('full_access');
-  const readChapters = user?.chaptersRead || [];
+  const actName = getActName(actSlug);
 
   if (!isMember && !hasRegPass && chapterNum > 2) {
     return (
-      <UpgradeModal
-        isOpen={true}
-        onClose={() => navigate('/interactive-regulations')}
-        sectionKey="interactive_regulations"
-        title={`Chapter ${chapterNum} is Locked`}
-        message={`Chapter 1 and 2 are free preview. Upgrade your pass to unlock Chapter ${chapterNum} and all interactive regulations.`}
-      />
+      <div className="min-h-screen bg-paper flex flex-col animate-fade-in font-sans">
+        <header className="bg-white border-b border-line px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-30 card-shadow">
+          <div className="flex items-center gap-2 text-xs text-ink-soft">
+            <Link to="/" className="hover:text-leaf">Home</Link>
+            <span>&gt;</span>
+            <Link to="/interactive-regulations" className="font-medium text-forest">{actName}</Link>
+            <span>&gt;</span>
+            <span className="text-forest-deep font-bold">Chapter {chapterNum} (Locked)</span>
+          </div>
+          <Link to="/interactive-regulations" className="px-4 py-2 bg-forest text-white rounded-xl text-xs font-bold hover:bg-leaf transition-colors">
+            Back to Interactive Regulations
+          </Link>
+        </header>
+
+        <main className="flex-grow p-6 max-w-4xl mx-auto space-y-6 w-full flex flex-col justify-center items-center min-h-[70vh]">
+          <UpgradeModal
+            isOpen={true}
+            onClose={() => navigate('/interactive-regulations')}
+            sectionKey="interactive_regulations"
+            title={`Chapter ${chapterNum} is Premium Content`}
+            message={`Chapter 1 and 2 of every regulation are free preview. Upgrade your pass to unlock Chapter ${chapterNum} and all interactive regulations.`}
+          />
+
+          <div className="bg-white rounded-3xl border border-line p-8 sm:p-10 max-w-lg shadow-xl text-center space-y-4 my-auto">
+            <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-2 font-bold text-2xl border border-amber-200">
+              🔒
+            </div>
+            <h2 className="text-2xl font-bold text-forest-deep">Chapter {chapterNum} is Locked</h2>
+            <p className="text-sm text-ink-soft leading-relaxed">
+              Chapter 1 and Chapter 2 of every regulation are free to read. Access to Chapter {chapterNum} and beyond requires an active Membership or Interactive Regulations Pass.
+            </p>
+            <div className="pt-2 flex flex-col gap-3">
+              <button 
+                onClick={() => navigate('/interactive-regulations')}
+                className="w-full py-3 bg-forest text-white font-bold rounded-xl text-sm hover:bg-forest-deep transition-colors shadow-md cursor-pointer"
+              >
+                Browse Free Chapters (Ch. 1 &amp; 2)
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
     );
   }
-
-  if (!isMember && !hasRegPass && !readChapters.includes(chapterSlug) && readChapters.length >= 2) {
-    return (
-      <UpgradeModal
-        isOpen={true}
-        onClose={() => navigate('/interactive-regulations')}
-        sectionKey="interactive_regulations"
-        title="Free Reading Quota Reached (2 Free Chapters)"
-        message="You have reached the free reading limit of 2 chapters in Interactive Regulations. Upgrade your membership pass to unlock all content."
-      />
-    );
-  }
-
-  const actName = getActName(actSlug);
   const cleanSection = sectionNum?.replace('section-', '') || '1';
   const sNum = cleanSection;
 
   // Active Tab & Font Size State
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview'); // 'overview'|'statutory'|'explanation'|'guidance'|'examples'|'related'
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('regmate_font_size') || 'md');
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,7 +157,22 @@ export default function SectionDetail() {
 
   // Load real Act & Provision data
   const actData = ACTS_DATA[actSlug];
-  const chapterData = actData?.chapters.find(c => String(c.num) === String(chapterNum));
+  if (!actData) {
+    return (
+      <div className="py-16 px-6 max-w-5xl mx-auto text-center animate-fade-in-up">
+        <h2 className="text-2xl font-bold text-forest-deep mb-3">Regulation Not Found</h2>
+        <p className="text-ink-soft mb-6">The requested regulation "{actSlug}" could not be found.</p>
+        <Link to="/interactive-regulations" className="cursor-target inline-flex items-center gap-2 px-6 py-3 bg-forest text-white rounded-xl font-bold hover:bg-leaf transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Interactive Regulations
+        </Link>
+      </div>
+    );
+  }
+  const chapterData = actData?.chapters.find(c => 
+    parseChapterNum(c.num) === chapterNum || 
+    String(c.num) === String(chapterNum) || 
+    String(c.romanNum).toUpperCase() === String(cleanChapter).toUpperCase()
+  );
   const chapterTitle = chapterData?.title || `Registration of FME`;
   const sectionData = chapterData?.sections.find(s => String(s.num) === String(sNum));
   const sectionTitle = sectionData?.title || `Track Record and Reputation of Fairness`;
@@ -319,19 +372,30 @@ export default function SectionDetail() {
           {/* Expandable Chapter Tree */}
           <div className="flex-grow overflow-y-auto px-4 pb-4 space-y-2">
             {actData?.chapters?.map((c) => {
-              const isCurrentCh = c.num === chapterNum;
+              const chNum = parseChapterNum(c.num);
+              const isCurrentCh = chNum === chapterNum;
+              const isLockedCh = !isMember && !hasRegPass && chNum > 2;
               const isExpanded = expandedChs[c.num] || isCurrentCh || !!searchQuery.trim();
 
               return (
-                <div key={c.num} className="rounded-xl overflow-hidden border border-line/60 bg-white">
+                <div key={c.num} className={`rounded-xl overflow-hidden border transition-colors ${isLockedCh ? 'border-amber-200/80 bg-amber-50/20' : 'border-line/60 bg-white'}`}>
                   {/* Chapter Header Row */}
                   <button
-                    onClick={() => toggleChapterTree(c.num)}
-                    className={`w-full px-3 py-2.5 text-left flex items-center justify-between text-xs font-semibold transition-colors ${
-                      isCurrentCh ? 'bg-mint/40 text-forest-deep' : 'hover:bg-paper text-ink'
+                    onClick={() => {
+                      if (isLockedCh) {
+                        setShowUpgradeModal(true);
+                        return;
+                      }
+                      setExpandedChs(prev => ({ ...prev, [c.num]: !prev[c.num] }));
+                    }}
+                    className={`w-full px-3 py-2.5 text-left flex items-center justify-between text-xs font-semibold transition-colors cursor-pointer ${
+                      isCurrentCh ? 'bg-mint/40 text-forest-deep' : isLockedCh ? 'hover:bg-amber-100/50 text-slate-700' : 'hover:bg-paper text-ink'
                     }`}
                   >
-                    <span className="truncate pr-2">Chapter {c.num} – {c.title}</span>
+                    <span className="truncate pr-2 flex items-center gap-1.5">
+                      {isLockedCh && <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500 flex-shrink-0" />}
+                      Chapter {c.num} – {c.title}
+                    </span>
                     {isExpanded ? (
                       <ChevronUp className="w-3.5 h-3.5 text-forest flex-shrink-0" />
                     ) : (
@@ -344,6 +408,19 @@ export default function SectionDetail() {
                     <div className="bg-paper/30 border-t border-line/40 divide-y divide-line/30">
                       {c.sections?.map((sec) => {
                         const isSelectedSec = isCurrentCh && String(sec.num) === String(sNum);
+
+                        if (isLockedCh) {
+                          return (
+                            <button
+                              key={sec.num}
+                              onClick={() => setShowUpgradeModal(true)}
+                              className="w-full text-left block px-4 py-2 text-[11px] leading-snug transition-all text-slate-600 hover:text-amber-800 hover:bg-amber-100/40 flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Crown className="w-3 h-3 text-amber-500 fill-amber-500 flex-shrink-0" />
+                              <span className="truncate">Section {sec.num} – {sec.title}</span>
+                            </button>
+                          );
+                        }
 
                         return (
                           <Link
@@ -940,6 +1017,14 @@ export default function SectionDetail() {
         </aside>
 
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        sectionKey="interactive_regulations"
+        title="Unlock Chapter 3 &amp; All Interactive Regulations"
+        message="Chapter 1 and Chapter 2 of every regulation are free preview. Upgrade your pass to unlock Chapter 3 and all interactive regulations."
+      />
     </div>
   );
 }

@@ -38,7 +38,7 @@ export default function InteractiveRegulations() {
 
   const activeActData = activeModal?.actSlug ? ACTS_DATA[activeModal.actSlug] : null;
   const modalSchedules = activeModal?.actSlug ? getActSchedules(activeModal.actSlug) : [];
-  const modalDefinitions = activeModal?.actSlug ? getActSchedules ? getActDefinitions(activeModal.actSlug) : [] : [];
+  const modalDefinitions = activeModal?.actSlug ? getActDefinitions(activeModal.actSlug) : [];
 
   const filteredDefs = modalDefinitions.filter(d =>
     (d.term || '').toLowerCase().includes(searchTerm.toLowerCase()) ||

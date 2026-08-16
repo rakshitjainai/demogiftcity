@@ -6,6 +6,7 @@ import {
   GraduationCap, Target, BarChart3, MinusCircle, CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import UpgradeModal from '../components/UpgradeModal';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 const DURATION_SECONDS = 90 * 60; // 90 minutes
@@ -581,7 +582,7 @@ function ResultsScreen({ result, onRetry }) {
 
 // ─── Main ExamReady page ──────────────────────────────────────────────────
 export default function ExamReady() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [phase, setPhase] = useState('landing'); // 'landing' | 'test' | 'results'
   const [meta, setMeta] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -590,6 +591,10 @@ export default function ExamReady() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const isMember = user?.membershipStatus === 'active';
+  const hasExamPass = user?.subscriptions?.includes('exam_ready') || user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
 
   // Fetch meta on mount
   useEffect(() => {
@@ -652,7 +657,24 @@ export default function ExamReady() {
   };
 
   const handleSelect = (questionCode, option) => {
-    setAnswers(prev => ({ ...prev, [questionCode]: option }));
+    const activeMember = user?.membershipStatus === 'active';
+    const activePass = user?.subscriptions?.includes('exam_ready') || user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
+
+    const currentCount = Object.keys(answers).length;
+    const isNewAnswer = !answers[questionCode];
+
+    if (!activeMember && !activePass && currentCount >= 3 && isNewAnswer) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
+    setAnswers(prev => {
+      const next = { ...prev, [questionCode]: option };
+      if (!activeMember && !activePass && Object.keys(next).length >= 3) {
+        setShowUpgradeModal(true);
+      }
+      return next;
+    });
   };
 
   const handleFlag = (questionCode) => {
@@ -670,30 +692,36 @@ export default function ExamReady() {
     setFlagged(new Set());
   };
 
-  if (phase === 'results' && result) {
-    return <ResultsScreen result={result} onRetry={handleRetry} />;
-  }
-
-  if (phase === 'test' && questions.length > 0) {
-    return (
-      <TestScreen
-        questions={questions}
-        answers={answers}
-        flagged={flagged}
-        onSelect={handleSelect}
-        onFlag={handleFlag}
-        onSubmit={() => handleSubmitTest(questions, answers)}
-        timer={timer}
-      />
-    );
-  }
-
   return (
-    <LandingScreen
-      meta={meta}
-      onStart={handleStartTest}
-      loading={loading}
-      error={error}
-    />
+    <>
+      {phase === 'results' && result ? (
+        <ResultsScreen result={result} onRetry={handleRetry} />
+      ) : phase === 'test' && questions.length > 0 ? (
+        <TestScreen
+          questions={questions}
+          answers={answers}
+          flagged={flagged}
+          onSelect={handleSelect}
+          onFlag={handleFlag}
+          onSubmit={() => handleSubmitTest(questions, answers)}
+          timer={timer}
+        />
+      ) : (
+        <LandingScreen
+          meta={meta}
+          onStart={handleStartTest}
+          loading={loading}
+          error={error}
+        />
+      )}
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        sectionKey="exam_ready"
+        title="Free Preview Limit Reached (3 Questions Free)"
+        message="You have answered the 3 free preview questions in this ExamReady Mock Test. Upgrade your pass to unlock the complete 100-question CMI exam simulation and detailed analysis."
+      />
+    </>
   );
 }

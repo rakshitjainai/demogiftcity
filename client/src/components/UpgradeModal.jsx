@@ -17,6 +17,15 @@ export default function UpgradeModal({
   // Determine section specific pass info
   const getSectionDetails = () => {
     switch (sectionKey) {
+      case 'exam_ready':
+      case 'mock_test':
+        return {
+          passId: 'exam_ready',
+          name: 'ExamReady Mock Test Pass',
+          price: '₹499',
+          scope: 'ExamReady Mock Test Section',
+          description: 'Unlock complete 100-question CMI exam simulation, detailed question reviews, topic breakdowns, and negative marking analysis.'
+        };
       case 'interactive_regulations':
       case 'regulations':
         return {

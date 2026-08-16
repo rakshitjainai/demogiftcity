@@ -5,7 +5,24 @@ import RegulationRow from '../components/RegulationRow';
 import { ACTS_DATA, getActName } from '../data/regulationsData';
 import { useAuth } from '../context/AuthContext';
 import UpgradeModal from '../components/UpgradeModal';
+import LockOverlay from '../components/LockOverlay';
 import { useNavigate } from 'react-router-dom';
+
+const ROMAN_MAP = {
+  'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
+  'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
+  'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'XVII': 17, 'XVIII': 18,
+  'XIX': 19, 'XX': 20
+};
+
+function parseChapterNum(val) {
+  if (val === null || val === undefined) return 1;
+  if (typeof val === 'number') return val;
+  const str = String(val).replace(/^chapter-/i, '').trim().toUpperCase();
+  if (ROMAN_MAP[str]) return ROMAN_MAP[str];
+  const parsed = parseInt(str, 10);
+  return isNaN(parsed) ? 1 : parsed;
+}
 
 export default function ChapterDetail() {
   const { actSlug, chapter } = useParams();
@@ -26,49 +43,37 @@ export default function ChapterDetail() {
   }
 
   const actName = getActName(actSlug);
-  const chapterNum = parseInt(chapter?.replace('chapter-', '') || '1', 10);
+  const cleanChapter = chapter?.replace('chapter-', '') || '1';
+  const chapterNum = parseChapterNum(chapter || cleanChapter);
   const isMember = user?.membershipStatus === 'active';
   const hasRegPass = user?.subscriptions?.includes('interactive_regulations') || user?.subscriptions?.includes('full_access');
 
-  // Membership lock check for Chapter > 2
-  if (!isMember && !hasRegPass && chapterNum > 2) {
-    return (
-      <UpgradeModal
-        isOpen={true}
-        onClose={() => navigate('/interactive-regulations')}
-        sectionKey="interactive_regulations"
-        title={`Chapter ${chapterNum} is Locked`}
-        message={`Chapter 1 and 2 are free preview. Upgrade your pass to unlock Chapter ${chapterNum} and all other interactive regulation chapters.`}
-      />
-    );
-  }
-
-  if (showLock) {
-    return (
-      <LockOverlay
-        type="membership"
-        title="Become a Member to Continue"
-        message="You have reached your free reading limit of 2 chapters in the Knowledge Hub. Upgrade to active membership for unlimited access across all interactive regulations."
-        redirectPath="/membership"
-      />
-    );
-  }
-
+  const isChapterLocked = !isMember && !hasRegPass && chapterNum > 2;
   const chapterSlug = `${actSlug}/${chapter}`;
 
   useEffect(() => {
-    const readChapters = user?.chaptersRead || [];
-    
-    // If not read yet and limit reached (2 chapters for non-members)
-    if (!isMember && !readChapters.includes(chapterSlug) && readChapters.length >= 2) {
-      setShowLock(true);
-    } else {
+    if (isAuthenticated) {
       trackUsage('chapter', chapterSlug);
     }
-  }, [actSlug, chapter, user?.membershipStatus, user?.chaptersRead?.length]);
+  }, [actSlug, chapter, isAuthenticated]);
 
   const actData = ACTS_DATA[actSlug];
-  const chapterData = actData?.chapters.find(c => c.num === chapterNum);
+  if (!actData) {
+    return (
+      <div className="py-16 px-6 max-w-5xl mx-auto text-center animate-fade-in-up">
+        <h2 className="text-2xl font-bold text-forest-deep mb-3">Regulation Not Found</h2>
+        <p className="text-ink-soft mb-6">The requested regulation "{actSlug}" could not be found or loaded.</p>
+        <Link to="/interactive-regulations" className="cursor-target inline-flex items-center gap-2 px-6 py-3 bg-forest text-white rounded-xl font-bold hover:bg-leaf transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Interactive Regulations
+        </Link>
+      </div>
+    );
+  }
+  const chapterData = actData?.chapters.find(c => 
+    parseChapterNum(c.num) === chapterNum || 
+    String(c.num) === String(chapterNum) || 
+    String(c.romanNum).toUpperCase() === String(cleanChapter).toUpperCase()
+  );
   const sections = chapterData?.sections || [];
   const chapterTitle = chapterData?.title || `Chapter ${chapterNum}`;
 
@@ -154,11 +159,13 @@ export default function ChapterDetail() {
         </p>
       </div>
 
-      {showLock && (
-        <LockOverlay
-          type="membership"
-          title="Become a Member to Continue"
-          message="You have reached your free reading limit of 2 chapters. Upgrade to an active membership for unlimited access across all interactive regulations and chapters."
+      {isChapterLocked && (
+        <UpgradeModal
+          isOpen={true}
+          onClose={() => navigate('/interactive-regulations')}
+          sectionKey="interactive_regulations"
+          title={`Chapter ${chapterNum} is Premium Content`}
+          message={`Chapter 1 and 2 of every regulation are free preview. Upgrade your pass for ₹499 or get full access membership to unlock Chapter ${chapterNum} and all interactive regulations.`}
         />
       )}
     </div>
