@@ -2762,23 +2762,35 @@ window.RM = (function () {
       if (m) m.remove();
     };
 
-    var grantPass = function(passId) {
-      var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
-      if (subs.indexOf(passId) === -1) subs.push(passId);
-      localStorage.setItem('regmate_subscriptions', JSON.stringify(subs));
+// grantPass function removed - using initiateCheckout
 
-      var u = JSON.parse(localStorage.getItem('regmate_user') || '{}');
-      if (passId === 'full_access') u.membershipStatus = 'active';
-      localStorage.setItem('regmate_user', JSON.stringify(u));
 
-      var m = document.getElementById("job-upgrade-modal");
-      if (m) m.remove();
-
-      render();
-    };
-
-    document.getElementById("buy-job-499").onclick = function() { grantPass('job_ready'); };
-    document.getElementById("buy-job-1999").onclick = function() { grantPass('full_access'); };
+    document.getElementById("buy-job-499").onclick = function() {
+  if (typeof window !== 'undefined' && typeof window.initiateCheckout === 'function') {
+    window.initiateCheckout({
+      productType: 'course',
+      productId: 'job_ready',
+      onSuccess: function() {
+        var m = document.getElementById('job-upgrade-modal');
+        if (m) m.remove();
+        render();
+      }
+    });
+  }
+};
+document.getElementById("buy-job-1999").onclick = function() {
+  if (typeof window !== 'undefined' && typeof window.initiateCheckout === 'function') {
+    window.initiateCheckout({
+      productType: 'membership',
+      productId: 'full_access',
+      onSuccess: function() {
+        var m = document.getElementById('job-upgrade-modal');
+        if (m) m.remove();
+        render();
+      }
+    });
+  }
+};
   }
 
     // practice

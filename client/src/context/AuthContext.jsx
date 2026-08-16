@@ -417,6 +417,10 @@ export function AuthProvider({ children }) {
       }
     });
   };
+  // expose globally for non-React usage
+  if (typeof window !== 'undefined') {
+    window.initiateCheckout = initiateCheckout;
+  }
 
   // Compatibility adapter replacing legacy mock buyPass with real Razorpay flow
   const buyPass = (passType, courseSlug) => {
