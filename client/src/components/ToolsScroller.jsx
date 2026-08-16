@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Sliders, ShieldAlert, CheckCircle2, HelpCircle, FileCheck, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { COMPLIANCE_TOOLS } from '../data/mockData';
 
 const iconMap = { Calendar, Sliders, ShieldAlert, CheckCircle2, HelpCircle, FileCheck };
@@ -45,19 +46,19 @@ export default function ToolsScroller({ onOpenTool }) {
             </div>
 
             <div className="flex items-center gap-3 flex-shrink-0">
-              <button
-                onClick={() => onOpenTool?.(COMPLIANCE_TOOLS[0].title)}
-                className="hidden sm:flex items-center gap-1 text-xs font-semibold hover:underline"
-                style={{ color: 'var(--leaf)' }}
+              <Link
+                to="/tools"
+                className="hidden sm:flex items-center gap-1 text-xs font-semibold hover:underline cursor-pointer"
+                style={{ color: 'var(--leaf)', textDecoration: 'none' }}
               >
                 View All Tools <ArrowUpRight className="w-3.5 h-3.5" />
-              </button>
+              </Link>
 
               {/* Prev/Next scroll buttons */}
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => handleScroll('left')}
-                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center transition-all hover:bg-[var(--forest)] hover:text-white border"
+                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center transition-all hover:bg-[var(--forest)] hover:text-white border cursor-pointer"
                   style={{ borderColor: 'var(--line)' }}
                   aria-label="Scroll left"
                 >
@@ -65,7 +66,7 @@ export default function ToolsScroller({ onOpenTool }) {
                 </button>
                 <button
                   onClick={() => handleScroll('right')}
-                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center transition-all hover:bg-[var(--forest)] hover:text-white border"
+                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center transition-all hover:bg-[var(--forest)] hover:text-white border cursor-pointer"
                   style={{ borderColor: 'var(--line)' }}
                   aria-label="Scroll right"
                 >
@@ -84,13 +85,14 @@ export default function ToolsScroller({ onOpenTool }) {
             {COMPLIANCE_TOOLS.map((tool) => {
               const IconComp = iconMap[tool.icon] || Calendar;
               return (
-                <button
+                <Link
                   key={tool.id}
-                  onClick={() => onOpenTool?.(tool.title)}
-                  className="flex-shrink-0 w-64 sm:w-72 text-left bg-white rounded-2xl p-5 flex flex-col gap-4 transition-all hover-lift card-shadow group"
+                  to={`/tools/${tool.slug}`}
+                  className="flex-shrink-0 w-64 sm:w-72 text-left bg-white rounded-2xl p-5 flex flex-col gap-4 transition-all hover-lift card-shadow group block no-underline cursor-pointer"
                   style={{
                     scrollSnapAlign: 'start',
                     border: '1px solid var(--line)',
+                    textDecoration: 'none',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = 'var(--leaf)';
@@ -140,7 +142,7 @@ export default function ToolsScroller({ onOpenTool }) {
                     <span>Launch Tool</span>
                     <span>→</span>
                   </div>
-                </button>
+                </Link>
               );
             })}
           </div>
