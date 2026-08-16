@@ -1685,7 +1685,7 @@ window.RM = (function () {
   }
 
   /* -------------------------------------------------------------- BACKEND */
-  var API_BASE = "/Regmate-backend/api/";
+  var API_BASE = "https://demogiftcity.onrender.com/Regmate-backend/api/";
   function apiCall(action, payload) {
     var controller = window.AbortController ? new AbortController() : null;
     var timer = controller ? setTimeout(function(){ controller.abort(); }, 12000) : null;
