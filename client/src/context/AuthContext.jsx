@@ -446,6 +446,7 @@ export function AuthProvider({ children }) {
   // Check section access
   const hasAccess = (sectionKey, itemIndex = 0) => {
     if (isMember) return true;
+    if (sectionKey && hasCourseAccess(sectionKey)) return true;
     // Chapter / Lesson 1 (index 0) is free preview for all users
     if (itemIndex < 1) return true;
     return false;

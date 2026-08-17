@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<!-- Razorpay Checkout SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 /* =========================================================================
    RegMate JobReady — FME Interview Ready | Production Fix 2026-08-15
@@ -496,7 +498,7 @@ p{margin:0}
 
 .tag-list{display:flex;flex-wrap:wrap;gap:8px}
 .tag-list .tg{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:8px}
-.tag-list .tg.strong{background:var(--success-soft);color:var(--success)}
+.tag-list .tg.strong{background:var(--success-soft);color:var(--text)}
 .tag-list .tg.weak{background:var(--accent-soft);color:var(--accent-2)}
 
 /* ======================================================================
@@ -536,7 +538,7 @@ p{margin:0}
   --ink:#142B1A; --ink-2:#2E4D38; --navy:#142B1A; --navy-line:#2A4832;
   --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F4F8F4;
   --line:#E2E8F0; --line-2:#CBD5E1; --text:#0D2000; --text-2:#2E4D38; --text-3:#5C7363;
-  --on-dark:#142B1A; --on-dark-2:#2E4D38;
+  --on-dark:#FFFFFF; --on-dark-2:#D1E2D6;
   --accent:#C6863A; --accent-2:#B0722B; --accent-soft:#FDF8EC; --accent-line:#EAD6BB;
   --critical:#EF4444; --high:#D4AF37; --medium:#2563EB; --low:#64748B;
   --success:#2E6B34; --success-soft:#EAF5E9; --warn:#D97706; --warn-soft:#FEF3C7;
@@ -550,36 +552,7 @@ p{margin:0}
 body{background:#FFFFFF!important;font-family:var(--body);color:#0D2000;margin:0;padding:0}
 h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.03em;color:#0D2000}
 
-/* Text color contrast fixes for white backgrounds */
-.screen, .screen p, .screen span, .screen div, .screen li, .screen h1, .screen h2, .screen h3, .screen h4,
-.card, .card p, .card span, .card div, .card h1, .card h2, .card h3, .card h4,
-.module, .module p, .module span, .module div, .module h3, .module h4,
-.ptopic, .ptopic p, .ptopic span, .ptopic div, .ptopic h3, .ptopic h4,
-.qa, .qa p, .qa span, .qa div, .qa h3, .qa h4,
-.qcard, .qcard p, .qcard span, .qcard div,
-.scn-card, .scn-card p, .scn-card span, .scn-card div,
-.reg-card, .reg-card p, .reg-card span, .reg-card div,
-.stat-val, .stat-lbl, .meta, .desc, .sub, .text-muted, .text-soft {
-  color: #142B1A !important;
-}
-
-.sub, .desc, .meta, .text-muted, .text-soft, .eyebrow, .sf-card p, .dash-hero p {
-  color: #2E4D38 !important;
-}
-
-.topbar, .topbar *, .btn-primary, .btn-primary *, .btn-dark, .btn-dark * {
-  color: #FFFFFF !important;
-}
-.topbar .brand, .topbar .brand * {
-  color: #FFFFFF !important;
-}
-
-button, .btn, .ptopic, .qa, .module, .opt, .d-tab, .filter, [data-go], [data-nav], [data-topic], [data-module], [data-action], [data-opt-field] {
-  cursor: pointer !important;
-  pointer-events: auto !important;
-}
-
-/* App Full Width (Starts from Left with normal padding, NO tablet frame, NO side margins) */
+/* App Canvas & Layout */
 .app{
   width:100%!important;
   max-width:100%!important;
@@ -591,15 +564,259 @@ button, .btn, .ptopic, .qa, .module, .opt, .d-tab, .filter, [data-go], [data-nav
   background:#FFFFFF!important;
 }
 
+.screen{
+  padding:28px 32px 48px!important;
+  max-width:100%!important;
+  margin:0!important;
+  width:100%!important;
+  background:#FFFFFF!important;
+  color:#142B1A;
+}
+
+/* Light Surface Typography */
+.card, .module, .ptopic, .qa, .qcard, .scn-card, .reg-card {
+  background:#FFFFFF!important;
+  border:1px solid #E2E8F0!important;
+  border-radius:14px!important;
+  box-shadow:0 2px 8px rgba(0,0,0,0.03)!important;
+  color:#142B1A;
+}
+
+.screen h1, .screen h2, .screen h3, .screen h4,
+.screen-head h1, .screen-head h2, .screen-head h3,
+.topic-head h2, .section-title h3,
+.card h1, .card h2, .card h3, .card h4,
+.q-text, .opt .o-title, .ptopic .body .t, .module .m-body .m-t, .qa .qa-t {
+  color: #142B1A !important;
+}
+
+.sub, .desc, .meta, .text-muted, .text-soft, .eyebrow, .sf-card p, .opt .o-sub, .ptopic .body .s, .module .m-body .m-s, .qa .qa-s, .reg-note, .reg-label {
+  color: #2E4D38 !important;
+}
+
+/* Interactive elements cursor */
+button, .btn, .ptopic, .qa, .module, .opt, .d-tab, .filter, [data-go], [data-nav], [data-topic], [data-module], [data-action], [data-opt-field] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.ptopic:hover, .qa:hover, .module:hover{
+  border-color:#C6863A!important;
+  box-shadow:0 8px 24px rgba(198,134,58,0.12)!important;
+  transform:translateY(-2px)!important;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   HIGH CONTRAST ON DARK & ACCENT CONTAINERS (FIX INVISIBLE TEXT)
+   ═════════════════════════════════════════════════════════════════════ */
+.topbar, .topbar *,
+.btn-primary, .btn-primary *,
+.btn-dark, .btn-dark *,
+.d-tab.on, .d-tab.on *,
+.bottom-nav, .bottom-nav *,
+.mode-banner, .mode-banner *,
+.layer.why, .layer.why *,
+.remember, .remember *,
+.control, .control *,
+.scn-setup, .scn-setup *,
+.recall-mode .rm-time, .recall-mode .rm-time *,
+.filter.on, .filter.on *,
+.assess-opt.correct .a-key,
+.assess-opt.wrong .a-key,
+.toast, .toast * {
+  color: #FFFFFF !important;
+}
+
+/* Topbar */
 .topbar{
   background:#142B1A!important;
   border-bottom:1px solid #2A4832!important;
   padding:14px 28px!important;
   color:#FFFFFF!important;
 }
-.topbar .brand{font-weight:800;letter-spacing:-.03em;color:#FFFFFF}
+.topbar .brand{font-weight:800;letter-spacing:-.03em;color:#FFFFFF!important}
 .topbar .mark,.start .mark{display:none!important}
 
+/* Buttons */
+.btn-primary{
+  background:linear-gradient(135deg,#2E6B34 0%,#142B1A 100%)!important;
+  color:#FFFFFF!important;
+  border:1px solid #D4AF37!important;
+  box-shadow:0 6px 18px rgba(46,107,52,.35)!important;
+  font-weight:700!important;
+}
+.btn-primary:hover{background:#142B1A!important}
+.btn-dark{background:#142B1A!important;color:#FFFFFF!important;border:1px solid #2A4832!important}
+.btn-soft{background:#EAF5E9!important;color:#2E6B34!important;border-color:#A7F3D0!important}
+
+/* Dark Containers (Why, Remember, Control, Scn-setup, Mode-banner) */
+.layer.why{
+  background:#142B1A!important;
+  color:#FFFFFF!important;
+  border-radius:12px!important;
+  padding:16px!important;
+}
+.layer.why .l-label .l-txt{color:#D4AF37!important;font-weight:700!important}
+.layer.why .l-label .l-ic{background:rgba(212,175,55,0.2)!important;color:#D4AF37!important}
+.layer.why p{color:#FFFFFF!important;font-size:14.5px!important;line-height:1.6!important}
+
+.remember{
+  background:#142B1A!important;
+  color:#FFFFFF!important;
+  border-radius:12px!important;
+  padding:16px!important;
+  margin-top:16px!important;
+}
+.remember .r-h{color:#D4AF37!important;font-weight:700!important}
+.remember .r-node{
+  background:rgba(255,255,255,0.12)!important;
+  border:1px solid rgba(255,255,255,0.25)!important;
+  color:#FFFFFF!important;
+}
+.remember .r-arrow{color:#D4AF37!important}
+
+.control{
+  background:#142B1A!important;
+  color:#FFFFFF!important;
+  border-radius:12px!important;
+  padding:16px!important;
+  margin-top:16px!important;
+}
+.control .ctl-h{color:#D4AF37!important;font-weight:700!important}
+.control .cf-row{border-bottom:1px solid rgba(255,255,255,0.12)!important}
+.control .cf-k{color:#D4AF37!important;font-weight:700!important}
+.control .cf-v{color:#FFFFFF!important}
+
+.scn-setup{
+  background:linear-gradient(160deg,#142B1A,#0B1A10)!important;
+  color:#FFFFFF!important;
+  padding:20px!important;
+}
+.scn-setup .eyebrow{color:#D4AF37!important;font-weight:700!important}
+.scn-setup .s-text, .scn-setup .s-q{color:#FFFFFF!important}
+
+.mode-banner{
+  background:linear-gradient(135deg,#142B1A,#20442B)!important;
+  color:#FFFFFF!important;
+  border-radius:14px!important;
+  border:1px solid #2A4832!important;
+  padding:16px 18px!important;
+}
+.mode-banner .mb-t{color:#FFFFFF!important;font-weight:700!important}
+.mode-banner .mb-s{color:rgba(255,255,255,0.88)!important}
+.mode-banner .mb-ic{background:rgba(212,175,55,0.2)!important;color:#D4AF37!important}
+
+.recall-mode .rm-time{
+  background:#142B1A!important;
+  color:#FFFFFF!important;
+}
+.recall-mode .rm-time .n, .recall-mode .rm-time .u{
+  color:#FFFFFF!important;
+}
+
+.filter.on{
+  background:#142B1A!important;
+  color:#FFFFFF!important;
+  border-color:#142B1A!important;
+}
+
+/* Tag list */
+.tag-list .tg.strong{
+  background:#EAF5E9!important;
+  color:#142B1A!important;
+  border:1px solid #A7F3D0!important;
+}
+.tag-list .tg.weak{
+  background:#FDF8EC!important;
+  color:#B0722B!important;
+  border:1px solid #EAD6BB!important;
+}
+
+/* Dashboard Hero */
+.dash-hero{
+  background:linear-gradient(135deg, #FDFBF7 0%, #F4F8F4 100%)!important;
+  color:#142B1A!important;
+  border-radius:18px!important;
+  padding:28px!important;
+  border:1px solid #C6863A!important;
+  box-shadow:0 6px 20px rgba(20,43,26,0.06)!important;
+}
+.dash-hero .eyebrow{color:#B0722B!important;font-weight:700!important}
+.dash-hero .role-name{color:#142B1A!important;font-weight:800!important;font-size:20px!important}
+.dash-hero .tl{color:#2E4D38!important}
+.dash-hero .btn-ghost{
+  color:#142B1A!important;
+  border-color:#CBD5E1!important;
+  background:#FFFFFF!important;
+  font-weight:600!important;
+}
+.dash-hero .btn-ghost:hover{background:#F4F8F4!important}
+.dash-hero .mode-chip{
+  background:#FDF8EC!important;
+  color:#B0722B!important;
+  border:1px solid #EAD6BB!important;
+  font-weight:700!important;
+}
+.dash-hero .dial .num{color:#142B1A!important;font-weight:800!important}
+.dash-hero .dial .pct{color:#2E4D38!important}
+.dash-hero .dial-meta .label{color:#2E4D38!important}
+.dash-hero .dial-meta .status{color:#2E6B34!important;font-weight:700!important}
+.dash-hero .dial-meta .rec{
+  background:#FFFFFF!important;
+  border:1px solid #E2E8F0!important;
+  color:#142B1A!important;
+}
+.dash-hero .dial-meta .rec b{color:#B0722B!important}
+
+/* Practice & Think Box */
+.think{
+  background:#FDF8EC!important;
+  border:1px dashed #C6863A!important;
+  color:#142B1A!important;
+}
+.think .th-t{color:#B0722B!important;font-weight:700!important}
+.think .th-s{color:#2E4D38!important}
+.answer .a-block.how{
+  background:#F4F8F4!important;
+  border:1px solid #E2E8F0!important;
+  padding:16px!important;
+  border-radius:12px!important;
+  margin-top:16px!important;
+}
+.answer .a-block.how p{color:#142B1A!important;font-size:14px!important;line-height:1.6!important}
+.answer .a-label{color:#2E6B34!important;font-weight:700!important}
+
+/* Takeaway layer */
+.takeaway{
+  background:#FDF8EC!important;
+  border:1px solid #EAD6BB!important;
+  color:#142B1A!important;
+}
+.takeaway .tk-h{color:#B0722B!important;font-weight:700!important}
+.takeaway li{color:#142B1A!important}
+
+/* Case Card */
+.case-card{
+  background:#F4F8F4!important;
+  border:1px solid #CBD5E1!important;
+}
+.case-card .l-label{color:#2E6B34!important;font-weight:700!important}
+.case-card .cc-k{color:#2E4D38!important;font-weight:700!important}
+.case-card .cc-v{color:#142B1A!important}
+
+/* Assessment options */
+.assess-explain{
+  background:#F4F8F4!important;
+  border:1px solid #CBD5E1!important;
+  color:#2E4D38!important;
+}
+.assess-explain b{color:#142B1A!important}
+.assess-opt.correct{background:#EAF5E9!important;border-color:#2E6B34!important}
+.assess-opt.correct .a-key{background:#2E6B34!important;color:#FFFFFF!important}
+.assess-opt.wrong{background:rgba(180,70,47,.08)!important;border-color:#EF4444!important}
+.assess-opt.wrong .a-key{background:#EF4444!important;color:#FFFFFF!important}
+
+/* Start screen */
 .start{
   background:#FFFFFF!important;
   color:#0D2000!important;
@@ -720,49 +937,6 @@ button, .btn, .ptopic, .qa, .module, .opt, .d-tab, .filter, [data-go], [data-nav
   font-weight:700!important;
   text-align:center!important;
   margin-top:auto!important;
-}
-
-.btn-primary{
-  background:linear-gradient(135deg,#2E6B34 0%,#142B1A 100%)!important;
-  color:#FFFFFF!important;
-  border:1px solid #D4AF37!important;
-  box-shadow:0 6px 18px rgba(46,107,52,.35)!important;
-  font-weight:700!important;
-}
-.btn-primary:hover{background:#142B1A!important}
-.btn-dark{background:#142B1A!important;color:#FFFFFF!important;border:1px solid #2A4832!important}
-.btn-soft{background:#EAF5E9!important;color:#2E6B34!important;border-color:#A7F3D0!important}
-
-.screen{
-  padding:28px 32px 48px!important;
-  max-width:100%!important;
-  margin:0!important;
-  width:100%!important;
-  background:#FFFFFF!important;
-}
-
-.dash-hero{
-  background:linear-gradient(135deg, #FDFBF7 0%, #F4F8F4 100%)!important;
-  color:#142B1A!important;
-  border-radius:18px!important;
-  padding:28px!important;
-  border:1px solid #C6863A!important;
-  box-shadow:0 6px 20px rgba(20,43,26,0.06)!important;
-}
-.dash-hero h1, .dash-hero h2, .dash-hero h3{color:#142B1A!important}
-.dash-hero p, .dash-hero span{color:#2E4D38!important}
-
-.card, .module, .ptopic, .qa, .qcard, .scn-card, .reg-card{
-  background:#FFFFFF!important;
-  border:1px solid #E2E8F0!important;
-  border-radius:14px!important;
-  box-shadow:0 2px 8px rgba(0,0,0,0.03)!important;
-}
-
-.ptopic:hover, .qa:hover, .module:hover{
-  border-color:#C6863A!important;
-  box-shadow:0 8px 24px rgba(198,134,58,0.12)!important;
-  transform:translateY(-2px)!important;
 }
 
 .dash-grid-layout{
@@ -1685,7 +1859,13 @@ window.RM = (function () {
   }
 
   /* -------------------------------------------------------------- BACKEND */
-  var API_BASE = "/Regmate-backend/api/";
+  var BACKEND_HOST = (function() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return '';
+    }
+    return 'https://demogiftcity.onrender.com';
+  })();
+  var API_BASE = BACKEND_HOST + "/Regmate-backend/api/";
   function apiCall(action, payload) {
     var controller = window.AbortController ? new AbortController() : null;
     var timer = controller ? setTimeout(function(){ controller.abort(); }, 12000) : null;
@@ -2144,7 +2324,7 @@ window.RM = (function () {
       // hero
       '<div class="dash-hero"><span class="eyebrow">Your FME interview prep</span>' +
       '<div class="row-top"><div><div class="role-name">' + r.name + '</div><div class="tl">Interview ' + (t ? t.label.toLowerCase() : "—") + " · " + (state.experience ? D.experience.find(function (e) { return e.id === state.experience; }).label : "") + '</div></div>' +
-      '<div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-sm btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.05)" data-change-profile>Change profile</button><span class="mode-chip">' + mode.label + "</span></div></div>" +
+      '<div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-sm btn-ghost" data-change-profile>Change profile</button><span class="mode-chip">' + mode.label + "</span></div></div>" +
       '<div class="dial-wrap"><div class="dial">' + dial(rd.overall, 96, 9, true) +
       '<div class="val"><span class="num">' + rd.overall + '</span><span class="pct">% ready</span></div></div>' +
       '<div class="dial-meta"><div class="label">Readiness Score</div><div class="status">' + status + "</div>" +
@@ -2440,21 +2620,21 @@ window.RM = (function () {
       state.progress.recall[state.recallMode] = true; save(); track("recall_completed", { section_name: state.recallMode });
       return '<div class="fade" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;text-align:center">' +
         '<div style="width:64px;height:64px;border-radius:18px;background:rgba(198,134,58,.2);color:var(--accent);display:grid;place-items:center;margin:0 auto 18px">' + wrapIc("check", 30) + "</div>" +
-        '<h2 style="color:#fff">' + esc(m.label) + " complete</h2>" +
-        '<p style="color:var(--on-dark-2);margin-top:8px">You reviewed ' + cards.length + " cards. That counts toward your recall score.</p>" +
+        '<h2 style="color:var(--text)">' + esc(m.label) + " complete</h2>" +
+        '<p style="color:var(--text-2);margin-top:8px">You reviewed ' + cards.length + " cards. That counts toward your recall score.</p>" +
         '<div style="max-width:280px;margin:24px auto 0;width:100%"><button class="btn btn-primary" data-recall="' + state.recallMode + '">Run again</button>' +
-        '<button class="btn btn-ghost" style="margin-top:10px;color:#fff;border-color:rgba(255,255,255,.2)" data-recall-back>Other recall modes</button></div></div>';
+        '<button class="btn btn-ghost" style="margin-top:10px" data-recall-back>Other recall modes</button></div></div>';
     }
     var c = cards[state.flashIndex];
     var flipped = state.flashFlipped;
     return '<div class="fade flash-wrap">' +
-      '<div class="topic-nav"><button class="back" data-recall-back style="color:var(--on-dark-2)">' + wrapIc("chevL", 16) + " " + esc(m.label) + "</button></div>" +
+      '<div class="topic-nav"><button class="back" data-recall-back>' + wrapIc("chevL", 16) + " " + esc(m.label) + "</button></div>" +
       '<div class="flash-count">' + (state.flashIndex + 1) + " / " + cards.length + "</div>" +
       '<div class="flash" data-flip><div class="fc-cat"><span class="eyebrow">' + c.cat + "</span></div>" +
       (flipped ? '<div class="fc-def reveal-anim">' + esc(c.back) + "</div>" : '<div class="fc-term">' + esc(c.front) + "</div>") +
       '<div class="fc-hint">' + (flipped ? "" : "Tap to reveal") + "</div></div>" +
       '<div class="flash-nav">' +
-      '<button class="btn btn-ghost btn-inline" style="color:#fff;border-color:rgba(255,255,255,.2)" data-flash-prev>' + wrapIc("chevL", 16) + "</button>" +
+      '<button class="btn btn-ghost btn-inline" data-flash-prev>' + wrapIc("chevL", 16) + "</button>" +
       '<button class="btn btn-primary grow" data-flash-next>' + (state.flashIndex < cards.length - 1 ? "Next card" : "Finish") + " " + wrapIc("arrow", 18) + "</button></div></div>";
   }
 
@@ -2612,6 +2792,8 @@ window.RM = (function () {
         if (!res.ok) throw new Error(res.message || "Registration failed");
         state.registered = true; state.candidateId = res.candidate_id; state.candidateCode = res.candidate_code; state.accessToken = res.access_token;
         state.candidateName = name.trim(); state.candidateMobile = mobile.trim(); state.candidateEmail = email.trim();
+        if (res.token) localStorage.setItem('regmate_token', res.token);
+        if (res.user) localStorage.setItem('regmate_user', JSON.stringify(res.user));
         state._regError = ""; state._obStep = 0; save(); track("registration_completed"); go("onboarding");
       }).catch(function (err) {
         state._regError = err.message || "Unable to register. Please try again.";
@@ -2630,6 +2812,8 @@ window.RM = (function () {
         if(!res.ok) throw new Error(res.message || "Details not found");
         state.registered=true; state.onboarded=true; state.candidateId=res.candidate_id; state.candidateCode=res.candidate_code; state.accessToken=res.access_token;
         state.candidateName=res.name; state.candidateMobile=res.mobile; state.candidateEmail=res.email; state.role=res.role; state.experience=res.experience; state.timeline=res.interview_timing;
+        if (res.token) localStorage.setItem('regmate_token', res.token);
+        if (res.user) localStorage.setItem('regmate_user', JSON.stringify(res.user));
         state._loginError=""; save(); track("resume_login"); toast("Welcome back, " + res.name.split(" ")[0]); go("dash");
       }).catch(function(err){ state._loginError=err.message || "Unable to find your profile."; render(); });
     };
@@ -2727,6 +2911,131 @@ window.RM = (function () {
       };
     });
 
+    async function getRazorpayKey() {
+      var res = await fetch(BACKEND_HOST + '/api/payments/key-id');
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to get Razorpay key');
+      return data.keyId;
+    }
+
+    async function startRazorpay(options) {
+      var productType = options.productType;
+      var productId = options.productId;
+      var onSuccess = options.onSuccess;
+      try {
+        var token = localStorage.getItem('regmate_token');
+
+        if (!token && state.candidateEmail) {
+          try {
+            var authRes = await apiCall("login", { email: state.candidateEmail, mobile: state.candidateMobile || '0000000000' });
+            if (authRes && authRes.token) {
+              token = authRes.token;
+              localStorage.setItem('regmate_token', token);
+              if (authRes.user) localStorage.setItem('regmate_user', JSON.stringify(authRes.user));
+            }
+          } catch(e) {}
+        }
+
+        if (!token) {
+          alert('Please enter your details or register first before purchasing a pass.');
+          var modalEl = document.getElementById("job-upgrade-modal");
+          if (modalEl) modalEl.remove();
+          go("start");
+          return;
+        }
+
+        var keyId = await getRazorpayKey();
+
+        var orderRes = await fetch(BACKEND_HOST + '/api/payments/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            productType: productType || 'course',
+            productId: productType === 'course' ? productId : 'full_access'
+          })
+        });
+
+        var orderData = await orderRes.json();
+        if (!orderRes.ok || !orderData.success) {
+          throw new Error(orderData.message || 'Order creation failed');
+        }
+
+        var rzpOptions = {
+          key: keyId,
+          amount: orderData.amount,
+          currency: orderData.currency || 'INR',
+          name: 'RegMate',
+          description: productType === 'membership'
+            ? 'RegMate All‑Access Annual Membership (1 Year)'
+            : 'RegMate JobReady – FME Interview Ready Pass',
+          image: 'https://demogiftcity.vercel.app/logoheader.jpeg',
+          order_id: orderData.orderId,
+          handler: async function (response) {
+            try {
+              var verifyRes = await fetch(BACKEND_HOST + '/api/payments/verify', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  productType: productType,
+                  productId: productType === 'course' ? productId : 'full_access'
+                })
+              });
+              var verifyData = await verifyRes.json();
+              if (verifyRes.ok && verifyData.success) {
+                if (verifyData.user) {
+                  localStorage.setItem('regmate_user', JSON.stringify(verifyData.user));
+                }
+                var currentSubs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
+                var passKey = productType === 'membership' ? 'full_access' : (productId || 'job_ready');
+                if (currentSubs.indexOf(passKey) === -1) {
+                  currentSubs.push(passKey);
+                }
+                localStorage.setItem('regmate_subscriptions', JSON.stringify(currentSubs));
+
+                toast("Payment verified! Pass activated successfully.");
+                if (onSuccess) onSuccess();
+              } else {
+                alert(verifyData.message || 'Payment verification failed. Please contact support.');
+              }
+            } catch(verErr) {
+              console.error('Verification error:', verErr);
+              alert('Network error verifying payment. Please contact support with Payment ID: ' + response.razorpay_payment_id);
+            }
+          },
+          prefill: {
+            name: state.candidateName || '',
+            email: state.candidateEmail || '',
+            contact: state.candidateMobile || ''
+          },
+          theme: { color: '#142B1A' },
+          modal: {
+            ondismiss: function() {
+              console.log('Razorpay checkout dismissed.');
+            }
+          }
+        };
+
+        var rzp = new window.Razorpay(rzpOptions);
+        rzp.on('payment.failed', function (err) {
+          console.error('Payment failed', err);
+          alert(err.error?.description || 'Payment failed or was cancelled.');
+        });
+        rzp.open();
+      } catch (e) {
+        console.error(e);
+        alert(e.message || 'Unable to open checkout.');
+      }
+    }
+
   function showJobUpgradeModal() {
     var modalHtml = '<div id="job-upgrade-modal" style="position:fixed;inset:0;z-index:999;background:rgba(15,23,42,0.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;">' +
       '<div style="background:#fff;border-radius:24px;max-width:620px;width:100%;padding:28px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);position:relative;">' +
@@ -2741,13 +3050,13 @@ window.RM = (function () {
       '<div><div style="font-size:10px;font-weight:800;color:#475569;text-transform:uppercase">Option 1</div><h3 style="font-size:16px;font-weight:800;color:#0F172A;margin:4px 0">FME Interview Ready Pass</h3>' +
       '<p style="font-size:11px;color:#64748B">Unlock all Job & Interview Ready modules.</p>' +
       '<div style="font-size:24px;font-weight:800;color:#0F172A;margin:12px 0">₹499</div></div>' +
-      '<button id="buy-job-499" style="width:100%;padding:10px;background:#0F172A;color:#fff;border-radius:10px;font-weight:700;font-size:12px;border:none;cursor:pointer">Buy Pass — ₹499</button></div>' +
+      '<button id="buy-job-499" style="width:100%;padding:12px;background:#142B1A;color:#fff;border-radius:10px;font-weight:700;font-size:13px;border:none;cursor:pointer">Buy Pass — ₹499</button></div>' +
       '<div style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;position:relative;">' +
       '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#F59E0B;color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase">Best Value</div>' +
       '<div><div style="font-size:10px;font-weight:800;color:#B45309;text-transform:uppercase">Option 2</div><h3 style="font-size:16px;font-weight:800;color:#0F172A;margin:4px 0">RegMate All-Access Pass</h3>' +
       '<p style="font-size:11px;color:#64748B">Full access to site: Jobs, Regulations, Quizzes.</p>' +
       '<div style="font-size:24px;font-weight:800;color:#0F172A;margin:12px 0">₹1,999<span style="font-size:11px;color:#64748B">/yr</span></div></div>' +
-      '<button id="buy-job-1999" style="width:100%;padding:10px;background:#D97706;color:#fff;border-radius:10px;font-weight:700;font-size:12px;border:none;cursor:pointer">Get Full Access — ₹1,999/yr</button></div>' +
+      '<button id="buy-job-1999" style="width:100%;padding:12px;background:#C6863A;color:#fff;border-radius:10px;font-weight:700;font-size:13px;border:none;cursor:pointer">Get Full Access — ₹1,999/yr</button></div>' +
       '</div></div></div>';
 
     var existing = document.getElementById("job-upgrade-modal");
@@ -2762,23 +3071,28 @@ window.RM = (function () {
       if (m) m.remove();
     };
 
-    var grantPass = function(passId) {
-      var subs = JSON.parse(localStorage.getItem('regmate_subscriptions') || '[]');
-      if (subs.indexOf(passId) === -1) subs.push(passId);
-      localStorage.setItem('regmate_subscriptions', JSON.stringify(subs));
-
-      var u = JSON.parse(localStorage.getItem('regmate_user') || '{}');
-      if (passId === 'full_access') u.membershipStatus = 'active';
-      localStorage.setItem('regmate_user', JSON.stringify(u));
-
-      var m = document.getElementById("job-upgrade-modal");
-      if (m) m.remove();
-
-      render();
+    document.getElementById('buy-job-499').onclick = function() {
+      startRazorpay({
+        productType: 'course',
+        productId: 'job_ready',
+        onSuccess: function() {
+          var m = document.getElementById('job-upgrade-modal');
+          if (m) m.remove();
+          render();
+        }
+      });
     };
-
-    document.getElementById("buy-job-499").onclick = function() { grantPass('job_ready'); };
-    document.getElementById("buy-job-1999").onclick = function() { grantPass('full_access'); };
+    document.getElementById('buy-job-1999').onclick = function() {
+      startRazorpay({
+        productType: 'membership',
+        productId: 'full_access',
+        onSuccess: function() {
+          var m = document.getElementById('job-upgrade-modal');
+          if (m) m.remove();
+          render();
+        }
+      });
+    };
   }
 
     // practice

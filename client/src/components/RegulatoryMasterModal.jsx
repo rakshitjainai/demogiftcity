@@ -206,8 +206,8 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  // Tab navigation: default to 'modules' (Syllabus/Chapter List overview first!)
-  const [activeTab, setActiveTab] = useState('modules');
+  // Tab navigation: default to 'home' (Chapter 1 Interactive Free Preview first!)
+  const [activeTab, setActiveTab] = useState('home');
   const [regLearnStep, setRegLearnStep] = useState('understand');
   const [topicIndex, setTopicIndex] = useState(0);
   const [practiceSelectedOption, setPracticeSelectedOption] = useState(null);
@@ -226,9 +226,9 @@ function RegulatoryMasterModalInner({ course, onClose }) {
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
 
-  // Reset view to Chapter List overview whenever modal opens or course changes
+  // Reset view to Chapter 1 interactive lesson whenever modal opens or course changes
   useEffect(() => {
-    setActiveTab('modules');
+    setActiveTab('home');
     setSelectedTopicId(null);
     setSelectedModuleId(null);
     setTopicIndex(0);
@@ -544,7 +544,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-paper/90 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[9999] flex flex-col bg-[#F8FAFC] overflow-hidden animate-fade-in"
       style={{
         fontFamily: "'Public Sans', system-ui, -apple-system, sans-serif",
         color: 'var(--ink)',
@@ -552,7 +552,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
       onMouseDown={(e) => e.stopPropagation()}
     >
       {/* ─── Unified Top Header Controller (Strict Non-Overlapping Header) ─── */}
-      <header className="bg-white border-b border-slate-200 px-3 sm:px-8 py-2.5 sm:py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 shadow-2xs flex-shrink-0 z-30">
+      <header className="w-full bg-white border-b border-slate-200 px-3 sm:px-8 py-2.5 sm:py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3 shadow-2xs flex-shrink-0 z-30">
         {/* Left: Logo, Title & Chapter Back Button */}
         <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 flex-wrap">
           <div className="flex items-center gap-1.5 sm:gap-2 font-bold text-base sm:text-lg text-[#073321]">
@@ -1028,7 +1028,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                         {visibleTopics.map((topic, offsetIdx) => {
                           const idx = safePage * CHAPTERS_PER_PAGE + offsetIdx;
                           const chNum = idx + 1;
-                          const isUnlocked = hasAccess ? hasAccess('job_ready', idx) : idx < 2;
+                          const isUnlocked = isCourseOwned || (hasAccess ? hasAccess(resolvedSlug, idx) : idx < 1);
                           const isCompleted = completedSet.has(topic.id);
 
                           return (
@@ -1333,7 +1333,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                       const topicIds = fmeContent.moduleTopics[m.id] || [];
                       const isExpanded = selectedModuleId === m.id;
                       const doneTopics = topicIds.filter(tId => completedSet.has(tId)).length;
-                      const isUnlocked = hasAccess ? hasAccess('job_ready', idx) : idx < 2;
+                      const isUnlocked = isCourseOwned || (hasAccess ? hasAccess(resolvedSlug, idx) : idx < 2);
 
                       return (
                         <div key={m.id} className={`bg-white border ${isUnlocked ? 'border-line' : 'border-amber-200 bg-amber-50/20'} rounded-2xl overflow-hidden card-shadow relative`}>

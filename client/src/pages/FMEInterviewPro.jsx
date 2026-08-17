@@ -51,7 +51,7 @@ export default function FMEInterviewPro() {
   if (user?.name) queryParams.set('name', user.name);
   if (user?.email) queryParams.set('email', user.email);
   const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-  const iframeSrc = `/job-interface/index.html${queryString}`;
+  const iframeSrc = `/fme-interviewpro.html${queryString}`;
 
   return (
     <div className="w-full flex-1 min-h-[calc(100vh-64px)] flex flex-col bg-white relative">
