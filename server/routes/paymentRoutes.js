@@ -25,10 +25,11 @@ function getRazorpayInstance() {
 // Pricing rules (Server-side source of truth — never trust client amounts)
 const PRODUCT_PRICING = {
   course: 49900,      // ₹499 in paise
+  job_pass: 49900,    // ₹499 in paise (FME Interview Ready Pass)
   membership: 199900  // ₹1,999 in paise (1 year access)
 };
 
-const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme'];
+const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme', 'job_ready', 'interview_pro'];
 
 // ─── GET /api/payments/key-id ─────────────────────────────────────────────
 // Exposes only the public Razorpay Key ID to the client
@@ -80,13 +81,13 @@ router.post('/create-order', protect, async (req, res) => {
     const user = req.user;
     const { productType, productId } = req.body;
 
-    if (!productType || !['course', 'membership'].includes(productType)) {
-      return res.status(400).json({ message: "Invalid productType. Must be 'course' or 'membership'." });
+    if (!productType || !['course', 'job_pass', 'membership'].includes(productType)) {
+      return res.status(400).json({ message: "Invalid productType. Must be 'course', 'job_pass', or 'membership'." });
     }
 
-    if (productType === 'course') {
+    if (productType === 'course' || productType === 'job_pass') {
       if (!productId || !VALID_COURSES.includes(productId)) {
-        return res.status(400).json({ message: `Invalid course ID. Supported courses: ${VALID_COURSES.join(', ')}` });
+        return res.status(400).json({ message: `Invalid course/pass ID. Supported: ${VALID_COURSES.join(', ')}` });
       }
     }
 
@@ -105,12 +106,12 @@ router.post('/create-order', protect, async (req, res) => {
       });
     }
 
-    // Check if user already purchased this specific course
-    if (productType === 'course') {
+    // Check if user already purchased this specific course or pass
+    if (productType === 'course' || productType === 'job_pass') {
       const alreadyBought = (user.coursePurchases || []).some(p => p.courseSlug === productId);
       if (alreadyBought) {
         return res.status(400).json({
-          message: 'You have already purchased this course. Your access is active.'
+          message: 'You have already purchased this pass/course. Your access is active.'
         });
       }
     }
@@ -127,7 +128,7 @@ router.post('/create-order', protect, async (req, res) => {
 
     const amount = PRODUCT_PRICING[productType];
     const currency = 'INR';
-    const cleanProductId = productType === 'course' ? productId : 'full_access';
+    const cleanProductId = productType === 'membership' ? 'full_access' : productId;
     const receipt = `rcpt_${user._id.toString().slice(-6)}_${Date.now()}`;
 
     const orderOptions = {
@@ -257,7 +258,7 @@ router.post('/verify', protect, async (req, res) => {
       };
       user.membershipStatus = 'active';
       user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
-    } else if (cleanProductType === 'course') {
+    } else if (cleanProductType === 'course' || cleanProductType === 'job_pass') {
       const existingIndex = (user.coursePurchases || []).findIndex(p => p.courseSlug === cleanProductId);
       if (existingIndex === -1) {
         user.coursePurchases.push({
@@ -334,7 +335,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
             };
             user.membershipStatus = 'active';
             user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
-          } else if (productType === 'course' && productId) {
+          } else if ((productType === 'course' || productType === 'job_pass') && productId) {
             const alreadyPresent = (user.coursePurchases || []).some(p => p.courseSlug === productId);
             if (!alreadyPresent) {
               user.coursePurchases.push({

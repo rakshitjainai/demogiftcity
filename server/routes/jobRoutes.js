@@ -1,6 +1,8 @@
 import express from 'express';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const router = express.Router();
 
@@ -39,11 +41,13 @@ const generateToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) => crypto.createHash('sha256').update(token || '').digest('hex');
 
 // Format candidate response for job interface
-const formatCandidateResponse = (c, rawToken) => ({
+const formatCandidateResponse = (c, rawToken, jwtToken, userJson) => ({
   ok: true,
   candidate_id: c._id.toString(),
   candidate_code: c.candidate_code,
   access_token: rawToken,
+  token: jwtToken,
+  user: userJson,
   name: c.name,
   mobile: c.mobile,
   email: c.email,
@@ -109,6 +113,20 @@ const handleRegister = async (req, res) => {
       });
     }
 
+    // Ensure User record exists in MongoDB
+    let user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      user = await User.create({
+        name: cleanName,
+        email: cleanEmail,
+        phone: cleanMobile,
+        role: 'member',
+        membershipStatus: 'free',
+        subscriptionPlan: 'Free Tier'
+      });
+    }
+    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'regmate_jwt_secret_key_2026_secure', { expiresIn: '30d' });
+
     await JobActivity.create({
       candidate_id: candidate._id,
       event_name: 'registration',
@@ -119,7 +137,9 @@ const handleRegister = async (req, res) => {
       ok: true,
       candidate_id: candidate._id.toString(),
       candidate_code: candidate.candidate_code,
-      access_token: rawToken
+      access_token: rawToken,
+      token: jwtToken,
+      user: user.toAuthJSON()
     });
   } catch (error) {
     console.error('Job registration error:', error);
@@ -144,13 +164,27 @@ const handleLogin = async (req, res) => {
     candidate.last_active = new Date();
     await candidate.save();
 
+    // Ensure User record exists in MongoDB
+    let user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      user = await User.create({
+        name: candidate.name,
+        email: cleanEmail,
+        phone: cleanMobile,
+        role: 'member',
+        membershipStatus: 'free',
+        subscriptionPlan: 'Free Tier'
+      });
+    }
+    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'regmate_jwt_secret_key_2026_secure', { expiresIn: '30d' });
+
     await JobActivity.create({
       candidate_id: candidate._id,
       event_name: 'resume_login',
       section_name: 'resume'
     });
 
-    return res.json(formatCandidateResponse(candidate, rawToken));
+    return res.json(formatCandidateResponse(candidate, rawToken, jwtToken, user.toAuthJSON()));
   } catch (error) {
     console.error('Job login error:', error);
     return res.status(500).json({ ok: false, message: 'Login could not be completed.' });
