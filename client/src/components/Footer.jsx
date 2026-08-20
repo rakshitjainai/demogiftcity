@@ -1,33 +1,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, ShieldCheck } from 'lucide-react';
+import { MessageCircle, ShieldCheck, Mail, MapPin } from 'lucide-react';
 import logoFooter from '../assets/logofotter.jpeg';
 import { useAuth } from '../context/AuthContext';
 
 const FOOTER_NAV = [
   {
-    heading: 'Knowledge',
+    heading: 'Products',
     links: [
-      { label: 'Interactive Regulations', href: '/interactive-regulations' },
-      { label: 'Quizzes', href: '/quizzes' },
-      { label: 'Learning', href: '/learning' },
+      { label: 'RegLearn — Courses', href: '/learn' },
+      { label: 'RegLens — Regulations', href: '/understand' },
+      { label: 'RegPractice — Tests & Quizzes', href: '/practice' },
+      { label: 'RegTools — Compliance Tools', href: '/tools' },
+      { label: 'RegReady — Role Preparation', href: '/prepare' },
+      { label: 'RegIntel — Updates & Tracker', href: '/regintel' },
     ]
   },
   {
-    heading: 'Resources',
+    heading: 'Free Resources',
     links: [
-      { label: 'Compliance Tools', href: '/tools' },
-      { label: 'Templates', href: '/templates' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'News', href: '/news' },
+      { label: 'Regulatory Blogs & Analysis', href: '/free-resources/blogs' },
+      { label: 'Board Formats & Templates', href: '/free-resources/templates' },
+      { label: 'Compliance Checklists', href: '/tools' },
+      { label: 'Regulatory Calendar', href: '/tools/compliance-calendar' },
+      { label: 'Adjudication Orders', href: '/news' },
     ]
   },
   {
-    heading: 'Account',
+    heading: 'Platform',
     links: [
-      { label: 'Membership', action: 'register' },
-      { label: 'Dashboard', href: '/admin', reqAdmin: true },
-      { label: 'My Profile', action: 'login' },
+      { label: 'About RegMate', href: '/about' },
+      { label: 'All-Access Membership', href: '/membership' },
+      { label: 'Member Dashboard', href: '/dashboard' },
+      { label: 'Admin Console', href: '/admin', reqAdmin: true },
     ]
   }
 ];
@@ -43,7 +48,7 @@ export default function Footer({ onOpenAuth }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-10 pb-10"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-10"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
 
           {/* Brand column (2 cols) */}
@@ -59,11 +64,11 @@ export default function Footer({ onOpenAuth }) {
               />
             </div>
 
-            <p className="text-[12px] leading-relaxed max-w-[280px]" style={{ color: 'rgba(255,255,255,0.6)' }}>
-              Regulatory intelligence, learning, and practical compliance resources for professionals.
+            <p className="text-[12.5px] leading-relaxed max-w-[320px]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              India & GIFT IFSC's premier regulatory learning, compliance automation, examination simulation, and role preparation platform.
             </p>
 
-            {/* Social & Contact Icons: WhatsApp + LinkedIn (Simple monochrome aesthetic) */}
+            {/* Social & Contact Icons */}
             <div className="pt-2 flex items-center gap-3">
               {/* WhatsApp Chat Icon */}
               <a
@@ -100,7 +105,7 @@ export default function Footer({ onOpenAuth }) {
             <div key={column.heading} className="space-y-4">
               <h4
                 className="text-[11px] font-bold uppercase tracking-wider"
-                style={{ color: 'var(--leaf-bright)', opacity: 0.85 }}
+                style={{ color: 'var(--gold-soft)', opacity: 0.9 }}
               >
                 {column.heading}
               </h4>
@@ -113,33 +118,17 @@ export default function Footer({ onOpenAuth }) {
                       <li key={item.label}>
                         <Link
                           to={item.href}
-                          className="text-xs transition-colors hover:text-white flex items-center gap-1"
-                          style={{ color: 'rgba(255,255,255,0.6)' }}
+                          className="text-xs transition-colors hover:text-white flex items-center gap-1.5"
+                          style={{ color: 'rgba(255,255,255,0.65)' }}
                         >
-                          {item.reqAdmin && <ShieldCheck className="w-3 h-3 text-amber-400" />}
+                          {item.reqAdmin && <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />}
                           <span>{item.label}</span>
                         </Link>
                       </li>
                     );
                   }
 
-                  return (
-                    <li key={item.label}>
-                      <button
-                        onClick={() => {
-                          if (isAuthenticated) {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          } else if (onOpenAuth) {
-                            onOpenAuth(item.action || 'login');
-                          }
-                        }}
-                        className="text-xs transition-colors hover:text-white text-left cursor-pointer"
-                        style={{ color: 'rgba(255,255,255,0.6)' }}
-                      >
-                        {item.label}
-                      </button>
-                    </li>
-                  );
+                  return null;
                 })}
               </ul>
             </div>
@@ -147,12 +136,15 @@ export default function Footer({ onOpenAuth }) {
 
         </div>
 
-        {/* Bottom bar: Copyright only */}
-        <div className="pt-6 flex items-center justify-between text-xs"
-          style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <p>© 2026 RegMate. All rights reserved.</p>
+        {/* Bottom bar */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p>© {new Date().getFullYear()} RegMate. All rights reserved. Professional Regulatory Intelligence & Learning.</p>
+          <div className="flex items-center gap-5">
+            <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+            <Link to="/membership" className="hover:text-white transition-colors">Pricing</Link>
+            <Link to="/interactive-regulations" className="hover:text-white transition-colors">Disclaimers</Link>
+          </div>
         </div>
-
       </div>
     </footer>
   );

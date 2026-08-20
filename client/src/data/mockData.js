@@ -258,45 +258,193 @@ export const COMPLIANCE_TOOLS = [
 ];
 
 export const NAV_LINKS = [
-  { label: "Home", href: "/", active: true },
-  { 
-    label: "Knowledge Hub", 
-    href: "/knowledge-hub",
+  {
+    label: "Learn",
+    href: "/learn",
     hasDropdown: true,
-    subItems: [
-      "Interactive Regulations",
-      "Regulatory Master",
-      "ExamReady Mock Test",
-      "Quizzes",
-      "Diagnostic Tests",
-      "My Learning",
-      "My Certificates"
-    ]
-  },
-  { 
-    label: "Compliance Tools", 
-    href: "/tools", 
-    hasDropdown: true, 
-    subItems: [
-      "Compliance Calendar",
-      "Annual Filing Tracker",
-      "Board Meeting Planner",
-      "ESOP Calculator",
-      "AML Risk Assessment"
+    megaMenu: true,
+    productName: "RegLearn",
+    productTagline: "Structured learning through expert-designed courses and modules.",
+    subGroups: [
+      {
+        heading: "Courses",
+        items: [
+          { label: "Companies Act", href: "/learn?reg=companies-act" },
+          { label: "SEBI", href: "/learn?reg=sebi" },
+          { label: "IFSCA", href: "/learn?reg=ifsca" },
+          { label: "RBI", href: "/learn?reg=rbi" },
+          { label: "FEMA", href: "/learn?reg=fema" },
+          { label: "Insurance", href: "/learn?reg=insurance" },
+          { label: "Capital Markets", href: "/learn?reg=capital-markets" },
+          { label: "Corporate Governance", href: "/learn?reg=corporate-governance" },
+          { label: "More Topics", href: "/learn" }
+        ]
+      },
+      {
+        heading: "Learning Paths",
+        items: [
+          { label: "Corporate Law", href: "/learn/paths/corporate-law" },
+          { label: "Securities & Capital Markets", href: "/learn/paths/securities" },
+          { label: "IFSC & GIFT City", href: "/learn/paths/ifsc" },
+          { label: "Financial Regulation", href: "/learn/paths/financial-regulation" },
+          { label: "Compliance Professional", href: "/learn/paths/compliance" }
+        ]
+      }
+    ],
+    myItems: [
+      { label: "My Learning", href: "/dashboard" }
     ]
   },
   {
-    label: "Products",
-    href: "/fme-interviewpro",
+    label: "Practice",
+    href: "/practice",
     hasDropdown: true,
-    subItems: [
-      "FME-InterviewPro"
+    megaMenu: true,
+    productName: "RegPractice",
+    productTagline: "Test your knowledge with quizzes, tests and mock exams.",
+    subGroups: [
+      {
+        heading: "Quizzes",
+        items: [
+          { label: "Today's Quiz", href: "/practice/quizzes" },
+          { label: "Topic Quizzes", href: "/practice/quizzes" },
+          { label: "Quiz History", href: "/dashboard" }
+        ]
+      },
+      {
+        heading: "Mock Tests",
+        items: [
+          { label: "Topic Tests", href: "/practice/mock-tests" },
+          { label: "Subject Tests", href: "/practice/mock-tests" },
+          { label: "Full-Length Mock Tests", href: "/practice/mock-tests" },
+          { label: "Exam Simulations", href: "/practice/mock-tests" }
+        ]
+      },
+      {
+        heading: "Question Bank",
+        items: [
+          { label: "Practice by Topic", href: "/practice/question-bank" },
+          { label: "Practice by Regulator", href: "/practice/question-bank" },
+          { label: "My Attempts", href: "/dashboard" }
+        ]
+      },
+      {
+        heading: "Analytics",
+        items: [
+          { label: "Performance & Analytics", href: "/dashboard" },
+          { label: "Certificates", href: "/dashboard" }
+        ]
+      }
     ]
   },
-  { label: "Templates", href: "/templates", hasDropdown: false },
-  { label: "Blog", href: "/blog", hasDropdown: false },
-  { label: "News", href: "/news", hasDropdown: false },
-  { label: "About", href: "/about", hasDropdown: false }
+  {
+    label: "Tools",
+    href: "/tools",
+    hasDropdown: true,
+    megaMenu: true,
+    productName: "RegTools",
+    productTagline: "Smart compliance tools and calculators for professional tasks.",
+    subGroups: [
+      {
+        heading: "Compliance Tools",
+        items: [
+          { label: "Compliance Calendar", href: "/tools/compliance-calendar" },
+          { label: "Compliance Diagnostic", href: "/tools/compliance-diagnostic" },
+          { label: "AML/CFT Assessment", href: "/tools/aml-risk-assessment" },
+          { label: "Provision Finder", href: "/tools/provision-finder" },
+          { label: "Applicable Provisions Generator", href: "/tools/applicability-checker" },
+          { label: "Compliance Checklist Generator", href: "/tools/checklist-generator" },
+          { label: "Event-Based Compliance Tools", href: "/tools/event-based" },
+          { label: "Regulatory Applicability Checker", href: "/tools/applicability-checker" }
+        ]
+      },
+      {
+        heading: "More Tools",
+        items: [
+          { label: "Annual Filing Tracker", href: "/tools/annual-filing-tracker" },
+          { label: "Board Meeting Planner", href: "/tools/board-meeting-planner" },
+          { label: "ESOP Calculator", href: "/tools/esop-calculator" },
+          { label: "More Tools", href: "/tools" }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Prepare",
+    href: "/prepare",
+    hasDropdown: true,
+    megaMenu: true,
+    productName: "RegReady",
+    productTagline: "Interview prep, scenarios and professional role readiness.",
+    subGroups: [
+      {
+        heading: "Professional Tracks",
+        items: [
+          { label: "FME / Fund Management", href: "/prepare/fme" },
+          { label: "Listed Company CS", href: "/prepare/listed-cs" },
+          { label: "Private & Public Companies", href: "/prepare/private-public" },
+          { label: "IFSC Roles", href: "/prepare/ifsc-roles" },
+          { label: "Compliance Roles", href: "/prepare/compliance" },
+          { label: "Corporate Secretarial Roles", href: "/prepare/corp-sec" },
+          { label: "Capital Markets Roles", href: "/prepare/capital-markets" },
+          { label: "Financial Services Roles", href: "/prepare/financial-services" },
+          { label: "Other Professional Roles", href: "/prepare" }
+        ]
+      }
+    ]
+  },
+  {
+    label: "RegIntel",
+    href: "/regintel",
+    hasDropdown: true,
+    megaMenu: true,
+    productName: "RegIntel",
+    productTagline: "Regulatory updates and enforcement intelligence.",
+    subGroups: [
+      {
+        heading: "Regulatory Updates",
+        items: [
+          { label: "MCA", href: "/regintel?reg=mca" },
+          { label: "SEBI", href: "/regintel?reg=sebi" },
+          { label: "IFSCA", href: "/regintel?reg=ifsca" },
+          { label: "RBI", href: "/regintel?reg=rbi" },
+          { label: "FEMA", href: "/regintel?reg=fema" },
+          { label: "IRDAI", href: "/regintel?reg=irdai" },
+          { label: "Tax", href: "/regintel?reg=tax" },
+          { label: "Other Regulators", href: "/regintel" }
+        ]
+      },
+      {
+        heading: "Intelligence",
+        items: [
+          { label: "What's Changed?", href: "/regintel/whats-changed" },
+          { label: "Regulatory Tracker", href: "/regintel/tracker" },
+          { label: "Enforcement Actions", href: "/regintel/enforcement" },
+          { label: "Regulatory Analysis", href: "/regintel/analysis" },
+          { label: "Regulatory Alerts", href: "/regintel/alerts" },
+          { label: "Regulatory Calendar", href: "/regintel/calendar" }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Free Resources",
+    href: "/free-resources",
+    hasDropdown: true,
+    megaMenu: false,
+    subItems: [
+      { label: "Articles", href: "/free-resources/articles" },
+      { label: "Blogs", href: "/free-resources/blogs" },
+      { label: "Regulatory Explainers", href: "/free-resources/explainers" },
+      { label: "Guides", href: "/free-resources/guides" },
+      { label: "Regulatory FAQs", href: "/free-resources/faqs" },
+      { label: "Checklists", href: "/free-resources/checklists" },
+      { label: "Downloads", href: "/free-resources/downloads" },
+      { label: "Templates", href: "/free-resources/templates" },
+      { label: "Polls", href: "/free-resources/polls" },
+      { label: "Regulatory Glossary", href: "/free-resources/glossary" }
+    ]
+  }
 ];
 
 export const SEBI_AIF_QUIZ_QUESTIONS = [

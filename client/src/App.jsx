@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import KnowledgeHub from './pages/KnowledgeHub';
 import InteractiveRegulations from './pages/InteractiveRegulations';
 import ChapterDetail from './pages/ChapterDetail';
 import SectionDetail from './pages/SectionDetail';
@@ -22,10 +21,15 @@ import Membership from './pages/Membership';
 import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
 import ExamReady from './pages/ExamReady';
-
 import FMEInterviewPro from './pages/FMEInterviewPro';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
+
+// New Hub Pages per Doc 01 Architecture
+import PracticeHub from './pages/PracticeHub';
+import PrepareHub from './pages/PrepareHub';
+import RegIntelHub from './pages/RegIntelHub';
+import FreeResourcesHub from './pages/FreeResourcesHub';
 
 export default function App() {
   return (
@@ -41,8 +45,6 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="fme-interviewpro" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
-          <Route path="jobs" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
           <Route
             path="admin"
             element={
@@ -51,37 +53,90 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="knowledge-hub" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
+
+          {/* ─── 1. RegLearn (/learn) ─────────────────────────────────── */}
+          <Route path="learn" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
+          <Route path="learn/paths/:pathId" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
+
+          {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
+          <Route path="understand" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
           <Route path="interactive-regulations" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
           <Route path="interactive-regulations/:actSlug/:chapter" element={<ProtectedRoute><ChapterDetail /></ProtectedRoute>} />
           <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
           <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
-          <Route path="learning" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
-          <Route path="quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
-          <Route path="quizzes/:topic" element={<ProtectedRoute><QuizTopic /></ProtectedRoute>} />
-          <Route path="diagnostic-tests" element={<ProtectedRoute><DiagnosticTests /></ProtectedRoute>} />
-          <Route path="exam-ready" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
+
+          {/* ─── 3. RegPractice (/practice) ───────────────────────────── */}
+          <Route path="practice" element={<ProtectedRoute><PracticeHub /></ProtectedRoute>} />
+          <Route path="practice/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+          <Route path="practice/quizzes/:topic" element={<ProtectedRoute><QuizTopic /></ProtectedRoute>} />
+          <Route path="practice/mock-tests" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
+          <Route path="practice/mock-tests/:slug" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
+          <Route path="practice/question-bank" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+
+          {/* ─── 4. RegTools (/tools) ─────────────────────────────────── */}
           <Route path="tools" element={<ProtectedRoute><ToolsIndex /></ProtectedRoute>} />
           <Route path="tools/:slug" element={<ProtectedRoute><ToolDetail /></ProtectedRoute>} />
-          <Route path="compliance-tools" element={<Navigate to="/tools" replace />} />
-          <Route path="templates" element={<Templates />} />
-          <Route path="blog" element={<BlogIndex />} />
-          <Route path="blog/:slug" element={<BlogDetail />} />
-          <Route path="news" element={<News />} />
-          <Route path="news/:slug" element={<Article />} />
+
+          {/* ─── 5. RegReady (/prepare) ───────────────────────────────── */}
+          <Route path="prepare" element={<ProtectedRoute><PrepareHub /></ProtectedRoute>} />
+          <Route path="prepare/fme" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
+          <Route path="prepare/:trackSlug" element={<ProtectedRoute><PrepareHub /></ProtectedRoute>} />
+
+          {/* ─── 6. RegIntel (/regintel) ──────────────────────────────── */}
+          <Route path="regintel" element={<RegIntelHub />} />
+          <Route path="regintel/whats-changed" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
+          <Route path="regintel/tracker" element={<RegIntelHub />} />
+          <Route path="regintel/enforcement" element={<News />} />
+          <Route path="regintel/alerts" element={<RegIntelHub />} />
+          <Route path="regintel/calendar" element={<Navigate to="/tools/compliance-calendar" replace />} />
+          <Route path="regintel/analysis" element={<BlogIndex />} />
+
+          {/* ─── 7. Free Resources (/free-resources) ─────────────────── */}
+          <Route path="free-resources" element={<FreeResourcesHub />} />
+          <Route path="free-resources/blogs" element={<BlogIndex />} />
+          <Route path="free-resources/blogs/:slug" element={<BlogDetail />} />
+          <Route path="free-resources/articles" element={<BlogIndex />} />
+          <Route path="free-resources/explainers" element={<BlogIndex />} />
+          <Route path="free-resources/guides" element={<BlogIndex />} />
+          <Route path="free-resources/faqs" element={<BlogIndex />} />
+          <Route path="free-resources/checklists" element={<Navigate to="/tools" replace />} />
+          <Route path="free-resources/templates" element={<Templates />} />
+          <Route path="free-resources/downloads" element={<Templates />} />
+          <Route path="free-resources/polls" element={<FreeResourcesHub />} />
+          <Route path="free-resources/glossary" element={<Navigate to="/understand" replace />} />
+
+          {/* ─── Global Marketing & Membership ────────────────────────── */}
           <Route path="about" element={<About />} />
           <Route path="membership" element={<Membership />} />
-          
-          {/* Gated Routes */}
+
+          {/* ─── Backward Compatibility Redirects (Zero-Regression) ────── */}
+          <Route path="knowledge-hub" element={<Navigate to="/learn" replace />} />
+          <Route path="learning" element={<Navigate to="/learn" replace />} />
+          <Route path="quizzes" element={<Navigate to="/practice/quizzes" replace />} />
+          <Route path="quizzes/:topic" element={<Navigate to="/practice/quizzes" replace />} />
+          <Route path="diagnostic-tests" element={<Navigate to="/practice" replace />} />
+          <Route path="exam-ready" element={<Navigate to="/practice/mock-tests" replace />} />
+          <Route path="fme-interviewpro" element={<Navigate to="/prepare/fme" replace />} />
+          <Route path="jobs" element={<Navigate to="/prepare/fme" replace />} />
+          <Route path="compliance-tools" element={<Navigate to="/tools" replace />} />
+          <Route path="templates" element={<Navigate to="/free-resources/templates" replace />} />
+          <Route path="blog" element={<Navigate to="/free-resources/blogs" replace />} />
+          <Route path="blog/:slug" element={<Navigate to="/free-resources/blogs" replace />} />
+          <Route path="news" element={<Navigate to="/regintel" replace />} />
+          <Route path="news/:slug" element={<Article />} />
+
+          {/* ─── Gated & Auth Routes ──────────────────────────────────── */}
           <Route path="my-learning" element={<AuthGated pageName="My Learning" />} />
           <Route path="my-certificates" element={<AuthGated pageName="My Certificates" />} />
           <Route path="member-dashboard" element={<AuthGated pageName="Member Dashboard" />} />
           <Route path="profile" element={<AuthGated pageName="My Profile" />} />
           <Route path="login" element={<AuthGated pageName="Login" />} />
           <Route path="register" element={<AuthGated pageName="Register" />} />
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </div>
   );
 }
-
