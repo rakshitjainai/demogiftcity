@@ -1,53 +1,128 @@
-import React, { useState, useEffect } from 'react';
-import { PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap, Sparkles,
+  Search, Filter, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck,
+  Star, Lock, BookMarked, BarChart3, ChevronRight
+} from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RegulatoryMasterModal from '../components/RegulatoryMasterModal';
 import LockOverlay from '../components/LockOverlay';
+import Breadcrumb from '../components/Breadcrumb';
+import BadgeChip from '../components/BadgeChip';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-// Course definitions with accurate curriculum counts
+// Course definitions with accurate curriculum counts and metadata
 const COURSES = [
   {
     id: 'mod-cmi',
     code: 'IFSCA-CMI',
     slug: 'ifsca-cmi',
+    regulator: 'IFSCA',
     title: 'IFSCA (Capital Market Intermediaries) Regulations, 2025',
     description: 'In-depth study of registration, net worth, governance, code of conduct, and enforcement for all 11 CMI categories in GIFT IFSC.',
     badge: 'Updated 2026',
+    difficulty: 'Intermediate',
+    durationHours: 12,
     color: 'from-slate-900 via-slate-800 to-blue-900',
     accentColor: 'bg-blue-500',
     totalChapters: 17,
     totalLessons: 35,
     totalQuestions: 102,
+    category: 'Capital Markets',
   },
   {
     id: 'mod-fme',
     code: 'IFSCA-FME',
     slug: 'ifsca-fme',
+    regulator: 'IFSCA',
     title: 'IFSCA (Fund Management) Regulations, 2025',
     description: 'Masterclass on FMEs, Venture Capital Schemes, PMS, ESG funds, Family Investment Funds, and Investment Trusts in GIFT City.',
     badge: 'Most Popular',
+    difficulty: 'Advanced',
+    durationHours: 15,
     color: 'from-emerald-900 via-emerald-800 to-teal-900',
     accentColor: 'bg-emerald-500',
     totalChapters: 7,
     totalLessons: 16,
     totalQuestions: 32,
+    category: 'Fund Management',
   },
   {
     id: 'mod-aif',
     code: 'SEBI-AIF',
     slug: 'sebi-aif',
+    regulator: 'SEBI',
     title: 'SEBI (Alternative Investment Funds) Regulations, 2012',
     description: 'Comprehensive coverage of Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, valuation, and GARUDA filings.',
     badge: 'Consolidated 2026',
+    difficulty: 'Advanced',
+    durationHours: 14,
     color: 'from-amber-900 via-amber-800 to-orange-900',
     accentColor: 'bg-amber-500',
     totalChapters: 14,
     totalLessons: 14,
     totalQuestions: 63,
+    category: 'Securities Law',
   },
+  {
+    id: 'mod-lodr',
+    code: 'SEBI-LODR',
+    slug: 'sebi-lodr',
+    regulator: 'SEBI',
+    title: 'SEBI (Listing Obligations and Disclosure Requirements) 2015',
+    description: 'Governance, board composition, committee mandates, material event reporting, and periodic disclosure framework for listed entities.',
+    badge: 'Coming Soon',
+    difficulty: 'Intermediate',
+    durationHours: 10,
+    color: 'from-sky-900 via-indigo-900 to-slate-900',
+    accentColor: 'bg-sky-500',
+    totalChapters: 12,
+    totalLessons: 24,
+    totalQuestions: 75,
+    category: 'Corporate Governance',
+    isUpcoming: true,
+  },
+  {
+    id: 'mod-companies',
+    code: 'MCA-CA2013',
+    slug: 'mca-ca2013',
+    regulator: 'MCA',
+    title: 'Companies Act 2013: Essential Secretarial Compliance',
+    description: 'Practical walkthrough of incorporation, director disqualifications, related-party transactions, secretarial standards (SS-1, SS-2) & MCA-21 v3 filings.',
+    badge: 'Preview Available',
+    difficulty: 'Beginner',
+    durationHours: 18,
+    color: 'from-teal-900 via-emerald-950 to-slate-900',
+    accentColor: 'bg-teal-500',
+    totalChapters: 15,
+    totalLessons: 30,
+    totalQuestions: 90,
+    category: 'Company Law',
+    isUpcoming: true,
+  }
+];
+
+const LEARNING_PATHS = [
+  {
+    id: 'path-gift-fme',
+    title: 'GIFT City Fund Management Specialist',
+    coursesCount: 2,
+    estimatedHours: '27 hrs',
+    level: 'Advanced',
+    description: 'Complete curriculum covering IFSCA FME Regulations, PPM drafting principles, and regulatory reporting.',
+    courses: ['IFSCA-FME', 'IFSCA-CMI']
+  },
+  {
+    id: 'path-sebi-compliance',
+    title: 'SEBI AIF & Capital Markets Compliance Professional',
+    coursesCount: 2,
+    estimatedHours: '24 hrs',
+    level: 'Intermediate to Advanced',
+    description: 'Essential mastery for compliance officers managing Category I/II/III AIFs and investment managers.',
+    courses: ['SEBI-AIF', 'SEBI-LODR']
+  }
 ];
 
 export default function Learning() {
@@ -55,38 +130,32 @@ export default function Learning() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [searchParams] = useSearchParams();
 
+  // Search & Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRegulator, setSelectedRegulator] = useState('ALL');
+  const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'IN_PROGRESS' | 'COMPLETED' | 'PATHS'
+
   // Auto-launch modal if query param (e.g. ?course=ifsca-cmi) is provided
   useEffect(() => {
     const courseParam = searchParams.get('course') || searchParams.get('track') || searchParams.get('slug');
     if (courseParam) {
       const match = COURSES.find(c => c.slug === courseParam || c.code.toLowerCase() === courseParam.toLowerCase() || c.id === courseParam);
-      if (match) {
+      if (match && !match.isUpcoming) {
         setSelectedCourse(match);
       }
     }
   }, [searchParams]);
 
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for Regulatory Master"
-        message="Accessing structured learning modules and diagnostic lessons requires an authenticated account. Please log in or sign up to continue."
-        redirectPath="/login"
-      />
-    );
-  }
-
   // Meta from API (lesson/question counts)
   const [courseMeta, setCourseMeta] = useState({});
   const [metaLoading, setMetaLoading] = useState(true);
 
-  // Fetch real counts from server for all three courses
+  // Fetch real counts from server for active courses
   useEffect(() => {
     const fetchAll = async () => {
       setMetaLoading(true);
       const results = await Promise.allSettled(
-        COURSES.map(c =>
+        COURSES.filter(c => !c.isUpcoming).map(c =>
           fetch(`${API_BASE}/regulatory-master/${c.slug}/meta`)
             .then(r => r.json())
             .then(data => ({ slug: c.slug, data }))
@@ -104,177 +173,314 @@ export default function Learning() {
     fetchAll();
   }, []);
 
-  // Get real progress for a course slug from user's courseProgress
-  const getCourseProgress = (slug) => {
-    const meta = courseMeta[slug];
-    const total = meta?.total || 1;
-    let completed = 0;
+  // Filtered courses
+  const filteredCourses = useMemo(() => {
+    return COURSES.filter(c => {
+      const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.regulator.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesRegulator = selectedRegulator === 'ALL' || c.regulator === selectedRegulator;
 
-    if (user?.courseProgress) {
-      const entry = user.courseProgress.find(c => c.courseSlug === slug);
-      if (entry) completed = entry.completedItems?.length || 0;
-    } else {
-      const guest = JSON.parse(localStorage.getItem('regmate_guest_course_progress') || '{}');
-      completed = guest[slug]?.completedItems?.length || 0;
-    }
+      const hasAccess = hasCourseAccess(c.slug);
+      if (activeTab === 'IN_PROGRESS') {
+        return matchesSearch && matchesRegulator && hasAccess && !c.isUpcoming;
+      }
+      if (activeTab === 'PATHS') {
+        return false; // Handled separately
+      }
+      return matchesSearch && matchesRegulator;
+    });
+  }, [searchQuery, selectedRegulator, activeTab, hasCourseAccess]);
 
-    const pct = Math.min(100, Math.round((completed / total) * 100));
-    return { completed, total, pct };
-  };
+  if (!isAuthenticated) {
+    return (
+      <LockOverlay
+        type="login"
+        title="Login Required for RegLearn"
+        message="Accessing structured learning modules and regulatory master courses requires an authenticated account. Please log in or sign up to continue."
+        redirectPath="/login"
+      />
+    );
+  }
 
   return (
-    <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto animate-fade-in-up">
+    <div className="min-h-screen bg-paper py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: 'Learn', href: '/learn' },
+            { label: 'RegLearn Course Catalogue', active: true }
+          ]}
+        />
 
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end justify-between mb-10 sm:mb-12">
-        <div>
-          <span className="eyebrow block mb-4">§ Regulatory Master</span>
-          <h1 className="text-3xl sm:text-4xl font-display text-forest-deep mb-3 sm:mb-4">
-            Regulatory Master
-          </h1>
-          <p className="text-ink-soft text-base sm:text-lg max-w-xl">
-            Deep-dive structured learning: statutory text, practitioner lessons, and diagnostic questions — all from real regulatory content, served securely.
-          </p>
-        </div>
+        {/* Hero Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-forest-deep via-forest to-[#08422c] text-white p-8 sm:p-12 shadow-xl">
+          <div className="relative z-10 max-w-3xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-mint text-xs font-bold uppercase tracking-wider">
+              <GraduationCap className="w-4 h-4 text-leaf-bright" />
+              <span>RegLearn • Structured Regulatory Curriculum</span>
+            </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {!isMember && (
-            <button
-              onClick={() => initiateCheckout({ productType: 'membership', productId: 'full_access' })}
-              className="cursor-target inline-flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer min-h-[44px]"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Get All-Access — ₹1,999/yr</span>
-            </button>
-          )}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold leading-tight">
+              Master Indian Regulations With Modular Precision
+            </h1>
 
-          <Link
-            to="/exam-ready"
-            className="cursor-target inline-flex items-center gap-1.5 px-4 py-2.5 bg-forest text-white font-medium text-xs rounded-xl hover:bg-forest-deep transition-colors min-h-[44px]"
-          >
-            <GraduationCap className="w-4 h-4" />
-            ExamReady Mock Test
-          </Link>
-        </div>
-      </div>
+            <p className="text-sm sm:text-base text-mint-deep/90 leading-relaxed">
+              Step-by-step master courses covering IFSCA, SEBI, and MCA frameworks. Complete with chapter diagnostics, real case scenarios, practical compliance notes, and certified assessments.
+            </p>
 
-      {/* Course Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {COURSES.map(course => {
-          const meta = courseMeta[course.slug];
-          const { completed, total, pct } = getCourseProgress(course.slug);
-          const isOwned = isMember || hasCourseAccess(course.slug) || user?.role === 'admin';
-
-          return (
-            <div
-              key={course.id}
-              className="bg-white border border-line rounded-2xl overflow-hidden card-shadow hover-lift flex flex-col h-full"
-            >
-              {/* Gradient top band */}
-              <div className={`h-2 w-full bg-gradient-to-r ${course.color}`} />
-
-              <div className="p-6 flex flex-col flex-grow">
-                {/* Badge row */}
-                <div className="flex justify-between items-start mb-4">
-                  <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase tracking-wider">
-                    {course.code}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {isOwned && (
-                      <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full">
-                        Enrolled ✓
-                      </span>
-                    )}
-                    {course.badge && (
-                      <span className="px-2.5 py-0.5 bg-gold/20 text-forest text-xs font-bold rounded-full">
-                        {course.badge}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Title & description */}
-                <div className="flex-grow">
-                  <h3 className="font-semibold text-lg text-forest-deep mb-2 leading-snug">{course.title}</h3>
-                  <p className="text-xs text-ink-soft mb-4 leading-relaxed">{course.description}</p>
-
-                  {/* Counts */}
-                  <div className="text-xs font-medium text-forest flex items-center gap-1 mb-4 flex-wrap">
-                    {metaLoading ? (
-                      <span className="flex items-center gap-1 text-ink-soft">
-                        <Loader2 className="w-3 h-3 animate-spin" /> Loading counts…
-                      </span>
-                    ) : meta ? (
-                      <>
-                        <BookOpen className="w-4 h-4 text-leaf" />
-                        {meta.lessons || 0} Lessons
-                        <span className="text-ink-soft mx-1">•</span>
-                        <HelpCircle className="w-3.5 h-3.5 text-gold" />
-                        {meta.questions || 0} Questions
-                      </>
-                    ) : (
-                      <span className="text-ink-soft text-xs italic">
-                        {course.slug === 'sebi-aif' ? '14 Lessons • 63 Questions' : '17-35 Lessons • 32-102 Questions'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Progress & Actions */}
-                <div className="space-y-3 mt-auto border-t border-line pt-4">
-                  <div className="flex justify-between text-xs font-medium text-ink-soft">
-                    <span>Course Completion</span>
-                    <span className="font-bold text-forest">{user ? `${pct}%` : '0%'}</span>
-                  </div>
-                  <div className="w-full bg-line h-2 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-leaf-bright' : 'bg-leaf'}`}
-                      style={{ width: user ? `${pct}%` : '0%' }}
-                    />
-                  </div>
-                  {user && total > 0 && (
-                    <p className="text-[10px] text-ink-soft">{completed} of {total} items completed</p>
-                  )}
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                    <button
-                      onClick={() => setSelectedCourse(course)}
-                      className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-mint text-forest font-bold rounded-xl hover:bg-mint-deep transition-colors min-h-[44px] text-xs"
-                    >
-                      <PlayCircle className="w-4 h-4 text-leaf" />
-                      <span>{isOwned ? (pct > 0 ? 'Continue' : 'Start Course') : 'Preview Ch 1'}</span>
-                    </button>
-
-                    {!isOwned ? (
-                      <button
-                        onClick={() => initiateCheckout({ productType: 'course', productId: course.slug })}
-                        className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-forest hover:bg-forest-deep text-white font-bold rounded-xl transition-colors min-h-[44px] text-xs shadow-xs"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                        <span>Buy Course (₹499)</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => setSelectedCourse(course)}
-                        className="cursor-target w-full flex items-center justify-center gap-1.5 py-2.5 bg-emerald-50 text-emerald-800 font-bold rounded-xl border border-emerald-200 min-h-[44px] text-xs"
-                      >
-                        <span>Full Access Active ✓</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs sm:text-sm text-mint">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-leaf-bright" />
+                <span>Verified Legal Accuracy</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-gold" />
+                <span>Verifiable Certificates</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-mint" />
+                <span>Self-Paced Learning</span>
               </div>
             </div>
-          );
-        })}
+          </div>
+
+          {/* Background watermark */}
+          <div className="absolute right-6 -bottom-8 opacity-10 text-white pointer-events-none hidden lg:block">
+            <GraduationCap className="w-80 h-80" />
+          </div>
+        </div>
+
+        {/* Search, Tabs & Filters Bar */}
+        <div className="bg-white rounded-2xl p-4 sm:p-6 border border-line card-shadow space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            {/* Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search courses by regulation, topic or code..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-paper rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-forest"
+              />
+            </div>
+
+            {/* Regulator Tabs */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+              {['ALL', 'IFSCA', 'SEBI', 'MCA', 'RBI'].map((reg) => (
+                <button
+                  key={reg}
+                  onClick={() => setSelectedRegulator(reg)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer flex-shrink-0 ${
+                    selectedRegulator === reg
+                      ? 'bg-forest text-white shadow-sm'
+                      : 'bg-paper text-ink-soft hover:bg-mint hover:text-forest border border-line'
+                  }`}
+                >
+                  {reg === 'ALL' ? 'All Regulators' : reg}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sub Tabs */}
+          <div className="flex items-center border-t border-line pt-3 gap-2 text-xs font-semibold">
+            <button
+              onClick={() => setActiveTab('ALL')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activeTab === 'ALL' ? 'bg-mint text-forest font-bold' : 'text-ink-soft hover:text-forest'
+              }`}
+            >
+              All Courses ({COURSES.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('IN_PROGRESS')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activeTab === 'IN_PROGRESS' ? 'bg-mint text-forest font-bold' : 'text-ink-soft hover:text-forest'
+              }`}
+            >
+              My Unlocked Courses
+            </button>
+            <button
+              onClick={() => setActiveTab('PATHS')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activeTab === 'PATHS' ? 'bg-mint text-forest font-bold' : 'text-ink-soft hover:text-forest'
+              }`}
+            >
+              Learning Paths ({LEARNING_PATHS.length})
+            </button>
+          </div>
+        </div>
+
+        {/* View Mode: Learning Paths */}
+        {activeTab === 'PATHS' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {LEARNING_PATHS.map((path) => (
+              <div
+                key={path.id}
+                className="bg-white rounded-3xl p-7 border border-line card-shadow hover-lift flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <BadgeChip label={path.level} variant="gold" size="sm" />
+                    <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {path.estimatedHours}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-display font-bold text-forest mb-2">
+                    {path.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-ink-soft leading-relaxed mb-6">
+                    {path.description}
+                  </p>
+
+                  <div className="space-y-2 mb-6 bg-paper p-4 rounded-2xl border border-line">
+                    <div className="text-xs font-bold text-forest uppercase tracking-wider mb-2">
+                      Included Course Modules:
+                    </div>
+                    {path.courses.map((cCode, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs font-medium text-ink">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-leaf flex-shrink-0" />
+                        <span>{cCode} Regulatory Master</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab('ALL')}
+                  className="w-full py-3 rounded-xl bg-forest hover:bg-leaf text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>View Included Courses</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Course Cards Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {filteredCourses.map((course) => {
+              const meta = courseMeta[course.slug];
+              const chaptersCount = meta?.totalChapters || course.totalChapters;
+              const lessonsCount = meta?.totalLessons || course.totalLessons;
+              const questionsCount = meta?.totalQuestions || course.totalQuestions;
+
+              const isOwned = hasCourseAccess(course.slug);
+              const isLocked = !isOwned && !course.isUpcoming;
+
+              return (
+                <div
+                  key={course.id}
+                  className={`bg-white rounded-3xl border border-line card-shadow hover-lift flex flex-col justify-between overflow-hidden transition-all ${
+                    course.isUpcoming ? 'opacity-85' : ''
+                  }`}
+                >
+                  {/* Top Header Gradient */}
+                  <div className={`p-6 bg-gradient-to-br ${course.color} text-white relative`}>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="px-2.5 py-1 rounded-md bg-white/20 backdrop-blur-sm text-white font-bold text-xs">
+                        {course.code}
+                      </span>
+                      <span className="text-[11px] font-semibold text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-300/30">
+                        {course.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display font-bold text-lg sm:text-xl text-white leading-snug line-clamp-2 min-h-[3.25rem]">
+                      {course.title}
+                    </h3>
+                  </div>
+
+                  {/* Body Content */}
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
+                    <p className="text-xs sm:text-sm text-ink-soft leading-relaxed line-clamp-3">
+                      {course.description}
+                    </p>
+
+                    {/* Stats Matrix */}
+                    <div className="grid grid-cols-3 gap-2 py-3 border-y border-line bg-paper/60 rounded-xl px-3 text-center">
+                      <div>
+                        <div className="text-xs text-ink-soft">Chapters</div>
+                        <div className="text-sm font-bold text-forest">{chaptersCount}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-ink-soft">Lessons</div>
+                        <div className="text-sm font-bold text-forest">{lessonsCount}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-ink-soft">Quizzes</div>
+                        <div className="text-sm font-bold text-forest">{questionsCount} Qs</div>
+                      </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="pt-2">
+                      {course.isUpcoming ? (
+                        <div className="w-full py-3 rounded-xl bg-gray-100 text-gray-500 font-semibold text-xs text-center border border-gray-200">
+                          Curriculum in Editorial Review
+                        </div>
+                      ) : isOwned ? (
+                        <button
+                          onClick={() => setSelectedCourse(course)}
+                          className="w-full py-3.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <PlayCircle className="w-4 h-4" />
+                          <span>Enter Study Mode</span>
+                        </button>
+                      ) : (
+                        <div className="space-y-2">
+                          <button
+                            onClick={() => setSelectedCourse(course)}
+                            className="w-full py-2.5 rounded-xl bg-mint text-forest hover:bg-mint-deep font-bold text-xs transition-colors cursor-pointer border border-mint-deep flex items-center justify-center gap-1.5"
+                          >
+                            <Sparkles className="w-3.5 h-3.5 text-leaf" />
+                            <span>Preview Free Lessons</span>
+                          </button>
+                          <Link
+                            to="/membership"
+                            className="w-full py-2.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                          >
+                            <Lock className="w-3.5 h-3.5" />
+                            <span>Unlock Full Course (₹499)</span>
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {filteredCourses.length === 0 && activeTab !== 'PATHS' && (
+          <div className="text-center py-16 bg-white rounded-3xl border border-line p-8 max-w-md mx-auto">
+            <GraduationCap className="w-12 h-12 text-forest mx-auto mb-3 opacity-60" />
+            <h3 className="font-display font-bold text-lg text-forest mb-1">No Courses Match Your Filter</h3>
+            <p className="text-xs text-ink-soft mb-4">Try clearing your search query or choosing another regulator.</p>
+            <button
+              onClick={() => { setSearchQuery(''); setSelectedRegulator('ALL'); setActiveTab('ALL'); }}
+              className="px-4 py-2 bg-forest text-white rounded-xl text-xs font-semibold hover:bg-leaf cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
+
       </div>
 
-      {/* Info note */}
-      <div className="mt-8 p-4 bg-mint/40 border border-mint-deep rounded-xl text-xs text-forest-deep">
-        <strong>About Regulatory Master:</strong> All lessons and questions are served from the backend — answer keys never reach the browser. Your progress is saved per-item and synced across devices when logged in.
-      </div>
-
-      {/* Modal */}
+      {/* Interactive Course Study Modal */}
       {selectedCourse && (
         <RegulatoryMasterModal
           course={selectedCourse}

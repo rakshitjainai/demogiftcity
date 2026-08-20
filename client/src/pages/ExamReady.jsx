@@ -91,8 +91,8 @@ function OptionButton({ letter, text, selected, onSelect, disabled }) {
 function LandingScreen({ meta, onStart, loading, error }) {
   return (
     <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-4xl mx-auto animate-fade-in-up">
-      <Link to="/learning" className="cursor-target inline-flex items-center text-ink-soft hover:text-leaf font-medium mb-8 min-h-[44px]">
-        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Regulatory Master
+      <Link to="/practice" className="cursor-target inline-flex items-center text-ink-soft hover:text-leaf font-medium mb-8 min-h-[44px]">
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to RegPractice
       </Link>
 
       <div className="bg-white border border-line rounded-2xl p-6 sm:p-10 md:p-12 card-shadow">

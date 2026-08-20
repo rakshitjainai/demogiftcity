@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import QuickAccessBar from '../components/QuickAccessBar';
 import StatsBand from '../components/StatsBand';
+import EcosystemSection from '../components/EcosystemSection';
 import ContentGrid from '../components/ContentGrid';
 import ToolsScroller from '../components/ToolsScroller';
 import TrustNewsletterBand from '../components/TrustNewsletterBand';
@@ -13,7 +14,7 @@ import CustomiseDashboardModal from '../components/CustomiseDashboardModal';
 import PremiumBlock from '../components/PremiumBlock';
 import QuizzesSection from '../components/QuizzesSection';
 
-import { QUICK_ACCESS_ITEMS, LATEST_BLOGS, LATEST_UPDATES } from '../data/mockData';
+import { QUICK_ACCESS_ITEMS } from '../data/mockData';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -23,22 +24,24 @@ export default function Home() {
   const [visibleQuickItems, setVisibleQuickItems] = useState(QUICK_ACCESS_ITEMS);
 
   const handleHeroSearch = (query) => {
-    // If needed, route to search page or open search modal via context
+    navigate(`/understand?search=${encodeURIComponent(query)}`);
   };
+
   const handleSelectPill = (pill) => {
-    // Search context
+    navigate(`/understand?search=${encodeURIComponent(pill)}`);
   };
+
   const handleQuickItemClick = (item) => {
     if (item.path) {
       navigate(item.path);
     } else if (item.category === 'Tools') {
       setSelectedToolTitle(item.label);
     } else if (item.category === 'Updates') {
-      navigate('/news');
+      navigate('/regintel');
     } else if (item.category === 'Quizzes') {
-      navigate('/quizzes');
+      navigate('/practice/quizzes');
     } else {
-      navigate('/knowledge-hub');
+      navigate('/learn');
     }
   };
 
@@ -56,6 +59,9 @@ export default function Home() {
         onItemClick={handleQuickItemClick}
       />
       
+      {/* 6 Named Products Ecosystem Grid per Spec & Mockup */}
+      <EcosystemSection />
+
       <QuizzesSection />
 
       <StatsBand />
@@ -63,7 +69,7 @@ export default function Home() {
       <ContentGrid
         onSelectArticle={(a) => setSelectedArticle(a)}
         onSelectUpdate={(u) => setSelectedArticle(u)}
-        onSelectModule={(m) => navigate(`/learning?course=${m.slug}`)}
+        onSelectModule={(m) => navigate(`/learn?course=${m.slug}`)}
       />
 
       <ToolsScroller
