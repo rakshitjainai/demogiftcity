@@ -11,6 +11,7 @@ import examReadyRoutes from './routes/examReadyRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use('/api/regulatory-master', regulatoryMasterRoutes);
 app.use('/api/exam-ready', examReadyRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Job Interface backend support (both legacy PHP paths and Express paths)
 app.use('/Regmate-backend/api', jobRoutes);
