@@ -1,8 +1,218 @@
-import React from 'react';
-import { Lock, User, Award, BookOpen, CheckCircle, LogOut } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Lock, User, Award, BookOpen, CheckCircle, LogOut, LogIn, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LEARNING_MODULES } from '../data/mockData';
+
+function AuthInlineForm({ initialMode = 'login' }) {
+  const { login, register, authError, setAuthError } = useAuth();
+  const [mode, setMode] = useState(initialMode);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    setMode(initialMode);
+    setAuthError(null);
+  }, [initialMode, setAuthError]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setAuthError(null);
+
+    try {
+      if (mode === 'login') {
+        await login(email, password);
+      } else {
+        await register(name, email, password, phone);
+      }
+      setSubmitted(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1200);
+    } catch (err) {
+      console.error('Auth error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="py-12 px-4 sm:px-6 max-w-md mx-auto animate-fade-in-up">
+      <div className="bg-white rounded-3xl shadow-xl border border-line p-6 sm:p-8">
+        
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 rounded-2xl bg-mint text-forest font-extrabold text-xl flex items-center justify-center mx-auto mb-3 shadow-sm border border-leaf/20">
+            R
+          </div>
+          <h2 className="text-2xl font-display font-bold text-forest-deep">
+            {mode === 'login' ? 'Sign In to RegMate' : 'Create your RegMate Account'}
+          </h2>
+          <p className="text-xs text-ink-soft mt-1">
+            {mode === 'login'
+              ? 'Access your saved quizzes, certificates & learning progress'
+              : 'Join India & GIFT IFSC’s premier regulatory learning platform'}
+          </p>
+        </div>
+
+        {submitted ? (
+          <div className="text-center py-8 space-y-3">
+            <CheckCircle2 className="w-12 h-12 text-leaf mx-auto animate-bounce" />
+            <h3 className="text-lg font-bold text-forest-deep">
+              {mode === 'login' ? 'Welcome Back!' : 'Account Created Successfully!'}
+            </h3>
+            <p className="text-xs text-ink-soft">Redirecting to your dashboard...</p>
+          </div>
+        ) : (
+          <>
+            {/* Tabs */}
+            <div className="flex rounded-2xl bg-paper p-1 border border-line mb-6">
+              <button
+                type="button"
+                onClick={() => { setMode('login'); setAuthError(null); }}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[40px] ${
+                  mode === 'login' ? 'bg-white text-forest-deep shadow-sm border border-line/60' : 'text-ink-soft hover:text-ink'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode('register'); setAuthError(null); }}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[40px] ${
+                  mode === 'register' ? 'bg-white text-forest-deep shadow-sm border border-line/60' : 'text-ink-soft hover:text-ink'
+                }`}
+              >
+                Create Account
+              </button>
+            </div>
+
+            {/* Error Banner */}
+            {authError && (
+              <div className="p-3 mb-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-start gap-2 animate-in fade-in">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold">{authError}</p>
+                  {authError.includes('sign up first') && (
+                    <button
+                      type="button"
+                      onClick={() => { setMode('register'); setAuthError(null); }}
+                      className="text-xs underline font-bold mt-1 text-emerald-800 hover:text-emerald-900 block cursor-pointer"
+                    >
+                      Click here to create an account
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'register' && (
+                <>
+                  <div>
+                    <label className="block text-xs font-bold text-forest-deep mb-1">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="CS Prashant Kumar"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-line text-xs font-medium outline-none focus:border-forest focus:ring-1 focus:ring-forest bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-forest-deep mb-1">Phone Number</label>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-line text-xs font-medium outline-none focus:border-forest focus:ring-1 focus:ring-forest bg-white"
+                    />
+                  </div>
+                </>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold text-forest-deep mb-1">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-line text-xs font-medium outline-none focus:border-forest focus:ring-1 focus:ring-forest bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-forest-deep mb-1">Password</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-line text-xs font-medium outline-none focus:border-forest focus:ring-1 focus:ring-forest bg-white"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 rounded-xl bg-forest hover:bg-leaf text-white text-xs font-bold shadow-md transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50 cursor-pointer min-h-[44px]"
+              >
+                {loading ? (
+                  <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                ) : (
+                  <>
+                    {mode === 'login' ? <LogIn className="w-4 h-4" /> : <Sparkles className="w-4 h-4 text-amber-300" />}
+                    <span>{mode === 'login' ? 'Sign In to RegMate' : 'Create Account'}</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 pt-4 border-t border-line text-center">
+              {mode === 'login' ? (
+                <p className="text-xs text-ink-soft">
+                  Don't have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setMode('register'); setAuthError(null); }}
+                    className="font-bold text-forest hover:text-leaf underline"
+                  >
+                    Create Free Account
+                  </button>
+                </p>
+              ) : (
+                <p className="text-xs text-ink-soft">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setMode('login'); setAuthError(null); }}
+                    className="font-bold text-forest hover:text-leaf underline"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              )}
+            </div>
+          </>
+        )}
+
+      </div>
+    </div>
+  );
+}
 
 export default function AuthGated({ pageName }) {
   const { user, isAuthenticated, logout } = useAuth();
@@ -193,6 +403,11 @@ export default function AuthGated({ pageName }) {
     );
   }
 
+  // If pageName is Login or Register, render the inline auth form
+  if (pageName === 'Login' || pageName === 'Register') {
+    return <AuthInlineForm initialMode={pageName === 'Register' ? 'register' : 'login'} />;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center py-24 px-6 text-center animate-fade-in-up">
       <div className="w-16 h-16 rounded-full bg-mint flex items-center justify-center mb-6">
@@ -206,10 +421,10 @@ export default function AuthGated({ pageName }) {
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
-          to="/"
+          to="/login"
           className="cursor-target px-6 py-3.5 bg-forest text-white rounded-full font-medium hover-lift min-h-[52px] flex items-center justify-center"
         >
-          Return to Home & Login
+          Sign In to RegMate
         </Link>
         <Link
           to="/membership"
@@ -221,3 +436,4 @@ export default function AuthGated({ pageName }) {
     </div>
   );
 }
+

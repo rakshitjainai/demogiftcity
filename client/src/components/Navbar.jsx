@@ -539,19 +539,21 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
           {/* Auth header */}
           {!isAuthenticated ? (
             <div className="flex gap-2 p-4 border-b border-[var(--line)] bg-[var(--paper)]">
-              <button
-                onClick={() => { onOpenAuth(); setMobileMenuOpen(false); }}
-                className="flex-1 py-2.5 text-[14px] font-semibold text-[var(--forest)] border border-[var(--forest)] rounded-lg hover:bg-[var(--mint)] transition-colors"
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2.5 text-[14px] font-semibold text-[var(--forest)] border border-[var(--forest)] rounded-lg hover:bg-[var(--mint)] transition-colors text-center"
               >
                 Login
-              </button>
-              <button
-                onClick={() => { onOpenAuth(); setMobileMenuOpen(false); }}
-                className="flex-1 py-2.5 text-[14px] font-semibold text-white rounded-lg transition-colors shadow-sm"
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2.5 text-[14px] font-semibold text-white rounded-lg transition-colors shadow-sm text-center"
                 style={{ background: 'var(--forest)' }}
               >
                 Join RegMate
-              </button>
+              </Link>
             </div>
           ) : (
             <div className="flex items-center gap-3 p-4 border-b border-[var(--line)] bg-[var(--mint)]">
