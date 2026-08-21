@@ -64,7 +64,11 @@ app.use('/api/blogs', blogRoutes);
 app.use('/Regmate-backend/api', jobRoutes);
 app.use('/api/job', jobRoutes);
 
-// Health check endpoint
+// Health check endpoint (lightweight for deployment / health monitors)
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -72,6 +76,7 @@ app.get('/api/health', (req, res) => {
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
+
 
 // Start Express Server reliably first
 app.listen(PORT, () => {
