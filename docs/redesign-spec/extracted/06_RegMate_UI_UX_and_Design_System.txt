@@ -1,0 +1,248 @@
+06 — RegMate UI/UX & Design System
+Document Status: Working Design SpecificationVersion: V1.0Purpose: Define the visual language, interface principles, components and user experience standards for RegMate
+1. DESIGN OBJECTIVE
+RegMate should look and feel like a serious professional regulatory technology platform, not a conventional coaching website or generic LMS.
+The design must communicate:• Authority• Clarity• Trust• Modern technology• Professional learning• Regulatory precision• Ease of use
+The interface should feel sophisticated enough for professionals while remaining approachable for students and first-time users.
+2. CORE UX PRINCIPLE
+RegMate should reduce cognitive load.
+Users come to RegMate to do one of six things:
+LearnUnderstandPracticeApplyPrepareStay Current
+Every major screen should make the user's next action obvious.
+3. BRAND PERSONALITY
+RegMate should feel:
+Professional — suitable for legal and regulatory professionals.Modern — technology-led without looking gimmicky.Intelligent — information-rich but structured.Practical — focused on application, not only theory.Trustworthy — clear about sources, limitations and authority.Progressive — designed for continuous learning.
+Avoid an overly academic, bureaucratic or government-portal appearance.
+4. VISUAL DIRECTION
+Recommended visual direction:
+• Clean white/light backgrounds for primary content• Deep green as the principal brand colour• Dark charcoal for primary text• Gold/yellow used sparingly as an accent• Soft neutral surfaces for cards and information blocks• Strong typography hierarchy• Generous whitespace• Subtle borders• Controlled shadows• Minimal decorative clutter
+The visual system should feel premium without becoming visually heavy.
+5. COLOUR SYSTEM
+Primary:Deep RegMate Green — primary brand/action colour.
+Secondary:Dark Charcoal — headings and high-emphasis text.
+Accent:Gold/Yellow — highlights, achievements, certificates, important indicators and selected CTAs.
+Neutrals:White, off-white, light grey and medium grey.
+Status colours:Green — successAmber — warningRed — errorBlue — informational
+Exact HEX values should be finalised during visual design and then documented as design tokens.
+6. TYPOGRAPHY
+Typography should prioritise readability.
+Recommended hierarchy:
+Display:Large, strong headline for hero sections.
+H1:Page title.
+H2:Major section.
+H3:Subsection/card heading.
+Body:Comfortable reading size with generous line height.
+Metadata:Smaller, muted text.
+Questions and regulatory provisions should use highly readable typography because users may read long legal content.
+Avoid excessive font weights and decorative typefaces.
+7. DESIGN TOKENS
+The frontend should use reusable design tokens rather than individual hardcoded values.
+Tokens should cover:• Colours• Typography• Spacing• Border radius• Shadows• Breakpoints• Component heights• Animation duration
+This allows the visual system to be changed globally without redesigning individual pages.
+8. LAYOUT SYSTEM
+Use a consistent responsive container.
+Desktop:Wide content area with controlled maximum width.
+Tablet:Reduced horizontal spacing.
+Mobile:Single-column priority layout.
+Major screens should follow a predictable structure:
+Header↓Page context↓Primary content↓Supporting content↓Next action / CTA
+9. GLOBAL HEADER
+The header should contain:
+RegMate logoProduct navigationSearchFree/upgrade CTALogin/account controls
+Desktop navigation should expose the main product families without overwhelming the user.
+Mobile navigation should use a clean menu/drawer.
+The header should remain visually consistent across the ecosystem.
+10. PRIMARY NAVIGATION
+Recommended primary navigation:
+LearnUnderstandPracticeApplyPrepareStay Current
+These correspond to:
+RegLearnRegLensRegPracticeRegToolsRegReadyRegIntel
+This creates a user-centric navigation model rather than forcing users to understand product names first.
+11. PRODUCT NAVIGATION
+Each product should have its own contextual navigation.
+Example RegLearn:Overview | Courses | My Learning
+Example RegPractice:Practice | Tests | Mock Tests | Results
+Example RegReady:Tracks | Questions | Scenarios | Mock Interview
+Contextual navigation should never replace the global navigation.
+12. HOMEPAGE EXPERIENCE
+The homepage should answer five questions quickly:
+1. What is RegMate?2. What can I do here?3. Which product is right for me?4. What can I use for free?5. What should I do next?
+Recommended flow:
+Hero→ Product ecosystem→ How RegMate works→ Featured content→ Free experience→ Membership→ Trust/credibility→ CTA
+13. PRODUCT LANDING PAGE
+Every product landing page should use a consistent structure:
+Hero→ Product value proposition→ Who it's for→ What it contains→ Feature highlights→ Free preview→ Premium features→ Sample experience→ Pricing/access→ FAQ→ CTA
+The design should show the actual product experience rather than relying only on marketing copy.
+14. DASHBOARD UX
+The dashboard should be action-oriented.
+Top area:Welcome + membership/access status.
+Main:Continue where you left off.
+Secondary:Recommended learning/practice.
+Lower sections:Activity, bookmarks, certificates and membership.
+Avoid filling the dashboard with statistics that do not lead to action.
+15. LEARNING EXPERIENCE
+RegLearn lessons should prioritise reading and comprehension.
+Recommended layout:
+Course context→ Lesson title→ Progress indicator→ Main content→ Regulatory references→ Examples→ Knowledge check→ Complete lesson→ Next lesson
+A persistent course outline can be used on desktop and a collapsible outline on mobile.
+16. REGULATORY READING EXPERIENCE
+RegLens requires a different reading experience.
+Important elements:• Breadcrumbs• Regulator• Regulation/Act title• Section/provision number• Provision text• Related provisions• Cross-references• Amendment history• Compare action• Save/bookmark• Related learning/practice
+The provision itself must remain the visual focus.
+17. TEST EXPERIENCE
+RegPractice should minimise distractions during tests.
+Test screen:• Question number• Progress• Timer where applicable• Question• Options• Navigation• Mark for review• Submit
+Results screen:• Score• Accuracy• Correct/incorrect/unattempted• Topic performance• Weak areas• Explanations• Regulatory references• Recommended revision• Retake CTA
+18. INTERVIEW PREPARATION EXPERIENCE
+RegReady should feel like professional preparation, not a generic quiz app.
+Question screen should show:• Question• Category• Difficulty• How to approach• Model answer• Regulatory reference• Related questions
+The interface should encourage active thinking before revealing the model answer.
+19. TOOL EXPERIENCE
+RegTools should feel like professional utilities.
+Each tool should have:
+Tool title→ Purpose→ Inputs→ Step-by-step questions→ Progress→ Result→ Explanation→ Applicable provisions→ Recommended actions→ Save/export where appropriate
+Avoid long forms on one page. Break complex assessments into manageable steps.
+20. REGINTEL EXPERIENCE
+RegIntel should prioritise speed of understanding.
+A regulatory update card should quickly show:• Regulator• Date• What changed• Effective date• Impact• Action required
+Detailed analysis can follow.
+Users should be able to filter by regulator, topic, date and importance.
+21. CARD SYSTEM
+Cards should be used for:• Products• Courses• Tests• Regulatory updates• Tools• Recommendations
+Cards should not become excessive. Important content should remain visually dominant.
+Each card should clearly communicate:TitleContextValueStatus/accessPrimary action
+22. LOCKED CONTENT UX
+Locked content must be visible enough to communicate value.
+Recommended pattern:
+TitleShort descriptionLock indicatorWhy it mattersAccess requiredCTA
+Example:
+Premium Lesson“Director Loans — Advanced Cases”Unlock with RegLearn Premium[View Access Options]
+Do not hide all premium content from users.
+23. FREE VS PREMIUM INDICATORS
+Use clear but subtle labels:
+FREEPREVIEWMEMBERPREMIUMLOCKEDCOMPLETED
+Avoid aggressive sales styling.
+Users should always understand why something is unavailable and what they can do to access it.
+24. BUTTON SYSTEM
+Primary button:Main action.
+Secondary button:Alternative action.
+Tertiary:Low-emphasis action.
+Destructive:Delete/cancel/remove.
+Buttons should use consistent sizing, radius, typography and spacing.
+Avoid multiple competing primary buttons on the same screen.
+25. FORMS
+Forms should:• Clearly label fields• Explain required information• Provide inline validation• Minimise unnecessary fields• Preserve user input where possible• Give clear error messages• Show progress for multi-step forms
+RegTools and assessments should use progressive disclosure.
+26. TABLES
+Tables will be important for regulatory information.
+Use tables for:• Compliance calendars• Regulatory comparisons• Applicability• Test results• Regulatory metadata• Enforcement data
+Tables should:• Be readable• Support horizontal scrolling on mobile• Highlight important columns• Avoid excessive borders• Provide sorting/filtering where useful
+27. REGULATORY TEXT DESIGN
+Legal/regulatory text must be visually distinct from commentary.
+Recommended distinction:
+Provision text:High readability, neutral surface.
+RegMate explanation:Separate explanatory block.
+Practical implication:Highlighted action-oriented block.
+Source:Compact metadata/reference block.
+This prevents users from confusing RegMate commentary with the actual law/regulation.
+28. STATUS AND PROGRESS
+Progress should be visual but restrained.
+Examples:• Course progress bar• Completion percentage• Test score• Accuracy• Streak where appropriate• Tool completion• Certificate eligibility
+Progress indicators should encourage continuation rather than create anxiety.
+29. EMPTY STATES
+Every important empty state should tell the user what to do next.
+Examples:
+No courses started:“Start your first learning module.”
+No bookmarks:“Save provisions, lessons and updates for quick access.”
+No tests:“Take your first practice test.”
+No certificates:“Complete an eligible programme to earn your first certificate.”
+30. ERROR STATES
+Errors should be human-readable.
+Avoid:“Something went wrong.”
+Prefer:“We couldn't load your test results. Please try again.”
+Where appropriate provide:• Retry• Return• Contact/support action
+31. MOBILE UX
+Mobile is a first-class experience.
+Priority:• Sticky but compact navigation• Readable legal text• Large touch targets• One-column forms• Horizontal-scroll tables• Easy test navigation• Persistent progress• Bottom-sheet or drawer interactions where appropriate
+Do not simply shrink desktop screens.
+32. ACCESSIBILITY
+Minimum requirements:• Good colour contrast• Keyboard navigation• Visible focus states• Semantic HTML• Proper labels• Accessible buttons• Alt text for meaningful images• Captions/transcripts where media is used• Avoid colour-only status communication
+Accessibility should be built into components rather than added at the end.
+33. MOTIVATION AND GAMIFICATION
+Use light gamification only where it improves learning.
+Appropriate:• Progress• Completion• Streaks• Badges• Certificates• Personal best scores
+Avoid:• Excessive points• Leaderboards that distract from learning• Artificial urgency• Game-like visual clutter
+34. SEARCH UX
+Search should eventually become a major RegMate capability.
+Search results should identify the content type:
+ArticleLessonProvisionQuestionTestToolRegulatory UpdateEnforcement Action
+Filters should include regulator, topic, content type and date where relevant.
+35. NOTIFICATIONS
+Notifications should be useful, not noisy.
+Possible notifications:• Course progress reminder• Test result• Certificate available• Membership expiry• Regulatory alert• New content
+Users should have control over non-essential notifications.
+36. TRUST AND SOURCE DESIGN
+Regulatory content must make source information easy to find.
+Where applicable display:• Regulator• Instrument• Provision• Date• Effective date• Source/reference
+RegMate commentary should be clearly distinguished from authoritative source material.
+37. CONTENT DENSITY
+RegMate will contain information-dense legal content.
+The solution is not to remove information but to structure it.
+Use:• Tabs• Accordions• Sections• Side navigation• Summary blocks• Progressive disclosure• Related content
+Do not hide critical legal information merely to make pages look minimal.
+38. DESIGN SYSTEM COMPONENT LIBRARY
+The initial reusable component library should include:
+• Header• Navigation• Footer• Breadcrumbs• Buttons• Inputs• Selects• Tabs• Accordions• Cards• Badges• Alerts• Modals• Drawers• Progress bars• Tables• Pagination• Search• Filters• Quiz question• Test navigator• Result summary• Regulatory provision block• Source/reference block• Locked-content block• Pricing card• Certificate card• Dashboard widget
+39. ICONOGRAPHY
+Icons should be simple, consistent and functional.
+Use icons to reinforce meaning, not replace important labels.
+Avoid mixing multiple icon styles.
+Icons should have accessible labels where necessary.
+40. ANIMATION
+Animation should be subtle and purposeful.
+Use animation for:• Page transitions• Progress changes• Expanding content• Loading states• Success confirmation
+Avoid excessive motion.
+Respect reduced-motion accessibility preferences.
+41. DARK MODE
+Dark mode should not be a V1 priority.
+If introduced later, it must be designed as a complete theme rather than simply inverting colours.
+Regulatory reading must remain highly readable in either mode.
+42. TRUST ELEMENTS
+Where appropriate, RegMate may display:• Author information• Source references• Regulatory citations• Last updated date• Content version• Review status• Professional credentials• Clear independence/disclaimer language
+Trust should come from transparency rather than decorative badges.
+43. COMMERCIAL UX
+Upgrade prompts should be contextual.
+Examples:After a free lesson:“Continue with the complete course.”
+After a limited quiz:“Unlock the full practice library.”
+After a preview:“Access the complete RegReady track.”
+The user should understand what additional value payment provides.
+44. CHECKOUT UX
+Checkout should be simple.
+Show:• Product/membership• Price• Applicable taxes/fees where relevant• Payment method• Terms• Confirmation
+Avoid unnecessary fields.
+After successful payment, immediately show the newly unlocked product or dashboard state.
+45. ACCOUNT UX
+Account area should include:• Profile• My Products• Membership• Orders• Certificates• Bookmarks• Activity• Settings
+Users should be able to clearly distinguish purchased products from membership access.
+46. DESIGN DO-NOT LIST
+Avoid:• Generic LMS appearance• Excessive gradients• Excessive rounded cards• Too many colours• Crowded dashboards• Tiny legal text• Overuse of icons• Aggressive sales popups• Dark patterns• Fake urgency• Decorative animations• Visually confusing regulatory pages
+47. RESPONSIVE BREAKPOINT STRATEGY
+Use a small number of well-defined breakpoints rather than designing separately for every device.
+The exact breakpoint values will be determined during implementation, but components must support:• Mobile• Tablet• Desktop• Large desktop
+Layouts should be fluid between breakpoints.
+48. DESIGN QA CHECKLIST
+Before a screen is considered complete, verify:
+• Visual hierarchy is clear.• Primary action is obvious.• Typography is readable.• Spacing is consistent.• Locked/free status is understandable.• Mobile layout works.• Accessibility basics are satisfied.• Loading state exists where required.• Empty state exists where required.• Error state exists where required.• No unnecessary UI clutter.• Regulatory source information is visible where applicable.
+49. V1 DESIGN PRIORITIES
+Priority 1:Global shell, homepage, authentication, dashboard and product pages.
+Priority 2:RegLearn lesson experience, RegPractice test experience and RegReady preparation experience.
+Priority 3:RegLens regulatory reading, RegTools workflow and RegIntel content.
+Priority 4:Advanced polish, animation, personalisation and additional visual features.
+50. DOCUMENT RELATIONSHIP
+Document 01 defines navigation and information architecture.
+Document 02 defines brand and product architecture.
+Document 03 defines V1 product functionality.
+Document 04 defines user roles and access.
+Document 05 defines database and technical architecture.
+Document 06 defines the visual and UX system that will be implemented across the platform.
+The next document should define:07 — RegMate Content & Data Model Specification.

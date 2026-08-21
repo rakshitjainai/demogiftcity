@@ -15,17 +15,6 @@ const TOPICS = [
 
 export default function Quizzes() {
   const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for Practice Quizzes"
-        message="Accessing topic-wise compliance practice quizzes requires an authenticated RegMate account. Please log in or sign up to continue."
-        redirectPath="/login"
-      />
-    );
-  }
   return (
     <div className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto animate-fade-in-up">
       <div className="text-center mb-10 sm:mb-16">

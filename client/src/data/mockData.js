@@ -296,6 +296,39 @@ export const NAV_LINKS = [
     ]
   },
   {
+    label: "Understand",
+    href: "/understand",
+    hasDropdown: true,
+    megaMenu: true,
+    productName: "RegLens",
+    productTagline: "Explore legal provisions with clarity, practical context and cross-references.",
+    subGroups: [
+      {
+        heading: "Regulations & Acts",
+        items: [
+          { label: "IFSCA CMI Regulations 2025", href: "/understand/ifsca-cmi-2025" },
+          { label: "IFSCA Fund Management 2025", href: "/understand/ifsca-fme-2025" },
+          { label: "Companies Act 2013", href: "/understand/companies-act-2013" },
+          { label: "SEBI AIF Regulations 2012", href: "/understand/sebi-aif-2012" },
+          { label: "SEBI LODR Regulations 2015", href: "/understand/sebi-lodr-2015" },
+          { label: "All Regulations", href: "/understand" }
+        ]
+      },
+      {
+        heading: "Research & Analysis",
+        items: [
+          { label: "Provision Finder", href: "/understand?view=search" },
+          { label: "Statutory Definitions", href: "/understand?view=definitions" },
+          { label: "Compare Frameworks", href: "/understand?view=compare" },
+          { label: "Schedules & Forms", href: "/understand?view=schedules" }
+        ]
+      }
+    ],
+    myItems: [
+      { label: "Saved Provisions", href: "/dashboard" }
+    ]
+  },
+  {
     label: "Practice",
     href: "/practice",
     hasDropdown: true,

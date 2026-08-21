@@ -194,16 +194,6 @@ export default function Learning() {
     });
   }, [searchQuery, selectedRegulator, activeTab, hasCourseAccess]);
 
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for RegLearn"
-        message="Accessing structured learning modules and regulatory master courses requires an authenticated account. Please log in or sign up to continue."
-        redirectPath="/login"
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-paper py-8 px-4 sm:px-6 lg:px-8">

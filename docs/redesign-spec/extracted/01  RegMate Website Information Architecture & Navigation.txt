@@ -1,0 +1,221 @@
+REGMATE — FINAL WEBSITE MENU & SUBMENU
+REGMATE
+├── Learn
+├── Practice
+├── Tools
+├── Prepare
+├── RegIntel
+├── Free Resources
+├── Search
+├── Login
+└── Join RegMate
+Learn
+│
+├── RegLearn
+│
+├── Courses
+│   ├── Companies Act
+│   ├── SEBI
+│   ├── IFSCA
+│   ├── RBI
+│   ├── FEMA
+│   ├── Insurance
+│   ├── Taxation
+│   ├── Capital Markets
+│   ├── Corporate Governance
+│   └── More Topics
+│
+├── Learning Paths
+│   ├── Corporate Law
+│   ├── Securities & Capital Markets
+│   ├── IFSC & GIFT City
+│   ├── Financial Regulation
+│   └── Compliance Professional
+│
+└── My Learning
+Practice
+│
+├── RegPractice
+│
+├── Quizzes
+│   ├── Today's Quiz
+│   ├── Topic Quizzes
+│   └── Quiz History
+│
+├── Mock Tests
+│   ├── Topic Tests
+│   ├── Subject Tests
+│   ├── Full-Length Mock Tests
+│   └── Exam Simulations
+│
+├── Question Bank
+│
+├── Practice by Topic
+│
+├── Practice by Regulator
+│   ├── MCA
+│   ├── SEBI
+│   ├── IFSCA
+│   ├── RBI
+│   ├── FEMA
+│   ├── IRDAI
+│   └── Others
+│
+├── My Attempts
+│
+├── Performance & Analytics
+│
+└── Certificates
+Tools
+│
+├── RegTools
+│
+├── Compliance Calendar
+│
+├── Compliance Diagnostic
+│
+├── AML/CFT Assessment
+│
+├── Provision Finder
+│
+├── Applicable Provisions Generator
+│
+├── Compliance Checklist Generator
+│
+├── Event-Based Compliance Tools
+│
+├── Regulatory Applicability Checker
+│
+└── More Tools
+Prepare
+│
+├── RegReady
+│
+├── FME / Fund Management
+│
+├── Listed Company CS
+│
+├── Private → Public
+│
+├── IFSC Roles
+│
+├── Compliance Roles
+│
+├── Corporate Secretarial Roles
+│
+├── Capital Markets Roles
+│
+├── Financial Services Roles
+│
+└── More Roles
+RegIntel
+│
+├── Regulatory Updates
+│   ├── MCA
+│   ├── SEBI
+│   ├── IFSCA
+│   ├── RBI
+│   ├── FEMA
+│   ├── IRDAI
+│   ├── Tax
+│   └── Other Regulators
+│
+├── What's Changed?
+│
+├── Regulatory Tracker
+│
+├── Enforcement Actions
+│
+├── Regulatory Analysis
+│
+├── Regulatory Alerts
+│
+└── Regulatory Calendar
+Free Resources
+│
+├── Articles
+├── Blogs
+├── Regulatory Explainers
+├── Guides
+├── Regulatory FAQs
+├── Checklists
+├── Downloads
+├── Templates
+├── Polls
+└── Regulatory Glossary
+Login
+│
+├── Dashboard
+├── My Learning
+├── My Practice
+├── My Tools
+├── My Preparation
+├── My Bookmarks
+├── My Certificates
+├── My Activity
+└── Account Settings
+Join RegMate
+│
+├── Free Account
+│
+├── Individual Products
+│
+└── RegMate Membership
+┌──────────────────────────────────────────────────────────────────────┐
+│ REGMATE                                                              │
+│                                                                      │
+│ Learn  Practice  Tools  Prepare  RegIntel  Free Resources   🔍      │
+│                                                     Login  Join      │
+REGMATE
+│
+├── LEARN
+│   └── RegLearn
+│
+├── PRACTICE
+│   └── RegPractice
+│       ├── Quizzes
+│       ├── Topic Tests
+│       ├── Subject Tests
+│       ├── Mock Tests
+│       ├── Exam Simulations
+│       ├── Question Bank
+│       ├── Analytics
+│       └── Certificates
+│
+├── TOOLS
+│   └── RegTools
+│       ├── Compliance Calendar
+│       ├── Compliance Diagnostic
+│       ├── AML/CFT Assessment
+│       ├── Provision Finder
+│       ├── Applicability Checker
+│       └── Checklist Generator
+│
+├── PREPARE
+│   └── RegReady
+│       ├── FME / Fund Management
+│       ├── Listed Company CS
+│       ├── Private → Public
+│       ├── IFSC Roles
+│       ├── Compliance Roles
+│       └── Other Professional Roles
+│
+├── REGINTEL
+│   ├── Regulatory Updates
+│   ├── What's Changed?
+│   ├── Regulatory Tracker
+│   ├── Enforcement Actions
+│   ├── Regulatory Analysis
+│   └── Alerts
+│
+└── FREE RESOURCES
+    ├── Articles
+    ├── Blogs
+    ├── Explainers
+    ├── Guides
+    ├── FAQs
+    ├── Checklists
+    ├── Downloads
+    ├── Templates
+    ├── Polls
+    └── Glossary

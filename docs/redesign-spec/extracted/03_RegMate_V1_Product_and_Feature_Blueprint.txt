@@ -1,0 +1,108 @@
+03 — RegMate V1 Product & Feature Blueprint
+Document Status: Working SpecificationVersion: V1.0Purpose: Master functional specification for the first RegMate platform build
+1. V1 OBJECTIVE
+RegMate V1 will establish the core platform on which all future RegMate products operate.
+The V1 platform must provide: public website, free content, user registration/login, free-member dashboard, product catalogue, product previews, product-level access control, individual product purchases, membership access, learning/progress infrastructure, practice/test infrastructure, regulatory content infrastructure, basic tools infrastructure, certificates, user activity and analytics, and admin/content management capability.
+The architecture must allow additional products, courses, regulators, questions, tools and tracks to be added without rebuilding the platform.
+2. V1 PRODUCT PRIORITY
+Platform Foundation: Public website; authentication; user profiles; free-member dashboard; product catalogue; access/entitlement system; payment architecture; membership architecture; admin/content management foundation.
+First commercial product: RegReady → FME / Fund Management. The existing FME InterviewPro product will be the first fully operational paid RegMate product.
+Subsequent products: RegLearn, RegLens, RegPractice, RegTools and RegIntel. The architecture must support all six from the beginning.
+3. PUBLIC WEBSITE
+Homepage must communicate what RegMate is within seconds: a platform to learn, understand, practise and apply law and regulation.
+Primary CTAs: Explore RegMate, Start Learning, Try Free, Join RegMate.
+Homepage sections: Hero; product ecosystem; how RegMate works; featured content; free experience; membership; final CTA.
+Every product family should have a public landing page explaining what it is, who it is for, what it contains, free features, premium features, examples, pricing/access and CTA.
+4. AUTHENTICATION
+RegMate must use one account across the entire ecosystem.
+Required: Sign up, Login, Logout, Password reset, Email verification, Profile, Account settings and Session management.
+Future social login is optional and not essential for initial V1.
+5. USER TYPES
+Visitor: no account; public content, blogs, regulatory updates, free resources, product pages, previews, polls and limited free quizzes.
+Free Member: dashboard, free content, limited product access, limited practice, selected tools, progress tracking, bookmarks and activity history.
+Individual Buyer: everything available to Free Member plus full access to purchased product/track, product-specific progress, analytics and certificates where applicable.
+Annual Member: access to all products included in the membership package.
+6. DASHBOARD
+Every registered user gets a dashboard adapted to their access.
+Core sections: Welcome; Continue Learning; My Products; Practice; Recommendations; Recent Activity; Saved Items; Certificates; Membership.
+Dashboard should show membership status, incomplete learning, products available, tests attempted, accuracy, weak areas, recommendations, bookmarks and relevant account/plan information.
+7. REGLEARN V1
+Core structure: RegLearn → Course → Module → Lesson → Lesson Content → Lesson Quiz → Completion.
+Courses support description, author, modules, lessons, progress, completion percentage, free/premium lessons and lesson quizzes.
+Lessons may contain text, headings, tables, examples, regulatory references, images, notes, questions and related content.
+Track course started, module completed, lesson completed, quiz score and overall progress.
+8. REGLENS V1
+Initial foundation for interactive regulatory content.
+V1 capabilities: regulatory document browsing, section/provision navigation, search, related provisions, regulatory metadata, comparison interface and old vs new provision where data exists.
+Do not attempt to build the complete Regulatory Knowledge Graph in V1.
+9. REGPRACTICE V1
+Test types: Quiz, Topic Test, Subject Test and Mock Test. Future types include full examination simulation and adaptive testing.
+Initial question support: single-answer MCQ, options, explanation, correct answer and regulatory reference. Future support may include multiple-answer, scenario, assertion/reason and case-based questions.
+Test flow: Select Test → Instructions → Questions → Submit → Score → Detailed Result → Weak Areas → Recommended Revision → Retake.
+Results show score, percentage, correct, incorrect, unattempted, time, topic performance, weak areas and recommendations.
+10. REGTOOLS V1
+V1 establishes a reusable framework for regulatory tools. Every tool should have description, inputs/questions, logic, result, explanation, applicable provisions, recommended action and export/save where appropriate.
+Initial tools: Compliance Calendar Generator; Compliance Diagnostic; AML/CFT Assessment; Provision Finder; Applicable Provisions Generator; Compliance Checklist Generator; Event-Based Compliance Tools; Regulatory Applicability Checker.
+Future possibilities include entity-specific assessments, transaction assessments, event-based generators, regulatory applicability engines, board/listed-company/IFSC tools and FEMA transaction assessments.
+11. REGREADY V1
+First launch: RegReady → FME / Fund Management.
+The product should contain regulatory questions, conceptual questions, practical scenarios, role-specific questions, cross-regulatory/trap questions, MCQs, model answers, How to Approach, regulatory references and mock interview practice.
+Question structure may include question, category, difficulty, regulatory area, suggested approach, model answer, explanation, regulatory reference and related questions.
+Focus strictly on technical/regulatory preparation, not HR preparation.
+12. REGINTEL V1
+Initial functionality: Regulatory Updates and Enforcement Actions.
+Each regulatory update should contain title, regulator, date, effective date, summary, what changed, who is affected, practical implications, source/reference and related topics.
+Enforcement actions should contain regulator, entity, date, nature of action, issue, regulatory provision, penalty/action and key compliance lesson.
+Future functionality may include alerts, regulatory change tracking and impact analysis.
+13. FREE RESOURCES V1
+Publicly accessible: Articles, Blogs, Explainers, Guides, FAQs, Checklists, Downloads, Templates, Polls and Glossary.
+These should be SEO-friendly and indexable.
+14. SEARCH
+RegMate should eventually have unified search across articles, lessons, courses, regulations, sections, questions, tests, tools, regulatory updates and enforcement actions.
+V1 may launch with simpler search and expand later.
+15. BOOKMARKS
+Registered users should be able to save articles, lessons, regulations, questions, tests and regulatory updates. Bookmarks should appear in the dashboard.
+16. CERTIFICATES
+Where applicable, users can generate certificates after eligible courses, mock programmes, assessments or practice programmes.
+Certificates must clearly identify RegMate as issuer and must not imply certification by a third party unless formally authorised.
+Certificate verification should eventually be available through a unique certificate ID/URL.
+17. ACCESS CONTROL
+Every premium object must have an entitlement. Examples: RegLearn → Course A → Premium; RegPractice → Mock Test 01 → Premium; RegReady → FME Track → Premium; RegTools → AML Assessment → Premium.
+The system must support Free, Preview, Paid Product, Membership and Admin access.
+Premium content must not become accessible merely by knowing its URL.
+18. PRODUCT PREVIEW STRATEGY
+Every paid product should expose enough free content to demonstrate value.
+Examples: RegLearn — first module/free lessons; RegLens — selected provisions/comparisons; RegPractice — selected tests/questions; RegTools — selected free tools; RegReady — sample questions/selected modules; RegIntel — public updates and selected analysis.
+Exact free allocation will be defined in the Access Matrix document.
+19. PAYMENTS
+The platform should support individual product purchases and annual RegMate membership.
+Preferred payment system: Razorpay.
+Payment status must be linked to the user's entitlement. Successful payment activates entitlement. Refund, cancellation and expiry update entitlement according to defined business rules.
+Payment logic must not be hardcoded separately inside each product.
+20. ADMIN SYSTEM
+A secure admin interface will eventually manage users, products, courses, modules, lessons, questions, tests, tools, regulatory updates, enforcement actions, articles, access/entitlements, purchases, memberships, certificates, polls and analytics.
+Admin permissions should be role-based.
+21. ANALYTICS
+V1 should capture useful analytics such as registrations, active users, product views, course starts, course completion, quiz attempts, test scores, tool usage, purchases, memberships, conversion and retention.
+Avoid unnecessarily complex analytics in the first release.
+22. MOBILE EXPERIENCE
+The platform must be fully responsive. Priority mobile experiences: dashboard, lessons, questions, tests, regulatory reading, tools and checkout.
+23. SECURITY
+Minimum requirements: server-side authentication; server-side entitlement checks; secure database policies; protected premium content; protected admin routes; secure payment verification; input validation; rate limiting where necessary; secure secrets/environment variables; and no sensitive credentials in frontend code.
+24. V1 SUCCESS CRITERIA
+Visitor: discover RegMate → read free content → try free features → register.
+Free Member: register → login → dashboard → free content → limited practice → activity tracking.
+Individual Buyer: purchase → payment verified → entitlement activated → premium access → progress tracking → product use.
+Annual Member: subscribe → entitlement activated → membership products → dashboard/ecosystem.
+Administrator: create/manage products and content → manage users → manage entitlements → view activity and basic analytics.
+25. V1 DEVELOPMENT PRINCIPLE
+Build the platform foundation first, then products. Do not create six disconnected mini-websites.
+All products share the same platform foundation: RegMate → Identity + Entitlement + Content → RegLearn / RegLens / RegPractice / RegTools / RegReady / RegIntel.
+26. OUT OF SCOPE FOR INITIAL V1
+Do not allow these to delay the first usable platform: full AI regulatory assistant; full regulatory knowledge graph; advanced adaptive testing; complex recommendation engine; community/forum; mobile app; advanced automation; extensive third-party integrations; and complex enterprise features.
+These can be added after the foundation is stable.
+27. DOCUMENT RELATIONSHIP
+Document 01 defines navigation and information architecture.
+Document 02 defines the RegMate brand and product ecosystem.
+Document 03 defines what functionality the V1 platform and products must provide.
+The next document should define: 04 — RegMate User Roles & Access Matrix.

@@ -51,11 +51,18 @@ function MegaMenuDropdown({ link, onClose }) {
 
   // Full mega menu
   return (
-    <div
-      className="fixed left-0 right-0 top-[70px] bg-white border-b border-[var(--line)] shadow-2xl z-50 animate-fade-in-up"
-      role="menu"
-      aria-label={`${link.label} menu`}
-    >
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 top-[64px] sm:top-[70px] bg-black/25 backdrop-blur-[2px] z-40 animate-fade-in"
+        onClick={onClose}
+      />
+      <div
+        className="fixed left-0 right-0 top-[64px] sm:top-[70px] bg-white border-b border-[var(--line)] shadow-2xl z-50 animate-fade-in-up"
+        style={{ backgroundColor: '#ffffff' }}
+        role="menu"
+        aria-label={`${link.label} menu`}
+      >
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div
           className="grid gap-6 items-start"
@@ -151,6 +158,7 @@ function MegaMenuDropdown({ link, onClose }) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -134,16 +134,6 @@ export default function ToolsIndex() {
     });
   }, [searchQuery, selectedCategory]);
 
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for RegTools"
-        message="Accessing interactive compliance calculators, trackers, and workflow planners requires an authenticated RegMate account. Please log in or sign up to continue."
-        redirectPath="/login"
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-paper py-8 px-4 sm:px-6 lg:px-8 space-y-8">

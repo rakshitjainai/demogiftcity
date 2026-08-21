@@ -1,0 +1,95 @@
+02 — RegMate Product & Brand Architecture
+Document Status: Approved / Working MasterVersion: V1.0Platform: RegMateWebsite: regmate.in
+1. REGMATE — BRAND DEFINITION
+RegMate is a digital regulatory learning, practice, intelligence and compliance platform.
+It is designed to help users: Learn. Understand. Practice. Apply. Prepare. Stay Current.
+RegMate brings legal and regulatory knowledge into a single connected ecosystem rather than treating courses, quizzes, regulatory updates and compliance tools as separate products.
+The platform covers Companies Act, Corporate Law, Corporate Governance, SEBI, IFSCA, RBI, FEMA, Insurance, Taxation, Capital Markets, Listed Companies, IFSC, Financial Services and related legal and regulatory areas.
+2. TARGET AUDIENCE
+RegMate is not restricted to Company Secretaries or compliance officers.
+The general ecosystem is designed for students, Company Secretaries, Chartered Accountants, lawyers, compliance professionals, finance and corporate professionals, regulatory professionals, banking/financial-services professionals, exam/career aspirants and anyone interested in legal and regulatory knowledge.
+Important distinction: RegReady is the only product family specifically designed around professional roles.
+3. REGMATE PRODUCT ECOSYSTEM
+RegMate consists of six core product families:1. RegLearn2. RegLens3. RegPractice4. RegTools5. RegReady6. RegIntel
+Free Resources form the public content and acquisition layer.
+The six products should feel like interconnected parts of one RegMate ecosystem.
+4. REGLEARN — LEARN
+Purpose: Learn law and regulation, step by step.
+RegLearn is the structured learning platform. It includes courses, learning paths, modules, lessons, topic-based learning, progress tracking, learning quizzes, revision and recommended learning.
+Potential domains include Companies Act, SEBI, IFSCA, RBI, FEMA, Insurance, Taxation, Capital Markets, Corporate Governance, Corporate Law, Listed Companies, IFSC and other legal/regulatory subjects.
+Strategic role: RegLearn builds knowledge.
+5. REGLENS — UNDERSTAND
+Purpose: See regulation from every angle.
+RegLens is the interactive regulatory understanding and exploration product. It should help users understand relationships between Acts, Sections, Rules, Regulations, Circulars, Notifications, Amendments and regulatory frameworks.
+Core capabilities include interactive regulations, provision exploration, section/regulation comparison, old vs new provisions, cross-regulatory comparison, regulatory mapping, related provisions and regulatory search.
+The existing “Interactive Regulations” concept belongs within RegLens.
+Strategic role: RegLens builds understanding and context.
+6. REGPRACTICE — PRACTICE
+Purpose: Test what you know. Find what you don't.
+RegPractice is the testing, practice and assessment ecosystem. It includes quizzes, topic tests, subject tests, mock tests, full-length mock tests, exam simulations, question bank, practice by topic/regulator, attempt history, performance analytics, weak-area analysis, recommendations, fresh-question retakes and certificates where appropriate.
+It can contain micro-level tests, topic tests, subject tests, full-course tests and professional examination simulations.
+Third-party exam simulations must clearly state that they are independent practice/simulation products and are not affiliated with or endorsed by the relevant organisation unless formally authorised.
+Strategic role: RegPractice converts knowledge into measurable capability.
+7. REGTOOLS — APPLY
+Purpose: Turn regulation into action.
+RegTools converts regulatory knowledge into practical compliance and decision-support utilities.
+Initial tools:• Compliance Calendar Generator• Compliance Diagnostic• AML/CFT Assessment• Provision Finder• Applicable Provisions Generator• Compliance Checklist Generator• Event-Based Compliance Tools• Regulatory Applicability Checker
+Future possibilities include entity-specific compliance assessments, transaction assessments, event-based generators, regulatory applicability engines, board/listed-company/IFSC tools and FEMA transaction assessments.
+Strategic role: RegTools converts knowledge into practical application.
+8. REGREADY — PREPARE
+Purpose: Prepare for the role. Master the regulatory questions.
+RegReady is the professional role-specific regulatory and technical preparation platform.
+It covers regulatory knowledge, technical questions, practical scenarios, role-specific questions, cross-regulatory questions, regulatory problem-solving, MCQs, model answers and regulatory mock interviews.
+It does not cover HR interviews, personality development, generic interview coaching, communication training or soft skills.
+Initial tracks:• FME / Fund Management• Listed Company CS• Private → Public• IFSC Roles• Compliance Roles• Corporate Secretarial Roles• Capital Markets Roles• Financial Services Roles• Other professional roles
+The existing FME InterviewPro product will ultimately become RegReady → FME / Fund Management.
+Strategic role: RegReady converts regulatory knowledge into role readiness.
+9. REGINTEL — STAY CURRENT
+Purpose: Know what changed. Know what it means.
+RegIntel is the regulatory intelligence and current-development layer.
+It should explain what changed, who is affected, when it applies, practical impact and possible action required.
+Core components:• Regulatory Updates• What's Changed?• Regulatory Tracker• Enforcement Actions• Regulatory Analysis• Regulatory Alerts• Regulatory Calendar
+Potential coverage includes MCA, SEBI, IFSCA, RBI, FEMA, IRDAI, Tax and other regulators.
+Strategic role: RegIntel provides continuous regulatory awareness.
+10. FREE RESOURCES
+Free Resources are the public-facing knowledge and acquisition layer, not a separate paid product family.
+Includes Articles, Blogs, Regulatory Explainers, Guides, Regulatory FAQs, Checklists, Downloads, Templates, Polls and Regulatory Glossary.
+Strategic role: attract organic traffic, educate visitors, build authority, generate registrations and introduce users to paid products.
+11. HOW THE PRODUCTS CONNECT
+The key strategic advantage is that products are interconnected.
+Example: for “Related Party Transactions”:• RegLearn — structured lesson• RegLens — interactive comparison• RegPractice — RPT quizzes/tests• RegTools — RPT checklist/applicability tool• RegIntel — recent regulatory developments• RegReady — relevant professional questions
+This creates a connected ecosystem rather than isolated products.
+12. THE REGMATE KNOWLEDGE LOOP
+Learn → Understand → Practice → Apply → Prepare → Stay Current → Learn Again
+This creates a continuous learning and professional-development cycle.
+13. BRAND ARCHITECTURE
+Master brand: REGMATE
+Product families:• RegLearn• RegLens• RegPractice• RegTools• RegReady• RegIntel
+Then come tracks, courses, tools and tests.
+Example: RegMate → RegReady → FME / Fund Management
+The long-term architecture should not treat FME InterviewPro as a separate ecosystem.
+14. COMMERCIAL MODEL
+RegMate follows a hybrid model.
+Free: public content, blogs, regulatory updates, polls, selected learning, limited quizzes, selected features and a free dashboard.
+Individual Products: users can purchase individual products or tracks.
+RegMate Membership: an annual membership can provide access to the complete ecosystem or products included in the selected membership plan.
+Exact pricing and packaging will be defined separately.
+15. USER ACCOUNT PHILOSOPHY
+There must be one RegMate account. Users should never need separate accounts for RegLearn, RegLens, RegPractice, RegTools, RegReady or RegIntel.
+The account should work across the ecosystem for progress, purchases, entitlements, bookmarks, activity and certificates.
+16. FREE MEMBER PHILOSOPHY
+A free account must provide genuine value.
+Free users should receive a dashboard, selected learning, limited practice, public regulatory intelligence, polls, limited quizzes, selected tools/features, progress tracking and bookmarks.
+The free experience should demonstrate the value of RegMate and create natural upgrade paths.
+17. LONG-TERM VISION
+RegMate should eventually evolve from a learning website into a regulatory knowledge ecosystem.
+Potential future capabilities include AI Regulatory Assistant, Personalised Learning Engine, Regulatory Knowledge Graph, Enforcement Intelligence Database, Regulatory Change Impact Engine, Compliance Health Score, Advanced Compliance Automation, Regulatory Research Tools, professional certification programmes and community/Q&A.
+These are future possibilities and should not unnecessarily expand V1.
+18. ARCHITECTURAL PRINCIPLES
+• One ecosystem — all products operate under RegMate.• One account — one user identity across the platform.• One central database — products share the underlying architecture.• Central entitlements — access is determined by product/membership entitlements.• Modular products — new courses, regulators, tools, tests and tracks can be added without rebuilding the platform.• Interconnected knowledge — concepts can appear across learning, practice, tools, preparation and intelligence.• Free-to-paid progression — free content introduces users to the ecosystem and creates natural upgrade paths.
+19. FROZEN PRODUCT DECISIONS
+• RegMate is the master brand.• Six product families: RegLearn, RegLens, RegPractice, RegTools, RegReady, RegIntel.• Free Resources remain publicly accessible.• RegReady is role-oriented.• FME / Fund Management is the first RegReady track.• FME InterviewPro transitions into RegReady.• RegMate is open to all learners and professionals for general learning and practice.• One central user account.• One central database.• Central entitlement system.• Free Member + Individual Purchase + Annual Membership model.• Free Members receive a meaningful dashboard and limited access.• Free public content, polls and limited quizzes.• Products should be interconnected.• Architecture must support future expansion.
+Any change to these frozen decisions should be discussed and approved before implementation.
+20. DOCUMENT RELATIONSHIP
+This document defines what RegMate is and how its products relate.
+It does not define detailed page layouts, complete feature specifications, database tables, API architecture, UI design or payment implementation. Those will be defined in subsequent RegMate project documents.

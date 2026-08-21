@@ -1,248 +1,342 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, BookOpen, BookMarked, FileCheck, X, Search, ShieldCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import RegulationRow from '../components/RegulationRow';
-import { ACTS_DATA, getActDefinitions, getActSchedules } from '../data/regulationsData';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { 
+  BookOpen, Search, Layers, Scale, ShieldCheck, ChevronRight, 
+  Menu, X, Sparkles, FileText, ArrowLeft, Filter, Download, 
+  CheckCircle2, Bookmark, ExternalLink 
+} from 'lucide-react';
+import { getAllRegulations, getRegulationBySlug } from '../utils/regulatoryDataLoader';
+import RegulationHeader from '../components/regulatory/RegulationHeader';
+import ChapterNavigation from '../components/regulatory/ChapterNavigation';
+import ProvisionReader from '../components/regulatory/ProvisionReader';
+import ExplanationPanel from '../components/regulatory/ExplanationPanel';
+import PracticalComplianceBlock from '../components/regulatory/PracticalComplianceBlock';
+import RiskInterviewInsights from '../components/regulatory/RiskInterviewInsights';
+import SourceReference from '../components/regulatory/SourceReference';
+import RelatedProvisions from '../components/regulatory/RelatedProvisions';
+import PreviousNextNavigation from '../components/regulatory/PreviousNextNavigation';
 import { useAuth } from '../context/AuthContext';
-import LockOverlay from '../components/LockOverlay';
 
 export default function InteractiveRegulations() {
-  const { user, isAuthenticated } = useAuth();
-  const isMember = user?.membershipStatus === 'active';
-  const [expandedAct, setExpandedAct] = useState(null);
-  const [expandedChapters, setExpandedChapters] = useState({}); // { [actSlug]: boolean }
-  const [activeModal, setActiveModal] = useState(null); // { type: 'schedules' | 'definitions', actSlug: string } | null
-  const [searchTerm, setSearchTerm] = useState('');
+  const { actSlug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, saveReadingProgress } = useAuth();
 
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for Interactive Regulations"
-        message="Browsing regulatory acts, chapters, and official text requires an authenticated account. Please log in or sign up to continue."
-        redirectPath="/login"
-      />
-    );
+  const [regulationsList, setRegulationsList] = useState([]);
+  const [currentReg, setCurrentReg] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeChapterId, setActiveChapterId] = useState('I');
+  const [activeProvisionId, setActiveProvisionId] = useState('1');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'text' | 'explanation' | 'compliance' | 'risk'
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [bookmarkedProvisions, setBookmarkedProvisions] = useState([]);
+
+  // Selected regulation slug
+  const selectedSlug = actSlug || searchParams.get('act') || 'ifsca-cmi-2025';
+
+  // Load all available regulations catalog
+  useEffect(() => {
+    async function initCatalog() {
+      const all = await getAllRegulations();
+      setRegulationsList(all);
+    }
+    initCatalog();
+  }, []);
+
+  // Load selected regulation details
+  useEffect(() => {
+    async function loadReg() {
+      setLoading(true);
+      const data = await getRegulationBySlug(selectedSlug);
+      if (data) {
+        setCurrentReg(data);
+        // Find default initial provision
+        const firstChap = data.chapters?.[0];
+        const firstProv = firstChap?.provisions?.[0];
+        if (firstChap) setActiveChapterId(firstChap.chapter_id);
+        if (firstProv) setActiveProvisionId(firstProv.number);
+      }
+      setLoading(false);
+    }
+    loadReg();
+  }, [selectedSlug]);
+
+  // Handle provision selection
+  const handleSelectProvision = (chapId, provNumber) => {
+    if (chapId) setActiveChapterId(chapId);
+    if (provNumber) {
+      setActiveProvisionId(String(provNumber));
+      // Save progress if authenticated
+      if (saveReadingProgress && currentReg) {
+        saveReadingProgress(currentReg.slug, chapId || activeChapterId, provNumber);
+      }
+    }
+    setMobileDrawerOpen(false);
+    // Smooth scroll main content to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Find active chapter and provision objects
+  const activeChapter = currentReg?.chapters?.find(c => c.chapter_id === activeChapterId) || currentReg?.chapters?.[0];
+  
+  // Find provision across all chapters (in case provision is accessed by number alone)
+  let activeProvision = activeChapter?.provisions?.find(p => String(p.number) === String(activeProvisionId));
+  if (!activeProvision && currentReg) {
+    for (const chap of currentReg.chapters) {
+      const found = chap.provisions.find(p => String(p.number) === String(activeProvisionId));
+      if (found) {
+        activeProvision = found;
+        if (activeChapterId !== chap.chapter_id) {
+          setActiveChapterId(chap.chapter_id);
+        }
+        break;
+      }
+    }
   }
 
-  const acts = Object.entries(ACTS_DATA).map(([slug, data]) => ({
-    slug,
-    title: data.title,
-    totalChapters: data.totalChapters,
-    chapters: data.chapters,
-    versionDate: data.versionDate,
-    status: data.status,
-    definitions: getActDefinitions(slug),
-    schedules: getActSchedules(slug),
-  }));
+  // Calculate flatten provisions list for Previous / Next navigation
+  const allProvisionsFlat = currentReg?.chapters?.flatMap(c => 
+    c.provisions.map(p => ({ ...p, chapter_id: c.chapter_id }))
+  ) || [];
 
-  const activeActData = activeModal?.actSlug ? ACTS_DATA[activeModal.actSlug] : null;
-  const modalSchedules = activeModal?.actSlug ? getActSchedules(activeModal.actSlug) : [];
-  const modalDefinitions = activeModal?.actSlug ? getActDefinitions(activeModal.actSlug) : [];
+  const currentIdx = allProvisionsFlat.findIndex(p => String(p.number) === String(activeProvisionId));
+  const prevProvision = currentIdx > 0 ? allProvisionsFlat[currentIdx - 1] : null;
+  const nextProvision = currentIdx >= 0 && currentIdx < allProvisionsFlat.length - 1 ? allProvisionsFlat[currentIdx + 1] : null;
 
-  const filteredDefs = modalDefinitions.filter(d =>
-    (d.term || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (d.definition_text || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleBookmark = (prov) => {
+    const key = `${selectedSlug}-${prov.number}`;
+    if (bookmarkedProvisions.includes(key)) {
+      setBookmarkedProvisions(prev => prev.filter(k => k !== key));
+    } else {
+      setBookmarkedProvisions(prev => [...prev, key]);
+    }
+  };
+
+  const isBookmarked = activeProvision ? bookmarkedProvisions.includes(`${selectedSlug}-${activeProvision.number}`) : false;
 
   return (
-    <div className="py-16 px-6 max-w-5xl mx-auto animate-fade-in-up">
-      <div className="mb-12">
-        <span className="eyebrow block mb-4">§ Knowledge</span>
-        <h1 className="text-4xl font-display text-forest-deep mb-4">Interactive Regulations</h1>
-        <p className="text-ink-soft text-lg">Browse acts and regulations chapter by chapter, section by section.</p>
+    <div className="min-h-screen bg-paper flex flex-col font-sans text-ink">
+      
+      {/* ── Top Regulation Switcher / Breadcrumbs Bar ── */}
+      <div className="bg-white border-b border-line px-4 sm:px-6 py-2.5 flex items-center justify-between text-xs text-ink-soft">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <Link to="/" className="hover:text-forest font-medium">Home</Link>
+          <span>/</span>
+          <span className="text-forest font-bold">RegLens (Understand)</span>
+          <span>/</span>
+          <span className="text-ink font-semibold truncate max-w-[200px] sm:max-w-md">
+            {currentReg?.short_title || currentReg?.title || 'Regulations'}
+          </span>
+        </div>
+
+        {/* Regulation Selector Dropdown */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <label htmlFor="reg-select" className="hidden md:inline font-medium text-ink-soft">
+            Switch Regulation:
+          </label>
+          <select
+            id="reg-select"
+            value={selectedSlug}
+            onChange={(e) => navigate(`/understand/${e.target.value}`)}
+            className="bg-paper border border-line rounded-lg px-2.5 py-1 text-xs font-semibold text-forest focus:outline-none focus:border-forest"
+          >
+            {regulationsList.map(r => (
+              <option key={r.slug} value={r.slug}>
+                {r.short_name || r.title}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {acts.map((act) => {
-          const isOpen = expandedAct === act.slug;
-          const isFullyExpanded = !!expandedChapters[act.slug];
-          const displayedChapters = isFullyExpanded ? act.chapters : act.chapters.slice(0, 5);
+      {/* ── Regulation Header & Search ── */}
+      {currentReg && (
+        <RegulationHeader
+          regulation={currentReg}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
+      )}
 
-          const hasSchedules = act.schedules && act.schedules.length > 0;
-          const hasDefinitions = act.definitions && act.definitions.length > 0;
+      {/* ── Mobile Navigation Trigger Bar ── */}
+      <div className="lg:hidden bg-white border-b border-line px-4 py-3 flex items-center justify-between sticky top-[64px] z-20 shadow-xs">
+        <button
+          onClick={() => setMobileDrawerOpen(true)}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-mint text-forest text-xs font-bold border border-mint-deep"
+        >
+          <Layers className="w-4 h-4 text-leaf" />
+          <span>Chapters & Provisions ({currentReg?.rawProvisions?.length || 0})</span>
+        </button>
 
-          return (
-            <div key={act.slug} className="bg-white border border-line rounded-xl overflow-hidden card-shadow">
+        <span className="text-xs font-bold text-forest-deep truncate max-w-[180px]">
+          Reg {activeProvision?.number || '1'}
+        </span>
+      </div>
+
+      {/* ── Main Research 3-Column Layout ── */}
+      <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6 py-4 lg:py-6 px-0 lg:px-6">
+        
+        {/* ── LEFT COLUMN (Desktop TOC) ── */}
+        <aside className="hidden lg:block lg:col-span-3 h-[calc(100vh-220px)] sticky top-[90px] rounded-2xl overflow-hidden card-shadow bg-white border border-line">
+          <ChapterNavigation
+            chapters={currentReg?.chapters || []}
+            activeChapterId={activeChapterId}
+            activeProvisionId={activeProvisionId}
+            onSelectProvision={handleSelectProvision}
+            searchTerm={searchTerm}
+          />
+        </aside>
+
+        {/* ── CENTER COLUMN (Main Statutory Reading & Explanation) ── */}
+        <main className="col-span-1 lg:col-span-6 px-4 sm:px-6 lg:px-0 space-y-6">
+          
+          {/* Content View Tabs */}
+          <div className="flex items-center gap-1.5 border-b border-line pb-1 overflow-x-auto no-scrollbar">
+            {[
+              { id: 'all', label: 'Complete View' },
+              { id: 'text', label: 'Statutory Text' },
+              { id: 'explanation', label: 'Explanation' },
+              { id: 'compliance', label: 'Compliance Points' },
+              { id: 'risk', label: 'Risk & Interview' }
+            ].map(tab => (
               <button
-              onClick={() => setExpandedAct(isOpen ? null : act.slug)}
-              className="cursor-target w-full text-left px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between hover:bg-mint transition-colors min-h-[64px]"
-            >
-              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-mint-deep flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-forest" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-base sm:text-lg text-forest-deep leading-tight">{act.title}</h3>
-                    {act.versionDate ? (
-                      <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-full font-medium whitespace-nowrap">
-                        Verified · {act.versionDate.includes('Consolidated') ? act.versionDate.replace('Consolidated as amended up to ', 'Consolidated to ') : act.versionDate}
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="text-sm text-ink-soft mt-0.5">{act.totalChapters} Chapters · {act.chapters.reduce((n, c) => n + c.sections.length, 0)} Provisions</p>
-                </div>
-              </div>
-              {isOpen ? <ChevronDown className="text-forest flex-shrink-0 ml-2" /> : <ChevronRight className="text-ink-soft flex-shrink-0 ml-2" />}
-            </button>
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-forest text-white shadow-xs'
+                    : 'text-ink-soft hover:bg-mint hover:text-forest'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-              {isOpen && (
-                <div className="px-6 pb-6 pt-2 bg-paper border-t border-line space-y-4">
-                  {(hasSchedules || hasDefinitions) && (
-                    <div className="flex items-center gap-2 sm:gap-3 pt-3 flex-wrap">
-                      {hasSchedules && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveModal({ type: 'schedules', actSlug: act.slug });
-                          }}
-                          className="cursor-target inline-flex items-center gap-2 px-4 py-2.5 bg-mint text-forest font-semibold text-xs rounded-lg hover:bg-mint-deep transition-colors min-h-[44px]"
-                        >
-                          <BookMarked className="w-4 h-4" /> View {act.schedules.length === 1 ? 'Schedule' : `${act.schedules.length} Schedules`}
-                        </button>
-                      )}
-                      {hasDefinitions && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveModal({ type: 'definitions', actSlug: act.slug });
-                          }}
-                          className="cursor-target inline-flex items-center gap-2 px-4 py-2.5 bg-paper border border-line text-forest font-semibold text-xs rounded-lg hover:bg-mint transition-colors min-h-[44px]"
-                        >
-                          <FileCheck className="w-4 h-4" /> Defined Terms ({act.definitions.length} Terms)
-                        </button>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="divide-y divide-line rounded-xl overflow-hidden bg-white border border-line">
-                    {displayedChapters.map(ch => (
-                      <RegulationRow
-                        key={ch.num}
-                        to={`/interactive-regulations/${act.slug}/chapter-${ch.num}`}
-                        icon={BookOpen}
-                        title={`Chapter ${ch.num}`}
-                        subtitle={ch.title}
-                        badge={!isMember && ch.num > 2 ? '🔒 Membership Required' : null}
-                      />
-                    ))}
-                  </div>
-
-                  {act.chapters.length > 5 && (
-                    <div className="text-center pt-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedChapters(prev => ({
-                            ...prev,
-                            [act.slug]: !isFullyExpanded
-                          }));
-                        }}
-                        className="cursor-target inline-flex items-center gap-1.5 py-2.5 px-5 bg-mint text-forest font-medium rounded-lg hover:bg-mint-deep transition-colors text-sm min-h-[44px]"
-                      >
-                        {isFullyExpanded ? (
-                          <>Show less ↑</>
-                        ) : (
-                          <>View all {act.totalChapters} chapters →</>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+          {loading ? (
+            <div className="p-12 text-center text-ink-soft bg-white rounded-2xl border border-line">
+              <div className="w-8 h-8 border-3 border-forest border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-sm font-medium">Loading regulatory text...</p>
             </div>
-          );
-        })}
+          ) : (
+            <>
+              {/* 1. Official Statutory Text */}
+              {(activeTab === 'all' || activeTab === 'text') && (
+                <ProvisionReader
+                  provision={activeProvision}
+                  chapterTitle={activeChapter?.title}
+                  actTitle={currentReg?.title}
+                  onBookmark={handleBookmark}
+                  isBookmarked={isBookmarked}
+                />
+              )}
+
+              {/* 2. RegMate Simple Explanation */}
+              {(activeTab === 'all' || activeTab === 'explanation') && (
+                <ExplanationPanel provision={activeProvision} />
+              )}
+
+              {/* 3. Practical Compliance Takeaways */}
+              {(activeTab === 'all' || activeTab === 'compliance') && (
+                <PracticalComplianceBlock provision={activeProvision} />
+              )}
+
+              {/* 4. Risk Points & Interview Insights */}
+              {(activeTab === 'all' || activeTab === 'risk') && (
+                <RiskInterviewInsights provision={activeProvision} />
+              )}
+
+              {/* Previous / Next Provision Navigation Footer */}
+              <PreviousNextNavigation
+                prevProvision={prevProvision}
+                nextProvision={nextProvision}
+                onNavigate={handleSelectProvision}
+              />
+            </>
+          )}
+
+        </main>
+
+        {/* ── RIGHT COLUMN (Metadata, Citation & Related Provisions) ── */}
+        <aside className="hidden lg:block lg:col-span-3 space-y-5 h-fit sticky top-[90px]">
+          <SourceReference
+            provision={activeProvision}
+            regulation={currentReg}
+          />
+
+          <RelatedProvisions
+            relatedProvisions={activeProvision?.related_provisions}
+            onSelectProvision={handleSelectProvision}
+          />
+
+          {/* Quick Access Card to RegPractice & RegTools */}
+          <div className="bg-gradient-to-br from-mint to-mint-deep/60 rounded-2xl border border-mint-deep p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-leaf" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-forest">
+                Test Your Understanding
+              </h4>
+            </div>
+            <p className="text-xs text-ink-soft leading-relaxed">
+              Take practice quizzes on this regulatory chapter or generate automated compliance checklists.
+            </p>
+            <div className="flex flex-col gap-2 pt-1">
+              <Link
+                to="/practice/quizzes"
+                className="w-full text-center px-3 py-2 bg-forest hover:bg-forest-deep text-white text-xs font-bold rounded-xl transition-colors shadow-2xs"
+              >
+                Practice Chapter Quizzes
+              </Link>
+              <Link
+                to="/tools"
+                className="w-full text-center px-3 py-2 bg-white hover:bg-paper text-forest border border-line text-xs font-bold rounded-xl transition-colors"
+              >
+                Open Compliance Tools
+              </Link>
+            </div>
+          </div>
+        </aside>
+
       </div>
 
-      {/* Schedules & Definitions Modal */}
-      {activeModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white border border-line rounded-t-3xl sm:rounded-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col card-shadow">
-            <div className="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between bg-mint flex-shrink-0">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <ShieldCheck className="w-5 h-5 text-forest flex-shrink-0" />
-                <h3 className="font-semibold text-forest-deep text-base sm:text-lg truncate">
-                  {activeModal.type === 'schedules'
-                    ? `Schedules — ${activeActData?.title || 'Regulations'}`
-                    : `Defined Terms — ${activeActData?.title?.split(' ').slice(0,3).join(' ') || 'Regulations'} (${modalDefinitions.length})`}
-                </h3>
+      {/* ── MOBILE TOC DRAWER ── */}
+      {mobileDrawerOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs" 
+            onClick={() => setMobileDrawerOpen(false)} 
+          />
+          <div className="relative w-4/5 max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-fade-in-up">
+            <div className="p-4 border-b border-line flex items-center justify-between bg-paper">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-forest" />
+                <span className="font-display font-bold text-sm text-forest-deep">
+                  Navigation & Provisions
+                </span>
               </div>
-              <button
-                onClick={() => { setActiveModal(null); setSearchTerm(''); }}
-                className="cursor-target p-2.5 rounded-xl text-ink-soft hover:text-ink hover:bg-paper flex-shrink-0 ml-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                aria-label="Close modal"
+              <button 
+                onClick={() => setMobileDrawerOpen(false)}
+                className="p-1.5 rounded-lg text-ink-soft hover:bg-gray-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6">
-              {activeModal.type === 'schedules' && (
-                <div className="space-y-4 sm:space-y-6">
-                  {modalSchedules.map((sch, idx) => (
-                    <div key={sch.id || idx} className="bg-paper border border-line rounded-xl p-4 sm:p-6">
-                      <span className="px-3 py-1 bg-mint text-forest font-semibold text-xs rounded-full uppercase mb-3 inline-block">
-                        {sch.chapter || `Schedule ${idx + 1}`}
-                      </span>
-                      <h4 className="text-lg font-semibold text-forest-deep mb-3">{sch.title}</h4>
-                      {sch.simple_explanation && (
-                        <p className="text-xs text-ink-soft mb-3 bg-white p-3 rounded-lg border border-line">
-                          <strong className="text-forest">Summary:</strong> {sch.simple_explanation}
-                        </p>
-                      )}
-                      <div className="bg-white border border-line rounded-lg p-4 font-serif text-xs leading-relaxed text-forest-deep whitespace-pre-line max-h-60 overflow-y-auto">
-                        {sch.statutory_text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {activeModal.type === 'definitions' && (
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Search className="w-4 h-4 text-ink-soft absolute left-3 top-3.5" />
-                    <input
-                      type="text"
-                      placeholder={`Search ${modalDefinitions.length} defined terms...`}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:border-forest min-h-[44px]"
-                    />
-                  </div>
-
-                  <div className="divide-y divide-line bg-paper border border-line rounded-xl max-h-[60vh] overflow-y-auto">
-                    {filteredDefs.map(def => (
-                      <div key={def.id} className="p-4 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <h5 className="font-semibold text-forest-deep text-sm">“{def.term}”</h5>
-                          <span className="text-xs text-ink-soft bg-white border border-line px-2 py-0.5 rounded">
-                            {def.defined_in}
-                          </span>
-                        </div>
-                        <p className="text-xs text-ink-soft leading-relaxed font-serif whitespace-pre-line">
-                          {def.definition_text}
-                        </p>
-                      </div>
-                    ))}
-                    {filteredDefs.length === 0 && (
-                      <div className="p-6 text-center text-ink-soft text-sm">
-                        No terms matched your search "{searchTerm}".
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className="flex-1 overflow-y-auto">
+              <ChapterNavigation
+                chapters={currentReg?.chapters || []}
+                activeChapterId={activeChapterId}
+                activeProvisionId={activeProvisionId}
+                onSelectProvision={handleSelectProvision}
+                searchTerm={searchTerm}
+              />
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
-

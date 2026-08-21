@@ -1,0 +1,240 @@
+07 — RegMate Content & Data Model Specification
+Document Status: Working SpecificationVersion: V1.0Purpose: Define the structure, relationships, metadata, lifecycle and governance of RegMate content and regulatory data
+1. PURPOSE
+This document defines how RegMate content should be structured so that the same underlying knowledge can power learning, regulatory research, practice, tools, interview preparation and regulatory intelligence.
+The objective is to avoid creating isolated content silos.
+A regulatory concept should be reusable across multiple RegMate products.
+2. CORE CONTENT PRINCIPLE
+RegMate content should be stored as structured data wherever practical.
+The platform should distinguish between:• Authoritative source material• RegMate explanations• Learning content• Practice content• Regulatory intelligence• Tool logic• User-generated activity
+This separation is important for accuracy, maintainability, search and future AI capabilities.
+3. CONTENT HIERARCHY
+The broad content hierarchy is:
+Regulator→ Legal / Regulatory Instrument→ Chapter / Part→ Section / Regulation / Provision→ Amendment / Circular / Notification
+RegMate content can then reference these authoritative objects:
+Course→ Module→ Lesson
+Test→ Question
+RegReady→ Question / Scenario
+RegIntel→ Regulatory Update / Enforcement Action
+RegTools→ Rule / Applicability Logic
+4. CONTENT TYPES
+Primary content types:
+LEARNING• Course• Module• Lesson
+REGULATORY• Regulator• Act• Regulation• Rule• Section• Provision• Circular• Notification• Amendment
+PRACTICE• Question• Question Option• Question Bank• Test• Mock Test• Attempt• Result
+PREPARATION• RegReady Track• Interview Question• Scenario• Model Answer
+INTELLIGENCE• Regulatory Update• Enforcement Action
+PUBLIC CONTENT• Article• Guide• FAQ• Resource• Glossary Term• Poll
+TOOLS• Tool• Assessment• Checklist• Generator
+5. CONTENT IDENTIFIERS
+Every major content object should have a stable internal ID.
+Where appropriate it should also have:• Slug• Public reference/code• Version• Status• Created date• Updated date
+Public URLs should use stable slugs rather than database IDs.
+6. CONTENT STATUS
+Recommended lifecycle:
+DRAFTContent is being created.
+IN_REVIEWContent is awaiting review.
+APPROVEDContent has passed internal review.
+PUBLISHEDContent is publicly available according to its access rules.
+ARCHIVEDContent is no longer actively presented but remains historically preserved.
+A separate access level determines whether content is public, free, preview or premium.
+7. VERSIONING
+Regulatory content is time-sensitive and may change.
+Where appropriate, store:• Version number• Effective date• Publication date• Superseded date• Amendment reference• Previous version• Current version
+Historical regulatory material should not simply be overwritten if doing so would destroy the ability to understand what applied at an earlier date.
+8. REGULATOR MODEL
+A regulator record should contain:
+• Name• Short name• Country/jurisdiction• Website/source• Regulator type• Status• Description
+Examples include:• MCA• SEBI• IFSCA• RBI• IRDAI• Tax authorities• Other relevant regulators
+The architecture should allow additional regulators to be added without code changes.
+9. LEGAL / REGULATORY INSTRUMENT MODEL
+An instrument may be:• Act• Regulation• Rule• Circular• Notification• Guidance• Master Direction• Framework• Order
+Fields should include:• Title• Instrument type• Regulator/authority• Date• Effective date• Status• Source• Jurisdiction• Description
+10. PROVISION MODEL
+A provision is a central knowledge object.
+It may represent:• Section• Regulation• Rule• Clause• Paragraph• Schedule item
+Recommended fields:• Provision number• Heading• Text• Parent instrument• Parent chapter/part• Effective date• Status• Source• Version• Related provisions
+11. REGULATORY RELATIONSHIPS
+The system should support relationships such as:
+• Amends• Replaces• Supersedes• Refers to• Related to• Depends on• Similar to• Contrasts with• Interpreted by
+This is essential for RegLens and future regulatory intelligence functionality.
+12. CROSS-REGULATORY MAPPING
+RegMate should eventually allow related provisions from different regulatory frameworks to be connected.
+Example:
+Companies Act — RPT↔ SEBI LODR — Related Party Transactions↔ IFSCA provision↔ RBI related-party requirement
+Mappings should have a relationship type and, where appropriate, an explanation.
+Do not assume that two provisions are legally equivalent merely because they address a similar topic.
+13. REGLEARN CONTENT MODEL
+A Course should contain:
+• Title• Description• Audience• Learning objectives• Author• Difficulty• Estimated duration• Product• Access level• Modules• Status
+A Module should contain:• Title• Description• Order• Lessons
+A Lesson should contain:• Title• Content• Objectives• Regulatory references• Examples• Knowledge checks• Related questions• Related tools• Estimated time
+14. LESSON CONTENT BLOCKS
+Lessons should support reusable content blocks.
+Potential blocks:• Heading• Paragraph• Legal provision• Explanation• Example• Table• Callout• Warning• Checklist• Image• Source/reference• Question• Related content
+This is preferable to storing every lesson as one large unstructured text field.
+15. QUESTION MODEL
+Every question should support structured metadata.
+Core fields:• Question text• Question type• Difficulty• Topic• Subtopic• Regulatory area• Correct answer• Explanation• Regulatory reference• Status
+Optional:• Scenario• Practical implication• Common mistake• Trap indicator• Learning objective• Related lesson
+16. QUESTION OPTIONS
+MCQ options should be stored separately where appropriate.
+Each option should have:• Text• Display order• Correct/incorrect status• Explanation where required
+Do not store correct answers only in frontend code.
+17. QUESTION TAGGING
+Questions should support multiple tags.
+Examples:• Companies Act• RPT• Directors• SEBI• IFSCA• FEMA• AML• Beginner• Advanced• Interview• Mock Test• CMI• Listed Company
+Tagging enables filtering, recommendations and analytics.
+18. TEST MODEL
+A test should contain:
+• Title• Description• Test type• Product• Subject/topic• Difficulty• Time limit• Question count• Passing score• Access level• Retake rules• Randomisation setting• Status
+Questions should be linked through a test-question relationship rather than permanently embedded into a test.
+19. MOCK TEST MODEL
+Mock Tests are a special test type designed to simulate a real assessment.
+A mock test may define:• Examination style• Duration• Number of questions• Topic distribution• Difficulty distribution• Passing benchmark• Result methodology
+Where a mock test is designed to resemble a third-party certification assessment, RegMate must clearly distinguish simulation from official examination or endorsement.
+20. TEST RESULT MODEL
+Results should capture:
+• User• Test• Attempt• Score• Percentage• Correct• Incorrect• Unattempted• Time taken• Pass/fail• Topic performance• Weak areas• Timestamp
+Results should remain available to the user where appropriate.
+21. REGREADY CONTENT MODEL
+RegReady tracks should contain role-specific content.
+Track:→ Category→ Question / Scenario→ How to Approach→ Model Answer→ Regulatory Reference→ Related Content
+Categories may include:• Regulatory• Conceptual• Practical• Scenario• Cross-regulatory• Trap• Role-specific
+22. MODEL ANSWER STRUCTURE
+A RegReady model answer may contain:
+• Short answer• How to approach• Key points• Detailed answer• Regulatory basis• Practical example• Common mistake• Related questions
+The product should teach users how to structure a technically strong answer, not merely display a memorised response.
+23. REGINTEL UPDATE MODEL
+Every regulatory update should be structured around:
+WHAT HAPPENEDTitle and regulator.
+WHAT CHANGEDConcise explanation.
+WHENPublication/effective date.
+WHO IS AFFECTEDRelevant entities/professionals.
+WHY IT MATTERSPractical significance.
+WHAT TO DOPotential compliance/action points.
+SOURCEAuthoritative reference.
+RELATED CONTENTLessons, provisions, questions and tools.
+24. ENFORCEMENT ACTION MODEL
+An enforcement record should contain:
+• Regulator• Entity• Date• Case/order reference• Nature of action• Alleged/identified issue• Relevant provisions• Findings• Penalty/action• Key lessons• Source• Related regulatory topics
+This structured model can eventually power the RegMate Enforcement Intelligence capability.
+25. ARTICLE MODEL
+Articles should support:
+• Title• Slug• Subtitle/excerpt• Author• Publication date• Updated date• Category• Tags• Body• Featured image• SEO title• Meta description• Canonical URL• Related products• Related regulatory provisions
+Articles should remain independent from paid access unless intentionally gated.
+26. GLOSSARY MODEL
+Glossary terms should contain:
+• Term• Definition• Expanded explanation• Related regulations• Related articles• Related lessons• Related questions
+Glossary content can support SEO and cross-platform discovery.
+27. POLL MODEL
+Polls should contain:
+• Question• Options• Publication status• Start/end date• Audience• Results visibility
+User responses should be stored separately and should not expose unnecessary personal information.
+28. TOOL CONTENT MODEL
+Each RegTools utility should define:
+• Tool name• Purpose• Inputs• Input types• Validation rules• Decision logic• Output fields• Applicable provisions• Disclaimer/limitations• Version• Status
+Tool logic should be versioned because regulatory rules may change.
+29. CONTENT RELATIONSHIPS
+Content should be linkable across the ecosystem.
+Examples:
+Lesson→ Provision→ Question→ Test→ Tool→ Regulatory Update→ Enforcement Action→ RegReady Question
+This relationship layer is one of the most important long-term assets of RegMate.
+30. RELATED CONTENT ENGINE
+The system should support “Related” content.
+For a provision:• Related lessons• Related questions• Related updates• Related tools• Related enforcement cases
+For a lesson:• Related provisions• Related tests• Related tools• Related updates
+For an enforcement case:• Relevant provisions• Related lessons• Related questions• Compliance tools
+31. CONTENT TAXONOMY
+RegMate should use a consistent taxonomy.
+Primary dimensions:• Regulator• Legal framework• Subject• Topic• Subtopic• User level• Professional role• Product• Content type
+Examples:
+Regulator → SEBIFramework → LODRSubject → Listed CompanyTopic → RPTContent Type → Lesson
+This should be reusable across products.
+32. TOPIC HIERARCHY
+A topic may have multiple levels.
+Example:
+Companies Act→ Directors→ Board Meetings→ Notice→ Shorter Notice
+or:
+SEBI→ Listed Companies→ LODR→ Related Party Transactions→ Audit Committee Approval
+Topic hierarchy should be data-driven and editable.
+33. DIFFICULTY MODEL
+Use consistent difficulty levels:
+BeginnerIntermediateAdvancedExpert
+Difficulty should be assigned independently of product.
+The same topic may have beginner learning content and advanced practice questions.
+34. USER LEVEL MODEL
+Where useful, content can be tagged for:
+StudentEntry LevelProfessionalExperienced ProfessionalAdvanced Specialist
+This should influence recommendations without unnecessarily restricting access.
+35. CONTENT OWNERSHIP
+Every published content item should have an accountable owner or author.
+Recommended metadata:• Author• Reviewer• Publisher• Last updated by• Review date
+This is particularly important for regulatory content.
+36. REGULATORY REVIEW
+Regulatory content should have a review workflow.
+Suggested process:
+Draft→ Regulatory verification→ Editorial review→ Approval→ Publish
+Important regulatory changes should receive a higher level of review than ordinary educational content.
+37. SOURCE HIERARCHY
+RegMate should prefer authoritative sources.
+Where available, use:1. Statute / official legislation2. Official regulator notification/regulation3. Official circular/order4. Official government publication5. Other authoritative source6. Secondary commentary only where necessary
+RegMate explanations should never be presented as the legal text itself.
+38. SOURCE METADATA
+A source record should ideally include:
+• Authority• Document title• Document number/reference• Publication date• Effective date• Source URL/reference• Access date where relevant• Related instrument
+This makes regulatory content auditable and maintainable.
+39. DISCLAIMERS
+Certain content should carry appropriate notices.
+Examples:• Educational content is not legal advice.• Mock tests are independent practice simulations.• RegMate is not affiliated with a third-party certification body unless formally authorised.• Tool results may require professional verification.• Regulatory information should be checked against current authoritative sources where appropriate.
+Disclaimers should be contextual rather than displayed unnecessarily on every screen.
+40. CONTENT SEARCH INDEX
+Search should index structured fields such as:
+• Title• Heading• Provision number• Regulator• Topic• Tags• Summary• Body• Keywords• Reference numbers
+Search results should identify the content type and provide context.
+41. CONTENT VERSION CONTROL
+Changes to important regulatory objects should preserve history.
+Example:
+Regulation 2025Version 1→ Amendment 2026→ Version 2
+The system should be able to identify which version is current and which versions are historical.
+42. DATA QUALITY RULES
+Avoid:• Duplicate regulatory provisions• Duplicate questions• Unstructured regulator names• Inconsistent topic names• Missing source references• Hardcoded access rules• Unversioned regulatory logic• Unclear publication status
+Use controlled vocabularies and relationships wherever possible.
+43. CONTENT IMPORT
+The system should eventually support bulk import for large datasets.
+Potential import formats:• CSV• JSON• Structured regulatory files
+Imports should include validation and error reporting before publishing data.
+44. CONTENT EXPORT
+Administrators should eventually be able to export selected structured content for:• Backup• Review• Migration• Analysis• Bulk editing
+Exports should respect user privacy and access restrictions.
+45. FUTURE AI READINESS
+The content model should be designed so future AI features can use structured relationships.
+Potential future uses:• Regulatory Q&A• Personalised learning• Question generation• Regulatory comparison• Change-impact analysis• Compliance recommendations• Intelligent search
+AI should be treated as a future layer on top of a well-structured knowledge base, not as a substitute for the underlying data model.
+46. DATA MODEL PRINCIPLE — SOURCE VS INTERPRETATION
+Never mix authoritative legal text and RegMate interpretation in a way that makes the distinction unclear.
+Store separately:AUTHORITATIVE CONTENTThe actual regulatory/statutory source.
+REGMATE INTERPRETATIONExplanation, summary, example or practical implication.
+This distinction is essential for trust and future regulatory intelligence.
+47. DATA MODEL PRINCIPLE — REUSE, DON'T DUPLICATE
+If a provision already exists in the regulatory database, lessons, questions and tools should reference that provision.
+Do not copy the same regulatory provision into multiple unrelated records unless there is a clear reason.
+This reduces maintenance risk when regulations change.
+48. V1 CONTENT PRIORITY
+Priority 1:RegReady FME / Fund Management content.
+Priority 2:RegLearn initial course/content structure.
+Priority 3:RegPractice question/test structure.
+Priority 4:RegLens regulatory dataset foundation.
+Priority 5:RegTools structured tool definitions.
+Priority 6:RegIntel structured updates and enforcement data.
+49. INITIAL CONTENT GOVERNANCE RULES
+1. Every important regulatory object must have a source.2. Published regulatory content should have a review owner.3. Regulatory changes should preserve historical context.4. Legal text and RegMate explanation must remain distinguishable.5. Content should use standard taxonomy.6. Questions should have explanations and references where applicable.7. Tool logic should be versioned.8. Premium access should be controlled separately from content status.9. Content should be reusable across products.10. Do not publish unverified regulatory information as authoritative.
+50. DOCUMENT RELATIONSHIP
+Document 01 defines navigation and information architecture.
+Document 02 defines brand and product architecture.
+Document 03 defines V1 functionality.
+Document 04 defines users and access.
+Document 05 defines database and technical architecture.
+Document 06 defines UI/UX and design system.
+Document 07 defines the content and data model that populates the technical architecture.
+The next document should define:08 — RegMate V1 Development Roadmap & Implementation Plan.

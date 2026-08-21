@@ -55,36 +55,41 @@ export default function App() {
           />
 
           {/* ─── 1. RegLearn (/learn) ─────────────────────────────────── */}
-          <Route path="learn" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
-          <Route path="learn/paths/:pathId" element={<ProtectedRoute><Learning /></ProtectedRoute>} />
+          <Route path="learn" element={<Learning />} />
+          <Route path="learn/course/:courseId" element={<Learning />} />
+          <Route path="learn/paths/:pathId" element={<Learning />} />
 
           {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
-          <Route path="understand" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
-          <Route path="interactive-regulations" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
-          <Route path="interactive-regulations/:actSlug/:chapter" element={<ProtectedRoute><ChapterDetail /></ProtectedRoute>} />
-          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
-          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<ProtectedRoute><SectionDetail /></ProtectedRoute>} />
+          <Route path="understand" element={<InteractiveRegulations />} />
+          <Route path="understand/:actSlug" element={<InteractiveRegulations />} />
+          <Route path="understand/:actSlug/:chapter" element={<ChapterDetail />} />
+          <Route path="understand/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
+          <Route path="interactive-regulations" element={<InteractiveRegulations />} />
+          <Route path="interactive-regulations/:actSlug" element={<InteractiveRegulations />} />
+          <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetail />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<SectionDetail />} />
 
           {/* ─── 3. RegPractice (/practice) ───────────────────────────── */}
-          <Route path="practice" element={<ProtectedRoute><PracticeHub /></ProtectedRoute>} />
-          <Route path="practice/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
-          <Route path="practice/quizzes/:topic" element={<ProtectedRoute><QuizTopic /></ProtectedRoute>} />
-          <Route path="practice/mock-tests" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
-          <Route path="practice/mock-tests/:slug" element={<ProtectedRoute><ExamReady /></ProtectedRoute>} />
-          <Route path="practice/question-bank" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+          <Route path="practice" element={<PracticeHub />} />
+          <Route path="practice/quizzes" element={<Quizzes />} />
+          <Route path="practice/quizzes/:topic" element={<QuizTopic />} />
+          <Route path="practice/mock-tests" element={<ExamReady />} />
+          <Route path="practice/mock-tests/:slug" element={<ExamReady />} />
+          <Route path="practice/question-bank" element={<Quizzes />} />
 
           {/* ─── 4. RegTools (/tools) ─────────────────────────────────── */}
-          <Route path="tools" element={<ProtectedRoute><ToolsIndex /></ProtectedRoute>} />
-          <Route path="tools/:slug" element={<ProtectedRoute><ToolDetail /></ProtectedRoute>} />
+          <Route path="tools" element={<ToolsIndex />} />
+          <Route path="tools/:slug" element={<ToolDetail />} />
 
           {/* ─── 5. RegReady (/prepare) ───────────────────────────────── */}
-          <Route path="prepare" element={<ProtectedRoute><PrepareHub /></ProtectedRoute>} />
-          <Route path="prepare/fme" element={<ProtectedRoute><FMEInterviewPro /></ProtectedRoute>} />
-          <Route path="prepare/:trackSlug" element={<ProtectedRoute><PrepareHub /></ProtectedRoute>} />
+          <Route path="prepare" element={<PrepareHub />} />
+          <Route path="prepare/fme" element={<FMEInterviewPro />} />
+          <Route path="prepare/:trackSlug" element={<PrepareHub />} />
 
           {/* ─── 6. RegIntel (/regintel) ──────────────────────────────── */}
           <Route path="regintel" element={<RegIntelHub />} />
-          <Route path="regintel/whats-changed" element={<ProtectedRoute><InteractiveRegulations /></ProtectedRoute>} />
+          <Route path="regintel/whats-changed" element={<InteractiveRegulations />} />
           <Route path="regintel/tracker" element={<RegIntelHub />} />
           <Route path="regintel/enforcement" element={<News />} />
           <Route path="regintel/alerts" element={<RegIntelHub />} />

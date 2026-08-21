@@ -1,0 +1,128 @@
+04 — RegMate User Roles & Access Matrix
+Document Status: Working SpecificationVersion: V1.0Purpose: Define user types, access levels, entitlements and free/paid boundaries across RegMate
+1. ACCESS MODEL PRINCIPLE
+RegMate uses one account and one central entitlement system.
+Access is determined by the user's current state and the entitlements attached to that account.
+The system must distinguish between:• Public access• Free Member access• Individual Product access• Annual Membership access• Administrative access
+Access must be enforced server-side. A user must never gain premium access simply by discovering or directly visiting a premium URL.
+2. USER TYPES
+VISITORA person using RegMate without an account.
+FREE MEMBERA registered user without an active paid product or membership entitlement.
+INDIVIDUAL BUYERA registered user who has purchased one or more individual products, courses or tracks.
+ANNUAL MEMBERA registered user with an active RegMate annual membership.
+ADMINAuthorised internal user with administrative permissions. Admin access is separate from commercial membership status.
+3. VISITOR ACCESS
+Visitors should receive meaningful value without registration.
+ALWAYS ACCESSIBLE:• Homepage• Product landing pages• Public blogs/articles• Public regulatory updates• Free Resources• Public guides/explainers• Polls• Selected free quizzes• Product previews• Pricing/membership information• Public SEO pages
+LIMITED:• Quizzes — maximum 2 quizzes per day without login, subject to final implementation• Selected product content• Selected tools/features
+NOT AVAILABLE:• Personal dashboard• Saved/bookmarked content• Personal progress• Full premium courses• Full mock tests• Premium tools• Premium RegReady tracks• Paid analytics
+4. FREE MEMBER ACCESS
+Free Members receive a genuine free account and dashboard.
+ALWAYS AVAILABLE:• Personal dashboard• Public content• Free Resources• Public regulatory updates• Polls• Bookmarks• Basic profile• Activity history• Selected learning content• Selected RegLens content• Limited RegPractice• Selected RegTools• Selected RegReady previews• Selected RegIntel content
+LIMITED:• Number/type of quizzes and tests• Premium learning modules• Premium tools• Advanced analytics• Full professional preparation tracks
+The precise numerical limits should be configurable rather than hardcoded.
+5. INDIVIDUAL BUYER ACCESS
+An Individual Buyer retains all Free Member functionality and receives additional entitlements for products they have purchased.
+Examples:• Purchase RegLearn course → full access to that course• Purchase RegPractice package → full access to included tests• Purchase RegReady track → full access to that track• Purchase selected RegTools package → access to included tools
+The entitlement must be tied to the purchased product or SKU, not manually granted page-by-page.
+If a user purchases multiple products, all active individual entitlements should coexist on the same account.
+6. ANNUAL MEMBER ACCESS
+An Annual Member receives access to all products explicitly included in the membership package.
+The membership entitlement should be centrally managed.
+Membership access should not require separate purchases for every included product.
+The membership system must support:• Start date• Expiry date• Active/inactive status• Plan• Included products• Renewal status• Cancellation status• Grace/expiry rules where applicable
+The exact commercial package may evolve without changing the underlying entitlement architecture.
+7. ADMIN ACCESS
+Administrators are internal authorised users.
+Admin capabilities may include:• User management• Product management• Course management• Lesson management• Question management• Test management• Tool management• Regulatory content management• Entitlement management• Membership management• Purchase review• Certificate management• Poll management• Analytics• System configuration
+Administrative permissions should be role-based. Do not give every admin unrestricted access if more granular roles are later required.
+8. PRODUCT-LEVEL ACCESS MATRIX
+REGLEARNVisitor: Preview/free lessonsFree Member: Free lessons + limited contentIndividual Buyer: Full purchased course/trackAnnual Member: Full included RegLearn content
+REGLENSVisitor: Public/selected interactive contentFree Member: Selected interactive contentIndividual Buyer: Full purchased premium contentAnnual Member: Full included RegLens content
+REGPRACTICEVisitor: Limited quizzesFree Member: Limited quizzes/testsIndividual Buyer: Full purchased tests/packagesAnnual Member: Full included practice library
+REGTOOLSVisitor: Selected free toolsFree Member: Selected free toolsIndividual Buyer: Purchased tools/packagesAnnual Member: Included tools under membership
+REGREADYVisitor: Product page + samplesFree Member: Samples/selected free preparationIndividual Buyer: Full purchased trackAnnual Member: Full included tracks
+REGINTELVisitor: Public updates/contentFree Member: Public + selected member featuresIndividual Buyer: Paid intelligence product if offeredAnnual Member: Full included RegIntel access
+9. ACCESS LEVELS
+Each content object should support a standard access level.
+PUBLICAccessible to everyone.
+FREE_ACCOUNTRequires registration.
+PREVIEWA limited portion of a premium product.
+PRODUCT_ENTITLEMENTRequires ownership of a specific product/track.
+MEMBERSHIPRequires an active membership that includes the object.
+ADMINRequires authorised administrative access.
+This standard should be reusable across courses, lessons, tests, questions, tools, updates and other content.
+10. ENTITLEMENT PRINCIPLE
+Entitlements are the central mechanism that determines paid access.
+Examples:• REGLEARN_COURSE_001• REGPRACTICE_PACKAGE_001• REGREADY_FME_001• REGTOOLS_AML_001• REGMATE_ANNUAL
+A user's account can hold multiple active entitlements simultaneously.
+Entitlements should have status and lifecycle information such as:• Active• Expired• Cancelled• Refunded• Suspended
+The frontend should never be the sole authority for entitlement decisions.
+11. FREE-TO-PAID CONVERSION MODEL
+RegMate should use a progressive access model.
+Visitor↓Free experience↓Registration↓Free Member↓Product discovery↓Preview / limited access↓Individual purchase OR Annual Membership↓Premium access
+Users should encounter upgrade prompts at natural points, not excessive interruptions.
+12. QUIZ LIMIT MODEL
+Free quiz access should be controlled centrally.
+Initial policy:• Visitor: maximum 2 quizzes per day without login.• Free Member: limited daily/periodic quiz access.• Paid users: expanded or unlimited access according to the purchased product.• Annual Members: access according to membership entitlement.
+The limits should be configurable by administrators.
+The system should record attempts so that limits cannot be bypassed simply by refreshing a page or changing a URL.
+13. PREVIEW MODEL
+Premium products should expose selected content as previews.
+A preview can include:• Product introduction• Sample lessons• Sample questions• Sample results• Selected regulations• Selected tool outputs• Sample interview questions• Selected regulatory analysis
+Preview content must be deliberately chosen to demonstrate product value while protecting the premium product.
+14. DASHBOARD DIFFERENTIATION
+The dashboard should adapt according to access.
+VISITORNo dashboard.
+FREE MEMBERFree dashboard with recommendations, progress, saved content, activity and upgrade opportunities.
+INDIVIDUAL BUYERFree dashboard plus purchased products, detailed progress, results and certificates.
+ANNUAL MEMBERFull dashboard with all included products, learning progress, practice analytics, tools and membership status.
+The dashboard should not become a completely different application for each user type; it should be one dashboard whose modules change according to entitlements.
+15. PURCHASE AND ENTITLEMENT FLOW
+Individual purchase:
+Product page↓Checkout↓Payment↓Payment verification↓Order recorded↓Entitlement created↓User dashboard updated↓Premium content unlocked
+The unlock must depend on verified payment status, not merely a frontend payment-success message.
+16. MEMBERSHIP FLOW
+Membership purchase:
+Membership page↓Checkout↓Payment verification↓Membership activated↓Membership entitlement created↓Included products become accessible↓Dashboard updated
+On expiry/cancellation, access should be recalculated according to the approved membership rules.
+17. REFUND / CANCELLATION / EXPIRY
+The system must support entitlement changes after commercial events.
+Possible states:• Active• Pending• Expired• Cancelled• Refunded• Suspended
+A refunded individual purchase should normally remove or suspend the corresponding entitlement according to the final refund policy.
+An expired membership should remove membership-derived access while preserving separately purchased active products.
+18. MULTIPLE ENTITLEMENTS
+A user may have several access sources.
+Example:User owns:• RegLearn Course A• RegReady FME• RegPractice Package B
+and also has an active annual membership.
+The system should calculate effective access from all valid entitlements.
+One entitlement expiring must not incorrectly remove access granted by another valid entitlement.
+19. ACCESS PRIORITY
+When multiple rules apply, the system should use the most permissive valid entitlement for the requested content.
+Example:If a user has an expired membership but an active individual purchase for RegReady FME, the user must retain RegReady FME access.
+Administrative access is independent and should override commercial restrictions only for authorised admin operations.
+20. CONTENT VISIBILITY VS ACCESS
+Visibility and access are separate concepts.
+A premium product can be:• Visible but locked• Partially visible through preview• Completely hidden from a particular audience
+Recommended approach: make most premium products publicly discoverable, but clearly show locked content and the value of upgrading.
+21. RECOMMENDED DEFAULT ACCESS STRATEGY
+Public:Blogs, public updates, polls, Free Resources, product information and selected samples.
+Free Member:Dashboard, saved content, selected learning, limited quizzes/tests, selected tools and selected intelligence.
+Individual Buyer:Full access to purchased products.
+Annual Member:Full access to all products included in the membership package.
+Admin:Authorised administrative access.
+22. ACCESS MATRIX — SUMMARY
+FEATURE | VISITOR | FREE MEMBER | INDIVIDUAL BUYER | ANNUAL MEMBER
+Public Blogs | YES | YES | YES | YESRegulatory Updates | YES | YES | YES | YESFree Resources | YES | YES | YES | YESPolls | YES | YES | YES | YESDashboard | NO | YES | YES | YESBookmarks | NO | YES | YES | YESProgress Tracking | NO | YES | YES | YESFree Lessons | YES | YES | YES | YESPremium Lessons | NO | LIMITED | PURCHASED | INCLUDEDInteractive Regulations | SELECTED | SELECTED | PURCHASED | INCLUDEDQuizzes | LIMITED | LIMITED | EXPANDED/FULL | INCLUDEDMock Tests | PREVIEW | LIMITED | PURCHASED | INCLUDEDPremium Tools | NO | SELECTED | PURCHASED | INCLUDEDRegReady Tracks | PREVIEW | PREVIEW | PURCHASED | INCLUDEDPremium RegIntel | NO | SELECTED | PURCHASED IF OFFERED | INCLUDED IF OFFEREDCertificates | NO | ELIGIBLE ONLY | ELIGIBLE | ELIGIBLE
+23. ADMIN CONFIGURATION
+Access limits should be configurable without changing application code.
+Administrators should eventually be able to configure:• Free quiz limits• Preview percentage/content• Products included in membership• Product pricing• Entitlement duration• Membership duration• Free-member limits• Tool availability• Certificate eligibility
+This makes the platform commercially flexible.
+24. NON-NEGOTIABLE ACCESS RULES
+1. One RegMate account across the ecosystem.2. One central entitlement model.3. Premium access is server-authorised.4. Payment success must be verified before unlocking.5. Direct URL access must not bypass entitlement checks.6. Free limits must be centrally enforced.7. Membership access must be date/status aware.8. Multiple valid entitlements must coexist.9. Expiry of one entitlement must not remove unrelated valid access.10. Admin access must be separately protected.11. Commercial rules should be configurable.12. Product access should not be hardcoded into individual pages.
+25. DOCUMENT RELATIONSHIP
+Document 01 defines navigation and information architecture.
+Document 02 defines the RegMate brand and product ecosystem.
+Document 03 defines the V1 functionality.
+Document 04 defines user states, access levels and entitlement logic.
+Document 05 should define the RegMate Database & Technical Architecture based on these approved requirements.
