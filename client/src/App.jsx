@@ -31,6 +31,11 @@ import PrepareHub from './pages/PrepareHub';
 import RegIntelHub from './pages/RegIntelHub';
 import FreeResourcesHub from './pages/FreeResourcesHub';
 
+// Gamified RegLearn System
+import CourseHub from './pages/CourseHub';
+import ChapterLearning from './pages/ChapterLearning';
+import ChallengeEngine from './pages/ChallengeEngine';
+
 export default function App() {
   return (
     <div
@@ -58,6 +63,10 @@ export default function App() {
           <Route path="learn" element={<Learning />} />
           <Route path="learn/course/:courseId" element={<Learning />} />
           <Route path="learn/paths/:pathId" element={<Learning />} />
+          {/* Gamified Learning Routes */}
+          <Route path="learn/:courseSlug" element={<CourseHub />} />
+          <Route path="learn/:courseSlug/chapter/:chapterId" element={<ChapterLearning />} />
+          <Route path="learn/:courseSlug/challenge/:challengeType" element={<ChallengeEngine />} />
 
           {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
           <Route path="understand" element={<InteractiveRegulations />} />

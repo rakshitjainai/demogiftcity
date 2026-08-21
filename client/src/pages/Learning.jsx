@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   PlayCircle, BookOpen, HelpCircle, Loader2, GraduationCap, Sparkles,
   Search, Filter, CheckCircle2, Award, Clock, ArrowRight, ShieldCheck,
-  Star, Lock, BookMarked, BarChart3, ChevronRight
+  Star, Lock, BookMarked, BarChart3, ChevronRight, TrendingUp, Flame, Target
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +10,8 @@ import RegulatoryMasterModal from '../components/RegulatoryMasterModal';
 import LockOverlay from '../components/LockOverlay';
 import Breadcrumb from '../components/Breadcrumb';
 import BadgeChip from '../components/BadgeChip';
+import { getCourseStats, MASTERY_LEVELS } from '../utils/learnProgress';
+import coursesData from '../data/courses.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -368,6 +370,14 @@ export default function Learning() {
               const isOwned = hasCourseAccess(course.slug);
               const isLocked = !isOwned && !course.isUpcoming;
 
+              // Gamification stats from localStorage
+              const courseChapters = coursesData[course.slug]?.chapters || [];
+              const stats = getCourseStats(course.slug, courseChapters);
+              const hasProgress = stats.started > 0;
+              const masteryLvl = stats.mastered > 0
+                ? 5 : stats.completed > 0 ? 4 : stats.started > 0 ? 2 : 0;
+              const ml = MASTERY_LEVELS[masteryLvl] || MASTERY_LEVELS[0];
+
               return (
                 <div
                   key={course.id}
@@ -381,19 +391,42 @@ export default function Learning() {
                       <span className="px-2.5 py-1 rounded-md bg-white/20 backdrop-blur-sm text-white font-bold text-xs">
                         {course.code}
                       </span>
-                      <span className="text-[11px] font-semibold text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-300/30">
-                        {course.badge}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {stats.streak > 0 && (
+                          <span className="flex items-center gap-0.5 text-amber-300 text-[10px] font-bold">
+                            <Flame className="w-3 h-3" />{stats.streak}d
+                          </span>
+                        )}
+                        <span className="text-[11px] font-semibold text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-300/30">
+                          {course.badge}
+                        </span>
+                      </div>
                     </div>
 
                     <h3 className="font-display font-bold text-lg sm:text-xl text-white leading-snug line-clamp-2 min-h-[3.25rem]">
                       {course.title}
                     </h3>
+
+                    {/* Progress bar on header if has progress */}
+                    {hasProgress && !course.isUpcoming && (
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between text-[10px] text-white/70 mb-1">
+                          <span className="font-medium">Progress</span>
+                          <span className="font-bold">{stats.overallPct}%</span>
+                        </div>
+                        <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-white rounded-full transition-all duration-700"
+                            style={{ width: `${stats.overallPct}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-                    <p className="text-xs sm:text-sm text-ink-soft leading-relaxed line-clamp-3">
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <p className="text-xs sm:text-sm text-ink-soft leading-relaxed line-clamp-2">
                       {course.description}
                     </p>
 
@@ -404,38 +437,65 @@ export default function Learning() {
                         <div className="text-sm font-bold text-forest">{chaptersCount}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-ink-soft">Lessons</div>
-                        <div className="text-sm font-bold text-forest">{lessonsCount}</div>
+                        <div className="text-xs text-ink-soft">Mastered</div>
+                        <div className="text-sm font-bold text-forest">{stats.mastered}/{chaptersCount}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-ink-soft">Quizzes</div>
+                        <div className="text-xs text-ink-soft">Questions</div>
                         <div className="text-sm font-bold text-forest">{questionsCount} Qs</div>
                       </div>
                     </div>
 
+                    {/* Mastery Badge */}
+                    {hasProgress && !course.isUpcoming && (
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                          style={{ backgroundColor: ml.bg, color: ml.text }}
+                        >
+                          {masteryLvl === 5 && <Star className="w-2.5 h-2.5" />}
+                          {ml.short}
+                        </span>
+                        {stats.weakAreas > 0 && (
+                          <span className="text-[10px] text-rose-600 font-medium flex items-center gap-0.5">
+                            <Target className="w-3 h-3" />{stats.weakAreas} weak area{stats.weakAreas !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {/* Footer Actions */}
-                    <div className="pt-2">
+                    <div className="pt-1">
                       {course.isUpcoming ? (
                         <div className="w-full py-3 rounded-xl bg-gray-100 text-gray-500 font-semibold text-xs text-center border border-gray-200">
                           Curriculum in Editorial Review
                         </div>
                       ) : isOwned ? (
-                        <button
-                          onClick={() => setSelectedCourse(course)}
-                          className="w-full py-3.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <PlayCircle className="w-4 h-4" />
-                          <span>Enter Study Mode</span>
-                        </button>
-                      ) : (
                         <div className="space-y-2">
+                          <Link
+                            to={`/learn/${course.slug}`}
+                            className="w-full py-3 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
+                          >
+                            <TrendingUp className="w-4 h-4" />
+                            <span>{hasProgress ? 'Continue Learning' : 'Start Learning'}</span>
+                          </Link>
                           <button
                             onClick={() => setSelectedCourse(course)}
-                            className="w-full py-2.5 rounded-xl bg-mint text-forest hover:bg-mint-deep font-bold text-xs transition-colors cursor-pointer border border-mint-deep flex items-center justify-center gap-1.5"
+                            className="w-full py-2 rounded-xl bg-mint text-forest hover:bg-mint-deep font-semibold text-xs transition-colors border border-mint-deep flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <PlayCircle className="w-3.5 h-3.5" />
+                            <span>Classic Study Mode</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Link
+                            to={`/learn/${course.slug}`}
+                            className="w-full py-2.5 rounded-xl bg-mint text-forest hover:bg-mint-deep font-bold text-xs transition-colors border border-mint-deep flex items-center justify-center gap-1.5"
                           >
                             <Sparkles className="w-3.5 h-3.5 text-leaf" />
-                            <span>Preview Free Lessons</span>
-                          </button>
+                            <span>Preview Free Chapter</span>
+                          </Link>
                           <Link
                             to="/membership"
                             className="w-full py-2.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
