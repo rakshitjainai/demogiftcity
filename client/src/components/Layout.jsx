@@ -32,6 +32,8 @@ export default function Layout() {
         spinDuration={2}
         hideDefaultCursor={true}
         parallaxOn={true}
+        cursorColor="#0B4D33"
+        cursorColorOnTarget="#128A54"
       />
       <Navbar
         onOpenSearch={() => { setSearchQuery(''); setSearchOpen(true); }}
