@@ -15,59 +15,30 @@ import coursesData from '../data/courses.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-// Course definitions with accurate curriculum counts and metadata
-const COURSES = [
-  {
-    id: 'mod-cmi',
-    code: 'IFSCA-CMI',
-    slug: 'ifsca-cmi',
-    regulator: 'IFSCA',
-    title: 'IFSCA (Capital Market Intermediaries) Regulations, 2025',
-    description: 'In-depth study of registration, net worth, governance, code of conduct, and enforcement for all 11 CMI categories in GIFT IFSC.',
-    badge: 'Updated 2026',
-    difficulty: 'Intermediate',
-    durationHours: 12,
-    color: 'from-slate-900 via-slate-800 to-blue-900',
-    accentColor: 'bg-blue-500',
-    totalChapters: 17,
-    totalLessons: 35,
-    totalQuestions: 102,
-    category: 'Capital Markets',
-  },
-  {
-    id: 'mod-fme',
-    code: 'IFSCA-FME',
-    slug: 'ifsca-fme',
-    regulator: 'IFSCA',
-    title: 'IFSCA (Fund Management) Regulations, 2025',
-    description: 'Masterclass on FMEs, Venture Capital Schemes, PMS, ESG funds, Family Investment Funds, and Investment Trusts in GIFT City.',
-    badge: 'Most Popular',
-    difficulty: 'Advanced',
-    durationHours: 15,
-    color: 'from-emerald-900 via-emerald-800 to-teal-900',
-    accentColor: 'bg-emerald-500',
-    totalChapters: 7,
-    totalLessons: 16,
-    totalQuestions: 32,
-    category: 'Fund Management',
-  },
-  {
-    id: 'mod-aif',
-    code: 'SEBI-AIF',
-    slug: 'sebi-aif',
-    regulator: 'SEBI',
-    title: 'SEBI (Alternative Investment Funds) Regulations, 2012',
-    description: 'Comprehensive coverage of Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, valuation, and GARUDA filings.',
-    badge: 'Consolidated 2026',
-    difficulty: 'Advanced',
-    durationHours: 14,
-    color: 'from-amber-900 via-amber-800 to-orange-900',
-    accentColor: 'bg-amber-500',
-    totalChapters: 14,
-    totalLessons: 14,
-    totalQuestions: 63,
-    category: 'Securities Law',
-  },
+// Course definitions with accurate curriculum counts derived dynamically from courses.json
+const ACTIVE_COURSES = [
+  coursesData['ifsca-cmi'],
+  coursesData['ifsca-fme'],
+  coursesData['sebi-aif']
+].filter(Boolean).map(c => ({
+  id: `mod-${c.slug}`,
+  code: c.code,
+  slug: c.slug,
+  regulator: c.regulator,
+  title: c.title,
+  description: c.description,
+  badge: c.badge,
+  difficulty: c.difficulty,
+  durationHours: c.durationHours,
+  color: c.color,
+  accentColor: c.accentColor,
+  totalChapters: c.totalChapters,
+  totalLessons: c.totalLessons,
+  totalQuestions: c.totalQuestions,
+  category: c.category
+}));
+
+const UPCOMING_COURSES = [
   {
     id: 'mod-lodr',
     code: 'SEBI-LODR',
@@ -105,6 +76,8 @@ const COURSES = [
     isUpcoming: true,
   }
 ];
+
+const COURSES = [...ACTIVE_COURSES, ...UPCOMING_COURSES];
 
 const LEARNING_PATHS = [
   {

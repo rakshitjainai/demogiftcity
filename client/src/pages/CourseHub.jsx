@@ -22,6 +22,11 @@ const COURSES_META = {
     color: 'from-emerald-900 via-emerald-800 to-teal-900',
     difficulty: 'Advanced', durationHours: 15,
   },
+  'fme-regulations': {
+    code: 'IFSCA-FME', regulator: 'IFSCA',
+    color: 'from-emerald-900 via-emerald-800 to-teal-900',
+    difficulty: 'Advanced', durationHours: 15,
+  },
   'sebi-aif': {
     code: 'SEBI-AIF', regulator: 'SEBI',
     color: 'from-amber-900 via-amber-800 to-orange-900',

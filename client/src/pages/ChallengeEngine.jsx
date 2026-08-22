@@ -53,20 +53,25 @@ function extractChallengeQuestions(course, chapters, challengeType) {
   chapters.forEach(ch => {
     (ch.questions || []).forEach(q => {
       const payload = q.payload || {};
-      const options = (payload.options || []).map(o => typeof o === 'string' ? o : o.t || o.k || '');
+      const optsRaw = q.options || payload.optionsFormatted || payload.options || [];
+      const options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
       if (options.length < 2) return;
-      const correctKey = payload.answer || 'A';
-      const correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
+      const correctKey = q.correctKey || q.answer?.correct || payload.answer || 'A';
+      let correctIdx = optsRaw.findIndex(o => (typeof o === 'string' ? o : o.key || o.k) === correctKey);
+      if (correctIdx === -1) {
+        correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
+        if (correctIdx === -1) correctIdx = 0;
+      }
       allQs.push({
         id: q.uid,
-        q: payload.q || q.title || '',
+        q: q.question || payload.question || payload.q || q.title || '',
         options,
-        correctIdx: correctIdx >= 0 ? correctIdx : 0,
-        explain: payload.scenario || payload.tip || payload.explain || '',
+        correctIdx,
+        explain: q.explanation || payload.explanation || payload.scenario || payload.tip || '',
         provision: q.provision || '',
         chapterNum: ch.num,
         chapterTitle: ch.title,
-        type: q.itemType || 'mcq',
+        type: q.type || 'mcq',
         difficulty: q.difficulty || '1',
       });
     });

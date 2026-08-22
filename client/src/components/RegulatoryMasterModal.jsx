@@ -9,7 +9,6 @@ import {
 import { useAuth } from '../context/AuthContext';
 import LockOverlay from './LockOverlay';
 import UpgradeModal from './UpgradeModal';
-import fmeContent from '../data/regmate-fme-content.json';
 import coursesData from '../data/courses.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';

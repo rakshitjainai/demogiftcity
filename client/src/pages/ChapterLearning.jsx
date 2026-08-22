@@ -57,36 +57,49 @@ export default function ChapterLearning() {
   // Extract primary lesson content from courses.json
   const primaryLesson = chapter?.lessons?.[0];
   const payload = primaryLesson?.payload || {};
-  const cards = normalizeCards(payload.cards || []);
+  const cards = primaryLesson?.cards || normalizeCards(payload.cards || []);
 
   // All questions for this chapter
   const questions = chapter?.questions || [];
   const currentQuestion = questions[practiceIdx];
   const qPayload = currentQuestion?.payload || {};
-  const options = normalizeOptions(qPayload.options || []);
-  const correctKey = qPayload.answer || 'A';
-  const correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
+  
+  // Normalize option list and correct answer index
+  const optionsRaw = currentQuestion?.options || qPayload.optionsFormatted || qPayload.options || [];
+  const options = optionsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
+  const correctKey = currentQuestion?.correctKey || currentQuestion?.answer?.correct || qPayload.answer || 'A';
+  
+  let correctIdx = optionsRaw.findIndex(o => (typeof o === 'string' ? o : o.key || o.k) === correctKey);
+  if (correctIdx === -1) {
+    correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
+    if (correctIdx === -1) correctIdx = 0;
+  }
 
-  // Recall items (key terms, thresholds, key numbers from cards)
+  // Recall items (key terms, thresholds, key numbers from cards / activities)
   const recallItems = useMemo(() => {
     const items = [];
-    cards.forEach(card => {
-      if (card.title && card.means) {
-        items.push({ front: card.title, back: card.means, tag: card.tag || 'Term' });
-      }
-      if (card.law) {
-        items.push({ front: `Statutory text: ${card.tag || 'Provision'}`, back: card.law, tag: 'Statutory' });
-      }
-    });
-    // Add question as recall item if no cards
+    if (chapter?.recall && chapter.recall.length > 0) {
+      chapter.recall.forEach(r => {
+        if (r.recallCards && r.recallCards.length > 0) {
+          r.recallCards.forEach(rc => items.push(rc));
+        }
+      });
+    }
+    if (items.length === 0) {
+      cards.forEach(card => {
+        if (card.title && (card.means || card.law)) {
+          items.push({ front: card.title, back: card.means || card.law, tag: card.tag || 'Term' });
+        }
+      });
+    }
     if (items.length === 0 && questions[0]) {
       items.push({
         front: `Key provision under ${chapter?.title}`,
-        back: questions[0]?.payload?.q || 'Review the statutory requirements for this chapter.',
+        back: questions[0]?.question || questions[0]?.payload?.q || 'Review the statutory requirements for this chapter.',
         tag: 'Chapter',
       });
     }
-    return items.slice(0, 5);
+    return items.slice(0, 8);
   }, [cards, questions, chapter]);
 
   const handleMarkLearnRead = useCallback(() => {
@@ -486,20 +499,26 @@ export default function ChapterLearning() {
 
                 <div className="bg-white rounded-2xl border border-line p-5 sm:p-6 space-y-5">
                   <div>
-                    <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-soft mb-2">
-                      {currentQuestion?.provision || `Chapter ${chapter.num} · ${currentQuestion?.difficulty === '1' ? 'Foundation' : currentQuestion?.difficulty === '2' ? 'Intermediate' : 'Advanced'}`}
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-soft mb-2 flex items-center justify-between">
+                      <span>{currentQuestion?.provision || `Chapter ${chapter.num} · ${currentQuestion?.difficulty === '1' ? 'Foundation' : currentQuestion?.difficulty === '2' ? 'Intermediate' : 'Advanced'}`}</span>
+                      {currentQuestion?.effectiveDate && (
+                        <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          w.e.f. {currentQuestion.effectiveDate}
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm sm:text-base font-semibold text-ink leading-snug">
-                      {qPayload.q || currentQuestion?.title}
+                      {currentQuestion?.question || qPayload.q || currentQuestion?.title}
                     </p>
                   </div>
 
                   <div className="grid gap-2.5">
                     {options.map((opt, idx) => {
-                      const label = ['A', 'B', 'C', 'D'][idx];
+                      const label = ['A', 'B', 'C', 'D'][idx] || String(idx + 1);
                       const isSelected = selectedOption === idx;
                       const isCorrect = idx === correctIdx;
                       const hasChosen = submitted;
+                      const optionText = typeof opt === 'string' ? opt : opt.text;
 
                       let cls = 'border-line bg-white hover:border-forest/50 hover:bg-mint/30 text-ink cursor-pointer';
                       if (hasChosen) {
@@ -524,7 +543,7 @@ export default function ChapterLearning() {
                             : hasChosen && isSelected && !isCorrect ? <X className="w-3.5 h-3.5" />
                             : label}
                           </span>
-                          <span className="text-sm leading-snug">{opt}</span>
+                          <span className="text-sm leading-snug">{optionText}</span>
                         </button>
                       );
                     })}
@@ -540,7 +559,7 @@ export default function ChapterLearning() {
                       <div className="font-bold text-[10px] uppercase tracking-wider mb-1">
                         {selectedOption === correctIdx ? '✓ Correct' : '⚠ Explanation'}
                       </div>
-                      <p>{qPayload.scenario || qPayload.explain || payload.takeaway || 'Review the statutory text for this provision.'}</p>
+                      <p>{currentQuestion?.explanation || qPayload.explanation || qPayload.scenario || qPayload.explain || payload.takeaway || 'Review the statutory text for this provision.'}</p>
                       {currentQuestion?.provision && (
                         <div className="text-[10px] font-mono mt-2 opacity-70">Source: {currentQuestion.provision}</div>
                       )}
