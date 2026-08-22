@@ -158,8 +158,20 @@ function LandingScreen({ meta, onStart, loading, error }) {
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 text-rose-700 text-sm p-3 bg-rose-50 border border-rose-200 rounded-xl mb-4">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />{error}
+          <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-xl">
+            <div className="flex items-center gap-2 text-rose-800 text-sm font-semibold mb-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              Unable to load the mock test
+            </div>
+            <p className="text-rose-700 text-xs mb-3">
+              We couldn't connect to the question bank right now. Please check your connection and try again.
+            </p>
+            <button
+              onClick={onStart}
+              className="px-4 py-2 bg-rose-700 text-white text-xs font-bold rounded-lg hover:bg-rose-800 transition-colors cursor-pointer min-h-[36px]"
+            >
+              Retry
+            </button>
           </div>
         )}
 
@@ -582,7 +594,7 @@ function ResultsScreen({ result, onRetry }) {
 
 // ─── Main ExamReady page ──────────────────────────────────────────────────
 export default function ExamReady() {
-  const { token, user } = useAuth();
+  const { token, user, isMember } = useAuth();
   const [phase, setPhase] = useState('landing'); // 'landing' | 'test' | 'results'
   const [meta, setMeta] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -593,7 +605,6 @@ export default function ExamReady() {
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const isMember = user?.membershipStatus === 'active';
   const hasExamPass = user?.subscriptions?.includes('exam_ready') || user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
 
   // Fetch meta on mount
@@ -650,27 +661,29 @@ export default function ExamReady() {
       setPhase('test');
       timer.start();
     } catch (err) {
-      setError(err.message);
+      // Show a user-friendly error rather than the raw fetch error message
+      if (err.message && (err.message.includes('fetch') || err.message.includes('network') || err.message.toLowerCase().includes('failed'))) {
+        setError('Unable to load questions. Please check your connection and try again.');
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleSelect = (questionCode, option) => {
-    const activeMember = user?.membershipStatus === 'active';
-    const activePass = user?.subscriptions?.includes('exam_ready') || user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
-
     const currentCount = Object.keys(answers).length;
     const isNewAnswer = !answers[questionCode];
 
-    if (!activeMember && !activePass && currentCount >= 3 && isNewAnswer) {
+    if (!isMember && !hasExamPass && currentCount >= 3 && isNewAnswer) {
       setShowUpgradeModal(true);
       return;
     }
 
     setAnswers(prev => {
       const next = { ...prev, [questionCode]: option };
-      if (!activeMember && !activePass && Object.keys(next).length >= 3) {
+      if (!isMember && !hasExamPass && Object.keys(next).length >= 3) {
         setShowUpgradeModal(true);
       }
       return next;

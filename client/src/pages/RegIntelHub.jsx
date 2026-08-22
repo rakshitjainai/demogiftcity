@@ -29,12 +29,17 @@ export default function RegIntelHub() {
   
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
 
-  useEffect(() => {
+  const fetchUpdates = () => {
     setLoading(true);
+    setApiError(false);
     const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
     fetch(`${API_BASE}/blogs?limit=150`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(data => {
         if (data && data.posts) {
           setUpdates(data.posts);
@@ -42,9 +47,14 @@ export default function RegIntelHub() {
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching updates:', err);
+        console.error('Error fetching regulatory updates:', err);
+        setApiError(true);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchUpdates();
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -189,7 +199,21 @@ export default function RegIntelHub() {
                 </div>
               ))}
 
-              {!loading && filteredItems.length === 0 && (
+              {!loading && apiError && (
+                <div className="text-center py-12 bg-white rounded-2xl border border-[var(--line)] p-6">
+                  <AlertTriangle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
+                  <p className="text-base font-bold text-[var(--ink)]">Regulatory updates are temporarily unavailable</p>
+                  <p className="text-xs text-[var(--ink-soft)] mt-1 mb-4">We're having trouble connecting to the updates feed. Please try again.</p>
+                  <button
+                    onClick={fetchUpdates}
+                    className="px-5 py-2 bg-[var(--forest)] text-white text-xs font-bold rounded-full hover:bg-[var(--leaf)] transition-colors cursor-pointer min-h-[36px]"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {!loading && !apiError && filteredItems.length === 0 && (
                 <div className="text-center py-12 bg-white rounded-2xl border border-[var(--line)] p-6">
                   <p className="text-base font-bold text-[var(--ink)]">No updates found</p>
                   <p className="text-xs text-[var(--ink-soft)] mt-1">Try clearing filters or search queries.</p>

@@ -252,7 +252,7 @@ function buildInitialAnswers(count) {
 
 export default function QuizTopic() {
   const { topic } = useParams();
-  const { user, saveQuizResult, trackUsage, isAuthenticated } = useAuth();
+  const { user, saveQuizResult, trackUsage, isAuthenticated, isMember } = useAuth();
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [phase, setPhase] = useState('intro'); // 'intro' | 'quiz' | 'results' | 'review'
@@ -264,7 +264,7 @@ export default function QuizTopic() {
   const topicMeta = TOPIC_META[topic] || { title: topic?.replace(/-/g, ' ') || 'General Laws', timeMin: 10, difficulty: 'Foundational' };
   const questions = QUIZ_DATA[topic] || QUIZ_DATA['general-laws'];
 
-  const isMember = user?.membershipStatus === 'active';
+  // Use isMember from AuthContext — handles all membership states consistently
   const hasQuizPass = user?.subscriptions?.includes('quizzes') || user?.subscriptions?.includes('full_access');
   const hasFullAccess = isMember || hasQuizPass;
 
@@ -292,14 +292,11 @@ export default function QuizTopic() {
     if (trackUsage) trackUsage('quiz');
   }, [answers, currentQ, trackUsage]);
 
-  // Move to next question — check upgrade gate for non-members after 2 questions
+  // Move to next question — gate fires only for non-entitled users
   const handleNext = useCallback(() => {
     const isLastQ = currentQ >= questions.length - 1;
-    if (!hasFullAccess && !isAuthenticated && currentQ >= FREE_PREVIEW_LIMIT - 1) {
-      setShowUpgradeModal(true);
-      return;
-    }
-    if (!hasFullAccess && isAuthenticated && currentQ >= FREE_PREVIEW_LIMIT - 1) {
+    // Show upgrade gate if user is not entitled and has exhausted free preview
+    if (!hasFullAccess && currentQ >= FREE_PREVIEW_LIMIT - 1) {
       setShowUpgradeModal(true);
       return;
     }
@@ -309,7 +306,7 @@ export default function QuizTopic() {
       setCurrentQ(q => q + 1);
       setNavOpen(false);
     }
-  }, [currentQ, questions.length, hasFullAccess, isAuthenticated]);
+  }, [currentQ, questions.length, hasFullAccess]);
 
   const handlePrev = useCallback(() => {
     if (currentQ > 0) {

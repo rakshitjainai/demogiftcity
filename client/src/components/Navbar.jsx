@@ -451,14 +451,14 @@ export default function Navbar({ onOpenSearch, onOpenAuth }) {
                         <LayoutDashboard size={15} /> Dashboard
                       </Link>
                       <Link
-                        to="/dashboard"
+                        to="/my-learning"
                         className="flex items-center gap-2.5 px-4 py-2 text-[13px] text-[var(--ink)] hover:bg-[var(--mint)] hover:text-[var(--forest)] font-medium transition-colors"
                         onClick={() => setUserDropdownOpen(false)}
                       >
-                        <BookOpen size={15} /> My Learning & Practice
+                        <BookOpen size={15} /> My Learning &amp; Practice
                       </Link>
                       <Link
-                        to="/dashboard"
+                        to="/my-certificates"
                         className="flex items-center gap-2.5 px-4 py-2 text-[13px] text-[var(--ink)] hover:bg-[var(--mint)] hover:text-[var(--forest)] font-medium transition-colors"
                         onClick={() => setUserDropdownOpen(false)}
                       >

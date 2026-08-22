@@ -224,7 +224,8 @@ export function AuthProvider({ children }) {
     setUser(null);
     localStorage.removeItem('regmate_token');
     localStorage.removeItem('regmate_user');
-    window.location.href = '/';
+    // Use replace() so logout doesn't add a history entry
+    window.location.replace('/');
   };
 
   // Save Quiz Result to backend
@@ -429,10 +430,15 @@ export function AuthProvider({ children }) {
     return initiateCheckout({ productType, productId });
   };
 
-  // Derive live membership status from server-provided expiration date
+  // Derive live membership status:
+  //  - user.membership.active: set by real backend on paid accounts
+  //  - user.membership.expiresAt: time-bounded paid access
+  //  - user.membershipStatus === 'active': legacy / mock field used offline
+  //  - user.role === 'admin': admins get full access
   const isMember = Boolean(
     user?.membership?.active ||
     (user?.membership?.expiresAt && new Date(user.membership.expiresAt) > new Date()) ||
+    user?.membershipStatus === 'active' ||
     user?.role === 'admin'
   );
 

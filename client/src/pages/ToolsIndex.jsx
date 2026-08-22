@@ -299,7 +299,7 @@ export default function ToolsIndex() {
 
           <Link
             to="/about"
-            className="px-6 py-3 rounded-xl bg-gold hover:bg-amber-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md flex-shrink-0"
+            className="px-6 py-3 rounded-xl bg-white hover:bg-mint text-forest-deep font-bold text-xs sm:text-sm transition-all shadow-md flex-shrink-0"
           >
             Contact Product Team
           </Link>

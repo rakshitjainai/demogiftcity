@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, User, Award, BookOpen, CheckCircle, LogOut, LogIn, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LEARNING_MODULES } from '../data/mockData';
 
@@ -14,6 +14,9 @@ function AuthInlineForm({ initialMode = 'login' }) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Redirect back to the page that required login, or /dashboard as fallback
+  const returnUrl = searchParams.get('returnUrl') || '/dashboard';
 
   React.useEffect(() => {
     setMode(initialMode);
@@ -33,7 +36,7 @@ function AuthInlineForm({ initialMode = 'login' }) {
       }
       setSubmitted(true);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate(returnUrl);
       }, 1200);
     } catch (err) {
       console.error('Auth error:', err);

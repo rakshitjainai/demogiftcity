@@ -142,7 +142,7 @@ export default function Footer({ onOpenAuth }) {
           <div className="flex items-center gap-5">
             <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
             <Link to="/membership" className="hover:text-white transition-colors">Pricing</Link>
-            <Link to="/interactive-regulations" className="hover:text-white transition-colors">Disclaimers</Link>
+            <Link to="/about" className="hover:text-white transition-colors">Disclaimers</Link>
           </div>
         </div>
       </div>

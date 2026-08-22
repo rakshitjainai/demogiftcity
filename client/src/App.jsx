@@ -24,6 +24,7 @@ import ExamReady from './pages/ExamReady';
 import FMEInterviewPro from './pages/FMEInterviewPro';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotFound from './pages/NotFound';
 
 // New Hub Pages per Doc 01 Architecture
 import PracticeHub from './pages/PracticeHub';
@@ -147,8 +148,8 @@ export default function App() {
           <Route path="login" element={<AuthGated pageName="Login" />} />
           <Route path="register" element={<AuthGated pageName="Register" />} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Catch-all: show 404 page */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </div>
