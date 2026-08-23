@@ -1,24 +1,40 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, User, ArrowRight, ChevronLeft, ChevronRight, X, Sparkles, Filter } from 'lucide-react';
 import postsSummary from '../data/posts-summary.json';
 import categoriesData from '../data/categories.json';
 
 const POSTS_PER_PAGE = 12;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-export default function BlogIndex() {
+export default function BlogIndex({ categoryFilter }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState(categoryFilter || 'all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [dynamicPosts, setDynamicPosts] = useState([]);
 
-  // Sort all posts by date descending (most recent first) across the entire dataset
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/blogs`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok && Array.isArray(data.posts)) {
+          // Filter out static duplicates if backend returned them
+          const onlyDb = data.posts.filter(p => p.isDynamic);
+          setDynamicPosts(onlyDb);
+        }
+      })
+      .catch(err => console.warn('BlogIndex API fetch fallback:', err.message));
+  }, []);
+
+  // Combine dynamic posts + static posts, then sort by date
   const sortedPosts = useMemo(() => {
-    return [...postsSummary].sort((a, b) => {
-      const timeA = new Date(a.rawDate || a.date).getTime() || 0;
-      const timeB = new Date(b.rawDate || b.date).getTime() || 0;
+    const combined = [...dynamicPosts, ...postsSummary];
+    return combined.sort((a, b) => {
+      const timeA = new Date(a.publishedAt || a.rawDate || a.date || a.createdAt).getTime() || 0;
+      const timeB = new Date(b.publishedAt || b.rawDate || b.date || b.createdAt).getTime() || 0;
       return timeB - timeA;
     });
-  }, []);
+  }, [dynamicPosts]);
 
   // Filter posts based on category and search query
   const filteredPosts = useMemo(() => {
@@ -191,8 +207,8 @@ export default function BlogIndex() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {currentPosts.map(post => (
             <Link
-              key={post.id}
-              to={`/blog/${post.slug}`}
+              key={post.id || post._id}
+              to={`/free-resources/blogs/${post.slug || post.id || post._id}`}
               className="cursor-target group flex flex-col bg-white border border-[var(--line)] rounded-2xl overflow-hidden card-shadow hover-lift p-6 transition-all duration-200"
             >
               {/* Category Tags */}

@@ -466,16 +466,15 @@ export const NAV_LINKS = [
     hasDropdown: true,
     megaMenu: false,
     subItems: [
-      { label: "Articles", href: "/free-resources/articles" },
-      { label: "Blogs", href: "/free-resources/blogs" },
+      { label: "Blogs & Analysis", href: "/free-resources/blogs" },
       { label: "Regulatory Explainers", href: "/free-resources/explainers" },
       { label: "Guides", href: "/free-resources/guides" },
       { label: "Regulatory FAQs", href: "/free-resources/faqs" },
-      { label: "Checklists", href: "/free-resources/checklists" },
+      { label: "Checklists", href: "/tools" },
+      { label: "Templates & Formats", href: "/free-resources/templates" },
       { label: "Downloads", href: "/free-resources/downloads" },
-      { label: "Templates", href: "/free-resources/templates" },
       { label: "Polls", href: "/free-resources/polls" },
-      { label: "Regulatory Glossary", href: "/free-resources/glossary" }
+      { label: "Regulatory Glossary", href: "/understand" }
     ]
   }
 ];

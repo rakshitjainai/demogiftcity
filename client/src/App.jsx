@@ -27,6 +27,12 @@ import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 
+// Helper component to preserve slug on legacy /blog/:slug redirects
+function BlogSlugRedirect() {
+  const { slug } = useParams();
+  return <Navigate to={`/free-resources/blogs/${slug}`} replace />;
+}
+
 // New Hub Pages per Doc 01 Architecture
 import PracticeHub from './pages/PracticeHub';
 import PrepareHub from './pages/PrepareHub';
@@ -127,10 +133,10 @@ export default function App() {
           <Route path="free-resources" element={<FreeResourcesHub />} />
           <Route path="free-resources/blogs" element={<BlogIndex />} />
           <Route path="free-resources/blogs/:slug" element={<BlogDetail />} />
-          <Route path="free-resources/articles" element={<BlogIndex />} />
-          <Route path="free-resources/explainers" element={<BlogIndex />} />
-          <Route path="free-resources/guides" element={<BlogIndex />} />
-          <Route path="free-resources/faqs" element={<BlogIndex />} />
+          <Route path="free-resources/articles" element={<Navigate to="/free-resources/blogs" replace />} />
+          <Route path="free-resources/explainers" element={<BlogIndex categoryFilter="explainers" />} />
+          <Route path="free-resources/guides" element={<BlogIndex categoryFilter="guides" />} />
+          <Route path="free-resources/faqs" element={<BlogIndex categoryFilter="faqs" />} />
           <Route path="free-resources/checklists" element={<Navigate to="/tools" replace />} />
           <Route path="free-resources/templates" element={<Templates />} />
           <Route path="free-resources/downloads" element={<Templates />} />
@@ -153,7 +159,7 @@ export default function App() {
           <Route path="compliance-tools" element={<Navigate to="/tools" replace />} />
           <Route path="templates" element={<Navigate to="/free-resources/templates" replace />} />
           <Route path="blog" element={<Navigate to="/free-resources/blogs" replace />} />
-          <Route path="blog/:slug" element={<Navigate to="/free-resources/blogs" replace />} />
+          <Route path="blog/:slug" element={<BlogSlugRedirect />} />
           <Route path="news" element={<Navigate to="/regintel" replace />} />
           <Route path="news/:slug" element={<Article />} />
 

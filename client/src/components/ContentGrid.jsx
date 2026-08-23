@@ -106,7 +106,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                 </div>
               </div>
               <Link
-                to="/blog"
+                to="/free-resources/blogs"
                 className="text-xs font-semibold flex items-center gap-1 hover:underline"
                 style={{ color: 'var(--accent-blue)' }}
               >
@@ -120,7 +120,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
                 return (
                   <Link
                     key={blog.id}
-                    to={`/news/article-${blog.id}`}
+                    to={`/free-resources/blogs/${blog.slug || blog.id}`}
                     className="flex items-start gap-3 p-2 rounded-xl cursor-pointer group transition-all hover:bg-[var(--mint)] -mx-2 px-2 no-underline"
                     style={{ textDecoration: 'none' }}
                   >
