@@ -22,6 +22,7 @@ import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
 import ExamReady from './pages/ExamReady';
 import FMEInterviewPro from './pages/FMEInterviewPro';
+import BlogEditorPage from './pages/BlogEditorPage';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
@@ -56,6 +57,22 @@ export default function App() {
             element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/blogs/create"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <BlogEditorPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/blogs/edit/:id"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <BlogEditorPage />
               </ProtectedRoute>
             }
           />

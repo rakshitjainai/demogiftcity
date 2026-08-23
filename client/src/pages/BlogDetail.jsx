@@ -15,31 +15,39 @@ export default function BlogDetail() {
     setLoading(true);
     window.scrollTo(0, 0);
 
-    import('../data/posts.json')
-      .then(module => {
-        const postsData = [...module.default].sort((a, b) => {
-          const timeA = new Date(a.rawDate || a.date).getTime() || 0;
-          const timeB = new Date(b.rawDate || b.date).getTime() || 0;
-          return timeB - timeA;
-        });
-        const index = postsData.findIndex(p => p.slug === slug);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-        if (index !== -1) {
-          setPost(postsData[index]);
-          setPrevPost(index > 0 ? postsData[index - 1] : null);
-          setNextPost(index < postsData.length - 1 ? postsData[index + 1] : null);
+    fetch(`${API_BASE_URL}/blogs/${slug}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok && data.post) {
+          setPost(data.post);
+          setLoading(false);
         } else {
-          setPost(null);
-          setPrevPost(null);
-          setNextPost(null);
+          throw new Error('Not found in API');
         }
       })
-      .catch(err => {
-        console.error('Failed to load blog posts data:', err);
-        setPost(null);
-      })
-      .finally(() => {
-        setLoading(false);
+      .catch(() => {
+        // Fallback to static posts.json
+        import('../data/posts.json')
+          .then(module => {
+            const postsData = [...module.default].sort((a, b) => {
+              const timeA = new Date(a.rawDate || a.date).getTime() || 0;
+              const timeB = new Date(b.rawDate || b.date).getTime() || 0;
+              return timeB - timeA;
+            });
+            const index = postsData.findIndex(p => p.slug === slug || p.id === slug);
+
+            if (index !== -1) {
+              setPost(postsData[index]);
+              setPrevPost(index > 0 ? postsData[index - 1] : null);
+              setNextPost(index < postsData.length - 1 ? postsData[index + 1] : null);
+            } else {
+              setPost(null);
+            }
+          })
+          .catch(() => setPost(null))
+          .finally(() => setLoading(false));
       });
   }, [slug]);
 
