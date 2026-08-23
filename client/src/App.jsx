@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import InteractiveRegulations from './pages/InteractiveRegulations';
@@ -47,6 +47,21 @@ import ChapterLearning from './pages/ChapterLearning';
 import ChallengeEngine from './pages/ChallengeEngine';
 import RegReadyAssessment from './pages/RegReadyAssessment';
 
+/**
+ * ChallengeEngineRoute — thin wrapper that gives ChallengeEngine a stable key
+ * derived from courseSlug + challengeType. React unmounts/remounts the entire
+ * subtree when either param changes, guaranteeing all useState is reset to
+ * its initial value and no cross-challenge state leaks through.
+ */
+function ChallengeEngineRoute() {
+  const { courseSlug, challengeType } = useParams();
+  return (
+    <ErrorBoundary title="Challenge Error" key={`${courseSlug}/${challengeType}`}>
+      <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
+    </ErrorBoundary>
+  );
+}
+
 export default function App() {
   return (
     <div
@@ -93,7 +108,7 @@ export default function App() {
           {/* Gamified Learning Routes */}
           <Route path="learn/:courseSlug" element={<ErrorBoundary title="Course Error"><CourseHub /></ErrorBoundary>} />
           <Route path="learn/:courseSlug/chapter/:chapterId" element={<ErrorBoundary title="Chapter Error"><ChapterLearning /></ErrorBoundary>} />
-          <Route path="learn/:courseSlug/challenge/:challengeType" element={<ErrorBoundary title="Challenge Error"><ChallengeEngine /></ErrorBoundary>} />
+          <Route path="learn/:courseSlug/challenge/:challengeType" element={<ChallengeEngineRoute />} />
 
           {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
           <Route path="understand" element={<InteractiveRegulations />} />

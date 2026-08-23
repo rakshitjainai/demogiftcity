@@ -127,11 +127,36 @@ export default function ChallengeEngine() {
   // State machine: 'intro' | 'active' | 'done'
   const [phase, setPhase] = useState('intro');
   const [qIdx, setQIdx] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState([]);
   const [timeLeft, setTimeLeft] = useState(challengeMeta.time);
   const timerRef = useRef(null);
+
+  // ─── Per-question answer slots ───────────────────────────────────────────
+  // Each entry is { selected: number|null, submitted: boolean }.
+  // Keyed by qIdx so Q1's answer state can NEVER affect Q2's render.
+  // Reading answers[qIdx] on a fresh question returns undefined → defaults to
+  // { selected: null, submitted: false } — the correct blank state.
+  const [answers, setAnswers] = useState({});
+
+  // Convenience accessors for the CURRENT question's slot only.
+  const currentSlot = answers[qIdx] ?? { selected: null, submitted: false };
+  const selected = currentSlot.selected;
+  const submitted = currentSlot.submitted;
+
+  // Update only the current question's slot — never touch other slots.
+  const setSelected = useCallback((val) => {
+    setAnswers(prev => ({
+      ...prev,
+      [qIdx]: { ...(prev[qIdx] ?? { selected: null, submitted: false }), selected: val }
+    }));
+  }, [qIdx]);
+
+  const setSubmitted = useCallback((val) => {
+    setAnswers(prev => ({
+      ...prev,
+      [qIdx]: { ...(prev[qIdx] ?? { selected: null, submitted: false }), submitted: val }
+    }));
+  }, [qIdx]);
 
   const questions = useMemo(
     () => extractChallengeQuestions(course, chapters, challengeType),
@@ -140,12 +165,13 @@ export default function ChallengeEngine() {
 
   const currentQ = questions[qIdx];
 
-  // Strictly reset answer/revealed state whenever question index or challenge changes
+  // Safety-net: if something else triggers a qIdx change outside handleNext
+  // (e.g. browser back/forward cache), nuke any leaked answer state.
+  // This is not the primary mechanism — the per-slot architecture handles it.
   useEffect(() => {
-    setSelected(null);
-    setSubmitted(false);
-    setTimeLeft(challengeMeta.time);
-  }, [qIdx, challengeType]);
+    // Nothing to do: slots are isolated by key. This effect is intentionally
+    // empty but kept so future devs know this was considered.
+  }, [qIdx]);
 
   // Timer
   useEffect(() => {
@@ -157,7 +183,6 @@ export default function ChallengeEngine() {
       setTimeLeft(t => {
         if (t <= 1) {
           clearInterval(timerRef.current);
-          // Auto-submit on timeout
           handleAutoTimeout();
           return 0;
         }
@@ -170,13 +195,12 @@ export default function ChallengeEngine() {
   const handleAutoTimeout = useCallback(() => {
     setSubmitted(true);
     setResults(prev => [...prev, { correct: false, selected: null, timeout: true }]);
-  }, []);
+  }, [setSubmitted]);
 
   const handleStart = () => {
     setPhase('active');
     setQIdx(0);
-    setSelected(null);
-    setSubmitted(false);
+    setAnswers({});   // wipe all slots — clean slate for every new run
     setResults([]);
     setTimeLeft(challengeMeta.time);
   };
@@ -193,8 +217,8 @@ export default function ChallengeEngine() {
   };
 
   const handleNext = () => {
-    setSelected(null);
-    setSubmitted(false);
+    // Advance the index. The new qIdx has no entry in `answers` yet → fresh blank state.
+    // We do NOT call setSelected/setSubmitted here — the slot mechanism handles isolation.
     setTimeLeft(challengeMeta.time);
     if (qIdx < questions.length - 1) {
       setQIdx(i => i + 1);
@@ -206,8 +230,7 @@ export default function ChallengeEngine() {
   const handleRestart = () => {
     setPhase('intro');
     setQIdx(0);
-    setSelected(null);
-    setSubmitted(false);
+    setAnswers({});   // wipe all question slots
     setResults([]);
     setTimeLeft(challengeMeta.time);
   };
@@ -218,6 +241,7 @@ export default function ChallengeEngine() {
 
   const timerPct = (timeLeft / challengeMeta.time) * 100;
   const timerColor = timeLeft > 15 ? '#0B4D33' : timeLeft > 7 ? '#D97706' : '#DC2626';
+
 
   if (!course) {
     return (
