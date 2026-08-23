@@ -23,17 +23,25 @@ import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/ErrorBoundary';
 
+import PracticeHub from './pages/PracticeHub';
+import PrepareHub from './pages/PrepareHub';
+import RegIntelHub from './pages/RegIntelHub';
+import FreeResourcesHub from './pages/FreeResourcesHub';
+import CourseHub from './pages/CourseHub';
+import ChapterLearning from './pages/ChapterLearning';
+import ChallengeEngine from './pages/ChallengeEngine';
 import RegReadyAssessment from './pages/RegReadyAssessment';
+import AdminPanel from './pages/AdminPanel';
+import BlogEditorPage from './pages/BlogEditorPage';
+import BlogDetail from './pages/BlogDetail';
+import QuizTopic from './pages/QuizTopic';
+import ExamReady from './pages/ExamReady';
 
-// Heavy Page Routes — Lazy Loaded for Code Splitting & Performance Optimization
-const CourseHub = React.lazy(() => import('./pages/CourseHub'));
-const ChapterLearning = React.lazy(() => import('./pages/ChapterLearning'));
-const ChallengeEngine = React.lazy(() => import('./pages/ChallengeEngine'));
-const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
-const BlogEditorPage = React.lazy(() => import('./pages/BlogEditorPage'));
-const BlogDetail = React.lazy(() => import('./pages/BlogDetail'));
-const QuizTopic = React.lazy(() => import('./pages/QuizTopic'));
-const ExamReady = React.lazy(() => import('./pages/ExamReady'));
+// Helper component to preserve slug on legacy /blog/:slug redirects
+function BlogSlugRedirect() {
+  const { slug } = useParams();
+  return <Navigate to={`/free-resources/blogs/${slug}`} replace />;
+}
 
 // Loading Fallback Component
 function PageLoader() {
@@ -56,9 +64,7 @@ function CourseHubRoute() {
   const { courseSlug } = useParams();
   return (
     <ErrorBoundary title="Course Error" key={courseSlug}>
-      <Suspense fallback={<PageLoader />}>
-        <CourseHub key={courseSlug} />
-      </Suspense>
+      <CourseHub key={courseSlug} />
     </ErrorBoundary>
   );
 }
@@ -67,9 +73,7 @@ function ChapterLearningRoute() {
   const { courseSlug, chapterId } = useParams();
   return (
     <ErrorBoundary title="Chapter Error" key={`${courseSlug}/${chapterId}`}>
-      <Suspense fallback={<PageLoader />}>
-        <ChapterLearning key={`${courseSlug}/${chapterId}`} />
-      </Suspense>
+      <ChapterLearning key={`${courseSlug}/${chapterId}`} />
     </ErrorBoundary>
   );
 }
@@ -78,9 +82,7 @@ function ChallengeEngineRoute() {
   const { courseSlug, challengeType } = useParams();
   return (
     <ErrorBoundary title="Challenge Error" key={`${courseSlug}/${challengeType}`}>
-      <Suspense fallback={<PageLoader />}>
-        <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
-      </Suspense>
+      <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
     </ErrorBoundary>
   );
 }
@@ -89,9 +91,7 @@ function QuizTopicRoute() {
   const { topic } = useParams();
   return (
     <ErrorBoundary title="Quiz Error" key={topic || 'all'}>
-      <Suspense fallback={<PageLoader />}>
-        <QuizTopic key={topic || 'all'} />
-      </Suspense>
+      <QuizTopic key={topic || 'all'} />
     </ErrorBoundary>
   );
 }
@@ -100,9 +100,7 @@ function ExamReadyRoute() {
   const { slug } = useParams();
   return (
     <ErrorBoundary title="Exam Error" key={slug || 'all'}>
-      <Suspense fallback={<PageLoader />}>
-        <ExamReady key={slug || 'all'} />
-      </Suspense>
+      <ExamReady key={slug || 'all'} />
     </ErrorBoundary>
   );
 }
@@ -120,9 +118,7 @@ function BlogDetailRoute() {
   const { slug } = useParams();
   return (
     <ErrorBoundary title="Blog Error" key={slug || 'all'}>
-      <Suspense fallback={<PageLoader />}>
-        <BlogDetail key={slug || 'all'} />
-      </Suspense>
+      <BlogDetail key={slug || 'all'} />
     </ErrorBoundary>
   );
 }
