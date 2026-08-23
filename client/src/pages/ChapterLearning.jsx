@@ -84,11 +84,17 @@ export default function ChapterLearning() {
     setMaxUnlockedIndex(prev => Math.max(prev, targetStepIndex));
   }, []);
 
-  // Ensure fresh state per practice question
+  // Ensure fresh or restored state per practice question
   useEffect(() => {
-    setSelectedOption(null);
-    setSubmitted(false);
-  }, [practiceIdx]);
+    const saved = practiceResults[practiceIdx];
+    if (saved) {
+      setSelectedOption(saved.selected);
+      setSubmitted(true);
+    } else {
+      setSelectedOption(null);
+      setSubmitted(false);
+    }
+  }, [practiceIdx, practiceResults]);
 
   // Extract all activities from courses.json — the actual data model
   const allActivities = chapter?.activities || [];

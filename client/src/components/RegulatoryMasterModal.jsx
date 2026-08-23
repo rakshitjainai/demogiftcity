@@ -205,6 +205,17 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   // Tab navigation: default to 'home' (Chapter 1 Interactive Free Preview first!)
   const [activeTab, setActiveTab] = useState('home');
   const [regLearnStep, setRegLearnStep] = useState('understand');

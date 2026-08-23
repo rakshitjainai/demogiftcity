@@ -12,6 +12,7 @@ import TrustNewsletterBand from '../components/TrustNewsletterBand';
 import ArticleModal from '../components/ArticleModal';
 import ToolModal from '../components/ToolModal';
 import QuizzesSection from '../components/QuizzesSection';
+import Seo from '../components/Seo';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ export default function Home() {
 
   return (
     <>
+      <Seo
+        title="RegMate — India's Premier Regulatory & Compliance Platform"
+        description="RegMate helps financial institutions, GIFT IFSC entities, SEBI AIFs, and compliance officers navigate Indian statutory regulations, statutory audits, and compliance diagnostic tools."
+        canonical="https://regmate.in/"
+      />
       {isAdmin && (
         <div className="bg-[#042C1D] text-white px-4 py-2.5 border-b border-emerald-800 flex items-center justify-between text-xs font-bold shadow-md z-40 relative">
           <div className="flex items-center gap-2">

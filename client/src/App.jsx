@@ -48,16 +48,87 @@ import ChallengeEngine from './pages/ChallengeEngine';
 import RegReadyAssessment from './pages/RegReadyAssessment';
 
 /**
- * ChallengeEngineRoute — thin wrapper that gives ChallengeEngine a stable key
- * derived from courseSlug + challengeType. React unmounts/remounts the entire
- * subtree when either param changes, guaranteeing all useState is reset to
- * its initial value and no cross-challenge state leaks through.
+ * Keyed Route Wrappers — Staff-Engineer architectural pattern.
+ * Forces React to unmount/remount page components when URL parameters change,
+ * guaranteeing zero cross-chapter, cross-topic, or cross-tool state leakage.
  */
+function CourseHubRoute() {
+  const { courseSlug } = useParams();
+  return (
+    <ErrorBoundary title="Course Error" key={courseSlug}>
+      <CourseHub key={courseSlug} />
+    </ErrorBoundary>
+  );
+}
+
+function ChapterLearningRoute() {
+  const { courseSlug, chapterId } = useParams();
+  return (
+    <ErrorBoundary title="Chapter Error" key={`${courseSlug}/${chapterId}`}>
+      <ChapterLearning key={`${courseSlug}/${chapterId}`} />
+    </ErrorBoundary>
+  );
+}
+
 function ChallengeEngineRoute() {
   const { courseSlug, challengeType } = useParams();
   return (
     <ErrorBoundary title="Challenge Error" key={`${courseSlug}/${challengeType}`}>
       <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
+    </ErrorBoundary>
+  );
+}
+
+function QuizTopicRoute() {
+  const { topic } = useParams();
+  return (
+    <ErrorBoundary title="Quiz Error" key={topic || 'all'}>
+      <QuizTopic key={topic || 'all'} />
+    </ErrorBoundary>
+  );
+}
+
+function ExamReadyRoute() {
+  const { slug } = useParams();
+  return (
+    <ErrorBoundary title="Exam Error" key={slug || 'all'}>
+      <ExamReady key={slug || 'all'} />
+    </ErrorBoundary>
+  );
+}
+
+function ToolDetailRoute() {
+  const { slug } = useParams();
+  return (
+    <ErrorBoundary title="Tool Error" key={slug || 'all'}>
+      <ToolDetail key={slug || 'all'} />
+    </ErrorBoundary>
+  );
+}
+
+function BlogDetailRoute() {
+  const { slug } = useParams();
+  return (
+    <ErrorBoundary title="Blog Error" key={slug || 'all'}>
+      <BlogDetail key={slug || 'all'} />
+    </ErrorBoundary>
+  );
+}
+
+function ChapterDetailRoute() {
+  const { actSlug, chapter } = useParams();
+  return (
+    <ErrorBoundary title="Chapter Error" key={`${actSlug}/${chapter}`}>
+      <ChapterDetail key={`${actSlug}/${chapter}`} />
+    </ErrorBoundary>
+  );
+}
+
+function SectionDetailRoute() {
+  const { actSlug, chapter, sectionNum } = useParams();
+  return (
+    <ErrorBoundary title="Section Error" key={`${actSlug}/${chapter}/${sectionNum}`}>
+      <SectionDetail key={`${actSlug}/${chapter}/${sectionNum}`} />
     </ErrorBoundary>
   );
 }
@@ -106,27 +177,27 @@ export default function App() {
           <Route path="learn/course/:courseId" element={<ErrorBoundary title="Learning Hub Error"><Learning /></ErrorBoundary>} />
           <Route path="learn/paths/:pathId" element={<ErrorBoundary title="Learning Hub Error"><Learning /></ErrorBoundary>} />
           {/* Gamified Learning Routes */}
-          <Route path="learn/:courseSlug" element={<ErrorBoundary title="Course Error"><CourseHub /></ErrorBoundary>} />
-          <Route path="learn/:courseSlug/chapter/:chapterId" element={<ErrorBoundary title="Chapter Error"><ChapterLearning /></ErrorBoundary>} />
+          <Route path="learn/:courseSlug" element={<CourseHubRoute />} />
+          <Route path="learn/:courseSlug/chapter/:chapterId" element={<ChapterLearningRoute />} />
           <Route path="learn/:courseSlug/challenge/:challengeType" element={<ChallengeEngineRoute />} />
 
           {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
           <Route path="understand" element={<InteractiveRegulations />} />
           <Route path="understand/:actSlug" element={<InteractiveRegulations />} />
-          <Route path="understand/:actSlug/:chapter" element={<ChapterDetail />} />
-          <Route path="understand/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
+          <Route path="understand/:actSlug/:chapter" element={<ChapterDetailRoute />} />
+          <Route path="understand/:actSlug/:chapter/:sectionNum" element={<SectionDetailRoute />} />
           <Route path="interactive-regulations" element={<InteractiveRegulations />} />
           <Route path="interactive-regulations/:actSlug" element={<InteractiveRegulations />} />
-          <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetail />} />
-          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<SectionDetail />} />
-          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<SectionDetail />} />
+          <Route path="interactive-regulations/:actSlug/:chapter" element={<ChapterDetailRoute />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/:sectionNum" element={<SectionDetailRoute />} />
+          <Route path="interactive-regulations/:actSlug/:chapter/section/:sectionNum" element={<SectionDetailRoute />} />
 
           {/* ─── 3. RegPractice (/practice) ───────────────────────────── */}
           <Route path="practice" element={<PracticeHub />} />
           <Route path="practice/quizzes" element={<Quizzes />} />
-          <Route path="practice/quizzes/:topic" element={<QuizTopic />} />
-          <Route path="practice/mock-tests" element={<ExamReady />} />
-          <Route path="practice/mock-tests/:slug" element={<ExamReady />} />
+          <Route path="practice/quizzes/:topic" element={<QuizTopicRoute />} />
+          <Route path="practice/mock-tests" element={<ExamReadyRoute />} />
+          <Route path="practice/mock-tests/:slug" element={<ExamReadyRoute />} />
           <Route path="practice/question-bank" element={<Quizzes />} />
 
           {/* ─── 4. RegTools (/tools) ─────────────────────────────────── */}
@@ -134,7 +205,7 @@ export default function App() {
           <Route path="tools/compliance-diagnostic" element={<RegReadyAssessment />} />
           <Route path="tools/regready-assessment" element={<RegReadyAssessment />} />
           <Route path="tools/ifsca-cmi-compliance-readiness-assessment" element={<RegReadyAssessment />} />
-          <Route path="tools/:slug" element={<ToolDetail />} />
+          <Route path="tools/:slug" element={<ToolDetailRoute />} />
 
           {/* ─── 5. RegReady (/prepare) ───────────────────────────────── */}
           <Route path="prepare" element={<PrepareHub />} />

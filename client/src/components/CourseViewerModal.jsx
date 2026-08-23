@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Circle, BookOpen, HelpCircle, ArrowLeft, ArrowRight, ShieldAlert, Sparkles, Award, PlayCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,6 +11,17 @@ export default function CourseViewerModal({ course, onClose }) {
   // MCQ state
   const [selectedOption, setSelectedOption] = useState(null);
   const [submittedAnswer, setSubmittedAnswer] = useState(null); // { option, isCorrect }
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const courseSlug = course?.slug;
 
@@ -53,7 +64,12 @@ export default function CourseViewerModal({ course, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
+    <div
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
+    >
       <div className="bg-white w-full md:max-w-4xl h-full flex flex-col shadow-2xl overflow-hidden">
         
         {/* Header Bar */}

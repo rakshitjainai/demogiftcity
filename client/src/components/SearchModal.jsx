@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, X, BookOpen, Bell, ArrowRight, HelpCircle, Briefcase, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LATEST_UPDATES, LATEST_BLOGS, COMPLIANCE_TOOLS } from '../data/mockData';
@@ -6,18 +6,29 @@ import { LATEST_UPDATES, LATEST_BLOGS, COMPLIANCE_TOOLS } from '../data/mockData
 // Extended searchable items list
 const SEARCH_COLLECTIONS = [
   ...LATEST_UPDATES.map(u => ({ ...u, type: 'update', path: `/news/article-${u.id}` })),
-  ...LATEST_BLOGS.map(b => ({ ...b, type: 'blog', path: `/blog/${b.slug || b.id}` })),
+  ...LATEST_BLOGS.map(b => ({ ...b, type: 'blog', path: `/free-resources/blogs/${b.slug || b.id}` })),
   ...COMPLIANCE_TOOLS.map(t => ({ ...t, type: 'tool', path: `/tools/${t.slug}` })),
-  { id: 'job-fme', title: 'IFSCA FME-InterviewPro Simulator', category: 'Products / FME-InterviewPro', summary: 'Role-weighted interview simulator & preparation engine for GIFT IFSC FME compliance roles', type: 'job', path: '/fme-interviewpro' },
+  { id: 'job-fme', title: 'IFSCA FME-InterviewPro Simulator', category: 'Products / FME-InterviewPro', summary: 'Role-weighted interview simulator & preparation engine for GIFT IFSC FME compliance roles', type: 'job', path: '/prepare/fme' },
   { id: 'reg-ifsca-fme', title: 'IFSCA Fund Management Regulations 2022', category: 'Interactive Regulations', summary: 'Detailed chapter-wise regulations for Authorised and Registered FMEs in GIFT City', type: 'regulation', path: '/interactive-regulations' },
   { id: 'reg-sebi-aif', title: 'SEBI (Alternative Investment Funds) Regulations', category: 'Interactive Regulations', summary: 'Category I, II, III AIF operational, compliance, and filing rules', type: 'regulation', path: '/interactive-regulations' },
-  { id: 'quiz-ifsca-cmi', title: 'IFSCA Capital Markets & Intermediaries Quiz', category: 'Practice Quizzes', summary: '100+ diagnostic questions covering CMI regulations in GIFT IFSC', type: 'quiz', path: '/quizzes' },
-  { id: 'quiz-aml', title: 'AML / CFT & PMLA Compliance Quiz', category: 'Practice Quizzes', summary: 'Anti-money laundering reporting and beneficial ownership verification questions', type: 'quiz', path: '/quizzes' }
+  { id: 'quiz-ifsca-cmi', title: 'IFSCA Capital Markets & Intermediaries Quiz', category: 'Practice Quizzes', summary: '100+ diagnostic questions covering CMI regulations in GIFT IFSC', type: 'quiz', path: '/practice/quizzes' },
+  { id: 'quiz-aml', title: 'AML / CFT & PMLA Compliance Quiz', category: 'Practice Quizzes', summary: 'Anti-money laundering reporting and beneficial ownership verification questions', type: 'quiz', path: '/practice/quizzes' }
 ];
 
 export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
   const [query, setQuery] = useState(initialQuery || '');
   const navigate = useNavigate();
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   // Smart partial word matching
   const searchTerms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
@@ -63,7 +74,12 @@ export default function SearchModal({ initialQuery, onClose, onSelectItem }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
+    >
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[80vh]">
         
         {/* Search Input Bar */}
