@@ -231,6 +231,30 @@
   color: var(--forest-deep);
 }
 
+/* ─── RegMate Callout Card Overrides (Blog Content) ─────── */
+.blog-content-body .regmate-callout-card h1,
+.blog-content-body .regmate-callout-card h2,
+.blog-content-body .regmate-callout-card h3,
+.blog-content-body .regmate-callout-card h4 {
+  color: #FFFFFF !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.blog-content-body .regmate-callout-card p {
+  color: rgba(238, 246, 240, 0.92) !important;
+  margin-bottom: 0 !important;
+}
+
+.blog-content-body .regmate-callout-card a {
+  color: var(--forest-deep) !important;
+  text-decoration: none !important;
+}
+
+.blog-content-body .regmate-callout-card a:hover {
+  color: var(--forest-deep) !important;
+}
+
 .blog-content-body blockquote p {
   margin-bottom: 0;
 }
