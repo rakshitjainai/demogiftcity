@@ -1,7 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, Clock, Share2, Bookmark, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, Bookmark, AlertCircle, Loader2 } from 'lucide-react';
 import DOMPurify from 'dompurify';
+
+// Runtime shortcode parser to convert leftover WordPress shortcodes into interactive UI CTA cards
+function parseShortcodes(rawContent = '') {
+  if (!rawContent) return '';
+  let content = rawContent;
+
+  const replacements = [
+    {
+      tags: [/&#91;ifsca_cmi_quiz&#93;|&#91;ifsca_cmi_quiz\]|\[ifsca_cmi_quiz\]|&#91;csater_landing&#93;|\[csater_landing\]|&#91;csater_exam&#93;|\[csater_exam\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl text-white shadow-xl border border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-400/20 border border-blue-400/40 rounded-full text-[11px] font-bold text-blue-300 uppercase tracking-wider">🧪 RegPractice Knowledge Test</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">IFSCA CMI Regulations Knowledge Test</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Assess your compliance readiness with 100 MCQs, real-time scoring, and instant statutory explanation reports.</p></div><a href="/practice/mock-tests" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Take Practice Test →</span></a></div>`
+    },
+    {
+      tags: [/&#91;reglearn_cmi&#93;|&#91;reglearn_cmi\]|\[reglearn_cmi\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-emerald-950 via-slate-900 to-forest-deep rounded-3xl text-white shadow-xl border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/20 border border-amber-400/40 rounded-full text-[11px] font-bold text-amber-300 uppercase tracking-wider">✨ RegLearn Interactive Masterclass</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">IFSCA Capital Market Intermediaries (CMI) Regulations, 2025</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Master all 17 chapters, net worth frameworks, fit & proper criteria, and statutory returns with interactive lessons.</p></div><a href="/learn/ifsca-cmi" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Start Interactive Course →</span></a></div>`
+    },
+    {
+      tags: [/&#91;reglearn_aif&#93;|&#91;reglearn_aif\]|\[reglearn_aif\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-amber-950 via-slate-900 to-forest-deep rounded-3xl text-white shadow-xl border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/20 border border-amber-400/40 rounded-full text-[11px] font-bold text-amber-300 uppercase tracking-wider">🎓 RegLearn Interactive Course</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">SEBI (Alternative Investment Funds) Regulations, 2012</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Comprehensive 14-chapter course covering Category I, II & III AIFs, Angel Funds, PPM structuring, and accredited investors.</p></div><a href="/learn/sebi-aif" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Start AIF Masterclass →</span></a></div>`
+    },
+    {
+      tags: [/&#91;reglearn&#93;|&#91;reglearn\]|\[reglearn\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 rounded-3xl text-white shadow-xl border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-400/20 border border-emerald-400/40 rounded-full text-[11px] font-bold text-emerald-300 uppercase tracking-wider">🎓 RegLearn Interactive Platform</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">IFSCA & SEBI Interactive Learning Modules</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Explore interactive regulatory courses with case scenarios, chapter challenges, and certification.</p></div><a href="/learn" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Explore All Courses →</span></a></div>`
+    },
+    {
+      tags: [/&#91;fme_quiz&#93;|&#91;fme_quiz\]|\[fme_quiz\]|&#91;ifsc_fme_mock_test&#93;|\[ifsc_fme_mock_test\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-emerald-950 via-slate-900 to-forest-deep rounded-3xl text-white shadow-xl border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-400/20 border border-emerald-400/40 rounded-full text-[11px] font-bold text-emerald-300 uppercase tracking-wider">🧪 RegPractice Practitioner Quiz</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">IFSCA FME Regulations Practitioner Test</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Test your knowledge on FME registration thresholds, capital adequacy, and placement memoranda norms.</p></div><a href="/practice/quizzes" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Take FME Quiz →</span></a></div>`
+    },
+    {
+      tags: [/&#91;ifsca_aml_quiz&#93;|&#91;ifsca_aml_quiz\]|\[ifsca_aml_quiz\]|&#91;amlcft_diagnostic&#93;|\[amlcft_diagnostic\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-purple-950 via-slate-900 to-slate-950 rounded-3xl text-white shadow-xl border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-400/20 border border-purple-400/40 rounded-full text-[11px] font-bold text-purple-300 uppercase tracking-wider">🛡️ RegTools Compliance Diagnostic</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">AML / CFT Readiness Diagnostic Tool</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Evaluate your entity's Anti-Money Laundering & Combating Financing of Terrorism compliance posture.</p></div><a href="/tools/aml-risk-assessment" class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Launch Diagnostic Tool →</span></a></div>`
+    },
+    {
+      tags: [/&#91;statuteiq_quiz&#93;|&#91;statuteiq_quiz\]|\[statuteiq_quiz\]|&#91;statuteiq_rpt_quiz&#93;|\[statuteiq_rpt_quiz\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 rounded-3xl text-white shadow-xl border border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-400/20 border border-blue-400/40 rounded-full text-[11px] font-bold text-blue-300 uppercase tracking-wider">📝 Secretarial Standards Quiz</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">Interactive Compliance & Secretarial Test</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Test your grasp of Secretarial Standard-1 (SS-1), Related Party Transactions, and Companies Act compliance.</p></div><a href="/practice/quizzes" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Start Knowledge Quiz →</span></a></div>`
+    },
+    {
+      tags: [/&#91;fme_diagnostic&#93;|&#91;fme_diagnostic\]|\[fme_diagnostic\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-teal-950 via-slate-900 to-forest-deep rounded-3xl text-white shadow-xl border border-teal-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-400/20 border border-teal-400/40 rounded-full text-[11px] font-bold text-teal-300 uppercase tracking-wider">🔧 RegTools Diagnostic Tool</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">FME Enforcement Readiness Diagnostic</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Identify operational gaps, statutory return deadlines, and enforcement vulnerabilities for GIFT City FMEs.</p></div><a href="/tools/compliance-diagnostic" class="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Run Diagnostic Tool →</span></a></div>`
+    },
+    {
+      tags: [/&#91;ifsc_compliance_calendar&#93;|&#91;ifsc_compliance_calendar\]|\[ifsc_compliance_calendar\]/gi],
+      replacement: `<div class="my-8 p-6 sm:p-8 bg-gradient-to-br from-amber-950 via-slate-900 to-forest-deep rounded-3xl text-white shadow-xl border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 not-prose"><div class="space-y-2 max-w-xl"><div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/20 border border-amber-400/40 rounded-full text-[11px] font-bold text-amber-300 uppercase tracking-wider">📅 RegTools Compliance Calendar</div><h3 class="text-xl sm:text-2xl font-bold font-display text-white">GIFT IFSC Annual Compliance Calendar Builder</h3><p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Customized compliance calendar with officer assignment, evidence logging, and statutory due date alerts.</p></div><a href="/tools/compliance-calendar" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"><span>Open Compliance Calendar →</span></a></div>`
+    },
+    {
+      tags: [/&#91;ecl_pillars&#93;|&#91;ecl_keypoints&#93;|&#91;ecl_statband&#93;|&#91;ecl_takeaway&#93;|\[ecl_pillars\]|\[ecl_keypoints\]|\[ecl_statband\]|\[ecl_takeaway\]/gi],
+      replacement: `<div class="my-6 p-5 bg-emerald-900/10 border border-emerald-600/30 rounded-2xl text-emerald-950 font-medium text-sm leading-relaxed not-prose flex items-start gap-3"><span class="text-emerald-600 font-bold text-lg">📌</span><div><strong class="font-bold block text-emerald-900 mb-1">Key Statutory Takeaway</strong>Executive guidance and regulatory framework summary for statutory compliance.</div></div>`
+    }
+  ];
+
+  replacements.forEach(sr => {
+    sr.tags.forEach(rgx => {
+      content = content.replace(rgx, sr.replacement);
+    });
+  });
+
+  // Strip residual <pre class="wp-block-code"><code> wrappers around converted div elements
+  content = content.replace(/<pre class="wp-block-code"><code>\s*(<div class="my-8[\s\S]*?<\/div>)\s*<\/code><\/pre>/gi, '$1');
+
+  return content;
+}
 
 export default function BlogDetail() {
   const { slug } = useParams();
@@ -36,7 +96,7 @@ export default function BlogDetail() {
               const timeB = new Date(b.rawDate || b.date).getTime() || 0;
               return timeB - timeA;
             });
-            const index = postsData.findIndex(p => p.slug === slug || p.id === slug);
+            const index = postsData.findIndex(p => p.slug === slug || p.id === slug || p._id === slug);
 
             if (index !== -1) {
               setPost(postsData[index]);
@@ -74,10 +134,10 @@ export default function BlogDetail() {
           Blog Post Not Found
         </h1>
         <p className="text-[var(--ink-soft)] mb-8 max-w-md mx-auto text-sm">
-          The requested blog post <code className="text-xs bg-slate-100 px-2 py-1 rounded">/blog/{slug}</code> could not be found or may have been relocated.
+          The requested blog post <code className="text-xs bg-slate-100 px-2 py-1 rounded">/free-resources/blogs/{slug}</code> could not be found.
         </p>
         <Link
-          to="/blog"
+          to="/free-resources/blogs"
           className="cursor-target inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--forest)] text-white font-bold text-sm hover:bg-[var(--forest-deep)] transition-all cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-4 h-4" /> Return to Blog Index
@@ -90,8 +150,9 @@ export default function BlogDetail() {
   const wordCount = post.content ? post.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
   const readTime = Math.max(1, Math.ceil(wordCount / 200));
 
-  // Sanitize content with DOMPurify
-  const sanitizedContent = DOMPurify.sanitize(post.content, {
+  // Parse shortcodes and sanitize content with DOMPurify
+  const parsedContent = parseShortcodes(post.content || '');
+  const sanitizedContent = DOMPurify.sanitize(parsedContent, {
     ADD_ATTR: ['target', 'rel'],
   });
 
@@ -100,11 +161,11 @@ export default function BlogDetail() {
       
       {/* Top Back Link */}
       <Link
-        to="/blog"
+        to="/free-resources/blogs"
         className="cursor-target inline-flex items-center text-sm font-semibold text-[var(--ink-soft)] hover:text-[var(--leaf)] mb-8 transition-colors group cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
-        Back to Blog
+        Back to Blogs & Analysis
       </Link>
 
       {/* Header Section */}
@@ -118,12 +179,12 @@ export default function BlogDetail() {
                 key={idx}
                 className="text-xs font-bold uppercase tracking-wider text-[var(--forest)] bg-[var(--mint)] border border-[var(--mint-deep)] px-3 py-1 rounded-full"
               >
-                {cat.name}
+                {typeof cat === 'object' ? cat.name : cat}
               </span>
             ))
           ) : (
             <span className="text-xs font-bold uppercase tracking-wider text-[var(--forest)] bg-[var(--mint)] px-3 py-1 rounded-full">
-              Blog Article
+              {post.category || 'Blog Article'}
             </span>
           )}
         </div>
@@ -141,7 +202,7 @@ export default function BlogDetail() {
               <div className="w-8 h-8 rounded-full bg-[var(--forest)] text-white text-xs font-bold flex items-center justify-center shadow-xs">
                 {post.author ? post.author.charAt(0).toUpperCase() : 'C'}
               </div>
-              <span>{post.author}</span>
+              <span>{post.author || 'RegMate Editorial Team'}</span>
             </div>
 
             <span className="text-[var(--line)] hidden sm:inline">•</span>
@@ -149,7 +210,7 @@ export default function BlogDetail() {
             {/* Date */}
             <div className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-[var(--gold)]" />
-              <span>{post.date}</span>
+              <span>{post.date || 'Recent'}</span>
             </div>
 
             <span className="text-[var(--line)] hidden sm:inline">•</span>
@@ -185,7 +246,7 @@ export default function BlogDetail() {
         </div>
       </header>
 
-      {/* Cleaned WordPress Post Body */}
+      {/* Cleaned & Shortcode-Parsed Post Body */}
       <div
         className="blog-content-body mb-16"
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
@@ -198,7 +259,7 @@ export default function BlogDetail() {
           {/* Previous Post Link */}
           {prevPost ? (
             <Link
-              to={`/blog/${prevPost.slug}`}
+              to={`/free-resources/blogs/${prevPost.slug || prevPost.id}`}
               className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift transition-all cursor-pointer"
             >
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
@@ -215,7 +276,7 @@ export default function BlogDetail() {
           {/* Next Post Link */}
           {nextPost && (
             <Link
-              to={`/blog/${nextPost.slug}`}
+              to={`/free-resources/blogs/${nextPost.slug || nextPost.id}`}
               className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift text-right transition-all cursor-pointer"
             >
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
@@ -231,7 +292,7 @@ export default function BlogDetail() {
         {/* Back to Blog Button */}
         <div className="text-center">
           <Link
-            to="/blog"
+            to="/free-resources/blogs"
             className="cursor-target inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white font-bold text-sm transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" /> Explore All 192 Blog Posts
@@ -239,7 +300,6 @@ export default function BlogDetail() {
         </div>
 
       </footer>
-
     </article>
   );
 }

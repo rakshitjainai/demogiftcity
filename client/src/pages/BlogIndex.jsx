@@ -14,6 +14,12 @@ export default function BlogIndex({ categoryFilter }) {
   const [dynamicPosts, setDynamicPosts] = useState([]);
 
   useEffect(() => {
+    if (categoryFilter) {
+      setSelectedCategory(categoryFilter);
+    }
+  }, [categoryFilter]);
+
+  useEffect(() => {
     fetch(`${API_BASE_URL}/blogs`)
       .then(res => res.json())
       .then(data => {
@@ -36,24 +42,69 @@ export default function BlogIndex({ categoryFilter }) {
     });
   }, [dynamicPosts]);
 
-  // Filter posts based on category and search query
+  // Section specific filter logic
   const filteredPosts = useMemo(() => {
     return sortedPosts.filter(post => {
-      // Category filter
-      const matchesCategory = selectedCategory === 'all' || 
-        post.categories.some(cat => cat.slug === selectedCategory);
-      
+      let matchesSection = true;
+
+      if (categoryFilter === 'explainers') {
+        const explainerCats = ['gift-city-ifsc-law', 'sebi-securities-laws', 'singapore-expansion-series', 'go-global-series', 'uae-expansion-series', 'ipr', 'fema-fdi-regulations'];
+        const text = (post.title + ' ' + (post.excerpt || '')).toLowerCase();
+        matchesSection = post.categories.some(cat => explainerCats.includes(cat.slug)) ||
+          text.includes('explainer') || text.includes('analysis') || text.includes('framework') || text.includes('overview') || text.includes('taxation') || text.includes('regulations');
+      } else if (categoryFilter === 'guides') {
+        const guideCats = ['checklists-procedures', 'doing-business-in-india', 'incorporation-structuring', 'docs-formats', 'board-resolutions', 'esop'];
+        const text = (post.title + ' ' + (post.excerpt || '')).toLowerCase();
+        matchesSection = post.categories.some(cat => guideCats.includes(cat.slug)) ||
+          text.includes('guide') || text.includes('how to') || text.includes('checklist') || text.includes('procedure') || text.includes('resolution') || text.includes('template') || text.includes('format');
+      } else if (categoryFilter === 'faqs') {
+        const faqCats = ['insight-on-adjudication-order', 'regulatory-updates', 'secretarial-standards'];
+        const text = (post.title + ' ' + (post.excerpt || '')).toLowerCase();
+        matchesSection = post.categories.some(cat => faqCats.includes(cat.slug)) ||
+          text.includes('test') || text.includes('quiz') || text.includes('faq') || text.includes('q&a') || text.includes('diagnostic') || text.includes('assessment') || text.includes('questions');
+      } else if (selectedCategory !== 'all') {
+        matchesSection = post.categories.some(cat => cat.slug === selectedCategory);
+      }
+
       // Search filter
       const q = searchQuery.trim().toLowerCase();
       const matchesSearch = !q || 
         post.title.toLowerCase().includes(q) ||
-        post.excerpt.toLowerCase().includes(q) ||
-        post.author.toLowerCase().includes(q) ||
-        post.categories.some(cat => cat.name.toLowerCase().includes(q));
+        (post.excerpt || '').toLowerCase().includes(q) ||
+        (post.author || '').toLowerCase().includes(q) ||
+        post.categories.some(cat => (cat.name || '').toLowerCase().includes(q));
 
-      return matchesCategory && matchesSearch;
+      return matchesSection && matchesSearch;
     });
-  }, [sortedPosts, selectedCategory, searchQuery]);
+  }, [sortedPosts, selectedCategory, categoryFilter, searchQuery]);
+
+  // Section Header Info
+  const headerInfo = useMemo(() => {
+    if (categoryFilter === 'explainers') {
+      return {
+        eyebrow: '§ Regulatory Explainers & Commentary',
+        title: 'Regulatory Explainers',
+        desc: 'In-depth legal commentaries, statutory breakdowns, and GIFT IFSC regulatory framework explainers.'
+      };
+    } else if (categoryFilter === 'guides') {
+      return {
+        eyebrow: '📋 Compliance & Procedural Guides',
+        title: 'Compliance & Procedural Guides',
+        desc: 'Step-by-step secretarial procedures, board resolution formats, incorporation checklists, and filing workflows.'
+      };
+    } else if (categoryFilter === 'faqs') {
+      return {
+        eyebrow: '❓ Regulatory FAQs & Diagnostics',
+        title: 'Regulatory FAQs & Self-Tests',
+        desc: 'Frequently asked questions, practitioner Q&As, and interactive compliance self-assessment tests.'
+      };
+    }
+    return {
+      eyebrow: '§ Codex Journal & Insights',
+      title: 'Blogs & Regulatory Analysis',
+      desc: 'Comprehensive collection of published insights on corporate law, GIFT IFSC regulations, IPR, and business expansion.'
+    };
+  }, [categoryFilter]);
 
   // Reset to page 1 when search or category changes
   const handleCategoryChange = (slug) => {
@@ -68,7 +119,7 @@ export default function BlogIndex({ categoryFilter }) {
 
   const handleResetFilters = () => {
     setSearchQuery('');
-    setSelectedCategory('all');
+    setSelectedCategory(categoryFilter || 'all');
     setCurrentPage(1);
   };
 
@@ -98,13 +149,13 @@ export default function BlogIndex({ categoryFilter }) {
       {/* Hero Header */}
       <div className="text-center mb-10">
         <span className="eyebrow block mb-3 flex items-center justify-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" /> § Codex Journal & Insights
+          <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" /> {headerInfo.eyebrow}
         </span>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-[var(--forest-deep)] mb-4 tracking-tight">
-          The Blog
+          {headerInfo.title}
         </h1>
         <p className="text-lg md:text-xl text-[var(--ink-soft)] max-w-3xl mx-auto leading-relaxed">
-          Comprehensive collection of published insights on corporate law, GIFT IFSC regulations, IPR, business expansion, and creative living.
+          {headerInfo.desc}
         </p>
       </div>
 
