@@ -63,17 +63,19 @@ export default function PrepareHub() {
   return (
     <div className="min-h-screen bg-[var(--paper)] py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="max-w-3xl mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--mint)] border border-[var(--leaf)]/30 rounded-full text-xs font-bold text-[var(--forest)] uppercase tracking-wider mb-4">
-            <Briefcase size={14} className="text-[var(--leaf)]" /> RegReady Ecosystem
+        {/* Hero Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#042C1D] via-[#0B4D33] to-[#073321] text-white p-8 sm:p-10 mb-10 shadow-xl border border-emerald-900/50">
+          <div className="relative z-10 max-w-3xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-950/80 border border-sky-400/40 text-sky-300 text-xs font-bold uppercase tracking-wider shadow-sm">
+              <Briefcase size={14} className="text-sky-400" /> RegReady Ecosystem
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight">
+              Role-Specific Regulatory Preparation
+            </h1>
+            <p className="text-sm sm:text-base text-emerald-100 font-normal leading-relaxed">
+              Prepare for senior regulatory, compliance, and secretarial roles. Practice with technical scenario questions, cross-regulatory trap questions, and model answers curated by practicing professionals.
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[var(--forest-deep)] tracking-tight">
-            Role-Specific Regulatory Preparation
-          </h1>
-          <p className="mt-3 text-base sm:text-lg text-[var(--ink-soft)] leading-relaxed">
-            Prepare for senior regulatory, compliance, and secretarial roles. Practice with technical scenario questions, cross-regulatory trap questions, and model answers curated by practicing professionals.
-          </p>
         </div>
 
         {/* Value Proposition Strip */}

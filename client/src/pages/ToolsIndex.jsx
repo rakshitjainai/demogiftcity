@@ -148,28 +148,28 @@ export default function ToolsIndex() {
         />
 
         {/* Hero Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-forest-deep via-[#073926] to-forest text-white p-8 sm:p-12 shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#042C1D] via-[#0B4D33] to-[#073321] text-white p-8 sm:p-12 shadow-xl border border-emerald-900/50">
           <div className="relative z-10 max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-mint text-xs font-bold uppercase tracking-wider">
-              <Wrench className="w-4 h-4 text-gold" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/80 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider shadow-sm">
+              <Wrench className="w-4 h-4 text-amber-400" />
               <span>RegTools • Compliance Automation & Calculators</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white leading-tight tracking-tight">
               Interactive Tools Built for Legal & Secretarial Workflows
             </h1>
 
-            <p className="text-sm sm:text-base text-mint-deep/90 leading-relaxed">
+            <p className="text-sm sm:text-base text-emerald-100 font-normal leading-relaxed">
               Eliminate spreadsheet guesswork. Automate filing deadlines, statutory quorum requirements, ESOP vesting, and AML compliance scoring with verified Indian regulatory formulas.
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs sm:text-sm text-mint">
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs sm:text-sm text-emerald-100 font-medium">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-leaf-bright" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>Companies Act 2013 & IFSCA Formatted</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gold" />
+                <Clock className="w-4 h-4 text-amber-400" />
                 <span>Instant Exportable Reports</span>
               </div>
             </div>

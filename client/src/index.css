@@ -124,6 +124,30 @@
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
 
+/* ─── Circular Orbit Animations ───────────────────────────── */
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbit-counter-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-orbit-ring {
+  animation: orbit-spin 45s linear infinite;
+}
+
+.animate-orbit-counter {
+  animation: orbit-counter-spin 45s linear infinite;
+}
+
+.orbit-group:hover .animate-orbit-ring,
+.orbit-group:hover .animate-orbit-counter {
+  animation-play-state: paused;
+}
+
 /* ─── Focus States ───────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--leaf);
