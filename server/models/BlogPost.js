@@ -50,14 +50,27 @@ const blogPostSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['draft', 'published'],
+      enum: ['draft', 'published', 'trash'],
       default: 'draft',
       index: true
+    },
+    deletedAt: {
+      type: Date,
+      default: null
     },
     publishedAt: {
       type: Date,
       default: null
-    }
+    },
+    revisions: [
+      {
+        title: String,
+        subtitle: String,
+        content: String,
+        savedBy: String,
+        savedAt: { type: Date, default: Date.now }
+      }
+    ]
   },
   {
     timestamps: true

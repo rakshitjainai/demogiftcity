@@ -64,16 +64,72 @@ const SANITIZE_OPTIONS = {
 // ─── 1. ADMIN-ONLY ROUTES (Must be defined BEFORE parameterized /:slugOrId) ──
 
 // @route   GET /api/blogs/admin/all
-// @desc    Get all blog posts including drafts for Admin Panel
+// @desc    Get all blog posts with search, filter, status tab, and sorting
 router.get('/admin/all', requireAdmin, async (req, res) => {
   try {
+    const { status = 'all', search, category, regulator, sort = 'createdAt_desc' } = req.query;
+
+    let filter = {};
+
+    if (status !== 'all') {
+      filter.status = status;
+    }
+
+    if (category && category !== 'all' && category !== 'All') {
+      filter.category = category;
+    }
+
+    if (regulator && regulator !== 'all') {
+      filter.regulatorId = regulator.toLowerCase();
+    }
+
+    if (search) {
+      const q = search.trim();
+      filter.$or = [
+        { title: { $regex: q, $options: 'i' } },
+        { subtitle: { $regex: q, $options: 'i' } },
+        { content: { $regex: q, $options: 'i' } },
+        { tags: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    let sortOption = { createdAt: -1 };
+    if (sort === 'createdAt_asc') sortOption = { createdAt: 1 };
+    else if (sort === 'publishedAt_desc') sortOption = { publishedAt: -1 };
+    else if (sort === 'updatedAt_desc') sortOption = { updatedAt: -1 };
+    else if (sort === 'title_asc') sortOption = { title: 1 };
+    else if (sort === 'title_desc') sortOption = { title: -1 };
+
     let dbPosts = [];
     try {
-      dbPosts = await BlogPost.find({}).sort({ createdAt: -1 }).lean();
+      dbPosts = await BlogPost.find(filter).sort(sortOption).lean();
     } catch (e) {
       console.warn('DB fetch error in admin/all:', e.message);
     }
-    const staticPosts = getStaticPosts().map(sp => ({ ...sp, status: 'published', isStatic: true }));
+
+    // Get count statistics for tabs
+    const [totalCount, publishedCount, draftCount, trashCount] = await Promise.all([
+      BlogPost.countDocuments({}),
+      BlogPost.countDocuments({ status: 'published' }),
+      BlogPost.countDocuments({ status: 'draft' }),
+      BlogPost.countDocuments({ status: 'trash' })
+    ]);
+
+    // Static posts are only included if status === 'all' or 'published'
+    let staticPosts = [];
+    if (status === 'all' || status === 'published') {
+      staticPosts = getStaticPosts().map(sp => ({ ...sp, status: 'published', isStatic: true }));
+      if (category && category !== 'all' && category !== 'All') {
+        staticPosts = staticPosts.filter(p => p.category === category);
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        staticPosts = staticPosts.filter(p =>
+          (p.title && p.title.toLowerCase().includes(q)) ||
+          (p.desc && p.desc.toLowerCase().includes(q))
+        );
+      }
+    }
 
     const formattedDb = dbPosts.map(p => ({
       id: p._id.toString(),
@@ -89,13 +145,21 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
       tags: p.tags,
       author: p.author,
       status: p.status,
+      deletedAt: p.deletedAt,
       publishedAt: p.publishedAt,
+      revisions: p.revisions || [],
       createdAt: p.createdAt,
       updatedAt: p.updatedAt
     }));
 
     return res.json({
       ok: true,
+      counts: {
+        all: totalCount + getStaticPosts().length,
+        published: publishedCount + getStaticPosts().length,
+        draft: draftCount,
+        trash: trashCount
+      },
       count: formattedDb.length + staticPosts.length,
       posts: [...formattedDb, ...staticPosts]
     });
@@ -114,10 +178,8 @@ router.post('/admin/create', requireAdmin, async (req, res) => {
       return res.status(400).json({ ok: false, message: 'Title and content are required fields.' });
     }
 
-    // Server-side HTML Sanitization (Prevents Stored XSS)
     const cleanContent = sanitizeHtml(content, SANITIZE_OPTIONS);
 
-    // Generate clean slug
     const cleanSlug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -138,7 +200,14 @@ router.post('/admin/create', requireAdmin, async (req, res) => {
         picture: req.user.picture || ''
       },
       status: status === 'published' ? 'published' : 'draft',
-      publishedAt: status === 'published' ? new Date() : null
+      publishedAt: status === 'published' ? new Date() : null,
+      revisions: [{
+        title: title.trim(),
+        subtitle: (subtitle || '').trim(),
+        content: cleanContent,
+        savedBy: req.user.name || 'System Admin',
+        savedAt: new Date()
+      }]
     });
 
     await post.save();
@@ -155,7 +224,7 @@ router.post('/admin/create', requireAdmin, async (req, res) => {
 });
 
 // @route   PUT /api/blogs/admin/:id
-// @desc    Update existing blog post by MongoDB ID
+// @desc    Update existing blog post with Revision Safety history
 router.put('/admin/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -164,6 +233,21 @@ router.put('/admin/:id', requireAdmin, async (req, res) => {
     const post = await BlogPost.findById(id);
     if (!post) {
       return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    }
+
+    // Save previous revision state (Revision Safety - keeps last 5 snapshots)
+    if (post.title && post.content) {
+      if (!post.revisions) post.revisions = [];
+      post.revisions.unshift({
+        title: post.title,
+        subtitle: post.subtitle || '',
+        content: post.content,
+        savedBy: req.user.name || 'System Admin',
+        savedAt: new Date()
+      });
+      if (post.revisions.length > 5) {
+        post.revisions = post.revisions.slice(0, 5);
+      }
     }
 
     if (title) post.title = title.trim();
@@ -194,9 +278,156 @@ router.put('/admin/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// @route   DELETE /api/blogs/admin/:id
-// @desc    Delete blog post by MongoDB ID
+// @route   POST /api/blogs/admin/:id/unpublish
+// @desc    Unpublish post (revert back to draft without deleting)
+router.post('/admin/:id/unpublish', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    }
+
+    post.status = 'draft';
+    await post.save();
+
+    return res.json({
+      ok: true,
+      message: 'Blog post unpublished and reverted to draft status.',
+      post
+    });
+  } catch (err) {
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   POST /api/blogs/admin/:id/publish
+// @desc    Publish a draft post
+router.post('/admin/:id/publish', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    }
+
+    post.status = 'published';
+    post.publishedAt = new Date();
+    await post.save();
+
+    return res.json({
+      ok: true,
+      message: 'Blog post published successfully!',
+      post
+    });
+  } catch (err) {
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   POST /api/blogs/admin/:id/duplicate
+// @desc    Duplicate / Clone a post into a new draft template
+router.post('/admin/:id/duplicate', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const original = await BlogPost.findById(id);
+    if (!original) {
+      return res.status(404).json({ ok: false, message: 'Source blog post not found.' });
+    }
+
+    const newTitle = `[Copy] ${original.title}`;
+    const newSlug = original.slug + '-copy-' + Date.now().toString().slice(-4);
+
+    const clonedPost = new BlogPost({
+      title: newTitle,
+      subtitle: original.subtitle,
+      slug: newSlug,
+      content: original.content,
+      coverImage: original.coverImage,
+      category: original.category,
+      regulatorId: original.regulatorId,
+      tags: original.tags,
+      author: {
+        name: req.user.name || 'System Admin',
+        email: req.user.email,
+        picture: req.user.picture || ''
+      },
+      status: 'draft',
+      publishedAt: null,
+      revisions: [{
+        title: newTitle,
+        subtitle: original.subtitle,
+        content: original.content,
+        savedBy: req.user.name || 'System Admin',
+        savedAt: new Date()
+      }]
+    });
+
+    await clonedPost.save();
+
+    return res.status(201).json({
+      ok: true,
+      message: `Blog post duplicated successfully as new draft "${newTitle}"!`,
+      post: clonedPost
+    });
+  } catch (err) {
+    console.error('Error duplicating blog post:', err);
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   DELETE /api/blogs/admin/:id (Soft Delete / Move to Trash)
+// @desc    Move blog post to Trash state instead of permanent data loss
 router.delete('/admin/:id', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    }
+
+    post.status = 'trash';
+    post.deletedAt = new Date();
+    await post.save();
+
+    return res.json({
+      ok: true,
+      message: `Blog post "${post.title}" moved to Trash. It can be restored from the Trash tab.`,
+      post
+    });
+  } catch (err) {
+    console.error('Error moving post to trash:', err);
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   POST /api/blogs/admin/:id/restore
+// @desc    Restore soft-deleted post from Trash back to Draft
+router.post('/admin/:id/restore', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    }
+
+    post.status = 'draft';
+    post.deletedAt = null;
+    await post.save();
+
+    return res.json({
+      ok: true,
+      message: `Blog post "${post.title}" restored back to Draft status.`,
+      post
+    });
+  } catch (err) {
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   DELETE /api/blogs/admin/:id/permanent
+// @desc    Permanently delete post from MongoDB (Double confirmation required)
+router.delete('/admin/:id/permanent', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const post = await BlogPost.findByIdAndDelete(id);
@@ -206,10 +437,79 @@ router.delete('/admin/:id', requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: 'Blog post deleted successfully!'
+      message: `Blog post "${post.title}" permanently deleted.`
     });
   } catch (err) {
-    console.error('Error deleting blog post:', err);
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   POST /api/blogs/admin/bulk-action
+// @desc    Bulk actions (trash, permanent-delete, publish, unpublish, restore) across selected post IDs
+router.post('/admin/bulk-action', requireAdmin, async (req, res) => {
+  try {
+    const { ids, action } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ ok: false, message: 'Please select at least one post for bulk action.' });
+    }
+
+    if (!['trash', 'permanent-delete', 'publish', 'unpublish', 'restore'].includes(action)) {
+      return res.status(400).json({ ok: false, message: 'Invalid bulk action requested.' });
+    }
+
+    let resultMsg = '';
+
+    if (action === 'trash') {
+      await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'trash', deletedAt: new Date() });
+      resultMsg = `${ids.length} post(s) moved to Trash.`;
+    } else if (action === 'permanent-delete') {
+      await BlogPost.deleteMany({ _id: { $in: ids } });
+      resultMsg = `${ids.length} post(s) permanently deleted.`;
+    } else if (action === 'publish') {
+      await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'published', publishedAt: new Date() });
+      resultMsg = `${ids.length} post(s) published successfully.`;
+    } else if (action === 'unpublish') {
+      await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'draft' });
+      resultMsg = `${ids.length} post(s) unpublished to Draft.`;
+    } else if (action === 'restore') {
+      await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'draft', deletedAt: null });
+      resultMsg = `${ids.length} post(s) restored from Trash to Draft.`;
+    }
+
+    return res.json({ ok: true, message: resultMsg });
+  } catch (err) {
+    console.error('Error executing bulk action:', err);
+    return res.status(500).json({ ok: false, message: err.message });
+  }
+});
+
+// @route   POST /api/blogs/admin/:id/restore-revision/:revisionIndex
+// @desc    Restore a past revision from revision safety history
+router.post('/admin/:id/restore-revision/:revisionIndex', requireAdmin, async (req, res) => {
+  try {
+    const { id, revisionIndex } = req.params;
+    const post = await BlogPost.findById(id);
+    if (!post) return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+
+    const idx = parseInt(revisionIndex, 10);
+    if (!post.revisions || !post.revisions[idx]) {
+      return res.status(404).json({ ok: false, message: 'Selected revision snapshot not found.' });
+    }
+
+    const rev = post.revisions[idx];
+    post.title = rev.title;
+    post.subtitle = rev.subtitle;
+    post.content = rev.content;
+
+    await post.save();
+
+    return res.json({
+      ok: true,
+      message: `Blog post restored to revision snapshot from ${new Date(rev.savedAt).toLocaleString()}!`,
+      post
+    });
+  } catch (err) {
     return res.status(500).json({ ok: false, message: err.message });
   }
 });

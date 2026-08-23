@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { 
   Users, Crown, ShieldAlert, BookOpen, HelpCircle, TrendingUp, Search, 
   RefreshCw, Eye, UserCheck, LayoutDashboard, Briefcase, Activity, 
-  Clock, BarChart2, PieChart, ShieldCheck, ArrowRight, Plus, FileText, Edit, Trash2, Globe
+  Clock, BarChart2, PieChart, ShieldCheck, ArrowRight, Plus, FileText, Edit, Trash2, Globe,
+  Copy, RotateCcw, EyeOff, CheckSquare, Square, Filter, ArrowUpDown, History, AlertTriangle, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UserDetailsModal from '../components/UserDetailsModal';
@@ -20,7 +21,21 @@ export default function AdminPanel() {
   const [topQuizzes, setTopQuizzes] = useState([]);
   const [recentActivityFeed, setRecentActivityFeed] = useState([]);
   const [users, setUsers] = useState([]);
+  
+  // Blog CMS State
   const [blogPosts, setBlogPosts] = useState([]);
+  const [blogCounts, setBlogCounts] = useState({ all: 0, published: 0, draft: 0, trash: 0 });
+  const [blogStatusTab, setBlogStatusTab] = useState('all');
+  const [blogSearch, setBlogSearch] = useState('');
+  const [blogCategory, setBlogCategory] = useState('all');
+  const [blogRegulator, setBlogRegulator] = useState('all');
+  const [blogSort, setBlogSort] = useState('createdAt_desc');
+  const [selectedPostIds, setSelectedPostIds] = useState([]);
+
+  // Confirmation Modal & Revision Safety State
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', confirmLabel: '', isDanger: false, onConfirm: null });
+  const [revisionsModalPost, setRevisionsModalPost] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,16 +45,205 @@ export default function AdminPanel() {
 
   const fetchBlogPosts = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/admin/all`, {
+      const queryParams = new URLSearchParams({
+        status: blogStatusTab,
+        sort: blogSort
+      });
+      if (blogSearch.trim()) queryParams.append('search', blogSearch.trim());
+      if (blogCategory !== 'all') queryParams.append('category', blogCategory);
+      if (blogRegulator !== 'all') queryParams.append('regulator', blogRegulator);
+
+      const res = await fetch(`${API_BASE_URL}/blogs/admin/all?${queryParams.toString()}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (res.ok && data.posts) {
         setBlogPosts(data.posts);
+        if (data.counts) setBlogCounts(data.counts);
       }
     } catch (err) {
       console.warn('Error fetching admin blog posts:', err);
     }
+  };
+
+  useEffect(() => {
+    fetchBlogPosts();
+  }, [blogStatusTab, blogSearch, blogCategory, blogRegulator, blogSort, token]);
+
+  // CMS Handlers
+  const triggerConfirmModal = (title, message, confirmLabel, isDanger, onConfirm) => {
+    setConfirmModal({
+      isOpen: true,
+      title,
+      message,
+      confirmLabel,
+      isDanger,
+      onConfirm: async () => {
+        setConfirmModal({ isOpen: false, title: '', message: '', confirmLabel: '', isDanger: false, onConfirm: null });
+        await onConfirm();
+      }
+    });
+  };
+
+  // 1. Soft Delete / Trash (No instant permanent data loss)
+  const handleSoftDelete = (postId, postTitle) => {
+    triggerConfirmModal(
+      'Move Post to Trash?',
+      `Are you sure you want to move "${postTitle}" to Trash? It can be restored anytime from the Trash tab.`,
+      'Move to Trash',
+      true,
+      async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) fetchBlogPosts();
+        } catch (err) {
+          console.error('Error trashing blog post:', err);
+        }
+      }
+    );
+  };
+
+  // 2. Permanent Delete (From Trash)
+  const handlePermanentDelete = (postId, postTitle) => {
+    triggerConfirmModal(
+      'Permanently Delete Post?',
+      `Are you sure you want to PERMANENTLY delete "${postTitle}"? This action CANNOT be undone and will permanently remove data from MongoDB.`,
+      'Permanently Delete',
+      true,
+      async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/permanent`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) fetchBlogPosts();
+        } catch (err) {
+          console.error('Error permanently deleting blog post:', err);
+        }
+      }
+    );
+  };
+
+  // 3. Restore Post from Trash
+  const handleRestore = async (postId) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/restore`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) fetchBlogPosts();
+    } catch (err) {
+      console.error('Error restoring blog post:', err);
+    }
+  };
+
+  // 4. Unpublish / Publish Toggle
+  const handleTogglePublish = (postId, isCurrentlyPublished, postTitle) => {
+    const actionName = isCurrentlyPublished ? 'Unpublish' : 'Publish';
+    const msg = isCurrentlyPublished 
+      ? `Revert "${postTitle}" back to Draft status? It will no longer be visible on the public blog index.`
+      : `Publish "${postTitle}" to the public blog index?`;
+
+    triggerConfirmModal(
+      `${actionName} Article?`,
+      msg,
+      actionName,
+      isCurrentlyPublished,
+      async () => {
+        try {
+          const endpoint = isCurrentlyPublished ? 'unpublish' : 'publish';
+          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/${endpoint}`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) fetchBlogPosts();
+        } catch (err) {
+          console.error(`Error ${actionName.toLowerCase()}ing post:`, err);
+        }
+      }
+    );
+  };
+
+  // 5. Duplicate / Clone Post
+  const handleDuplicate = async (postId) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/duplicate`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        fetchBlogPosts();
+      }
+    } catch (err) {
+      console.error('Error duplicating post:', err);
+    }
+  };
+
+  // 6. Bulk Selection & Actions
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedPostIds(blogPosts.filter(p => p.isDynamic).map(p => p._id));
+    } else {
+      setSelectedPostIds([]);
+    }
+  };
+
+  const handleSelectPost = (postId) => {
+    if (selectedPostIds.includes(postId)) {
+      setSelectedPostIds(selectedPostIds.filter(id => id !== postId));
+    } else {
+      setSelectedPostIds([...selectedPostIds, postId]);
+    }
+  };
+
+  const handleBulkAction = (action) => {
+    if (selectedPostIds.length === 0) return;
+
+    let title = '';
+    let msg = '';
+    let isDanger = false;
+
+    if (action === 'trash') {
+      title = 'Bulk Move to Trash';
+      msg = `Move ${selectedPostIds.length} selected post(s) to Trash? They can be restored from the Trash tab.`;
+      isDanger = true;
+    } else if (action === 'permanent-delete') {
+      title = 'Bulk Permanent Delete';
+      msg = `PERMANENTLY delete ${selectedPostIds.length} selected post(s)? This CANNOT be undone.`;
+      isDanger = true;
+    } else if (action === 'publish') {
+      title = 'Bulk Publish Posts';
+      msg = `Publish ${selectedPostIds.length} selected post(s) to the live site?`;
+    } else if (action === 'unpublish') {
+      title = 'Bulk Unpublish Posts';
+      msg = `Revert ${selectedPostIds.length} selected post(s) back to Draft?`;
+      isDanger = true;
+    } else if (action === 'restore') {
+      title = 'Bulk Restore Posts';
+      msg = `Restore ${selectedPostIds.length} selected post(s) back to Draft status?`;
+    }
+
+    triggerConfirmModal(title, msg, 'Confirm Bulk Action', isDanger, async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/blogs/admin/bulk-action`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ ids: selectedPostIds, action })
+        });
+        if (res.ok) {
+          setSelectedPostIds([]);
+          fetchBlogPosts();
+        }
+      } catch (err) {
+        console.error('Bulk action error:', err);
+      }
+    });
   };
 
   const fetchAdminData = async () => {
@@ -670,88 +874,341 @@ export default function AdminPanel() {
         {/* 6. BLOG & CONTENT CMS TAB */}
         {activeTab === 'blogs' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+            
+            {/* CMS Top Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 card-shadow">
               <div>
                 <h3 className="text-xl font-bold font-display text-slate-900 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-emerald-700" />
                   <span>Blog & Regulatory Articles CMS</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
-                  Manage MongoDB dynamic blog posts & drafts. Published posts are live on `/free-resources/blogs`.
+                  Manage regulatory content lifecycle: draft, publish, unpublish, clone, search, bulk action, and soft-delete/restore.
                 </p>
               </div>
 
               <Link
                 to="/admin/blogs/create"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white font-bold text-xs shadow-md transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white font-bold text-xs shadow-md transition-all flex-shrink-0"
               >
                 <Plus className="w-4 h-4 text-amber-300" />
                 <span>+ Create New Article</span>
               </Link>
             </div>
 
+            {/* Status Tabs Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-1">
+              <div className="flex items-center space-x-1 overflow-x-auto">
+                {[
+                  { id: 'all', label: 'All Articles', count: blogCounts.all },
+                  { id: 'published', label: 'Published', count: blogCounts.published },
+                  { id: 'draft', label: 'Drafts', count: blogCounts.draft },
+                  { id: 'trash', label: 'Trash / Deleted', count: blogCounts.trash }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setBlogStatusTab(tab.id); setSelectedPostIds([]); }}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 cursor-pointer ${
+                      blogStatusTab === tab.id
+                        ? 'bg-emerald-800 text-white shadow-xs'
+                        : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                      blogStatusTab === tab.id ? 'bg-emerald-700 text-amber-200' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {tab.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Bulk Action Toolbar */}
+              {selectedPostIds.length > 0 && (
+                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-xl text-xs font-bold animate-fade-in">
+                  <span className="text-emerald-900">{selectedPostIds.length} Selected</span>
+                  <div className="h-4 w-px bg-emerald-300" />
+                  
+                  {blogStatusTab !== 'trash' && (
+                    <>
+                      <button
+                        onClick={() => handleBulkAction('publish')}
+                        className="px-2.5 py-1 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold cursor-pointer"
+                      >
+                        Bulk Publish
+                      </button>
+                      <button
+                        onClick={() => handleBulkAction('unpublish')}
+                        className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold cursor-pointer"
+                      >
+                        Bulk Unpublish
+                      </button>
+                      <button
+                        onClick={() => handleBulkAction('trash')}
+                        className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold cursor-pointer"
+                      >
+                        Move to Trash
+                      </button>
+                    </>
+                  )}
+
+                  {blogStatusTab === 'trash' && (
+                    <>
+                      <button
+                        onClick={() => handleBulkAction('restore')}
+                        className="px-2.5 py-1 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold cursor-pointer"
+                      >
+                        Bulk Restore
+                      </button>
+                      <button
+                        onClick={() => handleBulkAction('permanent-delete')}
+                        className="px-2.5 py-1 rounded bg-rose-700 hover:bg-rose-800 text-white text-[11px] font-bold cursor-pointer"
+                      >
+                        Permanent Delete
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Search & Filter Toolbar */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-white p-4 rounded-2xl border border-slate-200 card-shadow">
+              {/* Live Search Input */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search articles by title, tags..."
+                  value={blogSearch}
+                  onChange={(e) => setBlogSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
+                />
+              </div>
+
+              {/* Category Filter */}
+              <div>
+                <select
+                  value={blogCategory}
+                  onChange={(e) => setBlogCategory(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="Regulatory Intelligence">Regulatory Intelligence</option>
+                  <option value="IFSCA & GIFT City">IFSCA & GIFT City</option>
+                  <option value="SEBI Compliance">SEBI Compliance</option>
+                  <option value="Corporate Law & MCA">Corporate Law & MCA</option>
+                </select>
+              </div>
+
+              {/* Regulator Filter */}
+              <div>
+                <select
+                  value={blogRegulator}
+                  onChange={(e) => setBlogRegulator(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
+                >
+                  <option value="all">All Regulators</option>
+                  <option value="ifsca">IFSCA (GIFT City)</option>
+                  <option value="sebi">SEBI</option>
+                  <option value="rbi">RBI</option>
+                  <option value="mca">MCA</option>
+                </select>
+              </div>
+
+              {/* Sort Options */}
+              <div>
+                <select
+                  value={blogSort}
+                  onChange={(e) => setBlogSort(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
+                >
+                  <option value="createdAt_desc">Date Created (Newest)</option>
+                  <option value="createdAt_asc">Date Created (Oldest)</option>
+                  <option value="publishedAt_desc">Date Published (Newest)</option>
+                  <option value="updatedAt_desc">Last Updated</option>
+                  <option value="title_asc">Title (A to Z)</option>
+                  <option value="title_desc">Title (Z to A)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Articles Table */}
             <div className="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-700">
                   <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
                     <tr>
-                      <th className="p-4">Article Title & Category</th>
-                      <th className="p-4">Target Regulator</th>
+                      <th className="p-4 w-10 text-center">
+                        <input
+                          type="checkbox"
+                          onChange={handleSelectAll}
+                          checked={blogPosts.filter(p => p.isDynamic).length > 0 && selectedPostIds.length === blogPosts.filter(p => p.isDynamic).length}
+                          className="rounded border-slate-300 text-emerald-700 focus:ring-emerald-500 cursor-pointer"
+                        />
+                      </th>
+                      <th className="p-4">Article Details</th>
+                      <th className="p-4">Regulator & Category</th>
                       <th className="p-4">Status</th>
-                      <th className="p-4">Author</th>
+                      <th className="p-4">Author & Revisions</th>
                       <th className="p-4">Date</th>
-                      <th className="p-4 text-right">Actions</th>
+                      <th className="p-4 text-right">CMS Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {blogPosts.length > 0 ? (
                       blogPosts.map((post) => {
                         const isPublished = post.status === 'published';
+                        const isTrash = post.status === 'trash';
+                        const isSelected = selectedPostIds.includes(post._id);
+
                         return (
-                          <tr key={post.id || post._id} className="hover:bg-slate-50/80 transition-colors">
-                            <td className="p-4">
-                              <div className="font-bold text-slate-900 text-sm">{post.title}</div>
-                              <div className="text-[11px] text-slate-500 mt-0.5">{post.category || 'Regulatory Intelligence'}</div>
+                          <tr key={post.id || post._id} className={`hover:bg-slate-50/80 transition-colors ${isSelected ? 'bg-emerald-50/40' : ''}`}>
+                            <td className="p-4 text-center">
+                              {post.isDynamic ? (
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => handleSelectPost(post._id)}
+                                  className="rounded border-slate-300 text-emerald-700 focus:ring-emerald-500 cursor-pointer"
+                                />
+                              ) : (
+                                <span className="text-slate-300">•</span>
+                              )}
                             </td>
-                            <td className="p-4">
-                              <span className="uppercase font-bold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                {post.regulatorId || 'IFSCA'}
-                              </span>
+
+                            <td className="p-4 max-w-xs sm:max-w-md">
+                              <div className="font-bold text-slate-900 text-sm line-clamp-1">{post.title}</div>
+                              {post.subtitle && <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{post.subtitle}</div>}
+                              <div className="text-[10px] text-slate-400 font-mono mt-1">/blogs/{post.slug || post.id}</div>
                             </td>
+
                             <td className="p-4">
-                              <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                              <div className="space-y-1">
+                                <span className="uppercase font-bold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 block w-fit">
+                                  {post.regulatorId || 'IFSCA'}
+                                </span>
+                                <span className="text-[11px] text-slate-500 font-medium block">
+                                  {post.category || 'Regulatory Intelligence'}
+                                </span>
+                              </div>
+                            </td>
+
+                            <td className="p-4">
+                              <span className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
                                 isPublished
                                   ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                  : isTrash
+                                  ? 'bg-rose-50 text-rose-800 border-rose-300'
                                   : 'bg-amber-50 text-amber-900 border-amber-300'
                               }`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${isPublished ? 'bg-emerald-600' : 'bg-amber-500'}`} />
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  isPublished ? 'bg-emerald-600' : isTrash ? 'bg-rose-600' : 'bg-amber-500'
+                                }`} />
                                 <span>{post.status || 'draft'}</span>
                               </span>
                             </td>
-                            <td className="p-4 font-medium text-slate-800">
-                              {typeof post.author === 'string' ? post.author : (post.author?.name || 'RegMate Editorial')}
+
+                            <td className="p-4">
+                              <div className="font-medium text-slate-800">
+                                {typeof post.author === 'string' ? post.author : (post.author?.name || 'RegMate Editorial')}
+                              </div>
+                              {post.revisions && post.revisions.length > 0 && (
+                                <button
+                                  onClick={() => setRevisionsModalPost(post)}
+                                  className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-1 mt-0.5 cursor-pointer"
+                                >
+                                  <History className="w-3 h-3" />
+                                  <span>{post.revisions.length} Revision(s)</span>
+                                </button>
+                              )}
                             </td>
+
                             <td className="p-4 text-slate-500">
-                              {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'WordPress Import'}
+                              {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Imported'}
+                              {isTrash && post.deletedAt && (
+                                <span className="block text-[10px] text-rose-600 font-semibold">
+                                  Trashed {new Date(post.deletedAt).toLocaleDateString()}
+                                </span>
+                              )}
                             </td>
+
                             <td className="p-4 text-right">
-                              <div className="flex items-center justify-end gap-2">
+                              <div className="flex items-center justify-end gap-1.5 flex-wrap">
                                 {post.isDynamic ? (
                                   <>
-                                    <Link
-                                      to={`/admin/blogs/edit/${post._id}`}
-                                      className="h-8 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 flex items-center gap-1"
-                                    >
-                                      <Edit className="w-3.5 h-3.5 text-slate-600" />
-                                      <span>Edit</span>
-                                    </Link>
-                                    <button
-                                      onClick={() => handleDeleteBlogPost(post._id)}
-                                      className="h-8 px-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 flex items-center gap-1 cursor-pointer"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                      <span>Delete</span>
-                                    </button>
+                                    {!isTrash && (
+                                      <>
+                                        {/* Edit */}
+                                        <Link
+                                          to={`/admin/blogs/edit/${post._id}`}
+                                          className="h-8 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 flex items-center gap-1"
+                                          title="Edit Post"
+                                        >
+                                          <Edit className="w-3.5 h-3.5 text-slate-600" />
+                                          <span className="hidden lg:inline">Edit</span>
+                                        </Link>
+
+                                        {/* Duplicate / Clone */}
+                                        <button
+                                          onClick={() => handleDuplicate(post._id)}
+                                          className="h-8 px-2.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 flex items-center gap-1 cursor-pointer"
+                                          title="Duplicate / Clone Post"
+                                        >
+                                          <Copy className="w-3.5 h-3.5 text-emerald-700" />
+                                          <span className="hidden lg:inline">Clone</span>
+                                        </button>
+
+                                        {/* Publish / Unpublish Toggle */}
+                                        <button
+                                          onClick={() => handleTogglePublish(post._id, isPublished, post.title)}
+                                          className={`h-8 px-2.5 rounded-lg font-bold text-xs border flex items-center gap-1 cursor-pointer ${
+                                            isPublished
+                                              ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200'
+                                              : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800'
+                                          }`}
+                                          title={isPublished ? 'Unpublish to Draft' : 'Publish Article'}
+                                        >
+                                          {isPublished ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                          <span>{isPublished ? 'Unpublish' : 'Publish'}</span>
+                                        </button>
+
+                                        {/* Move to Trash (Soft Delete) */}
+                                        <button
+                                          onClick={() => handleSoftDelete(post._id, post.title)}
+                                          className="h-8 px-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 flex items-center gap-1 cursor-pointer"
+                                          title="Move to Trash"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                          <span className="hidden lg:inline">Trash</span>
+                                        </button>
+                                      </>
+                                    )}
+
+                                    {isTrash && (
+                                      <>
+                                        {/* Restore */}
+                                        <button
+                                          onClick={() => handleRestore(post._id)}
+                                          className="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs border border-emerald-700 flex items-center gap-1 cursor-pointer"
+                                          title="Restore to Draft"
+                                        >
+                                          <RotateCcw className="w-3.5 h-3.5" />
+                                          <span>Restore</span>
+                                        </button>
+
+                                        {/* Permanent Delete */}
+                                        <button
+                                          onClick={() => handlePermanentDelete(post._id, post.title)}
+                                          className="h-8 px-3 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs border border-rose-800 flex items-center gap-1 cursor-pointer"
+                                          title="Permanent Delete"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                          <span>Delete Permanently</span>
+                                        </button>
+                                      </>
+                                    )}
                                   </>
                                 ) : (
                                   <Link
@@ -770,8 +1227,8 @@ export default function AdminPanel() {
                       })
                     ) : (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-slate-500 text-xs">
-                          No blog posts found. Click "+ Create New Article" to write your first post.
+                        <td colSpan={7} className="p-8 text-center text-slate-500 text-xs">
+                          No blog posts found matching your active tab and filter criteria. Click "+ Create New Article" to write your first post.
                         </td>
                       </tr>
                     )}
@@ -783,6 +1240,89 @@ export default function AdminPanel() {
         )}
 
       </main>
+
+      {/* Confirmation Modal Component */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full border border-slate-200 shadow-2xl space-y-4 animate-scale-up">
+            <div className="flex items-center space-x-3">
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
+                confirmModal.isDanger ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'
+              }`}>
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-base text-slate-900">{confirmModal.title}</h4>
+                <p className="text-xs text-slate-500 mt-0.5">Confirmation Required</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-700 font-medium leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              {confirmModal.message}
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                onClick={() => setConfirmModal({ isOpen: false, title: '', message: '', confirmLabel: '', isDanger: false, onConfirm: null })}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmModal.onConfirm}
+                className={`px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md cursor-pointer ${
+                  confirmModal.isDanger ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-700 hover:bg-emerald-800'
+                }`}
+              >
+                {confirmModal.confirmLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Revision Safety History Modal */}
+      {revisionsModalPost && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-xl w-full border border-slate-200 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-emerald-700" />
+                <h4 className="font-bold text-base text-slate-900">Revision History — {revisionsModalPost.title}</h4>
+              </div>
+              <button onClick={() => setRevisionsModalPost(null)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {revisionsModalPost.revisions && revisionsModalPost.revisions.length > 0 ? (
+                revisionsModalPost.revisions.map((rev, idx) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-slate-900">Snapshot #{idx + 1}: {rev.title}</span>
+                      <span className="text-emerald-700 font-mono text-[10px]">{new Date(rev.savedAt).toLocaleString()}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 line-clamp-2">{rev.subtitle || 'No subtitle'}</p>
+                    <div className="text-[10px] text-slate-400">Saved by: {rev.savedBy || 'System Admin'}</div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-500 p-4 text-center">No revision history found for this post.</p>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setRevisionsModalPost(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+              >
+                Close History
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* User Details Modal */}
       {selectedUser && (
