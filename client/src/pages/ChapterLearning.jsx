@@ -54,22 +54,28 @@ export default function ChapterLearning() {
 
   const cp = useMemo(() => getChapterProgress(courseSlug, chIdx > -1 ? chapter?.num : null), [courseSlug, chapter]);
 
-  // Extract primary lesson content from courses.json
-  const primaryLesson = chapter?.lessons?.[0];
-  const payload = primaryLesson?.payload || {};
+  // Extract all activities from courses.json — the actual data model
+  const allActivities = chapter?.activities || [];
+
+  // Primary lesson content: first 'lesson' type activity
+  const primaryLesson = allActivities.find(a => a.type === 'lesson') || allActivities[0] || {};
+  const payload = primaryLesson?.payload || primaryLesson || {};
   const cards = primaryLesson?.cards || normalizeCards(payload.cards || []);
 
-  // All questions for this chapter
-  const questions = chapter?.questions || [];
+  // MCQ practice questions: all 'mcq' type activities
+  const questions = allActivities.filter(a => a.type === 'mcq');
   const currentQuestion = questions[practiceIdx];
   const qPayload = currentQuestion?.payload || {};
-  
-  // Normalize option list and correct answer index
+
+  // Normalize option list — courses.json stores options as [{key,text}] objects
   const optionsRaw = currentQuestion?.options || qPayload.optionsFormatted || qPayload.options || [];
   const options = optionsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
   const correctKey = currentQuestion?.correctKey || currentQuestion?.answer?.correct || qPayload.answer || 'A';
-  
-  let correctIdx = optionsRaw.findIndex(o => (typeof o === 'string' ? o : o.key || o.k) === correctKey);
+
+  // Map correctKey (letter 'A'/'B'/'C'/'D') to index
+  let correctIdx = typeof currentQuestion?.correctIdx === 'number'
+    ? currentQuestion.correctIdx
+    : optionsRaw.findIndex(o => (typeof o === 'object' ? o.key : null) === correctKey);
   if (correctIdx === -1) {
     correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
     if (correctIdx === -1) correctIdx = 0;
@@ -78,13 +84,23 @@ export default function ChapterLearning() {
   // Recall items (key terms, thresholds, key numbers from cards / activities)
   const recallItems = useMemo(() => {
     const items = [];
-    if (chapter?.recall && chapter.recall.length > 0) {
-      chapter.recall.forEach(r => {
-        if (r.recallCards && r.recallCards.length > 0) {
-          r.recallCards.forEach(rc => items.push(rc));
+    // Source 1: chapter.concepts[].recallCards[] — the actual data path in courses.json
+    if (chapter?.concepts && chapter.concepts.length > 0) {
+      chapter.concepts.forEach(concept => {
+        if (concept.recallCards && concept.recallCards.length > 0) {
+          concept.recallCards.forEach(rc => items.push(rc));
         }
       });
     }
+    // Source 2: individual activity recallCards
+    if (items.length === 0) {
+      allActivities.forEach(act => {
+        if (act.recallCards && act.recallCards.length > 0) {
+          act.recallCards.forEach(rc => items.push(rc));
+        }
+      });
+    }
+    // Source 3: derive from lesson cards
     if (items.length === 0) {
       cards.forEach(card => {
         if (card.title && (card.means || card.law)) {
@@ -92,6 +108,7 @@ export default function ChapterLearning() {
         }
       });
     }
+    // Source 4: fallback to first MCQ
     if (items.length === 0 && questions[0]) {
       items.push({
         front: `Key provision under ${chapter?.title}`,
@@ -100,7 +117,7 @@ export default function ChapterLearning() {
       });
     }
     return items.slice(0, 8);
-  }, [cards, questions, chapter]);
+  }, [cards, questions, chapter, allActivities]);
 
   const handleMarkLearnRead = useCallback(() => {
     markLessonRead(courseSlug, chapter.num);
@@ -222,16 +239,13 @@ export default function ChapterLearning() {
               return (
                 <div key={s.id} className="flex items-center gap-1 flex-shrink-0">
                   <button
-                    onClick={() => {
-                      // Allow going back to completed steps
-                      if (isDone || isActive) setStep(s.id);
-                    }}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all ${
+                    onClick={() => setStep(s.id)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-forest text-white'
+                        ? 'bg-forest text-white shadow-xs'
                         : isDone
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-pointer hover:bg-emerald-100'
-                        : 'bg-gray-100 text-gray-400 cursor-default'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                        : 'bg-gray-100 text-gray-600 hover:bg-forest/10 hover:text-forest'
                     }`}
                   >
                     {isDone ? <CheckCircle2 className="w-3 h-3" /> : <s.icon className="w-3 h-3" />}
@@ -492,9 +506,36 @@ export default function ChapterLearning() {
               <>
                 <div className="flex items-center justify-between text-xs text-ink-soft">
                   <span>Question {practiceIdx + 1} of {questions.length}</span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-semibold">
                     {practiceResults.filter(r => r.correct).length}/{practiceResults.length} correct
                   </span>
+                </div>
+
+                {/* Question Navigator */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                  {questions.map((q, qIdx) => {
+                    const isCurrent = qIdx === practiceIdx;
+                    const res = practiceResults[qIdx];
+                    let btnCls = 'bg-gray-100 text-gray-600 hover:bg-gray-200';
+                    if (isCurrent) btnCls = 'bg-forest text-white ring-2 ring-forest/30';
+                    else if (res?.correct) btnCls = 'bg-emerald-100 text-emerald-800 font-bold';
+                    else if (res && !res.correct) btnCls = 'bg-rose-100 text-rose-800 font-bold';
+
+                    return (
+                      <button
+                        key={qIdx}
+                        onClick={() => {
+                          setPracticeIdx(qIdx);
+                          setSelectedOption(null);
+                          setSubmitted(false);
+                        }}
+                        className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${btnCls}`}
+                        title={`Question ${qIdx + 1}`}
+                      >
+                        {qIdx + 1}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="bg-white rounded-2xl border border-line p-5 sm:p-6 space-y-5">

@@ -1,242 +1,266 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import {
+  GraduationCap,
+  BookOpen,
+  Zap,
+  Wrench,
+  Briefcase,
+  Rss,
+  ShieldCheck
+} from 'lucide-react';
 
 /**
- * The "Codex" signature visual:
- * - A tilted dark-green book/card (rotate -2deg) with shield + checkmark icon, serif label + subtitle
- * - 3 floating white tab cards with icons + short labels
- * - Soft radial mint glow behind
+ * 6-Node Capability Wheel Component
+ * Central shield radiating to 6 core product engines:
+ * RegLearn, RegLens, RegPractice, RegTools, RegReady, RegIntel
  */
-export default function CodexVisual() {
-  return (
-    <div className="relative w-full max-w-[420px] mx-auto select-none" style={{ minHeight: 380 }}>
+export default function HeroIllustration() {
+  const nodes = [
+    {
+      id: 'reglearn',
+      name: 'RegLearn',
+      label: 'Master Courses',
+      icon: GraduationCap,
+      href: '/learn',
+      borderHover: 'hover:border-[#0B4D33]',
+      textHover: 'group-hover:text-[#0B4D33]',
+      bgIcon: 'bg-[#EAF4EF]',
+      textIcon: 'text-[#0B4D33]',
+      bgHover: 'group-hover:bg-[#0B4D33]'
+    },
+    {
+      id: 'reglens',
+      name: 'RegLens',
+      label: 'Statutory Text',
+      icon: BookOpen,
+      href: '/understand',
+      borderHover: 'hover:border-emerald-600',
+      textHover: 'group-hover:text-emerald-700',
+      bgIcon: 'bg-emerald-50',
+      textIcon: 'text-emerald-700',
+      bgHover: 'group-hover:bg-emerald-700'
+    },
+    {
+      id: 'regpractice',
+      name: 'RegPractice',
+      label: 'Quizzes & Mocks',
+      icon: Zap,
+      href: '/practice',
+      borderHover: 'hover:border-blue-600',
+      textHover: 'group-hover:text-blue-700',
+      bgIcon: 'bg-blue-50',
+      textIcon: 'text-blue-700',
+      bgHover: 'group-hover:bg-blue-700'
+    },
+    {
+      id: 'regready',
+      name: 'RegReady',
+      label: 'Interview Prep',
+      icon: Briefcase,
+      href: '/prepare',
+      borderHover: 'hover:border-sky-600',
+      textHover: 'group-hover:text-sky-700',
+      bgIcon: 'bg-sky-50',
+      textIcon: 'text-sky-700',
+      bgHover: 'group-hover:bg-sky-700'
+    },
+    {
+      id: 'regtools',
+      name: 'RegTools',
+      label: 'Compliance Tools',
+      icon: Wrench,
+      href: '/tools',
+      borderHover: 'hover:border-amber-600',
+      textHover: 'group-hover:text-amber-700',
+      bgIcon: 'bg-amber-50',
+      textIcon: 'text-amber-700',
+      bgHover: 'group-hover:bg-amber-700'
+    },
+    {
+      id: 'regintel',
+      name: 'RegIntel',
+      label: 'Regulatory Radar',
+      icon: Rss,
+      href: '/regintel',
+      borderHover: 'hover:border-emerald-600',
+      textHover: 'group-hover:text-emerald-800',
+      bgIcon: 'bg-emerald-50',
+      textIcon: 'text-emerald-800',
+      bgHover: 'group-hover:bg-emerald-800'
+    }
+  ];
 
-      {/* Radial mint glow background */}
+  return (
+    <div className="relative w-full max-w-[480px] mx-auto select-none p-4 flex flex-col items-center">
+      {/* Background Radial Glow */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none rounded-full opacity-50"
         style={{
-          background: 'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(238,246,240,0.9) 0%, transparent 75%)',
+          background: 'radial-gradient(circle at 50% 45%, rgba(11,77,51,0.12) 0%, rgba(238,246,240,0.5) 60%, transparent 80%)',
         }}
       />
 
-      {/* ── Main Codex Card ── */}
-      <div
-        className="absolute left-1/2 top-[12%] animate-float-slow"
-        style={{
-          transform: 'translateX(-50%) rotate(-2deg)',
-          '--rotate': '-2deg',
-          width: 220,
-          zIndex: 10,
-        }}
+      {/* SVG Connecting Lines Background */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
+        viewBox="0 0 480 380"
+        fill="none"
       >
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{
-            background: 'linear-gradient(145deg, #0B4D33 0%, #073321 100%)',
-            boxShadow: '0 24px 64px -16px rgba(7,51,33,0.55), 0 4px 16px rgba(7,51,33,0.3)',
-          }}
+        <defs>
+          <linearGradient id="wheelLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0B4D33" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#B48A52" stopOpacity="0.5" />
+          </linearGradient>
+        </defs>
+
+        {/* Center: (240, 160) */}
+        {/* Radiating dashed lines to 6 positions */}
+        <line x1="240" y1="160" x2="90" y2="50" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+        <line x1="240" y1="160" x2="390" y2="50" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+        <line x1="240" y1="160" x2="410" y2="160" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+        <line x1="240" y1="160" x2="390" y2="270" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+        <line x1="240" y1="160" x2="90" y2="270" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+        <line x1="240" y1="160" x2="70" y2="160" stroke="url(#wheelLineGrad)" strokeWidth="1.5" strokeDasharray="4 3" />
+
+        {/* Concentric rings */}
+        <circle cx="240" cy="160" r="110" stroke="#0B4D33" strokeOpacity="0.12" strokeWidth="1.5" strokeDasharray="5 5" />
+        <circle cx="240" cy="160" r="150" stroke="#B48A52" strokeOpacity="0.1" strokeWidth="1" />
+      </svg>
+
+      {/* 6-Node Grid & Center Badge Container */}
+      <div className="relative z-10 w-full grid grid-cols-2 gap-y-6 gap-x-4 items-center justify-items-center min-h-[320px] pt-1">
+
+        {/* Node 1: RegLearn (Top-Left) */}
+        <Link
+          to="/learn"
+          className="justify-self-start bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
         >
-          {/* Top stripe — gold accent */}
-          <div className="h-1.5" style={{ background: 'linear-gradient(90deg, #B48A52, #DCC79A, #B48A52)' }} />
-
-          <div className="px-5 py-5">
-            {/* Shield + Checkmark icon */}
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.1)', border: '1.5px solid rgba(255,255,255,0.2)' }}>
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path
-                  d="M16 3L4 8v8c0 7.18 5.17 13.89 12 15.87C22.83 29.89 28 23.18 28 16V8L16 3z"
-                  fill="rgba(255,255,255,0.15)"
-                  stroke="#DCC79A"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M11 16.5l3.5 3.5 7-7"
-                  stroke="#DCC79A"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Serif label */}
-            <div className="text-center mb-1">
-              <span
-                className="text-white text-base leading-tight block"
-                style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}
-              >
-                RegMate Codex
-              </span>
-            </div>
-            {/* Subtitle */}
-            <p
-              className="text-center text-[11px] leading-relaxed"
-              style={{ color: '#DCC79A' }}
-            >
-              Statutes · Circulars · Practice
-            </p>
-
-            {/* Small divider */}
-            <div className="mt-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
-
-            {/* Mini stat row */}
-            <div className="mt-3 flex justify-around text-center">
-              {[['25+', 'Laws'], ['1500+', 'Topics'], ['10K+', 'Users']].map(([n, l]) => (
-                <div key={l}>
-                  <div
-                    className="text-sm font-bold leading-none"
-                    style={{ color: '#DCC79A', fontFamily: 'Fraunces, Georgia, serif' }}
-                  >{n}</div>
-                  <div className="text-[9px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom strip */}
-          <div className="px-5 pb-4 pt-0">
-            <div
-              className="rounded-lg px-3 py-2 flex items-center gap-2"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
-            >
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(18,138,84,0.4)' }}>
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                  <circle cx="5" cy="5" r="3" fill="#17A868" />
-                </svg>
-              </div>
-              <span className="text-[10px] font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                India's #1 Compliance Platform
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Floating Tab Card 1: Interactive Regulations ── */}
-      <div
-        className="absolute animate-float-slow"
-        style={{
-          top: '8%',
-          left: '-2%',
-          '--rotate': '3deg',
-          transform: 'rotate(3deg)',
-          zIndex: 20,
-          animationDelay: '0.5s',
-          width: 158,
-        }}
-      >
-        <div
-          className="bg-white rounded-2xl px-3 py-3 flex items-start gap-2.5"
-          style={{
-            boxShadow: '0 4px 20px rgba(11,77,51,0.12), 0 1px 4px rgba(11,77,51,0.08)',
-            border: '1px solid var(--line)',
-          }}
-        >
-          <div className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center"
-            style={{ background: 'var(--mint)' }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="2" width="5" height="12" rx="1" fill="var(--forest)" opacity="0.3" />
-              <rect x="9" y="2" width="5" height="12" rx="1" fill="var(--forest)" />
-              <line x1="3" y1="5" x2="6" y2="5" stroke="white" strokeWidth="0.8" />
-              <line x1="3" y1="7" x2="6" y2="7" stroke="white" strokeWidth="0.8" opacity="0.5" />
-            </svg>
+          <div className="w-8 h-8 rounded-xl bg-[#EAF4EF] text-[#0B4D33] group-hover:bg-[#0B4D33] group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <GraduationCap className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="text-[11px] font-bold leading-tight" style={{ color: 'var(--ink)' }}>
-              Interactive Regulations
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-[#0B4D33] truncate">
+              RegLearn
             </div>
-            <div className="text-[10px] mt-0.5 leading-tight" style={{ color: 'var(--ink-soft)' }}>
-              Section-wise interpretation
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Master Courses
             </div>
           </div>
-        </div>
-      </div>
+        </Link>
 
-      {/* ── Floating Tab Card 2: Learning & Quizzes ── */}
-      <div
-        className="absolute animate-float-medium"
-        style={{
-          bottom: '22%',
-          left: '-6%',
-          '--rotate': '-3deg',
-          transform: 'rotate(-3deg)',
-          zIndex: 20,
-          animationDelay: '1s',
-          width: 155,
-        }}
-      >
-        <div
-          className="bg-white rounded-2xl px-3 py-3 flex items-start gap-2.5"
-          style={{
-            boxShadow: '0 4px 20px rgba(11,77,51,0.12), 0 1px 4px rgba(11,77,51,0.08)',
-            border: '1px solid var(--line)',
-          }}
+        {/* Node 2: RegLens (Top-Right) */}
+        <Link
+          to="/understand"
+          className="justify-self-end bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
         >
-          <div className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center"
-            style={{ background: '#EEF3FF' }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M8 2L2 5v5c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V5L8 2z"
-                fill="#1E5AA8" opacity="0.15" stroke="#1E5AA8" strokeWidth="0.8" />
-              <path d="M6 8l1.5 1.5L10 6.5" stroke="#1E5AA8" strokeWidth="1.2"
-                strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 group-hover:bg-emerald-700 group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <BookOpen className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="text-[11px] font-bold leading-tight" style={{ color: 'var(--ink)' }}>
-              Learning & Quizzes
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-emerald-700 truncate">
+              RegLens
             </div>
-            <div className="text-[10px] mt-0.5 leading-tight" style={{ color: 'var(--ink-soft)' }}>
-              Get certified
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Statutory Text
             </div>
           </div>
-        </div>
-      </div>
+        </Link>
 
-      {/* ── Floating Tab Card 3: Compliance Calendar ── */}
-      <div
-        className="absolute animate-float-slow"
-        style={{
-          bottom: '6%',
-          right: '-4%',
-          '--rotate': '2.5deg',
-          transform: 'rotate(2.5deg)',
-          zIndex: 20,
-          animationDelay: '1.8s',
-          width: 158,
-        }}
-      >
-        <div
-          className="bg-white rounded-2xl px-3 py-3 flex items-start gap-2.5"
-          style={{
-            boxShadow: '0 4px 20px rgba(11,77,51,0.12), 0 1px 4px rgba(11,77,51,0.08)',
-            border: '1px solid var(--line)',
-          }}
+        {/* Node 6: RegIntel (Mid-Left) */}
+        <Link
+          to="/regintel"
+          className="justify-self-start bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
         >
-          <div className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center"
-            style={{ background: '#FEF3E2' }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="3" width="12" height="11" rx="1.5" fill="none" stroke="#B48A52" strokeWidth="1" />
-              <line x1="5" y1="1.5" x2="5" y2="5" stroke="#B48A52" strokeWidth="1" strokeLinecap="round" />
-              <line x1="11" y1="1.5" x2="11" y2="5" stroke="#B48A52" strokeWidth="1" strokeLinecap="round" />
-              <line x1="2" y1="7" x2="14" y2="7" stroke="#B48A52" strokeWidth="0.8" />
-              <rect x="5.5" y="9" width="2" height="2" rx="0.5" fill="#B48A52" opacity="0.6" />
-              <rect x="9" y="9" width="2" height="2" rx="0.5" fill="#B48A52" />
-            </svg>
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 group-hover:bg-emerald-800 group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <Rss className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="text-[11px] font-bold leading-tight" style={{ color: 'var(--ink)' }}>
-              Compliance Calendar
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-emerald-800 truncate">
+              RegIntel
             </div>
-            <div className="text-[10px] mt-0.5 leading-tight" style={{ color: 'var(--ink-soft)' }}>
-              Never miss a due date
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Regulatory Radar
             </div>
           </div>
+        </Link>
+
+        {/* Node 3: RegPractice (Mid-Right) */}
+        <Link
+          to="/practice"
+          className="justify-self-end bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
+        >
+          <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 group-hover:bg-blue-700 group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <Zap className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-blue-700 truncate">
+              RegPractice
+            </div>
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Quizzes & Mocks
+            </div>
+          </div>
+        </Link>
+
+        {/* Node 5: RegReady (Bottom-Left) */}
+        <Link
+          to="/prepare"
+          className="justify-self-start bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
+        >
+          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-700 group-hover:bg-sky-700 group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <Briefcase className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-sky-700 truncate">
+              RegReady
+            </div>
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Interview Prep
+            </div>
+          </div>
+        </Link>
+
+        {/* Node 4: RegTools (Bottom-Right) */}
+        <Link
+          to="/tools"
+          className="justify-self-end bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-md hover:shadow-xl transition-all flex items-center gap-2 group hover:-translate-y-0.5 max-w-[160px] sm:max-w-[170px] w-full"
+        >
+          <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 group-hover:bg-amber-700 group-hover:text-white transition-colors flex items-center justify-center flex-shrink-0">
+            <Wrench className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-bold text-slate-900 leading-tight group-hover:text-amber-700 truncate">
+              RegTools
+            </div>
+            <div className="text-[10px] text-slate-500 truncate leading-tight">
+              Compliance Tools
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* ABSOLUTE CENTER SHIELD BADGE */}
+      <div className="absolute top-[135px] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+        <div className="bg-gradient-to-br from-[#0B4D33] to-[#042C1D] text-white p-3 sm:p-4 rounded-3xl shadow-2xl border-2 border-[#DCC79A]/40 flex flex-col items-center justify-center text-center w-28 h-28 sm:w-32 sm:h-32 transform hover:scale-105 transition-transform duration-300 pointer-events-auto">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-1 shadow-inner">
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#DCC79A]" />
+          </div>
+          <span className="font-display font-bold text-xs sm:text-sm tracking-wide text-white leading-tight">
+            RegMate
+          </span>
+          <span className="text-[9px] text-[#DCC79A] font-semibold uppercase tracking-wider mt-0.5">
+            Core Platform
+          </span>
         </div>
       </div>
 
-      {/* Spacer to set container height */}
-      <div style={{ height: 380 }} />
+      {/* One-Line Tagline Beneath */}
+      <div className="relative z-10 mt-6 text-center w-full">
+        <span className="inline-block px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 shadow-xs text-[11px] sm:text-xs font-semibold text-slate-700">
+          Six Specialized Engines • One Unified Regulatory Platform
+        </span>
+      </div>
     </div>
   );
 }

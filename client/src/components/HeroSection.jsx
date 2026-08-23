@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ArrowRight } from 'lucide-react';
-import CodexVisual from './HeroIllustration';
+import HeroIllustration from './HeroIllustration';
 import DesktopHeroSection from './DesktopHeroSection';
 import { POPULAR_SEARCHES } from '../data/mockData';
 
@@ -120,9 +120,9 @@ export default function HeroSection({ onSearchSubmit, onSelectPill, onOpenTool }
 
             </div>
 
-            {/* Right Column — Codex Visual */}
+            {/* Right Column — 6-Node Capability Wheel */}
             <div className="flex items-center justify-center">
-              <CodexVisual />
+              <HeroIllustration />
             </div>
 
           </div>
