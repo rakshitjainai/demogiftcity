@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import LockOverlay from '../components/LockOverlay';
 
 export default function FMEInterviewPro() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isMember, hasCourseAccess } = useAuth();
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
@@ -43,6 +43,17 @@ export default function FMEInterviewPro() {
         title="Login Required for FME-InterviewPro"
         message="Accessing the RegMate FME-InterviewPro product interface requires an authenticated account. Please log in or sign up to continue."
         redirectPath="/login"
+      />
+    );
+  }
+
+  const hasAccess = Boolean(isMember || hasCourseAccess?.('ifsca-fme'));
+  if (!hasAccess) {
+    return (
+      <LockOverlay
+        type="membership"
+        title="Membership or FME Course Pass Required"
+        message="Access to the complete RegMate FME-InterviewPro Principal Officer Track requires an active All-Access Membership or IFSCA FME Course Pass. Click below to view membership plans and unlock access."
       />
     );
   }
