@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
 import {
   Bold, Italic, Underline, Strikethrough,
   Heading1, Heading2, Heading3,
@@ -400,7 +401,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Start w
           <div className="max-w-3xl mx-auto bg-white p-8 sm:p-12 rounded-2xl shadow-sm border border-slate-200">
             <div
               className="prose prose-emerald max-w-none text-slate-900 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: value || '<p className="text-slate-400 italic">No content written yet...</p>' }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value || '<p className="text-slate-400 italic">No content written yet...</p>') }}
             />
           </div>
         </div>

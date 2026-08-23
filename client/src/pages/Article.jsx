@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Share2, Bookmark } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { LATEST_BLOGS, LATEST_UPDATES } from '../data/mockData';
 
 export default function Article() {
@@ -58,7 +59,7 @@ export default function Article() {
         </p>
         
         {article.fullContent ? (
-          <div dangerouslySetInnerHTML={{ __html: article.fullContent.replace(/\n/g, '<br/>').replace(/### /g, '<h3>').replace(/#### /g, '<h4>').replace(/- \*\*/g, '<li><strong>').replace(/\*\*/g, '</strong>').replace(/- /g, '<li>') }} />
+          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.fullContent.replace(/\n/g, '<br/>').replace(/### /g, '<h3>').replace(/#### /g, '<h4>').replace(/- \*\*/g, '<li><strong>').replace(/\*\*/g, '</strong>').replace(/- /g, '<li>')) }} />
         ) : (
           <>
             <h2 className="text-2xl font-display text-forest-deep mt-8 mb-4">Understanding the Context</h2>
