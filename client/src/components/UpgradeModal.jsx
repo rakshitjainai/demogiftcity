@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, Check, Sparkles, X, ArrowRight, ShieldCheck, Zap, Crown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
