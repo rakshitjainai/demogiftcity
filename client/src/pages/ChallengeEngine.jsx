@@ -7,10 +7,16 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import coursesData from '../data/courses.json';
-import { recordChallengeScore, getCourseStats } from '../utils/learnProgress';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const CHALLENGE_TYPES = {
   'rapid-recall': {
+    title: 'Quick Recall',
+    subtitle: 'Answer 5 questions from key provisions in this regulation.',
+    icon: Brain, color: '#2563EB', bg: '#EFF6FF',
+    time: 30, qCount: 5,
+  },
+  'quick-recall': {
     title: 'Quick Recall',
     subtitle: 'Answer 5 questions from key provisions in this regulation.',
     icon: Brain, color: '#2563EB', bg: '#EFF6FF',
@@ -40,6 +46,12 @@ const CHALLENGE_TYPES = {
     icon: Award, color: '#059669', bg: '#ECFDF5',
     time: 60, qCount: 5,
   },
+  'interview': {
+    title: 'Interview Drill',
+    subtitle: 'Professional Q&A in the style of a technical regulatory interview.',
+    icon: Award, color: '#059669', bg: '#ECFDF5',
+    time: 60, qCount: 5,
+  },
   'weak-areas': {
     title: 'Weak Areas',
     subtitle: 'Questions from chapters where you have previously answered incorrectly.',
@@ -61,20 +73,26 @@ function renderProvision(p) {
 
 function extractChallengeQuestions(course, chapters, challengeType) {
   const allQs = [];
-  chapters.forEach(ch => {
-    (ch.questions || []).forEach(q => {
+  (chapters || []).forEach(ch => {
+    const rawQs = (ch.questions && ch.questions.length > 0)
+      ? ch.questions
+      : (ch.activities || []).filter(a => a.type === 'mcq' || a.question);
+
+    rawQs.forEach(q => {
       const payload = q.payload || {};
       const optsRaw = q.options || payload.optionsFormatted || payload.options || [];
       const options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
       if (options.length < 2) return;
+
       const correctKey = q.correctKey || q.answer?.correct || payload.answer || 'A';
       let correctIdx = optsRaw.findIndex(o => (typeof o === 'string' ? o : o.key || o.k) === correctKey);
       if (correctIdx === -1) {
         correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
         if (correctIdx === -1) correctIdx = 0;
       }
+
       allQs.push({
-        id: q.uid,
+        id: q.uid || `q-${ch.num}-${allQs.length}`,
         q: q.question || payload.question || payload.q || q.title || '',
         options,
         correctIdx,
@@ -91,7 +109,7 @@ function extractChallengeQuestions(course, chapters, challengeType) {
   // Shuffle
   const shuffled = [...allQs].sort(() => Math.random() - 0.5);
   const meta = CHALLENGE_TYPES[challengeType] || CHALLENGE_TYPES['rapid-recall'];
-  return shuffled.slice(0, meta.qCount);
+  return shuffled.slice(0, meta?.qCount || 5);
 }
 
 export default function ChallengeEngine() {

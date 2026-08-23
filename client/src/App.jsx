@@ -39,6 +39,8 @@ import PrepareHub from './pages/PrepareHub';
 import RegIntelHub from './pages/RegIntelHub';
 import FreeResourcesHub from './pages/FreeResourcesHub';
 
+import ErrorBoundary from './components/ErrorBoundary';
+
 // Gamified RegLearn System
 import CourseHub from './pages/CourseHub';
 import ChapterLearning from './pages/ChapterLearning';
@@ -84,13 +86,13 @@ export default function App() {
           />
 
           {/* ─── 1. RegLearn (/learn) ─────────────────────────────────── */}
-          <Route path="learn" element={<Learning />} />
-          <Route path="learn/course/:courseId" element={<Learning />} />
-          <Route path="learn/paths/:pathId" element={<Learning />} />
+          <Route path="learn" element={<ErrorBoundary title="Learning Hub Error"><Learning /></ErrorBoundary>} />
+          <Route path="learn/course/:courseId" element={<ErrorBoundary title="Learning Hub Error"><Learning /></ErrorBoundary>} />
+          <Route path="learn/paths/:pathId" element={<ErrorBoundary title="Learning Hub Error"><Learning /></ErrorBoundary>} />
           {/* Gamified Learning Routes */}
-          <Route path="learn/:courseSlug" element={<CourseHub />} />
-          <Route path="learn/:courseSlug/chapter/:chapterId" element={<ChapterLearning />} />
-          <Route path="learn/:courseSlug/challenge/:challengeType" element={<ChallengeEngine />} />
+          <Route path="learn/:courseSlug" element={<ErrorBoundary title="Course Error"><CourseHub /></ErrorBoundary>} />
+          <Route path="learn/:courseSlug/chapter/:chapterId" element={<ErrorBoundary title="Chapter Error"><ChapterLearning /></ErrorBoundary>} />
+          <Route path="learn/:courseSlug/challenge/:challengeType" element={<ErrorBoundary title="Challenge Error"><ChallengeEngine /></ErrorBoundary>} />
 
           {/* ─── 2. RegLens (/understand & /interactive-regulations) ───── */}
           <Route path="understand" element={<InteractiveRegulations />} />
