@@ -15,6 +15,19 @@ export default function UpgradeModal({
   const [checkoutError, setCheckoutError] = useState(null);
   const [loadingType, setLoadingType] = useState(null);
 
+  // Close on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   // Determine section specific pass info
@@ -90,20 +103,29 @@ export default function UpgradeModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
+    >
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden relative flex flex-col max-h-[90vh]">
         
         {/* Top Header */}
         <div className="bg-gradient-to-r from-forest-deep via-forest to-slate-900 text-white p-6 sm:p-8 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors"
+            aria-label="Close modal"
+            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white transition-colors z-20 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-gold/20 text-gold flex items-center justify-center border border-gold/30">
+          <div className="flex items-center gap-3 mb-3 pr-10">
+            <div
+              className="w-10 h-10 rounded-xl bg-gold/20 text-gold flex items-center justify-center border border-gold/30 pointer-events-none select-none flex-shrink-0"
+              aria-hidden="true"
+            >
               <Lock className="w-5 h-5" />
             </div>
             <div>

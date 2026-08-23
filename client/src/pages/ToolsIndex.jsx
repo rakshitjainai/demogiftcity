@@ -12,6 +12,18 @@ import BadgeChip from '../components/BadgeChip';
 
 const ALL_TOOLS = [
   {
+    slug: 'compliance-diagnostic',
+    title: 'IFSCA CMI Compliance Readiness Assessment',
+    category: 'Risk Diagnostics',
+    icon: ShieldCheck,
+    color: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+    desc: 'Structured self-assessment tool for GIFT IFSC CMIs & Investment Bankers with ACAR audit gap scoring across 11 CMI categories.',
+    tags: ['IFSCA', 'CMI', 'ACAR', 'Audit Ready'],
+    status: 'ACTIVE',
+    badge: 'Featured 2026',
+    estimatedMins: '10 min assessment'
+  },
+  {
     slug: 'compliance-calendar',
     title: 'Compliance Calendar Builder',
     category: 'Planners & Calendars',

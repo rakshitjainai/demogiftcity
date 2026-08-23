@@ -45,6 +45,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import CourseHub from './pages/CourseHub';
 import ChapterLearning from './pages/ChapterLearning';
 import ChallengeEngine from './pages/ChallengeEngine';
+import RegReadyAssessment from './pages/RegReadyAssessment';
 
 export default function App() {
   return (
@@ -115,6 +116,9 @@ export default function App() {
 
           {/* ─── 4. RegTools (/tools) ─────────────────────────────────── */}
           <Route path="tools" element={<ToolsIndex />} />
+          <Route path="tools/compliance-diagnostic" element={<RegReadyAssessment />} />
+          <Route path="tools/regready-assessment" element={<RegReadyAssessment />} />
+          <Route path="tools/ifsca-cmi-compliance-readiness-assessment" element={<RegReadyAssessment />} />
           <Route path="tools/:slug" element={<ToolDetail />} />
 
           {/* ─── 5. RegReady (/prepare) ───────────────────────────────── */}

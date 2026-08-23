@@ -1,0 +1,3533 @@
+{
+  "meta": {
+    "product": "RegReady Assessment Engine",
+    "public_name": "IFSCA CMI Compliance Readiness Assessment",
+    "version": "1.1.0",
+    "source_regulations": "IFSCA (Capital Market Intermediaries) Regulations, 2025 (as amended up to 12 Jan 2026)",
+    "source_circular": "IFSCA-DSI/1/2026-Capital Markets dated 05 Jun 2026 (ACAR/ACAC)",
+    "scope": "All eleven CMI categories: Part A (universal) + category-specific Part B for every registration type",
+    "status_taxonomy": [
+      "Likely Compliant",
+      "Evidence Gap",
+      "Potential Exception",
+      "Not Applicable",
+      "Not Assessed"
+    ],
+    "disclaimer": "This is a self-assessment aid, not an audit or an IFSCA determination. The independent Compliance Auditor's examination under Regulation 25 of the IFSCA (Capital Market Intermediaries) Regulations, 2025 remains the only legally operative compliance opinion.",
+    "engine_note": "Applicability is regulation-driven: mandatory controls offer Yes/No only; 'Not applicable' is available solely where the regulation makes the obligation event-based or activity-conditional. Every outcome states the regulatory requirement with clause reference and justification."
+  },
+  "engine": {
+    "status_codes": [
+      {
+        "code": "green",
+        "emoji": "🟢",
+        "label": "Likely Compliant",
+        "cell_fill": "CDEBD6"
+      },
+      {
+        "code": "amber",
+        "emoji": "🟡",
+        "label": "Evidence Gap",
+        "cell_fill": "FBEBCC"
+      },
+      {
+        "code": "red",
+        "emoji": "🔴",
+        "label": "Potential Exception",
+        "cell_fill": "F7D5D1"
+      },
+      {
+        "code": "na",
+        "emoji": "⚪",
+        "label": "Not Applicable",
+        "cell_fill": "E7EAEE"
+      },
+      {
+        "code": "un",
+        "emoji": "⬜",
+        "label": "Not Assessed",
+        "cell_fill": "F3F4F6"
+      }
+    ],
+    "principle": "Regulation-driven, not answer-echoing. The participant's Yes/No is only an INPUT; the verdict and its justification are anchored to the requirement and cite the clause. 'Not applicable' is reachable ONLY for controls whose nature is 'event' or 'activity_conditional'. Mandatory controls offer Yes/No only and can never be marked N/A by the participant.",
+    "primary_options_by_nature": {
+      "mandatory": [
+        {
+          "value": "yes",
+          "label": "Yes — this is in place"
+        },
+        {
+          "value": "no",
+          "label": "No / not yet"
+        }
+      ],
+      "event": [
+        {
+          "value": "yes",
+          "label": "Yes — it arose this FY"
+        },
+        {
+          "value": "no",
+          "label": "No — it did not arise"
+        }
+      ],
+      "activity_conditional": [
+        {
+          "value": "yes",
+          "label": "Yes — this applies to us"
+        },
+        {
+          "value": "no",
+          "label": "Not applicable to our activity"
+        }
+      ]
+    },
+    "risk_weights": {
+      "High": 3,
+      "Medium": 2,
+      "Low": 1
+    },
+    "readiness_formula": "readiness_pct = round(green / (green + amber + red) * 100); 0 when denominator is 0",
+    "risk_weighted_open": "sum of risk_weights[risk_weight] over every control whose computed code is 'amber' or 'red'",
+    "compute_algorithm": [
+      "INPUT: control, answer{primary, ev[], suff{index:'y'|'n'}, rotFY}, fy_under_review",
+      "1. if primary is empty -> 'un' (Not Assessed)",
+      "2. if primary == 'no': return 'red' when nature=='mandatory', else 'na' (obligation not triggered)",
+      "3. primary == 'yes' branch follows:",
+      "3a. PA-28 rotation override: years = int(fy[:4]) - int(rotFY[:4]) + 1; if years>3 -> 'red'; if years==3 -> set amber_floor=true",
+      "3b. for each index in control.critical_suff: if suff[index]=='n' -> 'red'",
+      "3c. for any suff value == 'n' -> 'amber'",
+      "3d. hasEvidence = any selected evidence index >= 0; if not hasEvidence -> 'amber'",
+      "3e. if number of answered sufficiency questions < total sufficiency questions -> 'amber' (incomplete)",
+      "3f. else -> 'amber' if amber_floor else 'green'"
+    ],
+    "outcome_templates": {
+      "_placeholders": "{basis}=control.regulatory_basis, {ref}=control.clause_ref, {condition}=control.condition, {caveat}=Reg 25 caveat",
+      "caveat": "The Compliance Auditor's independent examination under Regulation 25 remains the only legally operative opinion.",
+      "green": "{basis} Your responses indicate this is in place and evidenced. Basis: {ref}. {caveat}",
+      "amber": "{basis} You have indicated it is addressed, but the supporting evidence or checks are still incomplete - close this before your audit. Basis: {ref}.",
+      "red": "{basis} Your response indicates the requirement may not be met. Prioritise remediation and flag it to your Compliance Auditor. Basis: {ref}.",
+      "na": "This obligation is triggered only where {condition}. You have indicated it did not arise, so it is not triggered. Basis: {ref}.",
+      "un": "Not yet assessed. Basis: {ref}."
+    },
+    "control_schema": {
+      "control_id": "string, unique (e.g. PA-01, PB-IB-06)",
+      "archetype_id": "int 1-7 (drives interaction pattern only)",
+      "archetype": "string label",
+      "part": "'A' universal | 'B' category-specific",
+      "category_applicability": "string[] (Part A = ['All CMI categories'])",
+      "clause_ref": "string, statutory citation shown to user and in outputs",
+      "nature": "'mandatory' | 'event' | 'activity_conditional' (governs answer options & N/A eligibility)",
+      "condition": "string|null, the regulatory trigger for event/activity_conditional (used in N/A outcome)",
+      "risk_weight": "'High' | 'Medium' | 'Low'",
+      "owner_role": "suggested internal owner",
+      "requirement_text": "full requirement",
+      "regulatory_basis": "one-line statement of what the clause requires (anchors every outcome)",
+      "question_primary": "the Yes/No question shown",
+      "question_why": "why it matters (shown as callout)",
+      "evidence_options": "string[] shown as 'what could you show an auditor?'",
+      "sufficiency_questions": "string[] follow-up Yes/No checks",
+      "critical_suff": "int[] indices of sufficiency_questions where a 'No' escalates to 'red'",
+      "content_status": "editorial status"
+    }
+  },
+  "archetypes": {
+    "1": "Threshold / quantitative",
+    "2": "Personnel / qualification",
+    "3": "Policy / framework existence",
+    "4": "Record-keeping / retention",
+    "5": "Event-based intimation",
+    "6": "Periodic filing / reporting",
+    "7": "Conduct / process obligation"
+  },
+  "controls": [
+    {
+      "control_id": "PA-01",
+      "archetype_id": 1,
+      "archetype": "1. Threshold / quantitative",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 7 + Schedule I; def. Reg 3(1)(cc)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Finance / Principal Officer",
+      "requirement_text": "Maintain the Schedule I minimum net worth for your category at all times. Amounts: Credit Rating Agency USD 200,000; Custodian USD 1 million; Debenture Trustee USD 1.5 million; Distributor USD 50,000; ESG Ratings & Data Products Provider, Investment Adviser and Research Entity USD 25,000 each; Investment Banker USD 100,000; Broker Dealer, Clearing Member and Depository Participant as specified by the recognised stock exchange / clearing corporation / depository. For a broker dealer, clearing member or investment banker, net worth means liquid assets (cash, bank, FDs, G-Secs); for all other categories it is accounting net worth. A branch may hold the minimum at parent level, earmarked for the IFSC branch. An entity in multiple categories maintains the highest applicable minimum.",
+      "regulatory_basis": "Regulation 7 read with Schedule I requires the minimum net worth for the category(ies) held to be maintained at all times; for a broker dealer, clearing member or investment banker it is computed on a liquid-assets basis under Reg 3(1)(cc).",
+      "question_primary": "Did your net worth stay at or above the prescribed minimum throughout the FY under review?",
+      "question_why": "Net worth is a registration-level floor the Authority monitors closely. Slipping below it, even for part of the year, is a reportable breach.",
+      "evidence_options": [
+        "Net-worth certificate from a professional",
+        "Audited financial statements",
+        "Quarterly net-worth statements",
+        "Bank / FD / G-Sec statements backing liquid assets"
+      ],
+      "sufficiency_questions": [
+        "Is it computed on the liquid-assets basis applicable to you?",
+        "Did it stay above the minimum at every quarter-end, not just year-end?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 6",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Low",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Remain present in the IFSC in a permitted legal form: a company, an LLP, a body corporate, or a branch thereof.",
+      "regulatory_basis": "Regulation 6 permits a CMI to operate only as a company, LLP, body corporate, or a branch thereof, in the IFSC.",
+      "question_primary": "Is your entity present in the IFSC in a permitted legal form (company, LLP, body corporate, or branch)?",
+      "question_why": "Only these legal forms may hold a CMI registration; a change in form the Authority is unaware of unsettles your registration.",
+      "evidence_options": [
+        "Certificate of incorporation / LLP agreement",
+        "IFSCA registration certificate",
+        "Parent-entity branch approval (if a branch)"
+      ],
+      "sufficiency_questions": [
+        "Has the legal form remained unchanged during the FY?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-03",
+      "archetype_id": 2,
+      "archetype": "2. Personnel / qualification",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 8",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure the entity and its principal officer, directors/partners, KMP and controlling shareholders are fit and proper at all times, free of the listed disqualifications.",
+      "regulatory_basis": "Regulation 8 requires the entity and its PO, directors/partners, KMP and controlling shareholders to be fit and proper at all times.",
+      "question_primary": "Are the entity and all covered persons fit and proper, with no disqualifying event during the FY under review?",
+      "question_why": "Fit-and-proper status must hold at all times; a disqualifying event against any covered person can jeopardise the registration itself.",
+      "evidence_options": [
+        "Fit & proper declarations on file",
+        "Board record confirming status",
+        "Regulatory / litigation search results"
+      ],
+      "sufficiency_questions": [
+        "Do you hold current declarations from every covered person?",
+        "Can you confirm no disqualifying event (conviction, charge-sheet, regulatory order, wilful-defaulter tag) arose during the FY?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-04",
+      "archetype_id": 2,
+      "archetype": "2. Personnel / qualification",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 9(1)-(3),(7)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Designate a Principal Officer, based out of the IFSC, meeting the qualification route and at least 3 years' financial-services experience; the PO carries overall responsibility for CMI operations.",
+      "regulatory_basis": "Regulation 9 requires a Principal Officer, based out of the IFSC, meeting the prescribed qualification and at least 3 years' financial-services experience.",
+      "question_primary": "Have you designated an IFSC-based Principal Officer who meets the qualification and 3-year experience requirements?",
+      "question_why": "The PO carries overall responsibility for your CMI operations; an eligibility shortfall weakens every filing the PO signs.",
+      "evidence_options": [
+        "Board resolution / appointment record",
+        "Qualification certificates",
+        "Experience letters",
+        "IFSC-based confirmation (address / employment)"
+      ],
+      "sufficiency_questions": [
+        "Does the PO meet the qualification route (professional membership / PG degree / graduate + 5 yrs)?",
+        "Does the PO have at least 3 years' financial-services experience?",
+        "Is the PO based out of the IFSC?",
+        "If you hold multiple registrations, is a separate PO designated where required (one PO may be shared only across broker dealer, clearing member, depository participant, investment adviser, research entity, custodian and distributor; and across CRA and ERDPP)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-05",
+      "archetype_id": 2,
+      "archetype": "2. Personnel / qualification",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 9(1)-(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Designate a separate Compliance Officer, based out of the IFSC, meeting the qualification route (incl. LLB) and at least 2 years' experience (financial-services or compliance).",
+      "regulatory_basis": "Regulation 9 requires a separate Compliance Officer, based out of the IFSC, meeting the prescribed qualification and at least 2 years' experience.",
+      "question_primary": "Have you designated a separate, IFSC-based Compliance Officer who meets the qualification and 2-year experience requirements?",
+      "question_why": "The CO must be a distinct, empowered person; combining or under-qualifying the role is a common inspection finding.",
+      "evidence_options": [
+        "Board resolution / appointment record",
+        "Qualification certificates (incl. LLB route)",
+        "Experience letters",
+        "IFSC-based confirmation"
+      ],
+      "sufficiency_questions": [
+        "Is the CO a different person from the PO?",
+        "Does the CO meet the qualification route?",
+        "Does the CO have at least 2 years' experience (financial-services or compliance)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 9(6)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Low",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain manpower adequate for, and commensurate with, the scale and nature of the CMI's IFSC activities.",
+      "regulatory_basis": "Regulation 9(6) requires manpower adequate for, and commensurate with, the CMI's IFSC activities.",
+      "question_primary": "Do you have manpower adequate for the scale and nature of your IFSC activities?",
+      "question_why": "Thin staffing is treated as an operational-risk gap; the Authority expects headcount and skills to match what you actually do.",
+      "evidence_options": [
+        "Current org chart / staffing list",
+        "Role descriptions for key functions",
+        "Recent hiring / resourcing records"
+      ],
+      "sufficiency_questions": [
+        "Are the compliance, operations and business functions each staffed?",
+        "Is headcount proportionate to your activity volume and mix?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 9(5)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure employees complete the certification courses specified by the Authority, where any are specified for the activity.",
+      "regulatory_basis": "Regulation 9(5) requires employees to complete the certification courses specified by the Authority.",
+      "question_primary": "Have your employees completed the certification courses specified by the Authority (where any apply to your activity)?",
+      "question_why": "Where the Authority mandates certifications, uncertified staff in covered roles is a straightforward finding.",
+      "evidence_options": [
+        "Certification records / completion certificates",
+        "Training register",
+        "Confirmation that no certification is currently specified for your category"
+      ],
+      "sufficiency_questions": [
+        "Have you checked whether any certification is currently specified for your category?",
+        "Do covered employees hold the required certification?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-08",
+      "archetype_id": 4,
+      "archetype": "4. Record-keeping / retention",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 16",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain and preserve the full set of books, records and documents in retrievable electronic form for at least 8 years, including the quarterly net-worth statement, AML/KYC documentation, client account docs, and complaint records.",
+      "regulatory_basis": "Regulation 16 requires books, records and documents to be maintained in electronic retrievable form for at least 8 years.",
+      "question_primary": "Are you maintaining the full set of books, records and documents in retrievable electronic form for at least 8 years?",
+      "question_why": "Retention is its own obligation; missing or unretrievable records are a finding regardless of whether the underlying activity was compliant.",
+      "evidence_options": [
+        "Records / retention policy",
+        "Sample records (balance sheet, P&L, auditor report, quarterly net-worth statement)",
+        "AML/KYC & client account documentation",
+        "Complaint-handling records",
+        "Archival / retrieval system"
+      ],
+      "sufficiency_questions": [
+        "Is retention set to at least 8 years (or from inception if newer)?",
+        "Are records held in electronic, retrievable form?",
+        "Does the set cover all sub-items, including the quarterly net-worth statement and AML documentation?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-09",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 20",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain a Business Continuity Plan commensurate with size/nature/scale, update it on material change, and review it annually.",
+      "regulatory_basis": "Regulation 20 requires a Business Continuity Plan, updated on material change and reviewed annually.",
+      "question_primary": "Do you have a Business Continuity Plan that you review annually and update on material change?",
+      "question_why": "A BCP that exists on paper but was never reviewed or tested rarely satisfies an auditor.",
+      "evidence_options": [
+        "Approved BCP document",
+        "Board / management approval",
+        "Latest annual review record",
+        "DR test / drill evidence"
+      ],
+      "sufficiency_questions": [
+        "Is the BCP approved by the board / management?",
+        "Has it been reviewed within the last 12 months?",
+        "Is it updated when operations, structure, business or location change?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-10",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 21 (read with IFSCA CSCRF circular)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain a robust cyber security and cyber resilience framework meeting the Authority's requirements (currently the IFSCA CSCRF circular), including the time-bound self-certification.",
+      "regulatory_basis": "Regulation 21 requires a cyber security and resilience framework meeting the Authority's requirements, currently the CSCRF.",
+      "question_primary": "Do you have a cyber security and resilience framework aligned to the IFSCA CSCRF requirements?",
+      "question_why": "Cyber resilience is an active supervisory theme; the CSCRF sets specific expectations and its self-certification is time-bound.",
+      "evidence_options": [
+        "Cyber security policy / framework",
+        "CSCRF self-certification",
+        "VAPT / security audit report",
+        "Incident response plan"
+      ],
+      "sufficiency_questions": [
+        "Is the framework mapped to the applicable CSCRF requirements?",
+        "Have you filed the CSCRF self-certification where required?",
+        "Is there evidence of testing (e.g., VAPT)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-11",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 22(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain a sound, documented risk management system that is in use.",
+      "regulatory_basis": "Regulation 22(1) requires a sound risk management system.",
+      "question_primary": "Do you have a documented risk management system that is actually in use?",
+      "question_why": "The Authority expects risks to be identified and managed through a defined system, not handled informally.",
+      "evidence_options": [
+        "Risk management policy",
+        "Risk register",
+        "Board / management review record"
+      ],
+      "sufficiency_questions": [
+        "Is the system documented and approved?",
+        "Is there a live risk register or equivalent?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-12",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 22(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain adequate internal controls and procedures, including over any outsourced activities, to protect client interests and manage risk.",
+      "regulatory_basis": "Regulation 22(2) requires adequate internal controls and procedures, including over outsourced activities.",
+      "question_primary": "Do you have adequate internal controls and procedures, including over any outsourced activities?",
+      "question_why": "Internal controls are what protect client interests and assets day to day; gaps here surface quickly on inspection.",
+      "evidence_options": [
+        "Internal control procedures / SOPs",
+        "Controls covering outsourced functions",
+        "Internal review / testing records"
+      ],
+      "sufficiency_questions": [
+        "Do the controls cover your outsourced activities?",
+        "Are they reviewed or tested periodically?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-13",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 16(1)(e) — IFSCA AML/CTF/KYC Guidelines, 2022",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain and operate an AML/CFT/KYC framework compliant with the IFSCA (AML, CTF and KYC) Guidelines, 2022, with the designated officer and screening/STR records.",
+      "regulatory_basis": "Regulation 16(1)(e) requires compliance with the IFSCA (AML, CTF and KYC) Guidelines, 2022 and retention of related documentation.",
+      "question_primary": "Do you have an AML/CFT/KYC framework compliant with the IFSCA AML, CTF & KYC Guidelines, 2022?",
+      "question_why": "AML is among the highest-consequence areas; expect close scrutiny of the policy, the designated officer and screening records.",
+      "evidence_options": [
+        "AML/CFT/KYC policy",
+        "Designated Director / Principal Officer (AML) record",
+        "Client screening / sanctions-check logs",
+        "STR filing process / records"
+      ],
+      "sufficiency_questions": [
+        "Is the policy aligned to the 2022 IFSCA AML Guidelines?",
+        "Have you designated the required AML officer(s)?",
+        "Do you retain screening and, where applicable, STR records?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-14",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 18",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain a working investor grievance redressal mechanism as specified by the Authority.",
+      "regulatory_basis": "Regulation 18 requires adequate steps for investor grievance redressal as specified by the Authority.",
+      "question_primary": "Do you have a working investor grievance redressal mechanism?",
+      "question_why": "A mechanism that exists but shows no activity log is hard to evidence; auditors look for the process and its operation.",
+      "evidence_options": [
+        "Grievance redressal policy",
+        "Grievance register / log",
+        "Escalation matrix",
+        "Published grievance contact"
+      ],
+      "sufficiency_questions": [
+        "Is the mechanism documented?",
+        "Is there a register capturing complaints and their resolution?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-15",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 19",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Adopt the dispute-resolution mechanism specified by the Authority for client/investor disputes.",
+      "regulatory_basis": "Regulation 19 requires client/investor disputes to be handled under the Authority's specified dispute-resolution mechanism.",
+      "question_primary": "Have you adopted the dispute-resolution mechanism specified by the Authority for client/investor disputes?",
+      "question_why": "Client disputes must route through the specified mechanism, not ad-hoc handling.",
+      "evidence_options": [
+        "Dispute-resolution clause in client agreements",
+        "Reference to the specified mechanism",
+        "Record of any disputes handled"
+      ],
+      "sufficiency_questions": [
+        "Do your client terms reference the specified mechanism?",
+        "Is there a defined process for disputes that arise?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-16",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 18",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain an internal outsourcing policy for activities outsourced from outside the IFSC and comply with it at all times.",
+      "regulatory_basis": "Schedule II Part A (cl. 18) requires an internal outsourcing policy for activities outsourced from outside the IFSC, with ongoing compliance.",
+      "question_primary": "Do you have an internal outsourcing policy for activities outsourced from outside the IFSC, and do you comply with it?",
+      "question_why": "Outsourcing without a governing policy is a specific Code-of-Conduct gap.",
+      "evidence_options": [
+        "Outsourcing policy",
+        "List of outsourced activities / vendors",
+        "Outsourcing agreements",
+        "Confirmation that nothing is outsourced"
+      ],
+      "sufficiency_questions": [
+        "Does the policy cover all activities you outsource from outside the IFSC?",
+        "Do your outsourcing arrangements comply with it?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-17",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 19",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Low",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Adopt an internal code of conduct governing internal operations and employee conduct.",
+      "regulatory_basis": "Schedule II Part A (cl. 19) requires an internal code of conduct governing operations and employees.",
+      "question_primary": "Have you adopted an internal code of conduct governing your operations and employees?",
+      "question_why": "This is a required internal document, distinct from the regulatory Code of Conduct in Schedule II.",
+      "evidence_options": [
+        "Internal code of conduct document",
+        "Employee acknowledgements",
+        "Board / management approval"
+      ],
+      "sufficiency_questions": [
+        "Is the internal code documented and approved?",
+        "Have employees acknowledged it?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-18",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 15 + Schedule II Part A",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Operationalise adherence to the Schedule II Part A Code of Conduct (integrity, fair dealing, no market abuse, no insider trading, suitability, senior-management responsibility).",
+      "regulatory_basis": "Regulation 15 requires adherence to the Code of Conduct in Schedule II Part A.",
+      "question_primary": "Do you have processes ensuring adherence to the Schedule II Part A Code of Conduct across the firm?",
+      "question_why": "The Code is tested on whether it is operationalised, not merely adopted.",
+      "evidence_options": [
+        "Code of conduct adoption record",
+        "Supporting policies (insider trading, suitability, fair dealing)",
+        "Employee training / acknowledgement records"
+      ],
+      "sufficiency_questions": [
+        "Is adherence supported by specific policies and processes?",
+        "Is there evidence of training or monitoring?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-19",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 9",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Identify, disclose and resolve conflicts of interest through a defined mechanism with a record.",
+      "regulatory_basis": "Schedule II Part A (cl. 9) requires conflicts of interest to be avoided, disclosed and resolved through a mechanism.",
+      "question_primary": "Do you identify, disclose and resolve conflicts of interest through a defined process?",
+      "question_why": "Conflicts must be managed through a mechanism with a record; informal handling does not evidence well.",
+      "evidence_options": [
+        "Conflict of interest policy",
+        "COI disclosure register",
+        "Case records of conflicts managed"
+      ],
+      "sufficiency_questions": [
+        "Is there a documented COI process?",
+        "Is there a register capturing disclosures and how conflicts were handled?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-20",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 8",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain measures ensuring client information stays confidential except where the law requires disclosure.",
+      "regulatory_basis": "Schedule II Part A (cl. 8) requires client information to be kept confidential except where disclosure is required by law.",
+      "question_primary": "Do you have measures ensuring client information stays confidential except where the law requires disclosure?",
+      "question_why": "Client confidentiality is a Code obligation; access controls and staff undertakings are the usual evidence.",
+      "evidence_options": [
+        "Confidentiality / data-handling policy",
+        "Staff confidentiality undertakings",
+        "Access controls / IT restrictions"
+      ],
+      "sufficiency_questions": [
+        "Is confidentiality covered by policy?",
+        "Are there controls limiting who can access client information?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-21",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 20",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Board",
+      "requirement_text": "Ensure the Compliance Officer has adequate freedom and power to discharge the role, with a reporting line to the board/governing body.",
+      "regulatory_basis": "Schedule II Part A (cl. 20) requires the Compliance Officer to be given adequate freedom and power.",
+      "question_primary": "Has the board given the Compliance Officer adequate freedom and power to discharge the role?",
+      "question_why": "A CO without authority or board reporting access is a governance red flag the Authority looks for.",
+      "evidence_options": [
+        "Board resolution empowering the CO",
+        "CO reporting line to board / governing body",
+        "Compliance charter / mandate"
+      ],
+      "sufficiency_questions": [
+        "Does the CO report to the board or governing body?",
+        "Is the CO's authority documented?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-22",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 17(1)",
+      "nature": "event",
+      "condition": "a material change to previously-furnished registration information arises",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Furnish to the Authority any material change in previously-furnished information bearing on the certificate of registration.",
+      "regulatory_basis": "Regulation 17(1) requires any material change in previously-furnished information bearing on registration to be furnished to the Authority.",
+      "question_primary": "Did any material change to previously-furnished registration information arise this FY?",
+      "question_why": "Material changes bearing on your registration must reach the Authority; silence is the breach.",
+      "evidence_options": [
+        "Intimation letter / email to the Authority",
+        "Authority acknowledgement",
+        "Board record of the change"
+      ],
+      "sufficiency_questions": [
+        "Did the intimation cover all details bearing on the registration?",
+        "Was the intimation made promptly after the change?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-23",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 17(2)",
+      "nature": "event",
+      "condition": "a change in Principal Officer, Compliance Officer or KMP occurs",
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Intimate the Authority of any change in Principal Officer, Compliance Officer or KMP within 15 days.",
+      "regulatory_basis": "Regulation 17(2) requires any change in PO, CO or KMP to be intimated to the Authority within 15 days.",
+      "question_primary": "Did your Principal Officer, Compliance Officer or KMP change this FY?",
+      "question_why": "Key-person changes carry a hard 15-day clock; a correct change filed late still counts against you.",
+      "evidence_options": [
+        "Intimation to the Authority",
+        "Authority acknowledgement",
+        "Board resolution / appointment record",
+        "Dated record of the change"
+      ],
+      "sufficiency_questions": [
+        "Did it cover every changed key person?",
+        "Was the intimation made within 15 days of the change?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-24",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 23",
+      "nature": "event",
+      "condition": "a direct or indirect change in control occurs",
+      "risk_weight": "High",
+      "owner_role": "Board",
+      "requirement_text": "On change in control, follow the correct route: an IFSC-incorporated CMI seeks PRIOR approval; a branch intimates within 15 days.",
+      "regulatory_basis": "Regulation 23 requires prior approval for a change in control of an IFSC-incorporated CMI, and 15-day intimation for a branch.",
+      "question_primary": "Did a direct or indirect change in control occur this FY?",
+      "question_why": "An IFSC-incorporated CMI needs prior approval; a branch must intimate within 15 days. Getting the route or timing wrong is a serious lapse.",
+      "evidence_options": [
+        "Prior-approval application & approval (if incorporated)",
+        "Intimation within 15 days (if a branch)",
+        "Board / shareholder records evidencing the change"
+      ],
+      "sufficiency_questions": [
+        "Was the correct route used for your legal form?",
+        "Was prior approval obtained before the change (incorporated) / intimation made within 15 days (branch)?"
+      ],
+      "critical_suff": [
+        0,
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-25",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 17(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Furnish all reports, returns and statements in the manner, interval and form specified by the Authority, including periodic/quarterly reporting, by their due dates.",
+      "regulatory_basis": "Regulation 17(3) requires reports, returns and statements to be furnished in the manner, interval and form specified by the Authority.",
+      "question_primary": "Have you filed all reports, returns and statements specified by the Authority for the FY, on time (including any quarterly reporting)?",
+      "question_why": "Fixed-calendar filings are the easiest thing for the Authority to check, and late or missed returns are a common warning-letter trigger.",
+      "evidence_options": [
+        "Filed returns / statements",
+        "Submission acknowledgements",
+        "Reconciliation of all periods covered"
+      ],
+      "sufficiency_questions": [
+        "Are all periods covered with no gaps?",
+        "Were all required filings made on or before their due dates?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-26",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 24",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Finance",
+      "requirement_text": "Pay annual fees, turnover-based fees and any other fees specified by the Authority by their due dates.",
+      "regulatory_basis": "Regulation 24 requires payment of annual fees, turnover-based fees and other specified fees.",
+      "question_primary": "Have you paid your annual fees, turnover-based fees and any other specified fees for the FY?",
+      "question_why": "Fee defaults are simple to detect and reflect poorly on basic compliance discipline.",
+      "evidence_options": [
+        "Fee payment receipts / challans",
+        "Turnover-based fee computation",
+        "Bank debit confirmation"
+      ],
+      "sufficiency_questions": [
+        "Were all applicable fee heads paid?",
+        "Were they paid by the due dates?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-27",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 25 + ACAR Circular (IFSCA-DSI/1/2026) paras 3, 5, 6",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "File the ACAR together with the ACAC by 30 September for the preceding FY, with the Authority, and with the MII if you are a broker dealer / clearing member / depository participant.",
+      "regulatory_basis": "Regulation 25 read with the ACAR Circular requires the ACAR with the ACAC to be filed by 30 September for the preceding FY (and with the MII for a BD/CM/DP).",
+      "question_primary": "Are you on track to file the ACAR together with the ACAC by 30 September for the FY under review?",
+      "question_why": "This is the filing the whole exercise leads to; missing 30 September or omitting the MII copy is a direct lapse.",
+      "evidence_options": [
+        "Draft / final ACAR",
+        "Completed ACAC (Part A + Part B)",
+        "Auditor engagement in progress / complete",
+        "MII submission plan (if applicable)"
+      ],
+      "sufficiency_questions": [
+        "Is the audit on track to be completed and filed by 30 September?",
+        "If you are a BD/CM/DP, will a copy also go to your MII?"
+      ],
+      "critical_suff": [
+        0
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-28",
+      "archetype_id": 2,
+      "archetype": "2. Personnel / qualification",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "ACAR Circular (IFSCA-DSI/1/2026) paras 11-12; Reg 25(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Appoint an eligible Compliance Auditor: peer-reviewed ICAI/ICSI/ICMAI (or foreign-authorised), independent with no conflict, appointed for at most 3 consecutive years with a 2-year cooling-off before reappointment.",
+      "regulatory_basis": "Regulation 25(1) and the ACAR Circular require a peer-reviewed, independent Compliance Auditor, appointed for at most 3 consecutive years with a 2-year cooling-off.",
+      "question_primary": "Is your Compliance Auditor eligible: peer-reviewed (or foreign-authorised), independent, and within the 3 consecutive-year cap?",
+      "question_why": "The auditor's eligibility underpins the entire report; peer-review status, independence and rotation limits are all checkable.",
+      "evidence_options": [
+        "Peer-review certificate",
+        "Auditor independence declaration",
+        "Engagement letter / first-appointment record"
+      ],
+      "sufficiency_questions": [
+        "Is the auditor a peer-reviewed member (or foreign-authorised)?",
+        "Is the auditor independent with no conflict of interest?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-29",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 38",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Be positioned to cooperate fully with an inspection: records retrievable, premises accessible, and staff available to assist.",
+      "regulatory_basis": "Regulation 38 requires the CMI to cooperate fully with an inspection.",
+      "question_primary": "Are you positioned to cooperate fully with an inspection (records retrievable, premises accessible, staff available)?",
+      "question_why": "Non-cooperation is itself a ground for action, separate from any underlying issue.",
+      "evidence_options": [
+        "Records readily retrievable",
+        "Named point of contact for inspections",
+        "Prior inspection handling record (if any)"
+      ],
+      "sufficiency_questions": [
+        "Can you produce books, records and documents on request?",
+        "Is there a named person to coordinate an inspection?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-30",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Schedule II Part A, cl. 12-13",
+      "nature": "event",
+      "condition": "penal action, a registration-status change, or a material adverse financial change arises",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "On penal action, registration-status change, or material adverse financial change, promptly inform the Authority and affected clients.",
+      "regulatory_basis": "Schedule II Part A (cl. 12-13) requires prompt intimation of penal action, registration-status change or material adverse financial change to the Authority and affected clients.",
+      "question_primary": "Did any penal action, registration-status change, or material adverse financial change arise this FY?",
+      "question_why": "These events must reach the Authority and clients promptly; delayed disclosure compounds the original issue.",
+      "evidence_options": [
+        "Intimation to the Authority",
+        "Client communications",
+        "Board record of the event"
+      ],
+      "sufficiency_questions": [
+        "Were affected clients informed where required?",
+        "Was the Authority informed promptly?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "For each managed issue, sign an agreement with the issuer setting out the IB's roles and responsibilities.",
+      "regulatory_basis": "Regulation 35(1) requires an agreement with the issuer specifying the IB's roles and responsibilities in the issue.",
+      "question_primary": "For each issue you manage, do you sign an agreement with the issuer setting out your roles and responsibilities?",
+      "question_why": "The engagement agreement is the baseline document for an IB mandate; its absence is an obvious gap.",
+      "evidence_options": [
+        "Signed issue-engagement agreements",
+        "Template engagement agreement",
+        "Scope / responsibilities schedule"
+      ],
+      "sufficiency_questions": [
+        "Is an agreement in place for every managed issue?",
+        "Does it clearly set out roles and responsibilities?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(2)",
+      "nature": "activity_conditional",
+      "condition": "more than one lead investment banker acts on an issue",
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Where more than one lead investment banker acts on an issue, clearly demarcate each lead's responsibilities.",
+      "regulatory_basis": "Regulation 35(2) requires responsibilities of each lead IB to be clearly demarcated where more than one lead acts.",
+      "question_primary": "Do multiple lead investment bankers ever act together on your issues?",
+      "question_why": "Overlapping or undefined lead responsibilities create accountability gaps the Authority dislikes.",
+      "evidence_options": [
+        "Inter-se allocation agreement",
+        "Responsibility matrix among lead IBs"
+      ],
+      "sufficiency_questions": [
+        "Is there a written allocation of responsibilities where multiple leads act?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(3)",
+      "nature": "activity_conditional",
+      "condition": "you are a promoter or associate of the issuer",
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where the IB is a promoter or associate of the issuer, restrict its role to marketing of the issue only.",
+      "regulatory_basis": "Regulation 35(3) restricts an IB that is a promoter or associate of the issuer to marketing of the issue only.",
+      "question_primary": "Are you ever a promoter or associate of an issuer whose issue you manage?",
+      "question_why": "Acting beyond marketing when you are connected to the issuer is a hard conflict-of-interest breach.",
+      "evidence_options": [
+        "Associate/promoter screening for each mandate",
+        "Evidence that scope was limited to marketing where connected"
+      ],
+      "sufficiency_questions": [
+        "Do you screen whether you are a promoter/associate of the issuer?",
+        "Where connected, was your role limited to marketing?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-04",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(4)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain controls preventing the IB and its officers, directors, partners, managers, associates and relatives from dealing in an issuer's securities on the basis of UPSI.",
+      "regulatory_basis": "Regulation 35(4) prohibits the IB and its officers, partners, associates and relatives from dealing in the issuer's securities on UPSI.",
+      "question_primary": "Do you have controls preventing dealing in an issuer's securities on the basis of UPSI by you and your connected persons?",
+      "question_why": "UPSI misuse is among the gravest capital-markets offences; the Authority expects hard controls, not just a policy line.",
+      "evidence_options": [
+        "Insider trading / UPSI policy",
+        "Restricted list / trading-window controls",
+        "Pre-clearance records",
+        "Confidentiality / need-to-know controls"
+      ],
+      "sufficiency_questions": [
+        "Does the policy cover the IB, its officers, directors, partners, associates and relatives?",
+        "Are there operational controls (restricted list / trading window / pre-clearance)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-05",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(5)",
+      "nature": "event",
+      "condition": "you acquire securities of an issuer whose issue you are managing",
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where the IB acquires securities of a managed issuer, file complete particulars with the Authority within 15 days.",
+      "regulatory_basis": "Regulation 35(5) requires particulars of any acquisition of a managed issuer's securities to be filed with the Authority within 15 days.",
+      "question_primary": "Did you acquire securities of any issuer whose issue you were managing this FY?",
+      "question_why": "This is a specific 15-day disclosure; narrow, but missing it is a clear reporting breach.",
+      "evidence_options": [
+        "Filing of transaction particulars to the Authority",
+        "Authority acknowledgement",
+        "Dated transaction record"
+      ],
+      "sufficiency_questions": [
+        "Did the filing include complete particulars?",
+        "Was the filing made within 15 days of the transaction?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-06",
+      "archetype_id": 1,
+      "archetype": "1. Threshold / quantitative",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(6)(b)",
+      "nature": "activity_conditional",
+      "condition": "you undertake underwriting",
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Keep total underwriting obligations across all agreements within 20 times the IB's net worth at all times.",
+      "regulatory_basis": "Regulation 35(6)(b) caps total underwriting obligations at 20 times the IB's net worth at all times.",
+      "question_primary": "Do you undertake underwriting?",
+      "question_why": "The 20x cap is a hard quantitative limit; breaching it exposes the firm well beyond its capacity.",
+      "evidence_options": [
+        "Register of underwriting obligations",
+        "Net worth vs. 20x computation"
+      ],
+      "sufficiency_questions": [
+        "Do you track aggregate underwriting obligations against 20x net worth?",
+        "Has the aggregate stayed within the cap at all times?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Reg 35(6)(a)",
+      "nature": "activity_conditional",
+      "condition": "you undertake underwriting",
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Where underwriting, sign an agreement with the issuer covering underwriting amount, commission, duties and timelines.",
+      "regulatory_basis": "Regulation 35(6)(a) requires an underwriting agreement covering amount, commission, duties and timelines.",
+      "question_primary": "Do you undertake underwriting?",
+      "question_why": "An underwriting commitment without a proper agreement is both a compliance and a commercial risk.",
+      "evidence_options": [
+        "Underwriting agreements",
+        "Terms covering amount, commission, duties and timelines"
+      ],
+      "sufficiency_questions": [
+        "Is an agreement in place for each underwriting?",
+        "Does it cover amount, commission, duties and timelines?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-08",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 1",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure investors get adequate, timely disclosures to make a balanced, informed decision.",
+      "regulatory_basis": "Schedule II Part B(H)(1) requires adequate, timely disclosures to investors for a balanced, informed decision.",
+      "question_primary": "Do you ensure investors get adequate, timely disclosures to make a balanced, informed decision?",
+      "question_why": "Adequate disclosure is the core investor-protection duty for an IB; thin or late disclosure is a finding.",
+      "evidence_options": [
+        "Offer / disclosure documents",
+        "Disclosure review checklist",
+        "Records of disclosures made to investors"
+      ],
+      "sufficiency_questions": [
+        "Are disclosures made in line with applicable regulations/guidelines?",
+        "Are they timely?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-09",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 2",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Provide investors true and adequate information, free of misleading or exaggerated claims, and ensure awareness of risk.",
+      "regulatory_basis": "Schedule II Part B(H)(2) requires true and adequate information without misleading or exaggerated claims, and investor awareness of risk.",
+      "question_primary": "Do you ensure investors receive true and adequate information, free of misleading or exaggerated claims, and are made aware of risks?",
+      "question_why": "Misleading or exaggerated claims are a direct conduct breach and a reputational and enforcement risk.",
+      "evidence_options": [
+        "Content review / sign-off process for investor materials",
+        "Risk-factor disclosures",
+        "Sample investor communications"
+      ],
+      "sufficiency_questions": [
+        "Is there a review process for accuracy of investor materials?",
+        "Are risk factors clearly conveyed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-10",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 3",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Ensure the prospectus / offer document / letter of offer is available to investors at the time of the issue or offer.",
+      "regulatory_basis": "Schedule II Part B(H)(3) requires the prospectus/offer document/letter of offer to be available to investors at the issue/offer.",
+      "question_primary": "Do you ensure the offer document is available to investors at the time of the issue or offer?",
+      "question_why": "Investors must have the offer document at the point of decision; delayed availability defeats the purpose.",
+      "evidence_options": [
+        "Evidence of offer-document distribution / availability",
+        "Hosting / dissemination records",
+        "Records of copies provided"
+      ],
+      "sufficiency_questions": [
+        "Is the offer document available to investors at the time of issue/offer?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-11",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 4",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not discriminate among clients, save on ethical and commercial considerations.",
+      "regulatory_basis": "Schedule II Part B(H)(4) prohibits discrimination among clients except on ethical/commercial considerations.",
+      "question_primary": "Do you treat clients without discrimination, save on ethical and commercial grounds?",
+      "question_why": "Arbitrary discrimination among clients is a Code breach; ethical/commercial distinctions are permitted.",
+      "evidence_options": [
+        "Client-dealing / allocation policy",
+        "Allocation records",
+        "Documented basis for any differential treatment"
+      ],
+      "sufficiency_questions": [
+        "Is client treatment governed by a policy?",
+        "Is any differential treatment justified on ethical/commercial grounds?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-12",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 5",
+      "nature": "activity_conditional",
+      "condition": "you carry on activities other than investment banking",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain an arm's-length relationship between the IB activity and any other activity carried on.",
+      "regulatory_basis": "Schedule II Part B(H)(5) requires an arm's-length relationship between the IB activity and any other activity.",
+      "question_primary": "Do you carry on any activity other than investment banking?",
+      "question_why": "Blurring IB and other lines invites conflicts and cross-subsidy findings.",
+      "evidence_options": [
+        "Segregation policy",
+        "Separate reporting / staffing where relevant"
+      ],
+      "sufficiency_questions": [
+        "Is IB activity kept at arm's length from your other activities?",
+        "Are conflicts across activities managed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IB-13",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Banker"
+      ],
+      "clause_ref": "Schedule II Part B(H), cl. 6",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "On each issue, clearly demarcate the responsibilities of the various intermediaries.",
+      "regulatory_basis": "Schedule II Part B(H)(6) requires responsibilities of the various intermediaries to be clearly demarcated.",
+      "question_primary": "On each issue, are the responsibilities of the various intermediaries clearly demarcated?",
+      "question_why": "Undefined roles among intermediaries create confusion and accountability gaps on an issue.",
+      "evidence_options": [
+        "Roles / responsibilities matrix per issue",
+        "Engagement letters defining each intermediary's scope"
+      ],
+      "sufficiency_questions": [
+        "Are intermediary responsibilities documented per issue?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PA-31",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "A",
+      "category_applicability": [
+        "All CMI categories"
+      ],
+      "clause_ref": "Reg 27",
+      "nature": "activity_conditional",
+      "condition": "you deal in securities in Foreign Jurisdictions",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where dealing in securities in Foreign Jurisdictions, comply with the Global Access norms and requirements specified by the Authority (until such norms are issued, Chapter V of the 2021 Regulations continues to apply per Reg 47).",
+      "regulatory_basis": "Regulation 27 requires a CMI dealing in securities in Foreign Jurisdictions to comply with the Authority's Global Access norms.",
+      "question_primary": "Do you deal in securities in Foreign Jurisdictions (Global Access)?",
+      "question_why": "Foreign-jurisdiction dealing sits under a distinct Global Access framework; operating outside it is a supervisory concern.",
+      "evidence_options": [
+        "Global Access approval / compliance record",
+        "Board note on foreign-jurisdiction dealing"
+      ],
+      "sufficiency_questions": [
+        "Are your foreign-jurisdiction dealings within the Authority's Global Access norms (or Chapter V of the 2021 Regulations pending those norms)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Reg 26(1); Schedule II Part B(A), cl. 1",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Comply with the Act and the rules, regulations and bye-laws issued by the Government of India, the Authority and the recognised stock exchange.",
+      "regulatory_basis": "Regulation 26(1) read with Schedule II Part B(A)(1) requires a broker dealer to comply with the applicable Act, rules, regulations and bye-laws of the recognised stock exchange.",
+      "question_primary": "Do you comply with the applicable bye-laws, rules and regulations of your recognised stock exchange?",
+      "question_why": "Exchange bye-law breaches are the fastest route to disciplinary action against a broker dealer.",
+      "evidence_options": [
+        "Exchange membership / compliance records",
+        "Internal exchange-compliance checklist",
+        "Recent exchange communications / inspection responses"
+      ],
+      "sufficiency_questions": [
+        "Do you track and comply with the exchange's bye-laws, rules and circulars?",
+        "Are exchange filings and obligations current?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Schedule II Part B(A), cl. 3",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Do not engage in excessive speculative business beyond reasonable levels not commensurate with the broker dealer's financial soundness.",
+      "regulatory_basis": "Schedule II Part B(A)(3) prohibits excessive speculative business beyond levels commensurate with financial soundness.",
+      "question_primary": "Do you keep proprietary/speculative exposure within levels commensurate with your financial soundness?",
+      "question_why": "Speculative exposure out of step with net worth is both a prudential and a conduct concern.",
+      "evidence_options": [
+        "Exposure / risk limits policy",
+        "Proprietary position monitoring records"
+      ],
+      "sufficiency_questions": [
+        "Are exposure limits set against financial soundness?",
+        "Are they monitored and enforced?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Schedule II Part B(A), cl. 4-5",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Faithfully execute client orders at the best available price; do not refuse a small investor merely on volume grounds; promptly inform clients of execution/non-execution and make prompt payment and delivery.",
+      "regulatory_basis": "Schedule II Part B(A)(4)-(5) require best-execution, non-refusal of small investors, and prompt confirmation, payment and delivery.",
+      "question_primary": "Do you execute client orders at best available price and settle payments/deliveries promptly?",
+      "question_why": "Best-execution and prompt settlement are core investor-protection duties for a broker dealer.",
+      "evidence_options": [
+        "Order execution / best-execution policy",
+        "Trade confirmation records",
+        "Settlement / payout records"
+      ],
+      "sufficiency_questions": [
+        "Are orders executed at best available price without volume-based refusal?",
+        "Are execution status, payments and deliveries handled promptly?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-04",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Schedule II Part B(A), cl. 6",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Issue a contract note to the client without delay for all transactions, in the form specified by the recognised stock exchange.",
+      "regulatory_basis": "Schedule II Part B(A)(6) requires contract notes to be issued without delay in the exchange-specified form.",
+      "question_primary": "Do you issue contract notes to clients without delay, in the exchange-specified form?",
+      "question_why": "A missing or delayed contract note is a documentary breach that surfaces immediately on inspection.",
+      "evidence_options": [
+        "Sample contract notes",
+        "Contract-note issuance/dispatch log",
+        "Exchange-specified format confirmation"
+      ],
+      "sufficiency_questions": [
+        "Is a contract note issued for every transaction?",
+        "Is it in the exchange-specified form and issued without delay?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Schedule II Part B(A), cl. 7-8",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not encourage sales/purchases with the sole object of generating brokerage; do not furnish false or misleading quotations, advice or information to induce business.",
+      "regulatory_basis": "Schedule II Part B(A)(7)-(8) prohibit churning for brokerage and false/misleading quotes or advice.",
+      "question_primary": "Do you have controls against churning and against false or misleading quotes/advice to clients?",
+      "question_why": "Inducing trades through misleading information or churning is a conduct breach with enforcement exposure.",
+      "evidence_options": [
+        "Dealing / suitability policy",
+        "Communications review / supervision records"
+      ],
+      "sufficiency_questions": [
+        "Are staff barred from churning to generate brokerage?",
+        "Is client-facing information checked for accuracy?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-BD-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Broker Dealer"
+      ],
+      "clause_ref": "Schedule II Part B(A), cl. 9-10",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Low",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not knowingly deal for a client who has failed to meet commitments to another broker dealer; do not use unfair means to induce clients away from other broker dealers.",
+      "regulatory_basis": "Schedule II Part B(A)(9)-(10) prohibit dealing for defaulting clients of other broker dealers and unfair inducement of clients.",
+      "question_primary": "Do you avoid dealing for known defaulting clients of other broker dealers and avoid unfair inducement of their clients?",
+      "question_why": "These inter-broker conduct rules protect market integrity and peer relationships.",
+      "evidence_options": [
+        "Client onboarding / due-diligence policy",
+        "Marketing conduct policy"
+      ],
+      "sufficiency_questions": [
+        "Do onboarding checks flag defaults with other broker dealers?",
+        "Is client solicitation conducted by fair means?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CM-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Clearing Member"
+      ],
+      "clause_ref": "Reg 26(2); Schedule II Part B(A), cl. 2",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Comply with the Act and the rules, regulations and bye-laws issued by the Government of India, the Authority and the recognised clearing corporation.",
+      "regulatory_basis": "Regulation 26(2) read with Schedule II Part B(A)(2) requires a clearing member to comply with the applicable Act, rules, regulations and bye-laws of the recognised clearing corporation.",
+      "question_primary": "Do you comply with the applicable bye-laws, rules and regulations of your recognised clearing corporation?",
+      "question_why": "Clearing-corporation bye-law compliance underpins your clearing and settlement rights.",
+      "evidence_options": [
+        "Clearing corporation membership / compliance records",
+        "Margin & settlement compliance records",
+        "Recent clearing-corporation communications"
+      ],
+      "sufficiency_questions": [
+        "Do you track and comply with the clearing corporation's bye-laws, rules and circulars?",
+        "Are margin and settlement obligations met on time?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Enter into a written agreement with each client whose securities/products it rates, setting out the rights and liabilities of each party and the fee.",
+      "regulatory_basis": "Regulation 28(1) requires a written rating agreement with each client covering rights, liabilities and fee.",
+      "question_primary": "Do you have a written rating agreement with each rated client covering rights, liabilities and fee?",
+      "question_why": "The rating agreement is the foundational document for each engagement; its absence is a clear gap.",
+      "evidence_options": [
+        "Signed client rating agreements",
+        "Template rating agreement"
+      ],
+      "sufficiency_questions": [
+        "Is an agreement in place for every rated client?",
+        "Does it set out rights, liabilities and fee?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(3)-(4)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Inform the client of the rating assigned, and continuously monitor and periodically review each rating unless it is withdrawn.",
+      "regulatory_basis": "Regulation 28(3)-(4) require informing the client of the rating and continuous monitoring with periodic review.",
+      "question_primary": "Do you inform clients of assigned ratings and continuously monitor/periodically review them?",
+      "question_why": "Stale or unmonitored ratings mislead the market and are a core supervisory concern for a CRA.",
+      "evidence_options": [
+        "Rating communication records",
+        "Surveillance / periodic review records",
+        "Rating monitoring policy"
+      ],
+      "sufficiency_questions": [
+        "Are clients informed of the assigned rating?",
+        "Are ratings under continuous monitoring with periodic reviews?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(5)",
+      "nature": "activity_conditional",
+      "condition": "you withdraw a rating while obligations under the rated instrument are outstanding",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not withdraw a rating while obligations under the rated instrument are outstanding except in the permitted situations, and state the reason for withdrawal in the press release.",
+      "regulatory_basis": "Regulation 28(5) restricts rating withdrawals to permitted situations and requires the reason to be stated in the press release.",
+      "question_primary": "Have you withdrawn any rating during the FY under review?",
+      "question_why": "Improper withdrawal removes information the market relies on; the permitted grounds are narrow.",
+      "evidence_options": [
+        "Withdrawal press releases with reasons",
+        "Board/committee record of withdrawal grounds"
+      ],
+      "sufficiency_questions": [
+        "Was each withdrawal within a permitted situation?",
+        "Was the reason stated in the press release?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-04",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(6)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Disseminate information on rating changes promptly through press releases and simultaneously to the recognised stock exchange (where the product is listed in an IFSC).",
+      "regulatory_basis": "Regulation 28(6) requires prompt dissemination of rating changes via press releases and to the recognised stock exchange where listed.",
+      "question_primary": "Do you disseminate rating changes promptly via press release and to the exchange where listed?",
+      "question_why": "Delayed dissemination of a rating change is a market-integrity failure with immediate consequences.",
+      "evidence_options": [
+        "Rating-change press releases",
+        "Exchange intimation records",
+        "Dissemination timeline log"
+      ],
+      "sufficiency_questions": [
+        "Are rating changes released promptly?",
+        "Are listed-product changes sent simultaneously to the exchange?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(7)-(8)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Make public the rating definitions and symbols with a statement that ratings are not buy/hold/sell recommendations, and make public the rationale of ratings covering underlying factors.",
+      "regulatory_basis": "Regulation 28(7)-(8) require public disclosure of rating definitions/symbols with the non-recommendation statement and the rating rationale.",
+      "question_primary": "Do you publish rating definitions/symbols (with the non-recommendation caveat) and the rationale of your ratings?",
+      "question_why": "Transparency of meaning and rationale is what makes a rating usable and defensible.",
+      "evidence_options": [
+        "Website disclosures of definitions/symbols",
+        "Published rating rationales",
+        "Non-recommendation disclaimer"
+      ],
+      "sufficiency_questions": [
+        "Are definitions, symbols and the non-recommendation statement public?",
+        "Is a rationale published for ratings?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-06",
+      "archetype_id": 4,
+      "archetype": "4. Record-keeping / retention",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(9)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Low",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Specify the rating process and file a copy of it with the Authority for record.",
+      "regulatory_basis": "Regulation 28(9) requires the rating process to be specified and a copy filed with the Authority.",
+      "question_primary": "Have you documented your rating process and filed a copy with the Authority?",
+      "question_why": "A filed, documented process is the baseline the Authority checks your practice against.",
+      "evidence_options": [
+        "Documented rating process",
+        "Filing acknowledgement from the Authority"
+      ],
+      "sufficiency_questions": [
+        "Is the rating process documented?",
+        "Has a copy been filed with the Authority?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-07",
+      "archetype_id": 2,
+      "archetype": "2. Personnel / qualification",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(10)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Constitute professional rating committees of adequately qualified and knowledgeable members, and take all rating decisions through such committees.",
+      "regulatory_basis": "Regulation 28(10) requires qualified rating committees to take all rating decisions.",
+      "question_primary": "Are all rating decisions taken by a professional rating committee of qualified members?",
+      "question_why": "Committee-based decisions guard against single-analyst bias and are a governance expectation.",
+      "evidence_options": [
+        "Rating committee constitution / charter",
+        "Committee member qualifications",
+        "Committee meeting minutes / decisions"
+      ],
+      "sufficiency_questions": [
+        "Is a qualified rating committee constituted?",
+        "Are all rating decisions taken by the committee?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-08",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(11)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Exercise due diligence to ensure the rating given is fair and appropriate.",
+      "regulatory_basis": "Regulation 28(11) requires due diligence so that ratings are fair and appropriate.",
+      "question_primary": "Do you exercise documented due diligence so ratings are fair and appropriate?",
+      "question_why": "Due-diligence trails are what defend a rating if it is later questioned.",
+      "evidence_options": [
+        "Due-diligence checklists / working papers",
+        "Analytical models / criteria applied"
+      ],
+      "sufficiency_questions": [
+        "Is there a documented due-diligence basis for ratings?",
+        "Are ratings supported by adequate research?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-09",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(12)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not rate securities or products issued by the CRA itself or any of its group entities.",
+      "regulatory_basis": "Regulation 28(12) prohibits rating securities/products of the CRA itself or its group entities.",
+      "question_primary": "Do you have controls preventing you from rating your own or any group entity's securities?",
+      "question_why": "Rating a related issuer is a fundamental conflict that voids the rating's credibility.",
+      "evidence_options": [
+        "Related-party screening for each mandate",
+        "Group-entity list / exclusion controls"
+      ],
+      "sufficiency_questions": [
+        "Do you screen issuers against the CRA and its group entities?",
+        "Are self/group ratings excluded?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-10",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Reg 28(13); Schedule II Part B(B), cl. 9",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain procedures and systems to prevent trading on, and misuse of, unpublished price sensitive information (including prior knowledge of rating decisions/changes) obtained during assignments.",
+      "regulatory_basis": "Regulation 28(13) and Schedule II Part B(B)(9) require controls preventing trading on and misuse of UPSI, including prior knowledge of rating actions.",
+      "question_primary": "Do you have controls preventing trading on or misuse of UPSI (including advance knowledge of rating actions)?",
+      "question_why": "Advance knowledge of a rating action is potent UPSI; leakage or trading on it is a grave breach.",
+      "evidence_options": [
+        "Insider trading / UPSI policy",
+        "Restricted list / need-to-know controls",
+        "Pre-clearance / access logs"
+      ],
+      "sufficiency_questions": [
+        "Does the policy cover prior knowledge of rating decisions/changes?",
+        "Are there operational controls (restricted list / access limits / pre-clearance)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CRA-11",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Credit Rating Agency"
+      ],
+      "clause_ref": "Schedule II Part B(B), cl. 2",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain an arm's-length relationship between the credit rating activity and the CRA's other activities.",
+      "regulatory_basis": "Schedule II Part B(B)(2) requires an arm's-length relationship between rating activity and other activities.",
+      "question_primary": "Do you keep the rating activity at arm's length from your other activities?",
+      "question_why": "Blurring rating and other lines invites conflict and cross-influence findings.",
+      "evidence_options": [
+        "Segregation policy",
+        "Separate reporting / staffing where relevant"
+      ],
+      "sufficiency_questions": [
+        "Is rating activity segregated from other activities?",
+        "Are cross-activity conflicts managed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Reg 29(1); Schedule II Part B(C), cl. 7",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Separate and segregate custodian activities from all other activities, maintaining an arm's-length relationship in staff and systems.",
+      "regulatory_basis": "Regulation 29(1) and Schedule II Part B(C)(7) require custodian activities to be separated and segregated from all other activities at arm's length.",
+      "question_primary": "Do you separate and segregate your custodian activities (staff and systems) from all other activities?",
+      "question_why": "Segregation protects client assets from contamination by the custodian's other business risks.",
+      "evidence_options": [
+        "Segregation policy",
+        "Separate systems / access records",
+        "Org chart showing separation"
+      ],
+      "sufficiency_questions": [
+        "Are custodian activities segregated from other activities?",
+        "Is separation maintained in both staff and systems?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-02",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Reg 29(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain adequate mechanisms for reviewing, monitoring and evaluating the custodian's controls, systems, procedures and safeguards.",
+      "regulatory_basis": "Regulation 29(2) requires mechanisms to review, monitor and evaluate controls, systems, procedures and safeguards.",
+      "question_primary": "Do you review, monitor and evaluate your custody controls, systems and safeguards?",
+      "question_why": "Custody without an oversight loop drifts out of control between audits.",
+      "evidence_options": [
+        "Controls review policy",
+        "Internal review / testing records"
+      ],
+      "sufficiency_questions": [
+        "Is there a mechanism to review and monitor controls?",
+        "Are reviews evidenced?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Reg 29(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Enter into an agreement with each client detailing the various circumstances relating to custody of securities/products or funds.",
+      "regulatory_basis": "Regulation 29(3) requires a custody agreement with each client detailing custody circumstances.",
+      "question_primary": "Do you have a custody agreement with each client detailing custody arrangements?",
+      "question_why": "The custody agreement defines duties and liability; gaps here expose both sides.",
+      "evidence_options": [
+        "Signed custody agreements",
+        "Template custody agreement"
+      ],
+      "sufficiency_questions": [
+        "Is an agreement in place for every client?",
+        "Does it detail the custody circumstances?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-04",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Reg 29(4); Schedule II Part B(C), cl. 4-5",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain internal controls to prevent manipulation of records and documents and to protect records from theft and natural hazard, with continuity and back-up so records are not lost or destroyed and can be traced / title documents duplicated.",
+      "regulatory_basis": "Regulation 29(4) and Schedule II Part B(C)(4)-(5) require controls against record manipulation/loss, with continuity, back-up and traceability.",
+      "question_primary": "Do you have controls protecting custody records from manipulation, theft, hazard and loss, with back-ups?",
+      "question_why": "Loss or tampering of custody records directly threatens client title to assets.",
+      "evidence_options": [
+        "Records protection / back-up policy",
+        "Back-up & recovery evidence",
+        "Access / tamper controls"
+      ],
+      "sufficiency_questions": [
+        "Are records protected against manipulation, theft and hazard?",
+        "Is there continuity and back-up so records can be traced/reconstructed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Schedule II Part B(C), cl. 1",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Be prompt in distributing dividends, interest or other income accruals received or collected on behalf of clients on securities held in custody.",
+      "regulatory_basis": "Schedule II Part B(C)(1) requires prompt distribution of income accruals to clients.",
+      "question_primary": "Do you promptly distribute dividends, interest and other accruals to clients?",
+      "question_why": "Delayed pass-through of client income is a direct client-detriment finding.",
+      "evidence_options": [
+        "Corporate-action / income distribution records",
+        "Distribution timeline log"
+      ],
+      "sufficiency_questions": [
+        "Are client income accruals distributed promptly?",
+        "Is timing tracked?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-06",
+      "archetype_id": 4,
+      "archetype": "4. Record-keeping / retention",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Schedule II Part B(C), cl. 2",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Remain continuously accountable for the movement of securities and cash in and out of the custody account, and provide a complete audit trail whenever called for by the client or the Authority.",
+      "regulatory_basis": "Schedule II Part B(C)(2) requires continuous accountability and a complete audit trail of securities and cash movements.",
+      "question_primary": "Can you produce a complete audit trail of every securities and cash movement on demand?",
+      "question_why": "An incomplete audit trail on client assets is among the most serious custody findings.",
+      "evidence_options": [
+        "Movement / audit-trail records",
+        "Reconciliation records",
+        "Cash movement logs"
+      ],
+      "sufficiency_questions": [
+        "Is every securities/cash movement recorded?",
+        "Can a complete audit trail be produced on demand?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-CUS-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Custodian"
+      ],
+      "clause_ref": "Schedule II Part B(C), cl. 3,6,8",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain adequate, well-documented infrastructure and operations manuals; extend cooperation to other custodians, depositories and clearing organisations for inter-custodial settlements; and exercise due diligence in safekeeping and administration of client assets.",
+      "regulatory_basis": "Schedule II Part B(C)(3),(6),(8) require documented infrastructure, inter-custodial cooperation and due diligence in safekeeping.",
+      "question_primary": "Do you have documented custody operations and exercise due diligence in safekeeping client assets?",
+      "question_why": "Documented operations and cooperation are what keep settlements and safekeeping reliable.",
+      "evidence_options": [
+        "Operations manuals / SOPs",
+        "Inter-custodial / settlement records",
+        "Safekeeping due-diligence records"
+      ],
+      "sufficiency_questions": [
+        "Are operations documented and backed by manuals?",
+        "Is due diligence exercised in safekeeping and settlements?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Enter into an agreement with the issuer before the opening of the subscription list for the issue of debentures.",
+      "regulatory_basis": "Regulation 30(1) requires a debenture-trustee agreement with the issuer before the subscription list opens.",
+      "question_primary": "Do you execute the trustee agreement with the issuer before the subscription list opens?",
+      "question_why": "A late trustee agreement undermines the protection debenture holders are entitled to from the outset.",
+      "evidence_options": [
+        "Signed issuer agreements (dated pre-subscription)",
+        "Template trustee agreement"
+      ],
+      "sufficiency_questions": [
+        "Is an agreement signed before the subscription list opens for each issue?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not act as debenture trustee where you are an associate of the issuer or are likely to have a conflict of interest in any manner.",
+      "regulatory_basis": "Regulation 30(2) bars acting as trustee where the trustee is an associate of the issuer or likely to have a conflict of interest.",
+      "question_primary": "Do you screen each mandate to ensure you are not an associate of, or conflicted with, the issuer?",
+      "question_why": "Acting for a connected issuer defeats the trustee's protective role for debenture holders.",
+      "evidence_options": [
+        "Associate / conflict screening per mandate",
+        "Independence declaration"
+      ],
+      "sufficiency_questions": [
+        "Do you screen for associate status and conflicts before accepting?",
+        "Do you decline where conflicted?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(3)(a)-(b)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Accept a trust deed containing standard and issue-specific information, consistent with the terms of the proposed issue, and free of covenants prejudicial to debenture holders.",
+      "regulatory_basis": "Regulation 30(3)(a)-(b) require an appropriate trust deed consistent with issue terms and free of prejudicial covenants.",
+      "question_primary": "Are your trust deeds consistent with the issue terms and free of covenants prejudicial to holders?",
+      "question_why": "The trust deed is the debenture holders' core protection; defective deeds carry through the whole issue.",
+      "evidence_options": [
+        "Executed trust deeds",
+        "Deed review checklist"
+      ],
+      "sufficiency_questions": [
+        "Does the deed carry standard and issue-specific information?",
+        "Is it consistent with the issue and free of prejudicial covenants?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-04",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(3)(c),(d),(k),(r)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Call for periodical / performance reports and fund-utilisation reports (within 7 days of the relevant board meeting or 45 days of the quarter, whichever is earlier) and obtain lead-bank reports on project progress.",
+      "regulatory_basis": "Regulation 30(3)(c),(d),(k),(r) require periodic performance and fund-utilisation reports within the stated timelines and lead-bank progress reports.",
+      "question_primary": "Do you call for periodic performance and fund-utilisation reports within the prescribed timelines?",
+      "question_why": "Timely monitoring reports are how a trustee catches issuer distress early.",
+      "evidence_options": [
+        "Report-call correspondence",
+        "Received performance / utilisation reports",
+        "Lead-bank reports"
+      ],
+      "sufficiency_questions": [
+        "Are reports called for within 7 days of the board meeting or 45 days of the quarter, whichever earlier?",
+        "Are fund-utilisation and lead-bank reports obtained?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-05",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(3)(e),(g),(q)",
+      "nature": "event",
+      "condition": "a default or breach of the issue terms or trust-deed covenants arises",
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "On any default or breach of the issue terms / trust-deed covenants, take reasonable remedial steps, communicate defaults to debenture holders, and inform the Authority immediately of any breach of the trust deed or applicable law.",
+      "regulatory_basis": "Regulation 30(3)(e),(g),(q) require communication of defaults to holders, remedial steps on breach, and immediate intimation to the Authority.",
+      "question_primary": "Did any default or breach of the issue terms / trust deed arise during the FY under review?",
+      "question_why": "Silence on a default is itself the breach; holders and the Authority must be told at once.",
+      "evidence_options": [
+        "Default / breach communications to holders",
+        "Intimation to the Authority",
+        "Record of remedial steps taken"
+      ],
+      "sufficiency_questions": [
+        "Were defaults communicated to debenture holders?",
+        "Was the Authority informed immediately and were remedial steps taken?"
+      ],
+      "critical_suff": [
+        1
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-06",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(3)(f)",
+      "nature": "event",
+      "condition": "two consecutive interest defaults, a security-creation default, or a redemption default occurs",
+      "risk_weight": "High",
+      "owner_role": "Board",
+      "requirement_text": "On two consecutive defaults in interest payment, or default in creation of security, or default in redemption, appoint a nominee director on the issuer's board.",
+      "regulatory_basis": "Regulation 30(3)(f) requires appointment of a nominee director on the issuer's board on the specified defaults.",
+      "question_primary": "Did a trigger for nominee-director appointment (two consecutive interest defaults / security-creation default / redemption default) arise this FY?",
+      "question_why": "The nominee-director right is a key protective lever; failing to invoke it on trigger is a lapse.",
+      "evidence_options": [
+        "Nominee-director appointment record",
+        "Board correspondence with issuer"
+      ],
+      "sufficiency_questions": [
+        "Was a nominee director appointed on the issuer's board on the trigger?"
+      ],
+      "critical_suff": [
+        0
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(3)(h),(i),(j),(n),(4)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Ensure security creation, debenture redemption reserve and recovery expense fund conditions are satisfied; that issuer/guarantor assets suffice and are unencumbered; perform acts necessary to enforce security and protect holders; and exercise independent due diligence before creating a charge (security free of encumbrance or consents obtained).",
+      "regulatory_basis": "Regulation 30(3)(h),(i),(j),(n) and 30(4) require verification of security/DRR/REF conditions, sufficiency and freedom of assets, enforcement of security and independent charge-creation due diligence.",
+      "question_primary": "Do you verify security creation, DRR/REF, asset sufficiency and charge status with independent due diligence?",
+      "question_why": "Weak security verification is exactly what leaves debenture holders exposed on default.",
+      "evidence_options": [
+        "Security / DRR / REF verification records",
+        "Independent charge due-diligence records",
+        "Asset sufficiency / encumbrance checks"
+      ],
+      "sufficiency_questions": [
+        "Are security, DRR and recovery-expense-fund conditions verified?",
+        "Is independent due diligence done before charge creation (encumbrance-free or consents obtained)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-08",
+      "archetype_id": 5,
+      "archetype": "5. Event-based intimation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Reg 30(5)",
+      "nature": "event",
+      "condition": "you seek to relinquish a debenture-trustee assignment",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not relinquish the debenture-trustee assignment for any issuer's debenture issue unless and until another debenture trustee is appointed in its place by the issuer.",
+      "regulatory_basis": "Regulation 30(5) bars relinquishing the assignment until a replacement trustee is appointed.",
+      "question_primary": "Did you seek to relinquish any debenture-trustee assignment this FY?",
+      "question_why": "Leaving an issue without a trustee strands the debenture holders' protection.",
+      "evidence_options": [
+        "Replacement-trustee appointment record",
+        "Handover documentation"
+      ],
+      "sufficiency_questions": [
+        "Was a replacement trustee appointed before you relinquished?"
+      ],
+      "critical_suff": [
+        0
+      ],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DT-09",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Debenture Trustee"
+      ],
+      "clause_ref": "Schedule II Part B(D), cl. 1-4",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Make adequate, timely and comprehensible disclosures to debenture holders; establish the true and full identity and financial situation of each client with records; share client-company information with credit rating agencies where required; and avoid misrepresentation.",
+      "regulatory_basis": "Schedule II Part B(D)(1)-(4) require comprehensible timely disclosures, client identity/financial records, information-sharing with CRAs and avoidance of misrepresentation.",
+      "question_primary": "Do you make timely, comprehensible disclosures to debenture holders and keep proper client identity/financial records?",
+      "question_why": "Balanced, timely disclosure is what lets debenture holders act to protect themselves.",
+      "evidence_options": [
+        "Disclosure communications to holders",
+        "Client identity / financial records",
+        "CRA information-sharing records"
+      ],
+      "sufficiency_questions": [
+        "Are disclosures to holders timely and comprehensible?",
+        "Are client identity and financial records maintained, with CRA sharing where required?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Reg 31(1)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Comply with the applicable laws, including bye-laws, rules and regulations, specified by the recognised depository.",
+      "regulatory_basis": "Regulation 31(1) requires compliance with the recognised depository's bye-laws, rules and regulations.",
+      "question_primary": "Do you comply with the bye-laws, rules and regulations of your recognised depository?",
+      "question_why": "Depository bye-law compliance underpins your standing as a participant.",
+      "evidence_options": [
+        "Depository membership / compliance records",
+        "Depository communications / audit responses"
+      ],
+      "sufficiency_questions": [
+        "Do you track and comply with the depository's bye-laws, rules and circulars?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Reg 31(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Open separate accounts in the name of each beneficial owner and segregate each beneficial owner's securities, without mixing them with other beneficial owners' securities or the participant's own.",
+      "regulatory_basis": "Regulation 31(2) requires separate accounts per beneficial owner and full segregation of their securities.",
+      "question_primary": "Do you keep each beneficial owner's securities in separate, segregated accounts (never mixed with others' or your own)?",
+      "question_why": "Commingling beneficial owners' holdings is a direct threat to their title and a serious finding.",
+      "evidence_options": [
+        "Account structure / segregation records",
+        "Beneficial-owner account list",
+        "Segregation controls"
+      ],
+      "sufficiency_questions": [
+        "Is a separate account maintained per beneficial owner?",
+        "Are their securities segregated from others' and from proprietary holdings?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-03",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Reg 31(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain adequate mechanisms for reviewing, monitoring and evaluating internal accounting controls and systems.",
+      "regulatory_basis": "Regulation 31(3) requires mechanisms to review, monitor and evaluate internal accounting controls and systems.",
+      "question_primary": "Do you review, monitor and evaluate your internal accounting controls and systems?",
+      "question_why": "Unchecked accounting systems accumulate errors that surface as reconciliation breaks.",
+      "evidence_options": [
+        "Controls review policy",
+        "Internal review / testing records"
+      ],
+      "sufficiency_questions": [
+        "Is there a mechanism to review internal accounting controls?",
+        "Are reviews evidenced?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-04",
+      "archetype_id": 4,
+      "archetype": "4. Record-keeping / retention",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Reg 31(4); Schedule II Part B(E), cl. 3",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where records are maintained electronically, ensure the integrity of the data processing system at all times, with continuity and up-to-date back-up so data/records are not lost or destroyed.",
+      "regulatory_basis": "Regulation 31(4) and Schedule II Part B(E)(3) require data-processing integrity and up-to-date back-up for electronic records.",
+      "question_primary": "Do you maintain data-processing integrity and up-to-date back-ups for your electronic records?",
+      "question_why": "A DP's records are the register of client holdings; integrity and back-up are non-negotiable.",
+      "evidence_options": [
+        "Data integrity / back-up policy",
+        "Back-up & recovery evidence",
+        "System integrity controls"
+      ],
+      "sufficiency_questions": [
+        "Is data-processing integrity maintained at all times?",
+        "Is up-to-date back-up available?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-05",
+      "archetype_id": 6,
+      "archetype": "6. Periodic filing / reporting",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Reg 31(5)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Reconcile the participant's records with the depository on a daily basis.",
+      "regulatory_basis": "Regulation 31(5) requires daily reconciliation of the participant's records with the depository.",
+      "question_primary": "Do you reconcile your records with the depository every day?",
+      "question_why": "A missed daily reconciliation lets discrepancies in client holdings go undetected.",
+      "evidence_options": [
+        "Daily reconciliation records",
+        "Break / exception logs"
+      ],
+      "sufficiency_questions": [
+        "Is reconciliation performed daily?",
+        "Are breaks investigated and resolved?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DP-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Depository Participant"
+      ],
+      "clause_ref": "Schedule II Part B(E), cl. 1-2",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not increase charges/fees without at least 7 days' advance notice to beneficial owners; be prompt and diligent in account opening, dispatch of DRF/RRF, execution of debit instruction slips and other activities undertaken for beneficial owners.",
+      "regulatory_basis": "Schedule II Part B(E)(1)-(2) require 7-day advance fee notice and prompt, diligent processing of beneficial-owner instructions.",
+      "question_primary": "Do you give 7 days' notice before fee increases and process beneficial-owner instructions promptly?",
+      "question_why": "Notice and prompt processing are the day-to-day conduct tests a DP is judged on.",
+      "evidence_options": [
+        "Fee-change notices",
+        "Turnaround-time / SLA records",
+        "Instruction processing logs"
+      ],
+      "sufficiency_questions": [
+        "Is at least 7 days' notice given before any fee increase?",
+        "Are account opening, DRF/RRF and DIS handled promptly?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Reg 32(2)-(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Distribute only capital-market products/services that have been authorised, vetted or approved for the relevant investor class by the home regulator, and comply with all applicable laws in the jurisdictions of issuers, service providers and clients.",
+      "regulatory_basis": "Regulation 32(2)-(3) require distributing only products authorised for the investor class and complying with all applicable jurisdictional laws.",
+      "question_primary": "Do you distribute only products authorised for the relevant investor class, complying with all applicable jurisdictional laws?",
+      "question_why": "Distributing an unauthorised or wrongly-targeted product is a direct regulatory and mis-selling exposure.",
+      "evidence_options": [
+        "Product authorisation / vetting records",
+        "Jurisdiction-eligibility checks",
+        "Product approval matrix"
+      ],
+      "sufficiency_questions": [
+        "Are products confirmed as authorised for the target investor class?",
+        "Do you comply with issuer/service-provider/client jurisdiction laws?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 1-3",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Avoid mis-selling; consider clients' interest and suitability to their financial needs; act in clients' best interests and inform a client where a product/service is not suitable for them.",
+      "regulatory_basis": "Schedule II Part B(F)(1)-(3) require avoidance of mis-selling, suitability assessment and acting in the client's best interest.",
+      "question_primary": "Do you assess suitability, avoid mis-selling and tell clients when a product is unsuitable?",
+      "question_why": "Mis-selling is the single most common and most damaging distributor finding.",
+      "evidence_options": [
+        "Suitability / best-interest policy",
+        "Suitability assessment records",
+        "Unsuitability disclosures to clients"
+      ],
+      "sufficiency_questions": [
+        "Is suitability assessed before distribution?",
+        "Are clients told when a product is unsuitable?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 2,5",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "For clients other than sophisticated investors, undertake product due diligence and suitability assessment (seeking financial status, experience and objectives); for sophisticated investors, obtain a declaration that they understand the associated risks.",
+      "regulatory_basis": "Schedule II Part B(F)(2),(5) require due diligence/suitability for non-sophisticated clients and a risk-understanding declaration from sophisticated investors.",
+      "question_primary": "Do you run due diligence/suitability for non-sophisticated clients and obtain risk declarations from sophisticated investors?",
+      "question_why": "The evidentiary trail differs by investor class; missing either is a conduct gap.",
+      "evidence_options": [
+        "Client-classification records",
+        "Suitability files (non-sophisticated)",
+        "Sophisticated-investor risk declarations"
+      ],
+      "sufficiency_questions": [
+        "Is due diligence/suitability done for non-sophisticated clients?",
+        "Are risk declarations held from sophisticated investors?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-04",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 6,8,11",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Disclose all material information (business, disciplinary history, terms, conflicts, affiliations); disclose remuneration and its basis on client request; provide full and latest product information, clearly highlighting assumptions and risks.",
+      "regulatory_basis": "Schedule II Part B(F)(6),(8),(11) require material, remuneration and full product-information disclosures.",
+      "question_primary": "Do you make full material, remuneration and product disclosures (with assumptions and risks highlighted)?",
+      "question_why": "Thin disclosure is what turns a sale into a mis-sale in hindsight.",
+      "evidence_options": [
+        "Disclosure documents / templates",
+        "Remuneration disclosure records",
+        "Product information sheets"
+      ],
+      "sufficiency_questions": [
+        "Are material and product disclosures complete and current?",
+        "Is remuneration disclosed on request?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 12,13,22,23,24",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Give no assurance or misrepresentation of returns/risk; do not attract clients through rebates, kickbacks or gifts; do not encourage over-transacting or churning; keep clients' interest paramount over remuneration; and avoid manipulative, fraudulent or deceptive practices.",
+      "regulatory_basis": "Schedule II Part B(F)(12),(13),(22),(23),(24) prohibit misrepresentation, inducements, churning and deceptive practices, with client interest paramount.",
+      "question_primary": "Do you have controls against return assurances, inducements, churning and deceptive practices?",
+      "question_why": "These are the practices enforcement looks for first in a distribution book.",
+      "evidence_options": [
+        "Sales conduct policy",
+        "Incentive / no-inducement controls",
+        "Transaction-monitoring for churning"
+      ],
+      "sufficiency_questions": [
+        "Are return assurances, rebates/gifts and churning prohibited and monitored?",
+        "Is client interest placed above remuneration?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-06",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 18,19",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Take all reasonable steps to avoid conflicts of interest with policies to identify, manage, monitor and disclose them; and where multiple activities are undertaken, segregate the activities with proper disclosure to clients.",
+      "regulatory_basis": "Schedule II Part B(F)(18)-(19) require a conflict-of-interest framework and segregation of multiple activities with disclosure.",
+      "question_primary": "Do you have a conflict-of-interest framework and segregate multiple activities with disclosure?",
+      "question_why": "Undisclosed conflicts across activities quietly bias what gets sold.",
+      "evidence_options": [
+        "Conflict-of-interest policy",
+        "Activity-segregation records",
+        "Client conflict disclosures"
+      ],
+      "sufficiency_questions": [
+        "Is there a COI policy identifying and managing conflicts?",
+        "Are multiple activities segregated and disclosed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 15",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure clear segregation of proprietary investments from those carried out as part of distribution activities, and where an omnibus structure is used, comply with all applicable norms.",
+      "regulatory_basis": "Schedule II Part B(F)(15) requires segregation of proprietary and distribution investments and omnibus compliance.",
+      "question_primary": "Do you segregate proprietary investments from distribution activity (and comply with omnibus norms if used)?",
+      "question_why": "Mixing proprietary and client flows invites front-running and allocation abuse.",
+      "evidence_options": [
+        "Proprietary vs distribution segregation records",
+        "Omnibus compliance records (if applicable)"
+      ],
+      "sufficiency_questions": [
+        "Is proprietary activity segregated from distribution?",
+        "Are omnibus norms complied with where used?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-08",
+      "archetype_id": 4,
+      "archetype": "4. Record-keeping / retention",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 16,17",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain adequate client records (including suitability correspondence and client consent/dissent), in physical or digital form, and ensure all statutory and agreed communications are reliably and timely sent to clients.",
+      "regulatory_basis": "Schedule II Part B(F)(16)-(17) require adequate client records and timely statutory/agreed communications.",
+      "question_primary": "Do you maintain complete client records and send statutory/agreed communications on time?",
+      "question_why": "Records of suitability and consent are what defend a distribution decision after the fact.",
+      "evidence_options": [
+        "Client records (suitability, consent/dissent)",
+        "Communication dispatch logs"
+      ],
+      "sufficiency_questions": [
+        "Are client records complete (suitability, consent/dissent)?",
+        "Are statutory/agreed communications sent reliably and on time?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-09",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 9,10",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Assist clients with KYC and related procedures and compliance with AML/CFT laws to the extent applicable, and do not tamper with (insert, delete or change) client application forms or documents.",
+      "regulatory_basis": "Schedule II Part B(F)(9)-(10) require KYC/AML assistance and prohibit tampering with client documents.",
+      "question_primary": "Do you assist clients with KYC/AML and have controls against tampering with client documents?",
+      "question_why": "Document tampering and weak KYC assistance are both serious integrity failures.",
+      "evidence_options": [
+        "KYC/AML assistance procedures",
+        "Document-handling / no-tamper controls"
+      ],
+      "sufficiency_questions": [
+        "Do you assist with KYC/AML as applicable?",
+        "Are there controls preventing alteration of client documents?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-DIST-10",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Distributor"
+      ],
+      "clause_ref": "Schedule II Part B(F), cl. 26-31 (Advertisement Code)",
+      "nature": "activity_conditional",
+      "condition": "you issue advertisements for capital-market products or services",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where advertising, ensure advertisements are accurate, true, fair, clear, complete, unambiguous and concise; not false/misleading/biased/deceptive; carry no testimonials or rankings; and stay consistent with the PPM / disclosure document.",
+      "regulatory_basis": "Schedule II Part B(F)(26)-(31) set the Advertisement Code for distributors.",
+      "question_primary": "Do you issue advertisements for capital-market products or services?",
+      "question_why": "A single misleading advertisement can taint the whole distribution book.",
+      "evidence_options": [
+        "Advertisement approval / review process",
+        "Sample advertisements",
+        "Consistency check vs PPM / disclosure document"
+      ],
+      "sufficiency_questions": [
+        "Are advertisements accurate, fair and free of testimonials/rankings?",
+        "Are they consistent with the PPM / disclosure document?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(1)-(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Provide only services relating to ESG Ratings and ESG Data Products (including permitted external review for ESG-labelled bonds); undertake no other service without the prior approval of the Authority.",
+      "regulatory_basis": "Regulation 33(1)-(2) limit an ERDPP to ESG Ratings/Data Products services and bar other services without prior Authority approval.",
+      "question_primary": "Do you confine yourself to ESG Ratings/Data Products services (and seek prior approval for anything else)?",
+      "question_why": "Stepping outside the permitted activity without approval is a registration-scope breach.",
+      "evidence_options": [
+        "Scope-of-services record",
+        "Prior-approval correspondence (if any other service)"
+      ],
+      "sufficiency_questions": [
+        "Are services limited to ESG Ratings/Data Products (and permitted external review)?",
+        "Is prior approval held for any other service?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-02",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(3)(a)-(b) (comply-or-explain)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Principal Officer",
+      "requirement_text": "On a comply-or-explain basis, maintain good-governance arrangements and written policies and procedures designed to ensure the issuance of high-quality ESG Ratings and Data Products.",
+      "regulatory_basis": "Regulation 33(3)(a)-(b) require good-governance arrangements and quality policies/procedures on a comply-or-explain basis.",
+      "question_primary": "Do you have governance arrangements and written quality policies for your ESG products?",
+      "question_why": "The comply-or-explain code still expects the policy to exist or a documented explanation for its absence.",
+      "evidence_options": [
+        "Governance framework",
+        "Quality / methodology policies",
+        "Comply-or-explain record"
+      ],
+      "sufficiency_questions": [
+        "Are governance arrangements in place?",
+        "Are written quality policies maintained (or the deviation explained)?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-03",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(3)(c) (comply-or-explain)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Adopt written policies and procedures ensuring decisions are independent and free from interference, and identify, avoid, manage, mitigate and disclose actual or potential conflicts of interest.",
+      "regulatory_basis": "Regulation 33(3)(c) requires conflict-of-interest policies safeguarding independence, on a comply-or-explain basis.",
+      "question_primary": "Do you have conflict-of-interest controls safeguarding the independence of your ESG assessments?",
+      "question_why": "Compromised independence is fatal to the credibility of an ESG rating.",
+      "evidence_options": [
+        "Conflict-of-interest policy",
+        "Independence safeguards",
+        "Conflict disclosures"
+      ],
+      "sufficiency_questions": [
+        "Do policies safeguard independence from interference?",
+        "Are conflicts identified, managed and disclosed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-04",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(3)(d),(5),(6) (comply-or-explain)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Prioritise public disclosure and transparency of ESG Ratings/Data Products, including methodologies and processes; disclose the rating methodology and all ESG Ratings provided, on the website.",
+      "regulatory_basis": "Regulation 33(3)(d),(5),(6) require public transparency of methodologies and disclosure of methodology and all ESG Ratings on the website.",
+      "question_primary": "Do you publish your ESG methodologies and all ESG Ratings on your website?",
+      "question_why": "Opaque ESG methodology defeats the product's purpose and the code's transparency principle.",
+      "evidence_options": [
+        "Website methodology disclosure",
+        "Published ESG ratings list",
+        "Process/transparency disclosures"
+      ],
+      "sufficiency_questions": [
+        "Are methodologies and processes publicly disclosed?",
+        "Are all ESG Ratings disclosed on the website?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-05",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(3)(e) (comply-or-explain)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Adopt written policies and procedures to protect all non-public information received or communicated in relation to ESG Ratings and Data Products.",
+      "regulatory_basis": "Regulation 33(3)(e) requires confidentiality policies for non-public information, on a comply-or-explain basis.",
+      "question_primary": "Do you have confidentiality controls for non-public information used in your ESG products?",
+      "question_why": "Leakage of entity-supplied non-public data breaches both confidence and the code.",
+      "evidence_options": [
+        "Confidentiality policy",
+        "Access / handling controls"
+      ],
+      "sufficiency_questions": [
+        "Is non-public information protected by policy and controls?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-ERDPP-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "ESG Ratings and Data Products Provider"
+      ],
+      "clause_ref": "Reg 33(3)(f),(4),(7)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain efficient engagement/information-gathering processes with rated entities and address flagged issues while preserving independence; disclose comply-or-explain compliance with the Code on the website; and segregate ESG Ratings from ESG Data Products activities to avoid conflict of interest.",
+      "regulatory_basis": "Regulation 33(3)(f),(4),(7) require sound engagement processes, website comply-or-explain disclosure and segregation of ESG Ratings and Data Products activities.",
+      "question_primary": "Do you run sound engagement processes, publish comply-or-explain compliance, and segregate ratings from data-products activities?",
+      "question_why": "Engagement quality and activity segregation are what keep ESG outputs credible and conflict-free.",
+      "evidence_options": [
+        "Engagement process records",
+        "Website comply-or-explain disclosure",
+        "Ratings vs data-products segregation records"
+      ],
+      "sufficiency_questions": [
+        "Are engagement processes maintained and issues addressed independently?",
+        "Is comply-or-explain disclosed and are ratings/data-products activities segregated?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-01",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(1)-(2)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Disclose to prospective clients all material information about itself (business, disciplinary history, terms, affiliations) and, for recommended products, disclose holdings/positions, conflicts, key features and performance track record, and applicable warnings/disclaimers.",
+      "regulatory_basis": "Regulation 34(1)-(2) require material self-disclosures and product-level disclosures (positions, conflicts, features, warnings) to clients.",
+      "question_primary": "Do you make full material self- and product-disclosures to clients before advising?",
+      "question_why": "Undisclosed positions or conflicts undermine the very advice being given.",
+      "evidence_options": [
+        "Client disclosure document",
+        "Conflict / position disclosures",
+        "Product feature & track-record disclosures"
+      ],
+      "sufficiency_questions": [
+        "Are self-disclosures (business, disciplinary, terms, affiliations) made?",
+        "Are positions, conflicts, features and warnings disclosed for recommendations?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-02",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Act in a fiduciary capacity towards clients and disclose all conflicts of interest as and when they arise.",
+      "regulatory_basis": "Regulation 34(3) requires the adviser to act in a fiduciary capacity and disclose conflicts as they arise.",
+      "question_primary": "Do you act in a fiduciary capacity and disclose conflicts as they arise?",
+      "question_why": "The fiduciary standard is the defining duty of an investment adviser.",
+      "evidence_options": [
+        "Fiduciary / conduct policy",
+        "Conflict disclosure records"
+      ],
+      "sufficiency_questions": [
+        "Is the fiduciary duty embedded in your process?",
+        "Are conflicts disclosed as they arise?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-03",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(4)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not receive any consideration (remuneration or compensation, in any form) from any person other than the client being advised, in respect of the underlying products or securities advised on.",
+      "regulatory_basis": "Regulation 34(4) bars consideration from anyone other than the advised client for the underlying products.",
+      "question_primary": "Do you have controls ensuring no consideration is taken from anyone other than the advised client?",
+      "question_why": "Third-party payments are the classic distortion of independent advice.",
+      "evidence_options": [
+        "No-third-party-consideration policy",
+        "Fee / remuneration records"
+      ],
+      "sufficiency_questions": [
+        "Is consideration taken only from the advised client?",
+        "Are third-party payments on advised products excluded?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-04",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(5),(10),(11)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain an arm's-length relationship between advisory and other activities; provide advisory and distribution through a separately identifiable department/division with separate manpower; and maintain client-level segregation for advisory and distribution.",
+      "regulatory_basis": "Regulation 34(5),(10),(11) require arm's-length separation of advisory from other activities, a separate advisory division and client-level segregation.",
+      "question_primary": "Do you keep advisory at arm's length from distribution, with a separate division and client-level segregation?",
+      "question_why": "Blending advice and distribution is where suitability quietly bends toward commission.",
+      "evidence_options": [
+        "Segregation policy / org chart",
+        "Separate advisory division records",
+        "Client-level segregation records"
+      ],
+      "sufficiency_questions": [
+        "Is advisory separated from distribution (division and manpower)?",
+        "Is client-level segregation maintained?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(6),(7)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not deal on own account contrary to advice given to clients for 15 days from such advice (subes to the 24-hour revised-assessment carve-out), and do not knowingly trade against a client on own account.",
+      "regulatory_basis": "Regulation 34(6)-(7) restrict own-account dealing contrary to client advice for 15 days and prohibit knowingly trading against a client.",
+      "question_primary": "Do you have controls preventing own-account dealing contrary to your client advice (the 15-day rule)?",
+      "question_why": "Trading against your own advice is a direct conflict and a market-integrity breach.",
+      "evidence_options": [
+        "Own-account dealing policy (15-day rule)",
+        "Personal / proprietary trading logs",
+        "Pre-clearance records"
+      ],
+      "sufficiency_questions": [
+        "Is own-account dealing barred for 15 days after contrary advice (with the revised-assessment carve-out)?",
+        "Are you prevented from knowingly trading against a client?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(8),(9)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Operate a risk-profiling process (obtain client information, assess risk willing and able to take, communicate the profile, update periodically) and ensure all advice is suitable to the client's risk profile and consistent with objectives and financial position.",
+      "regulatory_basis": "Regulation 34(8)-(9) require risk profiling and suitability of advice to the client's profile, objectives and financial position.",
+      "question_primary": "Do you risk-profile clients and ensure advice is suitable to their profile and objectives?",
+      "question_why": "Unsuitable advice is the core investor-protection failure the Authority tests for.",
+      "evidence_options": [
+        "Risk-profiling questionnaire / records",
+        "Suitability assessment records",
+        "Periodic profile updates"
+      ],
+      "sufficiency_questions": [
+        "Is a documented risk-profiling process run and updated periodically?",
+        "Is advice checked for suitability to the profile and objectives?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Reg 34(12)-(13)",
+      "nature": "activity_conditional",
+      "condition": "you provide implementation services to advisory clients",
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where implementation services are provided, adequately disclose any conflicts of interest and charge fees only pursuant to an agreement, disclosed transparently, with the client under no obligation to avail such services.",
+      "regulatory_basis": "Regulation 34(12)-(13) permit implementation services subject to conflict disclosure, agreed transparent fees and no client obligation to avail.",
+      "question_primary": "Do you provide implementation services to your advisory clients?",
+      "question_why": "Implementation for advisory clients is permitted only on clean, disclosed, no-compulsion terms.",
+      "evidence_options": [
+        "Implementation-service agreements",
+        "Conflict disclosures",
+        "Fee-basis disclosures"
+      ],
+      "sufficiency_questions": [
+        "Are conflicts disclosed and fees charged per a transparent agreement?",
+        "Is availing implementation optional for the client?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-IA-08",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Investment Adviser"
+      ],
+      "clause_ref": "Schedule II Part B(G), cl. 1-3",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Seek client information on financial situation, investment experience and objectives and keep it confidential; make adequate material disclosures; and ensure fees charged are fair and reasonable.",
+      "regulatory_basis": "Schedule II Part B(G)(1)-(3) require gathering and protecting client information, adequate disclosures and fair, reasonable fees.",
+      "question_primary": "Do you gather and protect client information, disclose adequately and charge fair fees?",
+      "question_why": "These conduct basics round out the adviser's fiduciary posture.",
+      "evidence_options": [
+        "Client information records (confidential)",
+        "Disclosure records",
+        "Fee schedule / basis"
+      ],
+      "sufficiency_questions": [
+        "Is client information gathered and kept confidential?",
+        "Are disclosures adequate and fees fair and reasonable?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-01",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(1)-(3)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Maintain written internal policies and control procedures governing employee dealing/trading that address conflicts of interest, promote objective and reliable research reflecting an unbiased view, and prevent use of research to manipulate the market, proportionate to the nature, scale and complexity of the business.",
+      "regulatory_basis": "Regulation 36(1)-(3) require written policies/controls on employee dealing that manage conflicts, promote objectivity and prevent research-based manipulation.",
+      "question_primary": "Do you have written policies/controls governing employee dealing that protect research objectivity?",
+      "question_why": "Objectivity controls are what separate credible research from marketing dressed as research.",
+      "evidence_options": [
+        "Research conduct / dealing policy",
+        "Conflict-management procedures",
+        "Supervision records"
+      ],
+      "sufficiency_questions": [
+        "Do policies address conflicts and promote objective research?",
+        "Are they proportionate and enforced?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-02",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(4),(9)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Principal Officer",
+      "requirement_text": "Maintain appropriate mechanisms and robust, effective barriers to ensure the independence and objectivity of research activities from the entity's other business dealings and those of its group entities.",
+      "regulatory_basis": "Regulation 36(4),(9) require mechanisms and barriers ensuring research independence from other and group-entity business.",
+      "question_primary": "Do you have barriers ensuring research independence from your other and group-entity business?",
+      "question_why": "Without information barriers, research bends to the firm's other commercial interests.",
+      "evidence_options": [
+        "Information-barrier / Chinese-wall policy",
+        "Reporting-line separation records"
+      ],
+      "sufficiency_questions": [
+        "Are barriers in place separating research from other business?",
+        "Do they extend to group-entity dealings?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-03",
+      "archetype_id": 3,
+      "archetype": "3. Policy / framework existence",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(5)-(7)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Establish and enforce personal-trading policies for analysts and their associates (monitored, recorded and subject to formal approval where necessary), ensuring an analyst does not trade contrary to outstanding recommendations except with prior written approval.",
+      "regulatory_basis": "Regulation 36(5)-(7) require personal-trading controls preventing analysts from trading contrary to their recommendations without prior written approval.",
+      "question_primary": "Do you monitor analyst personal trading and prevent trading contrary to outstanding recommendations?",
+      "question_why": "Analysts trading against their own calls is a classic front-running/abuse pattern.",
+      "evidence_options": [
+        "Personal-trading policy",
+        "Personal-trading records / approvals",
+        "Monitoring logs"
+      ],
+      "sufficiency_questions": [
+        "Is analyst personal trading monitored and recorded?",
+        "Is contrary trading barred without prior written approval?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-04",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(8)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Board",
+      "requirement_text": "Structure analyst remuneration to avoid any bias in research analyses and recommendations.",
+      "regulatory_basis": "Regulation 36(8) requires analyst remuneration structured to avoid bias.",
+      "question_primary": "Is analyst remuneration structured to avoid bias in research?",
+      "question_why": "Remuneration tied to deal outcomes quietly corrupts the research view.",
+      "evidence_options": [
+        "Analyst remuneration policy",
+        "Remuneration governance records"
+      ],
+      "sufficiency_questions": [
+        "Is remuneration insulated from specific research outcomes/deals?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-05",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(10)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Do not provide any promise or assurance of favourable review in a research report as consideration to commence or influence a business relationship or to receive compensation or other benefits.",
+      "regulatory_basis": "Regulation 36(10) prohibits promises of favourable review for business or compensation.",
+      "question_primary": "Do you have controls against promising favourable research in exchange for business or benefits?",
+      "question_why": "Selling favourable coverage destroys the integrity of the research franchise.",
+      "evidence_options": [
+        "Conduct policy prohibiting favourable-review promises",
+        "Business-development controls"
+      ],
+      "sufficiency_questions": [
+        "Are favourable-review promises prohibited and monitored?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-06",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(11)-(12)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure report information is complete, concise and specific on conflicts and their likely impact, and disclose any material interest, including financial interest, 1%+ beneficial ownership, material business relationship in the past 12 months and other conflicts relating to the subject company.",
+      "regulatory_basis": "Regulation 36(11)-(12) require complete conflict information and disclosure of material/financial interests, 1%+ ownership and business relationships.",
+      "question_primary": "Do your reports disclose material and financial interests, 1%+ holdings and relevant business relationships?",
+      "question_why": "Undisclosed interest in the subject company is the most scrutinised research failing.",
+      "evidence_options": [
+        "Report disclosure templates",
+        "Interest / ownership / relationship registers"
+      ],
+      "sufficiency_questions": [
+        "Are conflicts and their impact stated in the report?",
+        "Are financial interest, 1%+ ownership and business relationships disclosed?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-07",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(13)-(14)",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "Medium",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Base facts in research reports on reliable information, define terms used in recommendations and use them consistently, and maintain an adequate documentary basis supported by research for each report.",
+      "regulatory_basis": "Regulation 36(13)-(14) require reliable factual bases, consistently defined terms and adequate documentary support for reports.",
+      "question_primary": "Do your reports rest on reliable information with a documented research basis and consistent terms?",
+      "question_why": "A report without a documentary basis cannot be defended if challenged.",
+      "evidence_options": [
+        "Research working papers / sources",
+        "Defined-terms / ratings glossary",
+        "Report review records"
+      ],
+      "sufficiency_questions": [
+        "Are facts based on reliable, sourced information?",
+        "Is there an adequate documentary basis and consistent terminology?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-08",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Reg 36(15)",
+      "nature": "activity_conditional",
+      "condition": "you employ a rating system in your research reports",
+      "risk_weight": "Low",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Where a rating system is employed, clearly define the meaning of each rating, including the time horizon and the benchmarks on which the rating is based.",
+      "regulatory_basis": "Regulation 36(15) requires clear definition of each rating's meaning, time horizon and benchmarks where a rating system is used.",
+      "question_primary": "Do you employ a rating/recommendation system in your research?",
+      "question_why": "Undefined rating meanings mislead readers about what a call actually signals.",
+      "evidence_options": [
+        "Rating-system definitions",
+        "Time-horizon / benchmark disclosures"
+      ],
+      "sufficiency_questions": [
+        "Is each rating's meaning, time horizon and benchmark clearly defined?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    },
+    {
+      "control_id": "PB-RE-09",
+      "archetype_id": 7,
+      "archetype": "7. Conduct / process obligation",
+      "part": "B",
+      "category_applicability": [
+        "Research Entity"
+      ],
+      "clause_ref": "Schedule II Part B(J), cl. 3-4",
+      "nature": "mandatory",
+      "condition": null,
+      "risk_weight": "High",
+      "owner_role": "Compliance Officer",
+      "requirement_text": "Ensure the entity, its employees and research analysts do not engage in insider trading, front-running, or front-running of its own research report, and maintain confidentiality of a report until it is made public.",
+      "regulatory_basis": "Schedule II Part B(J)(3)-(4) prohibit insider trading and front-running of research and require confidentiality until publication.",
+      "question_primary": "Do you have controls against front-running of research and leakage of reports before publication?",
+      "question_why": "Pre-publication leakage and front-running are among the gravest research abuses.",
+      "evidence_options": [
+        "Front-running / insider-trading controls",
+        "Report confidentiality / embargo controls",
+        "Access logs"
+      ],
+      "sufficiency_questions": [
+        "Are front-running and insider trading of research prevented?",
+        "Is report confidentiality maintained until publication?"
+      ],
+      "critical_suff": [],
+      "content_status": "approved"
+    }
+  ]
+}

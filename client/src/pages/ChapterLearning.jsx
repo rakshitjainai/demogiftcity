@@ -65,6 +65,31 @@ export default function ChapterLearning() {
 
   const cp = useMemo(() => getChapterProgress(courseSlug, chIdx > -1 ? chapter?.num : null), [courseSlug, chapter]);
 
+  // Calculate highest unlocked step index based on progress and current session
+  const storedMaxStepIndex = useMemo(() => {
+    if ((cp.challengeScores || []).length > 0 || (cp.practiceAttempts || []).length > 0) return 4;
+    if (cp.recallDone) return 3;
+    if (cp.walkthroughDone) return 2;
+    if (cp.lessonRead) return 1;
+    return 0;
+  }, [cp]);
+
+  const [maxUnlockedIndex, setMaxUnlockedIndex] = useState(storedMaxStepIndex);
+
+  useEffect(() => {
+    setMaxUnlockedIndex(prev => Math.max(prev, storedMaxStepIndex));
+  }, [storedMaxStepIndex]);
+
+  const unlockStep = useCallback((targetStepIndex) => {
+    setMaxUnlockedIndex(prev => Math.max(prev, targetStepIndex));
+  }, []);
+
+  // Ensure fresh state per practice question
+  useEffect(() => {
+    setSelectedOption(null);
+    setSubmitted(false);
+  }, [practiceIdx]);
+
   // Extract all activities from courses.json — the actual data model
   const allActivities = chapter?.activities || [];
 
@@ -132,16 +157,19 @@ export default function ChapterLearning() {
 
   const handleMarkLearnRead = () => {
     markLessonRead(courseSlug, chapter.num);
+    unlockStep(1);
     setStep('walkthrough');
   };
 
   const handleMarkWalkthrough = () => {
     markWalkthroughDone(courseSlug, chapter.num);
+    unlockStep(2);
     setStep('recall');
   };
 
   const handleRecallComplete = () => {
     recordRecall(courseSlug, chapter.num);
+    unlockStep(3);
     setStep('practice');
   };
 
@@ -163,9 +191,10 @@ export default function ChapterLearning() {
       setSelectedOption(null);
       setSubmitted(false);
     } else {
+      unlockStep(4);
       setStep('challenge');
     }
-  }, [practiceIdx, questions.length]);
+  }, [practiceIdx, questions.length, unlockStep]);
 
   const prevChapter = chIdx > 0 ? chapters[chIdx - 1] : null;
   const nextChapter = chIdx < chapters.length - 1 ? chapters[chIdx + 1] : null;
@@ -251,24 +280,36 @@ export default function ChapterLearning() {
             {STEPS.map((s, i) => {
               const isDone = i < stepIndex;
               const isActive = s.id === step;
+              const isUnlocked = i <= maxUnlockedIndex;
+
               return (
                 <div key={s.id} className="flex items-center gap-1 flex-shrink-0">
                   <button
-                    onClick={() => setStep(s.id)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${
+                    onClick={() => isUnlocked && setStep(s.id)}
+                    disabled={!isUnlocked}
+                    title={isUnlocked ? (isDone ? `Review ${s.label}` : `Go to ${s.label}`) : `${s.label} is locked until previous steps are completed`}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all ${
                       isActive
-                        ? 'bg-forest text-white shadow-xs'
-                        : isDone
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                        : 'bg-gray-100 text-gray-600 hover:bg-forest/10 hover:text-forest'
+                        ? 'bg-forest text-white shadow-xs cursor-default'
+                        : isUnlocked
+                        ? isDone
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 cursor-pointer'
+                          : 'bg-gray-100 text-gray-700 hover:bg-forest/10 hover:text-forest cursor-pointer'
+                        : 'bg-gray-100 text-gray-400 opacity-60 cursor-not-allowed border border-transparent'
                     }`}
                   >
-                    {isDone ? <CheckCircle2 className="w-3 h-3" /> : <s.icon className="w-3 h-3" />}
+                    {isDone ? (
+                      <CheckCircle2 className="w-3 h-3" />
+                    ) : !isUnlocked ? (
+                      <Lock className="w-3 h-3 text-gray-400" />
+                    ) : (
+                      <s.icon className="w-3 h-3" />
+                    )}
                     <span className="hidden sm:inline">{s.label}</span>
                     <span className="sm:hidden">{i + 1}</span>
                   </button>
                   {i < STEPS.length - 1 && (
-                    <div className={`w-4 sm:w-6 h-px ${isDone ? 'bg-emerald-300' : 'bg-gray-200'}`} />
+                    <div className={`w-4 sm:w-6 h-px ${i < maxUnlockedIndex ? (isDone ? 'bg-emerald-300' : 'bg-emerald-200') : 'bg-gray-200'}`} />
                   )}
                 </div>
               );
@@ -365,7 +406,7 @@ export default function ChapterLearning() {
                 onClick={handleMarkLearnRead}
                 className="px-6 py-3 bg-forest text-white font-bold text-sm rounded-2xl hover:bg-forest-deep transition-all shadow-sm flex items-center gap-2 cursor-pointer min-h-[44px]"
               >
-                Understood <ArrowRight className="w-4 h-4" />
+                Continue to Walkthrough <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>

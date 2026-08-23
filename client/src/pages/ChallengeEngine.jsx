@@ -140,6 +140,13 @@ export default function ChallengeEngine() {
 
   const currentQ = questions[qIdx];
 
+  // Strictly reset answer/revealed state whenever question index or challenge changes
+  useEffect(() => {
+    setSelected(null);
+    setSubmitted(false);
+    setTimeLeft(challengeMeta.time);
+  }, [qIdx, challengeType]);
+
   // Timer
   useEffect(() => {
     if (phase !== 'active' || submitted) {

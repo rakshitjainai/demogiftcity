@@ -206,6 +206,16 @@ export const LEARNING_MODULES = [
 
 export const COMPLIANCE_TOOLS = [
   {
+    id: "tool-diag",
+    title: "IFSCA CMI Compliance Readiness Assessment",
+    slug: "compliance-diagnostic",
+    category: "Risk Diagnostics",
+    icon: "ShieldCheck",
+    description: "Structured self-assessment tool for GIFT IFSC CMIs & Investment Bankers with ACAR audit gap scoring across 11 CMI categories.",
+    tag: "Diagnostic",
+    featured: true
+  },
+  {
     id: "tool-1",
     title: "Compliance Calendar",
     slug: "compliance-calendar",

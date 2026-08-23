@@ -6,6 +6,7 @@ import AnnualFilingTracker from '../components/AnnualFilingTracker';
 import BoardMeetingPlanner from '../components/BoardMeetingPlanner';
 import EsopCalculator from '../components/EsopCalculator';
 import AmlRiskAssessment from '../components/AmlRiskAssessment';
+import RegReadyAssessment from './RegReadyAssessment';
 import { useAuth } from '../context/AuthContext';
 import LockOverlay from '../components/LockOverlay';
 
@@ -36,6 +37,10 @@ export default function ToolDetail() {
         return <EsopCalculator />;
       case 'aml-risk-assessment':
         return <AmlRiskAssessment />;
+      case 'compliance-diagnostic':
+      case 'regready-assessment':
+      case 'ifsca-cmi-compliance-readiness-assessment':
+        return <RegReadyAssessment />;
       default:
         return (
           <div className="bg-white border border-line rounded-2xl p-12 text-center card-shadow">
