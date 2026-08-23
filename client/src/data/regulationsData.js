@@ -22,6 +22,16 @@ const ifscaChapters = ifscaPackage.chapters.map(c => {
     sections: chapterProvisions.map(p => ({
       num: p.provision_number,
       title: p.title,
+      text: p.statutory_text || p.regulation_text || p.text || p.content || '',
+      statutory_text: p.statutory_text || p.regulation_text || p.text || p.content || '',
+      summary: p.regmate_explanation || p.simple_explanation || '',
+      practical_point: p.practical_point || '',
+      compliance_point: p.compliance_point || '',
+      risk_point: p.risk_point || '',
+      interview_point: p.interview_point || '',
+      important_numbers: p.important_numbers || '',
+      memory_aid: p.memory_aid || '',
+      related_provisions: p.related_provisions || []
     }))
   };
 });
@@ -30,9 +40,16 @@ export const PROVISION_DETAILS = {};
 ifscaPackage.provisions.forEach(p => {
   const romanNum = p.chapter_number;
   const chNum = romanMap[romanNum] || parseInt(romanNum, 10);
-  PROVISION_DETAILS[`ifsca-fme-2025|${chNum}|${p.provision_number}`] = p;
-  PROVISION_DETAILS[`ifsca-fme-2025|${p.provision_number}`] = p;
-  PROVISION_DETAILS[p.id] = p;
+  const normP = {
+    ...p,
+    heading: p.title || p.heading || p.provision_heading,
+    text: p.statutory_text || p.regulation_text || p.text || p.content || '',
+    statutory_text: p.statutory_text || p.regulation_text || p.text || p.content || '',
+    source_reference: p.source_reference || `Sec ${p.provision_number}, IFSCA (Fund Management) Regulations, 2025`
+  };
+  PROVISION_DETAILS[`ifsca-fme-2025|${chNum}|${p.provision_number}`] = normP;
+  PROVISION_DETAILS[`ifsca-fme-2025|${p.provision_number}`] = normP;
+  PROVISION_DETAILS[p.id] = normP;
 });
 
 export const DEFINITIONS_DATA = ifscaPackage.definitions || [];

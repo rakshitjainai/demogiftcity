@@ -47,7 +47,7 @@ export default function RegulationHeader({
               <Layers className="w-3.5 h-3.5 text-leaf" />
               <span>{regulation.totalChapters || regulation.chapters?.length || 0} Chapters</span>
               <span>·</span>
-              <span>{regulation.rawProvisions?.length || 50} Provisions</span>
+              <span>{regulation.rawProvisions?.length ?? regulation.chapters?.reduce((t, c) => t + (c.provisions?.length || 0), 0) ?? 0} Provisions</span>
             </span>
           </div>
         </div>
