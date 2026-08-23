@@ -160,3 +160,14 @@ test('8. PA-28 auditor rotation override: > 3 years gives "red", 3 years gives "
   }, '2025-26');
   assert.equal(v1.code, 'green');
 });
+
+test('9. Archetype filtering correctly isolates controls by statutory domain archetype', () => {
+  const archetypes = Array.from(new Set(dataset.controls.map(c => c.archetype).filter(Boolean)));
+  assert.ok(archetypes.length > 0, 'Archetypes present in dataset');
+  assert.ok(archetypes.includes('2. Personnel / qualification'), '2. Personnel / qualification archetype present');
+
+  const personnelControls = dataset.controls.filter(c => c.archetype === '2. Personnel / qualification');
+  assert.ok(personnelControls.length > 0, 'personnelControls non-empty');
+  assert.ok(personnelControls.some(c => c.control_id === 'PA-28'), 'PA-28 belongs to 2. Personnel / qualification archetype');
+});
+

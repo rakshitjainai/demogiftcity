@@ -181,6 +181,7 @@ export function computeVerdict(control, ans, fyUnderReview = '2025-26') {
 
 export default function RegReadyAssessment() {
   const [selectedCategory, setSelectedCategory] = useState('All Controls');
+  const [selectedArchetype, setSelectedArchetype] = useState('All Archetypes');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [fyUnderReview, setFyUnderReview] = useState('2025-26');
@@ -189,7 +190,16 @@ export default function RegReadyAssessment() {
 
   const controls = dataset.controls || [];
 
-  // Filter controls by category and search
+  // Extract unique archetypes from dataset
+  const uniqueArchetypes = useMemo(() => {
+    const set = new Set();
+    controls.forEach(c => {
+      if (c.archetype) set.add(c.archetype);
+    });
+    return ['All Archetypes', ...Array.from(set).sort()];
+  }, [controls]);
+
+  // Filter controls by category, archetype, search, and status
   const filteredControls = useMemo(() => {
     return controls.filter(c => {
       // Category filter
@@ -198,6 +208,12 @@ export default function RegReadyAssessment() {
         matchesCat = c.part === 'A';
       } else if (selectedCategory !== 'All Controls') {
         matchesCat = c.part === 'A' || (c.category_applicability || []).includes(selectedCategory);
+      }
+
+      // Archetype filter
+      let matchesArch = true;
+      if (selectedArchetype !== 'All Archetypes') {
+        matchesArch = c.archetype === selectedArchetype;
       }
 
       // Search filter
@@ -209,13 +225,13 @@ export default function RegReadyAssessment() {
         (c.question_primary && c.question_primary.toLowerCase().includes(q));
 
       // Status filter
-      if (!matchesCat || !matchesSearch) return false;
+      if (!matchesCat || !matchesArch || !matchesSearch) return false;
       if (statusFilter === 'ALL') return true;
 
       const v = computeVerdict(c, answers[c.control_id], fyUnderReview);
       return v.code === statusFilter;
     });
-  }, [controls, selectedCategory, searchQuery, statusFilter, answers, fyUnderReview]);
+  }, [controls, selectedCategory, selectedArchetype, searchQuery, statusFilter, answers, fyUnderReview]);
 
   // Compute metrics for all controls in current category scope
   const categoryScopeControls = useMemo(() => {
@@ -510,20 +526,37 @@ export default function RegReadyAssessment() {
         <div className="bg-white rounded-2xl p-5 border border-line card-shadow space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
-            {/* Category Dropdown */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-ink-soft uppercase tracking-wider whitespace-nowrap">
-                Category:
-              </span>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-paper border border-line rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-forest focus:outline-none focus:border-forest cursor-pointer min-h-[40px]"
-              >
-                {CMI_CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+            {/* Category & Archetype Dropdowns */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-ink-soft uppercase tracking-wider whitespace-nowrap">
+                  Category:
+                </span>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="bg-paper border border-line rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-forest focus:outline-none focus:border-forest cursor-pointer min-h-[40px]"
+                >
+                  {CMI_CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-ink-soft uppercase tracking-wider whitespace-nowrap">
+                  Archetype:
+                </span>
+                <select
+                  value={selectedArchetype}
+                  onChange={(e) => setSelectedArchetype(e.target.value)}
+                  className="bg-paper border border-line rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-forest focus:outline-none focus:border-forest cursor-pointer min-h-[40px]"
+                >
+                  {uniqueArchetypes.map(arch => (
+                    <option key={arch} value={arch}>{arch}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Search Box */}
