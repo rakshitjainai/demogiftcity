@@ -48,6 +48,17 @@ const CHALLENGE_TYPES = {
   },
 };
 
+function renderProvision(p) {
+  if (!p) return '';
+  if (typeof p === 'string') return p;
+  if (typeof p === 'object') {
+    const main = p.provision || p.title || p.authority || '';
+    const extra = p.authority && p.provision ? ` (${p.authority})` : '';
+    return `${main}${extra}`;
+  }
+  return String(p);
+}
+
 function extractChallengeQuestions(course, chapters, challengeType) {
   const allQs = [];
   chapters.forEach(ch => {
@@ -68,7 +79,7 @@ function extractChallengeQuestions(course, chapters, challengeType) {
         options,
         correctIdx,
         explain: q.explanation || payload.explanation || payload.scenario || payload.tip || '',
-        provision: q.provision || '',
+        provision: renderProvision(q.provision || ''),
         chapterNum: ch.num,
         chapterTitle: ch.title,
         type: q.type || 'mcq',

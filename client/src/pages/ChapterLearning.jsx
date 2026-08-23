@@ -31,6 +31,17 @@ function normalizeOptions(options) {
   return options.map(o => (typeof o === 'string' ? o : o.t || o.k || String(o)));
 }
 
+function renderProvision(p) {
+  if (!p) return null;
+  if (typeof p === 'string') return p;
+  if (typeof p === 'object') {
+    const main = p.provision || p.title || p.authority || '';
+    const extra = p.authority && p.provision ? ` (${p.authority})` : '';
+    return `${main}${extra}`;
+  }
+  return String(p);
+}
+
 export default function ChapterLearning() {
   const { courseSlug, chapterId } = useParams();
   const navigate = useNavigate();
@@ -119,34 +130,38 @@ export default function ChapterLearning() {
     return items.slice(0, 8);
   }, [cards, questions, chapter, allActivities]);
 
-  const handleMarkLearnRead = useCallback(() => {
+  const handleMarkLearnRead = () => {
     markLessonRead(courseSlug, chapter.num);
     setStep('walkthrough');
-  }, [courseSlug, chapter]);
+  };
 
-  const handleMarkWalkthrough = useCallback(() => {
+  const handleMarkWalkthrough = () => {
     markWalkthroughDone(courseSlug, chapter.num);
     setStep('recall');
-  }, [courseSlug, chapter]);
+  };
 
-  const handleRecallComplete = useCallback(() => {
+  const handleRecallComplete = () => {
     recordRecall(courseSlug, chapter.num);
     setStep('practice');
-  }, [courseSlug, chapter]);
+  };
 
-  const handleSubmitPractice = useCallback(() => {
+  const handleSubmitPractice = () => {
     if (selectedOption === null) return;
-    const correct = selectedOption === correctIdx;
-    recordPracticeAnswer(courseSlug, chapter.num, correct, selectedOption);
-    setPracticeResults(prev => [...prev, { correct, selected: selectedOption, correctIdx }]);
+    const isCorrect = selectedOption === correctIdx;
     setSubmitted(true);
-  }, [selectedOption, correctIdx, courseSlug, chapter]);
+
+    recordPracticeAnswer(courseSlug, chapter.num, isCorrect);
+
+    const newRes = [...practiceResults];
+    newRes[practiceIdx] = { selected: selectedOption, correct: isCorrect };
+    setPracticeResults(newRes);
+  };
 
   const handleNextQuestion = useCallback(() => {
-    setSelectedOption(null);
-    setSubmitted(false);
     if (practiceIdx < questions.length - 1) {
-      setPracticeIdx(p => p + 1);
+      setPracticeIdx(i => i + 1);
+      setSelectedOption(null);
+      setSubmitted(false);
     } else {
       setStep('challenge');
     }
@@ -274,7 +289,7 @@ export default function ChapterLearning() {
               </div>
               <h1 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep">{chapter.title}</h1>
               {primaryLesson?.provision && (
-                <div className="text-xs font-mono text-ink-soft">{primaryLesson.provision}</div>
+                <div className="text-xs font-mono text-ink-soft">{renderProvision(primaryLesson.provision)}</div>
               )}
             </div>
 
@@ -541,7 +556,7 @@ export default function ChapterLearning() {
                 <div className="bg-white rounded-2xl border border-line p-5 sm:p-6 space-y-5">
                   <div>
                     <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-soft mb-2 flex items-center justify-between">
-                      <span>{currentQuestion?.provision || `Chapter ${chapter.num} · ${currentQuestion?.difficulty === '1' ? 'Foundation' : currentQuestion?.difficulty === '2' ? 'Intermediate' : 'Advanced'}`}</span>
+                      <span>{renderProvision(currentQuestion?.provision) || `Chapter ${chapter.num} · ${currentQuestion?.difficulty === '1' ? 'Foundation' : currentQuestion?.difficulty === '2' ? 'Intermediate' : 'Advanced'}`}</span>
                       {currentQuestion?.effectiveDate && (
                         <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                           w.e.f. {currentQuestion.effectiveDate}
@@ -602,7 +617,7 @@ export default function ChapterLearning() {
                       </div>
                       <p>{currentQuestion?.explanation || qPayload.explanation || qPayload.scenario || qPayload.explain || payload.takeaway || 'Review the statutory text for this provision.'}</p>
                       {currentQuestion?.provision && (
-                        <div className="text-[10px] font-mono mt-2 opacity-70">Source: {currentQuestion.provision}</div>
+                        <div className="text-[10px] font-mono mt-2 opacity-70">Source: {renderProvision(currentQuestion.provision)}</div>
                       )}
                     </div>
                   )}
