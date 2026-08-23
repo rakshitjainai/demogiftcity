@@ -379,20 +379,33 @@ export default function ChapterLearning() {
                 <Target className="w-3.5 h-3.5" /> Practitioner Walkthrough
               </div>
               <h2 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep">{chapter.title}</h2>
+              {primaryLesson?.provision && (
+                <div className="text-xs font-mono text-ink-soft">{renderProvision(primaryLesson.provision)}</div>
+              )}
             </div>
+
+            {/* Overview / Explanation / Description */}
+            {(chapter.description || payload.meaning || payload.explanation || payload.summary) && (
+              <div className="bg-white rounded-2xl border border-line p-5 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-ink-soft mb-1">Operational Overview</div>
+                <p className="text-sm sm:text-base text-ink leading-relaxed font-normal">
+                  {chapter.description || payload.meaning || payload.explanation || payload.summary}
+                </p>
+              </div>
+            )}
 
             {/* Practitioner note */}
             {payload.practitioner_note && (
-              <div className="bg-white rounded-2xl border border-line p-5 space-y-2">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-ink-soft mb-2">Practitioner Note</div>
-                <p className="text-sm sm:text-base text-ink leading-relaxed">{payload.practitioner_note}</p>
+              <div className="bg-emerald-900/5 rounded-2xl border border-emerald-800/20 p-5 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-forest mb-1">Practitioner Note</div>
+                <p className="text-sm sm:text-base text-forest-deep leading-relaxed font-medium">{payload.practitioner_note}</p>
               </div>
             )}
 
             {/* Tip / practical */}
             {payload.tip && (
               <div className="bg-amber-50 rounded-2xl border border-amber-200 p-5">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-2">Compliance Tip</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-1">Compliance Tip</div>
                 <p className="text-sm text-amber-900 leading-relaxed">{payload.tip}</p>
               </div>
             )}
@@ -400,23 +413,84 @@ export default function ChapterLearning() {
             {/* Takeaway */}
             {payload.takeaway && (
               <div className="bg-mint rounded-2xl border border-mint-deep p-5">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-forest mb-2">Key Takeaway</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-forest mb-1">Key Takeaway</div>
                 <p className="text-sm sm:text-base text-forest font-semibold leading-relaxed">{payload.takeaway}</p>
               </div>
             )}
 
-            {/* Summary */}
-            {payload.summary && !payload.practitioner_note && (
-              <div className="bg-white rounded-2xl border border-line p-5">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-ink-soft mb-2">Summary</div>
-                <p className="text-sm text-ink leading-relaxed">{payload.summary}</p>
+            {/* Detailed Practitioner Cards Breakdown (LAW / PLAIN / WATCH / HOOK) */}
+            {cards.length > 0 && (
+              <div className="space-y-4 pt-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-ink-soft flex items-center gap-2">
+                  <span>Practitioner Provision Breakdown ({cards.length} Core Modules)</span>
+                </div>
+                {cards.map((card, ci) => {
+                  const cardWatch = card.watch || card.trip || card.tricky || card.watchText;
+                  const cardMeans = card.means || card.plain || card.plainText;
+                  const cardLink = card.link || card.hook;
+                  const cardProv = card.prov || card.provision || card.tag || `Module ${ci + 1}`;
+
+                  return (
+                    <div key={ci} className="bg-white rounded-2xl border border-line p-5 sm:p-6 space-y-3.5 shadow-xs">
+                      <div className="flex items-center justify-between gap-3 flex-wrap border-b border-line/60 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-full bg-forest text-white text-[10px] font-bold uppercase tracking-wider">
+                            {renderProvision(cardProv)}
+                          </span>
+                          <h3 className="font-bold text-base sm:text-lg text-forest-deep">{card.title}</h3>
+                        </div>
+                      </div>
+
+                      {/* Statutory Requirement (Law) */}
+                      {card.law && (
+                        <div className="space-y-1">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-ink-soft">Statutory Obligation</div>
+                          <p className="text-xs sm:text-sm text-ink-soft italic border-l-2 border-forest pl-3 py-1 bg-mint/30 rounded-r-lg leading-relaxed">
+                            "{card.law}"
+                          </p>
+                        </div>
+                      )}
+
+                      {/* In Practice / Operational Meaning */}
+                      {cardMeans && (
+                        <div className="space-y-1">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-forest">Practical Execution & Compliance Impact</div>
+                          <p className="text-xs sm:text-sm text-ink leading-relaxed font-medium">
+                            {cardMeans}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Enforcement Traps & Watch Outs */}
+                      {cardWatch && (
+                        <div className="bg-amber-50 border border-amber-200/80 rounded-xl p-3.5 space-y-1 text-amber-950">
+                          <div className="font-bold uppercase text-[10px] tracking-wider text-amber-800 flex items-center gap-1.5">
+                            <AlertCircle className="w-3.5 h-3.5 text-amber-600" /> Enforcement Warning & Practitioner Trap
+                          </div>
+                          <p className="text-xs sm:text-sm leading-relaxed">{cardWatch}</p>
+                        </div>
+                      )}
+
+                      {/* Memory Hook / Statutory Link */}
+                      {cardLink && (
+                        <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-xl p-3 text-xs text-emerald-900 flex items-start gap-2">
+                          <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <span className="font-bold text-[10px] uppercase tracking-wider block text-emerald-800">Practitioner Takeaway</span>
+                            <span className="font-medium leading-relaxed">{cardLink}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
             <div className="flex items-center justify-between pt-2">
               <button onClick={() => setStep('learn')}
                 className="px-4 py-3 text-ink-soft font-semibold text-sm rounded-2xl hover:bg-mint transition-colors flex items-center gap-2 cursor-pointer min-h-[44px]">
-                <ArrowLeft className="w-4 h-4" /> Back
+                <ArrowLeft className="w-4 h-4" /> Back to Learn
               </button>
               <button onClick={handleMarkWalkthrough}
                 className="px-6 py-3 bg-forest text-white font-bold text-sm rounded-2xl hover:bg-forest-deep transition-all shadow-sm flex items-center gap-2 cursor-pointer min-h-[44px]">
