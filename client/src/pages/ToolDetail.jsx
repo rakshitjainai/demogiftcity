@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import ComplianceCalendarBuilder from '../components/ComplianceCalendarBuilder';
@@ -6,9 +6,10 @@ import AnnualFilingTracker from '../components/AnnualFilingTracker';
 import BoardMeetingPlanner from '../components/BoardMeetingPlanner';
 import EsopCalculator from '../components/EsopCalculator';
 import AmlRiskAssessment from '../components/AmlRiskAssessment';
-import RegReadyAssessment from './RegReadyAssessment';
 import { useAuth } from '../context/AuthContext';
 import LockOverlay from '../components/LockOverlay';
+
+const RegReadyAssessment = React.lazy(() => import('./RegReadyAssessment'));
 
 export default function ToolDetail() {
   const { slug } = useParams();
@@ -40,7 +41,11 @@ export default function ToolDetail() {
       case 'compliance-diagnostic':
       case 'regready-assessment':
       case 'ifsca-cmi-compliance-readiness-assessment':
-        return <RegReadyAssessment />;
+        return (
+          <Suspense fallback={<div className="p-8 text-center text-xs font-mono font-bold text-ink-soft">Loading Diagnostic...</div>}>
+            <RegReadyAssessment />
+          </Suspense>
+        );
       default:
         return (
           <div className="bg-white border border-line rounded-2xl p-12 text-center card-shadow">

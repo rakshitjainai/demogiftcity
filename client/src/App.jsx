@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -7,45 +7,44 @@ import ChapterDetail from './pages/ChapterDetail';
 import SectionDetail from './pages/SectionDetail';
 import Learning from './pages/Learning';
 import Quizzes from './pages/Quizzes';
-import QuizTopic from './pages/QuizTopic';
 import DiagnosticTests from './pages/DiagnosticTests';
 import ToolsIndex from './pages/ToolsIndex';
 import ToolDetail from './pages/ToolDetail';
 import Templates from './pages/Templates';
 import BlogIndex from './pages/BlogIndex';
-import BlogDetail from './pages/BlogDetail';
 import News from './pages/News';
 import Article from './pages/Article';
 import About from './pages/About';
 import Membership from './pages/Membership';
 import AuthGated from './pages/AuthGated';
 import Dashboard from './pages/Dashboard';
-import ExamReady from './pages/ExamReady';
 import FMEInterviewPro from './pages/FMEInterviewPro';
-import BlogEditorPage from './pages/BlogEditorPage';
-import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
-
-// Helper component to preserve slug on legacy /blog/:slug redirects
-function BlogSlugRedirect() {
-  const { slug } = useParams();
-  return <Navigate to={`/free-resources/blogs/${slug}`} replace />;
-}
-
-// New Hub Pages per Doc 01 Architecture
-import PracticeHub from './pages/PracticeHub';
-import PrepareHub from './pages/PrepareHub';
-import RegIntelHub from './pages/RegIntelHub';
-import FreeResourcesHub from './pages/FreeResourcesHub';
-
 import ErrorBoundary from './components/ErrorBoundary';
 
-// Gamified RegLearn System
-import CourseHub from './pages/CourseHub';
-import ChapterLearning from './pages/ChapterLearning';
-import ChallengeEngine from './pages/ChallengeEngine';
-import RegReadyAssessment from './pages/RegReadyAssessment';
+// Heavy Page Routes — Lazy Loaded for Code Splitting & Performance Optimization
+const CourseHub = React.lazy(() => import('./pages/CourseHub'));
+const ChapterLearning = React.lazy(() => import('./pages/ChapterLearning'));
+const ChallengeEngine = React.lazy(() => import('./pages/ChallengeEngine'));
+const RegReadyAssessment = React.lazy(() => import('./pages/RegReadyAssessment'));
+const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
+const BlogEditorPage = React.lazy(() => import('./pages/BlogEditorPage'));
+const BlogDetail = React.lazy(() => import('./pages/BlogDetail'));
+const QuizTopic = React.lazy(() => import('./pages/QuizTopic'));
+const ExamReady = React.lazy(() => import('./pages/ExamReady'));
+
+// Loading Fallback Component
+function PageLoader() {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center p-8 bg-paper">
+      <div className="flex flex-col items-center gap-3 text-forest">
+        <div className="w-8 h-8 rounded-full border-3 border-forest border-t-transparent animate-spin" />
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-soft">Loading module...</span>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Keyed Route Wrappers — Staff-Engineer architectural pattern.
@@ -56,7 +55,9 @@ function CourseHubRoute() {
   const { courseSlug } = useParams();
   return (
     <ErrorBoundary title="Course Error" key={courseSlug}>
-      <CourseHub key={courseSlug} />
+      <Suspense fallback={<PageLoader />}>
+        <CourseHub key={courseSlug} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -65,7 +66,9 @@ function ChapterLearningRoute() {
   const { courseSlug, chapterId } = useParams();
   return (
     <ErrorBoundary title="Chapter Error" key={`${courseSlug}/${chapterId}`}>
-      <ChapterLearning key={`${courseSlug}/${chapterId}`} />
+      <Suspense fallback={<PageLoader />}>
+        <ChapterLearning key={`${courseSlug}/${chapterId}`} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -74,7 +77,9 @@ function ChallengeEngineRoute() {
   const { courseSlug, challengeType } = useParams();
   return (
     <ErrorBoundary title="Challenge Error" key={`${courseSlug}/${challengeType}`}>
-      <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
+      <Suspense fallback={<PageLoader />}>
+        <ChallengeEngine key={`${courseSlug}/${challengeType}`} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -83,7 +88,9 @@ function QuizTopicRoute() {
   const { topic } = useParams();
   return (
     <ErrorBoundary title="Quiz Error" key={topic || 'all'}>
-      <QuizTopic key={topic || 'all'} />
+      <Suspense fallback={<PageLoader />}>
+        <QuizTopic key={topic || 'all'} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -92,7 +99,9 @@ function ExamReadyRoute() {
   const { slug } = useParams();
   return (
     <ErrorBoundary title="Exam Error" key={slug || 'all'}>
-      <ExamReady key={slug || 'all'} />
+      <Suspense fallback={<PageLoader />}>
+        <ExamReady key={slug || 'all'} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -110,7 +119,9 @@ function BlogDetailRoute() {
   const { slug } = useParams();
   return (
     <ErrorBoundary title="Blog Error" key={slug || 'all'}>
-      <BlogDetail key={slug || 'all'} />
+      <Suspense fallback={<PageLoader />}>
+        <BlogDetail key={slug || 'all'} />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -129,6 +140,16 @@ function SectionDetailRoute() {
   return (
     <ErrorBoundary title="Section Error" key={`${actSlug}/${chapter}/${sectionNum}`}>
       <SectionDetail key={`${actSlug}/${chapter}/${sectionNum}`} />
+    </ErrorBoundary>
+  );
+}
+
+function RegReadyAssessmentRoute() {
+  return (
+    <ErrorBoundary title="Compliance Diagnostic Error">
+      <Suspense fallback={<PageLoader />}>
+        <RegReadyAssessment />
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -202,9 +223,9 @@ export default function App() {
 
           {/* ─── 4. RegTools (/tools) ─────────────────────────────────── */}
           <Route path="tools" element={<ToolsIndex />} />
-          <Route path="tools/compliance-diagnostic" element={<RegReadyAssessment />} />
-          <Route path="tools/regready-assessment" element={<RegReadyAssessment />} />
-          <Route path="tools/ifsca-cmi-compliance-readiness-assessment" element={<RegReadyAssessment />} />
+          <Route path="tools/compliance-diagnostic" element={<RegReadyAssessmentRoute />} />
+          <Route path="tools/regready-assessment" element={<RegReadyAssessmentRoute />} />
+          <Route path="tools/ifsca-cmi-compliance-readiness-assessment" element={<RegReadyAssessmentRoute />} />
           <Route path="tools/:slug" element={<ToolDetailRoute />} />
 
           {/* ─── 5. RegReady (/prepare) ───────────────────────────────── */}
