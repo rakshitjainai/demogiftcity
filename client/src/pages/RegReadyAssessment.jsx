@@ -188,7 +188,9 @@ export default function RegReadyAssessment() {
   const [answers, setAnswers] = useState({});
   const [expandedControlId, setExpandedControlId] = useState(null);
 
-  const controls = dataset.controls || [];
+  const datasetData = dataset?.default || dataset || {};
+  const meta = datasetData.meta || {};
+  const controls = datasetData.controls || [];
 
   // Extract unique archetypes from dataset
   const uniqueArchetypes = useMemo(() => {
@@ -380,7 +382,7 @@ export default function RegReadyAssessment() {
           <div className="relative z-10 max-w-4xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/40 text-emerald-300 text-xs font-bold uppercase tracking-wider shadow-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>RegReady Engine • {dataset.meta.public_name}</span>
+              <span>RegReady Engine • {meta.public_name || 'IFSCA CMI'}</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-white leading-tight">
@@ -394,11 +396,11 @@ export default function RegReadyAssessment() {
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2 text-xs sm:text-sm text-emerald-200">
               <div className="flex items-center gap-2">
                 <Scale className="w-4 h-4 text-emerald-400" />
-                <span>{dataset.meta.source_regulations}</span>
+                <span>{meta.source_regulations || 'IFSCA CMI Regulations'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-amber-300" />
-                <span>{dataset.meta.source_circular}</span>
+                <span>{meta.source_circular || 'ACAR Circular'}</span>
               </div>
             </div>
           </div>
@@ -413,7 +415,7 @@ export default function RegReadyAssessment() {
           <Info className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-bold">Regulatory Notice: </span>
-            {dataset.meta.disclaimer}
+            {meta.disclaimer || 'Assessment Disclaimer'}
           </div>
         </div>
 
