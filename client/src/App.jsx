@@ -23,11 +23,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/ErrorBoundary';
 
+import RegReadyAssessment from './pages/RegReadyAssessment';
+
 // Heavy Page Routes — Lazy Loaded for Code Splitting & Performance Optimization
 const CourseHub = React.lazy(() => import('./pages/CourseHub'));
 const ChapterLearning = React.lazy(() => import('./pages/ChapterLearning'));
 const ChallengeEngine = React.lazy(() => import('./pages/ChallengeEngine'));
-const RegReadyAssessment = React.lazy(() => import('./pages/RegReadyAssessment'));
 const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
 const BlogEditorPage = React.lazy(() => import('./pages/BlogEditorPage'));
 const BlogDetail = React.lazy(() => import('./pages/BlogDetail'));
@@ -147,9 +148,7 @@ function SectionDetailRoute() {
 function RegReadyAssessmentRoute() {
   return (
     <ErrorBoundary title="Compliance Diagnostic Error">
-      <Suspense fallback={<PageLoader />}>
-        <RegReadyAssessment />
-      </Suspense>
+      <RegReadyAssessment />
     </ErrorBoundary>
   );
 }

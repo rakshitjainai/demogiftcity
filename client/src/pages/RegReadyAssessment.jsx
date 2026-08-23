@@ -74,11 +74,18 @@ const CMI_CATEGORIES = [
  * Deterministic computeVerdict function based on engine.compute_algorithm
  */
 export function computeVerdict(control, ans, fyUnderReview = '2025-26') {
+  if (!control) {
+    return {
+      code: 'un',
+      label: 'Not Assessed',
+      justification: 'Not yet assessed.'
+    };
+  }
   if (!ans || !ans.primary) {
     return {
       code: 'un',
       label: 'Not Assessed',
-      justification: `Not yet assessed. Basis: ${control.clause_ref}.`
+      justification: `Not yet assessed. Basis: ${control.clause_ref || ''}.`
     };
   }
 
