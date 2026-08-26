@@ -538,7 +538,10 @@ router.get('/', async (req, res) => {
       console.warn('MongoDB disconnected or empty, using static posts only:', dbErr.message);
     }
 
-    const formattedDbPosts = dbPosts.map(p => ({
+    // Filter out automated test posts and fixtures from DB results
+    const cleanDbPosts = (dbPosts || []).filter(p => p && p.slug && !p.slug.startsWith('bulk-test-post'));
+
+    const formattedDbPosts = cleanDbPosts.map(p => ({
       id: p._id.toString(),
       _id: p._id.toString(),
       isDynamic: true,
@@ -552,7 +555,7 @@ router.get('/', async (req, res) => {
       categories: [p.category || 'Regulatory Intelligence'],
       regulatorId: p.regulatorId || 'general',
       tags: p.tags || [],
-      author: p.author?.name || 'RegMate Editorial Team',
+      author: p.author?.name || 'CS Prashant Kumar',
       date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
       status: p.status,
       createdAt: p.createdAt
@@ -560,6 +563,17 @@ router.get('/', async (req, res) => {
 
     const staticPosts = getStaticPosts();
     let allPosts = [...formattedDbPosts, ...staticPosts];
+
+    // Deduplicate by canonical slug and title so each article is completely unique
+    const uniqueMap = new Map();
+    for (const post of allPosts) {
+      if (post && post.slug && !post.slug.startsWith('bulk-test-post')) {
+        if (!uniqueMap.has(post.slug)) {
+          uniqueMap.set(post.slug, post);
+        }
+      }
+    }
+    allPosts = Array.from(uniqueMap.values());
 
     if (reg && reg !== 'all') {
       allPosts = allPosts.filter(p => (p.regulatorId || '').toLowerCase() === reg.toLowerCase());
