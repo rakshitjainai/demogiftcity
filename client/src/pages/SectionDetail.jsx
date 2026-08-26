@@ -5,7 +5,7 @@ import {
   Menu, X, Sparkles, FileText, ArrowLeft, Filter, Download, 
   CheckCircle2, Bookmark, ExternalLink 
 } from 'lucide-react';
-import { getAllRegulations, getRegulationBySlug } from '../utils/regulatoryDataLoader';
+import { getAllRegulations, getRegulationBySlug, resolveProvision } from '../utils/regulatoryDataLoader';
 import RegulationHeader from '../components/regulatory/RegulationHeader';
 import ChapterNavigation from '../components/regulatory/ChapterNavigation';
 import ProvisionReader from '../components/regulatory/ProvisionReader';
@@ -23,9 +23,9 @@ export default function SectionDetail() {
   const { user, isAuthenticated, saveReadingProgress } = useAuth();
 
   const [currentReg, setCurrentReg] = useState(null);
+  const [resolvedChapter, setResolvedChapter] = useState(null);
+  const [resolvedProvision, setResolvedProvision] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeChapterId, setActiveChapterId] = useState(chapter ? String(chapter).replace('chapter-', '') : 'I');
-  const [activeProvisionId, setActiveProvisionId] = useState(sectionNum ? String(sectionNum) : '1');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -34,28 +34,30 @@ export default function SectionDetail() {
   const selectedSlug = actSlug || 'ifsca-cmi-2025';
 
   useEffect(() => {
-    async function loadReg() {
+    async function loadContent() {
       setLoading(true);
-      const data = await getRegulationBySlug(selectedSlug);
-      if (data) {
-        setCurrentReg(data);
-        if (chapter) {
-          const cleanChap = String(chapter).replace('chapter-', '');
-          setActiveChapterId(cleanChap);
-        }
-        if (sectionNum) {
-          setActiveProvisionId(String(sectionNum));
-        }
+      const res = await resolveProvision({
+        regulationSlug: selectedSlug,
+        chapter,
+        provisionNumber: sectionNum
+      });
+      if (res && res.regulation) {
+        setCurrentReg(res.regulation);
+        setResolvedChapter(res.chapter);
+        setResolvedProvision(res.provision);
       }
       setLoading(false);
     }
-    loadReg();
+    loadContent();
   }, [selectedSlug, chapter, sectionNum]);
 
+  const activeChapterId = resolvedChapter?.chapter_id || 'I';
+  const activeProvisionId = resolvedProvision?.number || '1';
+  const activeChapter = resolvedChapter;
+  const activeProvision = resolvedProvision;
+
   const handleSelectProvision = (chapId, provNumber) => {
-    if (chapId) setActiveChapterId(chapId);
     if (provNumber) {
-      setActiveProvisionId(String(provNumber));
       if (saveReadingProgress && currentReg) {
         saveReadingProgress(currentReg.slug, chapId || activeChapterId, provNumber);
       }
@@ -64,21 +66,6 @@ export default function SectionDetail() {
     setMobileDrawerOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const activeChapter = currentReg?.chapters?.find(c => c.chapter_id === activeChapterId) || currentReg?.chapters?.[0];
-  let activeProvision = activeChapter?.provisions?.find(p => String(p.number) === String(activeProvisionId));
-  if (!activeProvision && currentReg) {
-    for (const chap of currentReg.chapters) {
-      const found = chap.provisions.find(p => String(p.number) === String(activeProvisionId));
-      if (found) {
-        activeProvision = found;
-        if (activeChapterId !== chap.chapter_id) {
-          setActiveChapterId(chap.chapter_id);
-        }
-        break;
-      }
-    }
-  }
 
   const allProvisionsFlat = currentReg?.chapters?.flatMap(c => 
     c.provisions.map(p => ({ ...p, chapter_id: c.chapter_id }))

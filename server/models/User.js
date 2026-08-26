@@ -64,6 +64,13 @@ const membershipSchema = new mongoose.Schema({
   purchasedAt: { type: Date, default: null }
 }, { _id: false });
 
+const entitlementSchema = new mongoose.Schema({
+  code: { type: String, required: true }, // e.g. 'REGREADY_FME_001', 'REGMATE_ANNUAL'
+  grantedAt: { type: Date, default: Date.now },
+  expiresAt: { type: Date, default: null },
+  paymentId: { type: String, default: null }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -76,6 +83,7 @@ const userSchema = new mongoose.Schema(
     membershipStatus: { type: String, enum: ['free', 'active', 'expired'], default: 'free' },
     subscriptionPlan: { type: String, default: 'Free Tier' },
     membership: { type: membershipSchema, default: () => ({ active: false, expiresAt: null }) },
+    entitlements: [entitlementSchema],
     coursePurchases: [coursePurchaseSchema],
     quizQuestionsAnswered: { type: Number, default: 0 },
     chaptersRead: [{ type: String }],
@@ -89,6 +97,35 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Method to check if user has a specific entitlement or membership
+userSchema.methods.hasEntitlement = function (entitlementCode) {
+  if (this.role === 'admin') return true;
+
+  const now = new Date();
+  const isMember = Boolean(
+    this.membership?.expiresAt && new Date(this.membership.expiresAt) > now
+  );
+
+  // Annual membership grants access to all modules and mock tests
+  if (isMember) return true;
+
+  // Direct entitlement check
+  if (this.entitlements && this.entitlements.some(e => {
+    if (e.code !== entitlementCode) return false;
+    if (e.expiresAt && new Date(e.expiresAt) <= now) return false;
+    return true;
+  })) {
+    return true;
+  }
+
+  // Course purchases legacy fallback
+  if (this.coursePurchases && this.coursePurchases.some(p => p.courseSlug === entitlementCode)) {
+    return true;
+  }
+
+  return false;
+};
+
 // Method to safely return user object without password
 userSchema.methods.toAuthJSON = function () {
   const isMembershipActive = Boolean(
@@ -97,6 +134,13 @@ userSchema.methods.toAuthJSON = function () {
   const derivedStatus = isMembershipActive
     ? 'active'
     : (this.membership?.expiresAt ? 'expired' : (this.membershipStatus || 'free'));
+
+  const activeEntitlements = new Set((this.entitlements || []).map(e => e.code));
+  if (isMembershipActive) {
+    activeEntitlements.add('REGMATE_ANNUAL');
+    activeEntitlements.add('REGREADY_FME_001');
+  }
+  (this.coursePurchases || []).forEach(p => activeEntitlements.add(p.courseSlug));
 
   return {
     id: this._id,
@@ -113,6 +157,7 @@ userSchema.methods.toAuthJSON = function () {
       paymentId: this.membership?.paymentId || null,
       purchasedAt: this.membership?.purchasedAt || null
     },
+    entitlements: Array.from(activeEntitlements),
     coursePurchases: this.coursePurchases || [],
     quizQuestionsAnswered: this.quizQuestionsAnswered || 0,
     chaptersRead: this.chaptersRead || [],

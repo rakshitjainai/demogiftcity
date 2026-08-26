@@ -61,11 +61,11 @@ export default function LockOverlay({
         </span>
 
         {/* Heading & Description */}
-        <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 mb-3 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep mb-3 tracking-tight">
           {title || defaultTitle}
         </h2>
 
-        <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed mb-8">
+        <p className="text-sm text-ink-soft max-w-md mx-auto leading-relaxed mb-8">
           {message || defaultMessage}
         </p>
 
@@ -73,10 +73,10 @@ export default function LockOverlay({
         <div className="flex flex-col gap-3">
           <button
             onClick={handlePrimaryAction}
-            className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer ${
               isMembership
-                ? 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800'
-                : 'bg-emerald-700 hover:bg-emerald-800'
+                ? 'bg-forest hover:bg-forest-deep'
+                : 'bg-forest hover:bg-forest-deep'
             }`}
           >
             <span>{isMembership ? 'View Membership Plans' : 'Sign In'}</span>
@@ -86,7 +86,7 @@ export default function LockOverlay({
           {!isMembership && (
             <Link
               to={registerUrl}
-              className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-forest bg-mint border border-mint-deep hover:bg-mint-deep/60 transition-all flex items-center justify-center gap-2"
             >
               Create Free Account
             </Link>

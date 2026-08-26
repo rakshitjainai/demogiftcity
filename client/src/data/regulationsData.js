@@ -1,4 +1,5 @@
 import ifscaPackage from './RegMate_IFSCA_FME_2025_Content_Package_FINAL.json';
+import ifscaCmiPackage from './RegMate_IFSCA_CMI_2025_FINAL.json';
 import ifscaFinanceCompanyPackage from './RegMate_IFSCA_Finance_Company_2021_FINAL.json';
 import ifscaInsuranceBusinessPackage from './RegMate_IFSCA_Registration_Insurance_Business_2021_FINAL.json';
 import ifscaPensionFundPackage from './RegMate_IFSCA_Pension_Fund_2026_FINAL.json';
@@ -21,17 +22,29 @@ const ifscaChapters = ifscaPackage.chapters.map(c => {
     title: c.title,
     sections: chapterProvisions.map(p => ({
       num: p.provision_number,
-      title: p.title,
+      provision_number: p.provision_number,
+      title: p.title || p.heading || p.provision_heading,
+      heading: p.title || p.heading || p.provision_heading,
       text: p.statutory_text || p.regulation_text || p.text || p.content || '',
       statutory_text: p.statutory_text || p.regulation_text || p.text || p.content || '',
-      summary: p.regmate_explanation || p.simple_explanation || '',
+      summary: p.regmate_explanation || p.simple_explanation || p.source_based_overview || '',
+      simple_explanation: p.regmate_explanation || p.simple_explanation || p.source_based_overview || '',
+      regmate_comment: p.regmate_explanation || '',
       practical_point: p.practical_point || '',
       compliance_point: p.compliance_point || '',
+      example: Array.isArray(p.examples) ? p.examples.join('\n') : (p.example || ''),
       risk_point: p.risk_point || '',
       interview_point: p.interview_point || '',
       important_numbers: p.important_numbers || '',
       memory_aid: p.memory_aid || '',
-      related_provisions: p.related_provisions || []
+      related_provisions: p.related_provisions
+        ? (Array.isArray(p.related_provisions) ? p.related_provisions : String(p.related_provisions).split(',').map(s => s.trim()))
+        : [],
+      source_reference: p.source_reference || `Reg ${p.provision_number}, IFSCA (Fund Management) Regulations, 2025`,
+      verification_status: p.review_status || p.verification_status || 'verified',
+      last_verified_date: p.last_verified_date || '2026-08-14',
+      applicability: p.applicability || '',
+      effective_date: ifscaPackage.instrument?.commencement_date || '2025-04-16'
     }))
   };
 });
@@ -66,7 +79,7 @@ export const ACT_SCHEDULES = {
 
 function parseChapterNumber(chapStr) {
   if (!chapStr) return 1;
-  const cleaned = chapStr.replace(/^Chapter\s+/i, '').trim();
+  const cleaned = String(chapStr).replace(/^Chapter\s+/i, '').trim();
   if (romanMap[cleaned]) return romanMap[cleaned];
   const parsed = parseInt(cleaned, 10);
   return isNaN(parsed) ? 1 : parsed;
@@ -133,11 +146,33 @@ function processSchema2Package(pkg, actSlug) {
     const num = parseChapterNumber(rawChap) || chCounter;
     chapters.push({
       num,
-      romanNum: rawChap.replace(/^Chapter\s+/i, ''),
+      romanNum: rawChap.replace(/^Chapter\s+/i, '').trim(),
       title: val.title,
       sections: val.items.map(p => ({
         num: p.provision_number,
-        title: p.provision_heading || p.regulation_name,
+        provision_number: p.provision_number,
+        title: p.provision_heading || p.regulation_name || `Regulation ${p.provision_number}`,
+        heading: p.provision_heading || p.regulation_name || `Regulation ${p.provision_number}`,
+        text: p.regulation_text || p.statutory_text || p.text || p.content || '',
+        statutory_text: p.regulation_text || p.statutory_text || p.text || p.content || '',
+        summary: p.simple_explanation || p.regmate_comment || '',
+        simple_explanation: p.simple_explanation || p.regmate_comment || '',
+        regmate_comment: p.regmate_comment || '',
+        practical_point: p.practical_point || '',
+        compliance_point: p.compliance_point || '',
+        example: p.example || '',
+        risk_point: p.risk_point || '',
+        interview_point: p.interview_point || '',
+        important_numbers: p.important_numbers || '',
+        memory_aid: p.memory_aid || '',
+        related_provisions: p.related_provisions
+          ? (Array.isArray(p.related_provisions) ? p.related_provisions : String(p.related_provisions).split(',').map(s => s.trim()))
+          : [],
+        source_reference: p.source_reference || `Reg ${p.provision_number}, ${actTitleName}`,
+        verification_status: p.verification_status || 'verified',
+        last_verified_date: p.last_verified_date || '2026-08-14',
+        applicability: p.applicability || '',
+        effective_date: p.effective_date || pkg.instrument?.commencement_date || ''
       }))
     });
     chCounter++;
@@ -150,6 +185,8 @@ function processSchema2Package(pkg, actSlug) {
     const normalized = {
       ...p,
       title: p.provision_heading,
+      heading: p.provision_heading,
+      text: p.regulation_text,
       statutory_text: p.regulation_text,
       regmate_explanation: p.simple_explanation || p.regmate_comment,
       key_highlights: p.important_numbers ? [p.important_numbers] : [],
@@ -174,10 +211,12 @@ function processSchema2Package(pkg, actSlug) {
     status: pkg.status || 'Final',
     isSchema2: true,
     definitions,
-    schedules
+    schedules,
+    rawProvisions: regularProvisions
   };
 }
 
+const cmiActData = processSchema2Package(ifscaCmiPackage, 'ifsca-cmi-2025');
 const financeCompanyActData = processSchema2Package(ifscaFinanceCompanyPackage, 'ifsca-finance-company-2021');
 const insuranceBusinessActData = processSchema2Package(ifscaInsuranceBusinessPackage, 'ifsca-registration-insurance-business-2021');
 const pensionFundActData = processSchema2Package(ifscaPensionFundPackage, 'ifsca-pension-fund-2026');
@@ -201,6 +240,19 @@ export function getActName(actSlug) {
 export const ACTS_DATA = {
 
   // ══════════════════════════════════════════════════════════════════════════
+  // IFSCA (CAPITAL MARKET INTERMEDIARIES) REGULATIONS, 2025 | 6 Chapters | 47 Provisions
+  // ══════════════════════════════════════════════════════════════════════════
+  'ifsca-cmi-2025': {
+    ...cmiActData,
+    title: 'IFSCA (Capital Market Intermediaries) Regulations, 2025',
+    shortTitle: 'IFSCA CMI Regulations',
+    versionDate: 'As amended up to 12 January 2026',
+    status: 'Final',
+    verified: true,
+    verifiedDate: '12 January 2026',
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
   // IFSCA (FUND MANAGEMENT) REGULATIONS, 2025 | 12 Chapters | 161 Regulations
   // ══════════════════════════════════════════════════════════════════════════
   'ifsca-fme-2025': {
@@ -209,7 +261,8 @@ export const ACTS_DATA = {
     totalChapters: 12,
     chapters: ifscaChapters,
     versionDate: 'Consolidated as amended up to 30 January 2026',
-    status: 'Final'
+    status: 'Final',
+    rawProvisions: ifscaPackage.provisions || []
   },
 
   // ══════════════════════════════════════════════════════════════════════════

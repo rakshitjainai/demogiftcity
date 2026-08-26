@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, FileText, BookOpen, Hash } from 'lucide-react';
 import RegulationRow from '../components/RegulationRow';
 import { ACTS_DATA, getActName } from '../data/regulationsData';
+import { normalizeRegulationSlug } from '../utils/regulatoryDataLoader';
 import { useAuth } from '../context/AuthContext';
 import UpgradeModal from '../components/UpgradeModal';
 import LockOverlay from '../components/LockOverlay';
@@ -30,34 +31,23 @@ export default function ChapterDetail() {
   const navigate = useNavigate();
   const [showLock, setShowLock] = useState(false);
 
-  // Auth lock check for logged out users
-  if (!isAuthenticated) {
-    return (
-      <LockOverlay
-        type="login"
-        title="Login Required for Knowledge Hub"
-        message="Reading regulatory chapters requires an authenticated RegMate account. Please log in or create an account to access."
-        redirectPath="/login"
-      />
-    );
-  }
-
-  const actName = getActName(actSlug);
+  const cleanSlug = normalizeRegulationSlug(actSlug);
+  const actName = getActName(cleanSlug);
   const cleanChapter = chapter?.replace('chapter-', '') || '1';
   const chapterNum = parseChapterNum(chapter || cleanChapter);
   const isMember = user?.membershipStatus === 'active';
   const hasRegPass = user?.subscriptions?.includes('interactive_regulations') || user?.subscriptions?.includes('full_access');
 
   const isChapterLocked = !isMember && !hasRegPass && chapterNum > 2;
-  const chapterSlug = `${actSlug}/${chapter}`;
+  const chapterSlug = `${cleanSlug}/${chapter}`;
 
   useEffect(() => {
     if (isAuthenticated) {
       trackUsage('chapter', chapterSlug);
     }
-  }, [actSlug, chapter, isAuthenticated]);
+  }, [cleanSlug, chapter, isAuthenticated]);
 
-  const actData = ACTS_DATA[actSlug];
+  const actData = ACTS_DATA[cleanSlug];
   if (!actData) {
     return (
       <div className="py-16 px-6 max-w-5xl mx-auto text-center animate-fade-in-up">

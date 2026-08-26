@@ -449,10 +449,20 @@ export function AuthProvider({ children }) {
     return (user.coursePurchases || []).some(p => p.courseSlug === courseSlug);
   };
 
+  // Check whether user has access to a specific entitlement code
+  const hasEntitlement = (code) => {
+    if (isMember) return true;
+    if (!user) return false;
+    if (user.entitlements && Array.isArray(user.entitlements) && user.entitlements.includes(code)) return true;
+    if (user.coursePurchases && (user.coursePurchases || []).some(p => p.courseSlug === code)) return true;
+    return false;
+  };
+
   // Check section access
   const hasAccess = (sectionKey, itemIndex = 0) => {
     if (isMember) return true;
     if (sectionKey && hasCourseAccess(sectionKey)) return true;
+    if (sectionKey && hasEntitlement(sectionKey)) return true;
     // Chapter / Lesson 1 (index 0) is free preview for all users
     if (itemIndex < 1) return true;
     return false;
@@ -480,6 +490,7 @@ export function AuthProvider({ children }) {
         buyPass,
         isMember,
         hasCourseAccess,
+        hasEntitlement,
         hasAccess,
         isAuthenticated: !!user
       }}

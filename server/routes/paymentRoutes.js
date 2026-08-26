@@ -25,14 +25,15 @@ function getRazorpayInstance() {
 // Pricing rules (Server-side source of truth — never trust client amounts)
 const PRODUCT_PRICING = {
   course: 49900,      // ₹499 in paise
+  exam_pass: 49900,   // ₹499 in paise (FME Mock Test / CMI Mock Test)
   job_pass: 49900,    // ₹499 in paise (FME Interview Ready Pass)
   membership: 199900  // ₹1,999 in paise (1 year access)
 };
 
 const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme', 'job_ready', 'interview_pro'];
+const VALID_EXAM_PASSES = ['REGREADY_FME_001', 'fme-full-length-mock-test', 'cmi-full-length-mock-test', 'ifsca-cmi'];
 
 // ─── GET /api/payments/key-id ─────────────────────────────────────────────
-// Exposes only the public Razorpay Key ID to the client
 router.get('/key-id', (req, res) => {
   return res.json({
     keyId: process.env.RAZORPAY_KEY_ID || ''
@@ -40,7 +41,6 @@ router.get('/key-id', (req, res) => {
 });
 
 // ─── GET /api/payments/my-access ──────────────────────────────────────────
-// Returns authenticated user's current live access entitlements
 router.get('/my-access', protect, async (req, res) => {
   try {
     const user = req.user;
@@ -54,6 +54,11 @@ router.get('/my-access', protect, async (req, res) => {
 
     const purchasedCourses = (user.coursePurchases || []).map(p => p.courseSlug);
     const accessibleCourses = isMember ? [...VALID_COURSES] : purchasedCourses;
+    const entitlements = (user.entitlements || []).map(e => e.code);
+
+    if (isMember) {
+      entitlements.push('REGMATE_ANNUAL', 'REGREADY_FME_001');
+    }
 
     return res.json({
       success: true,
@@ -65,6 +70,7 @@ router.get('/my-access', protect, async (req, res) => {
         purchasedAt: user.membership?.purchasedAt || null,
         daysRemaining: isMember ? Math.ceil((new Date(user.membership.expiresAt) - now) / (1000 * 60 * 60 * 24)) : 0
       },
+      entitlements: Array.from(new Set(entitlements)),
       purchasedCourses,
       accessibleCourses
     });
@@ -75,19 +81,21 @@ router.get('/my-access', protect, async (req, res) => {
 });
 
 // ─── POST /api/payments/create-order ──────────────────────────────────────
-// Step 1: Create Razorpay Order with server-decided amount and anti-duplicate checks
 router.post('/create-order', protect, async (req, res) => {
   try {
     const user = req.user;
     const { productType, productId } = req.body;
 
-    if (!productType || !['course', 'job_pass', 'membership'].includes(productType)) {
-      return res.status(400).json({ message: "Invalid productType. Must be 'course', 'job_pass', or 'membership'." });
+    if (!productType || !['course', 'exam_pass', 'job_pass', 'membership'].includes(productType)) {
+      return res.status(400).json({ message: "Invalid productType. Must be 'course', 'exam_pass', 'job_pass', or 'membership'." });
     }
 
-    if (productType === 'course' || productType === 'job_pass') {
-      if (!productId || !VALID_COURSES.includes(productId)) {
-        return res.status(400).json({ message: `Invalid course/pass ID. Supported: ${VALID_COURSES.join(', ')}` });
+    let cleanProductId = productId;
+    if (productType === 'membership') {
+      cleanProductId = 'full_access';
+    } else if (productType === 'exam_pass') {
+      if (productId === 'fme' || productId === 'fme-full-length-mock-test' || productId === 'REGREADY_FME_001') {
+        cleanProductId = 'REGREADY_FME_001';
       }
     }
 
@@ -106,14 +114,11 @@ router.post('/create-order', protect, async (req, res) => {
       });
     }
 
-    // Check if user already purchased this specific course or pass
-    if (productType === 'course' || productType === 'job_pass') {
-      const alreadyBought = (user.coursePurchases || []).some(p => p.courseSlug === productId);
-      if (alreadyBought) {
-        return res.status(400).json({
-          message: 'You have already purchased this pass/course. Your access is active.'
-        });
-      }
+    // Check if user already has this specific entitlement
+    if (user.hasEntitlement && user.hasEntitlement(cleanProductId)) {
+      return res.status(400).json({
+        message: 'You already have active access to this product.'
+      });
     }
 
     const key_id = process.env.RAZORPAY_KEY_ID;
@@ -126,9 +131,8 @@ router.post('/create-order', protect, async (req, res) => {
       });
     }
 
-    const amount = PRODUCT_PRICING[productType];
+    const amount = PRODUCT_PRICING[productType] || 49900;
     const currency = 'INR';
-    const cleanProductId = productType === 'membership' ? 'full_access' : productId;
     const receipt = `rcpt_${user._id.toString().slice(-6)}_${Date.now()}`;
 
     const orderOptions = {
@@ -183,7 +187,6 @@ router.post('/create-order', protect, async (req, res) => {
 });
 
 // ─── POST /api/payments/verify ────────────────────────────────────────────
-// Step 3: Verify Payment Signature via HMAC-SHA256 and grant access
 router.post('/verify', protect, async (req, res) => {
   try {
     const user = req.user;
@@ -214,7 +217,6 @@ router.post('/verify', protect, async (req, res) => {
     if (expectedSignature !== razorpay_signature) {
       console.warn(`❌ Signature mismatch for order ${razorpay_order_id}`);
       
-      // Update Payment record to failed
       await Payment.findOneAndUpdate(
         { razorpayOrderId: razorpay_order_id },
         {
@@ -246,9 +248,14 @@ router.post('/verify', protect, async (req, res) => {
     // Grant entitlements on User model
     const now = new Date();
     const cleanProductType = productType || paymentRecord?.productType || 'membership';
-    const cleanProductId = productId || paymentRecord?.productId || 'full_access';
+    let cleanProductId = productId || paymentRecord?.productId || 'full_access';
+    if (cleanProductId === 'fme' || cleanProductId === 'fme-full-length-mock-test') {
+      cleanProductId = 'REGREADY_FME_001';
+    }
 
-    if (cleanProductType === 'membership') {
+    if (!user.entitlements) user.entitlements = [];
+
+    if (cleanProductType === 'membership' || cleanProductId === 'full_access') {
       const expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000); // 365 days
       user.membership = {
         active: true,
@@ -258,14 +265,38 @@ router.post('/verify', protect, async (req, res) => {
       };
       user.membershipStatus = 'active';
       user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
+
+      // Add standard entitlement codes
+      if (!user.entitlements.some(e => e.code === 'REGMATE_ANNUAL')) {
+        user.entitlements.push({ code: 'REGMATE_ANNUAL', paymentId: razorpay_payment_id, grantedAt: now, expiresAt });
+      }
+      if (!user.entitlements.some(e => e.code === 'REGREADY_FME_001')) {
+        user.entitlements.push({ code: 'REGREADY_FME_001', paymentId: razorpay_payment_id, grantedAt: now, expiresAt });
+      }
+    } else if (cleanProductType === 'exam_pass' || cleanProductId === 'REGREADY_FME_001') {
+      if (!user.entitlements.some(e => e.code === cleanProductId)) {
+        user.entitlements.push({
+          code: cleanProductId,
+          paymentId: razorpay_payment_id,
+          grantedAt: now
+        });
+      }
     } else if (cleanProductType === 'course' || cleanProductType === 'job_pass') {
-      const existingIndex = (user.coursePurchases || []).findIndex(p => p.courseSlug === cleanProductId);
+      if (!user.coursePurchases) user.coursePurchases = [];
+      const existingIndex = user.coursePurchases.findIndex(p => p.courseSlug === cleanProductId);
       if (existingIndex === -1) {
         user.coursePurchases.push({
           courseSlug: cleanProductId,
           paymentId: razorpay_payment_id,
           amount: 499,
           purchasedAt: now
+        });
+      }
+      if (!user.entitlements.some(e => e.code === cleanProductId)) {
+        user.entitlements.push({
+          code: cleanProductId,
+          paymentId: razorpay_payment_id,
+          grantedAt: now
         });
       }
     }
@@ -287,13 +318,11 @@ router.post('/verify', protect, async (req, res) => {
 });
 
 // ─── POST /api/payments/webhook ───────────────────────────────────────────
-// Step 4: Webhook Endpoint (Independent source of truth & fallback)
 router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers['x-razorpay-signature'];
 
-    // Verify webhook signature if secret configured
     if (webhookSecret && signature) {
       const payloadString = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
       const expectedSignature = crypto
@@ -319,13 +348,19 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       const notes = paymentObj.notes || {};
       const userId = notes.userId;
       const productType = notes.productType;
-      const productId = notes.productId;
+      let productId = notes.productId;
+
+      if (productId === 'fme' || productId === 'fme-full-length-mock-test') {
+        productId = 'REGREADY_FME_001';
+      }
 
       if (userId) {
         const user = await User.findById(userId);
         if (user) {
           const now = new Date();
-          if (productType === 'membership') {
+          if (!user.entitlements) user.entitlements = [];
+
+          if (productType === 'membership' || productId === 'full_access') {
             const expiresAt = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
             user.membership = {
               active: true,
@@ -335,8 +370,19 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
             };
             user.membershipStatus = 'active';
             user.subscriptionPlan = 'RegMate All-Access (₹1,999/yr)';
+            if (!user.entitlements.some(e => e.code === 'REGMATE_ANNUAL')) {
+              user.entitlements.push({ code: 'REGMATE_ANNUAL', paymentId, grantedAt: now, expiresAt });
+            }
+            if (!user.entitlements.some(e => e.code === 'REGREADY_FME_001')) {
+              user.entitlements.push({ code: 'REGREADY_FME_001', paymentId, grantedAt: now, expiresAt });
+            }
+          } else if (productType === 'exam_pass' || productId === 'REGREADY_FME_001') {
+            if (!user.entitlements.some(e => e.code === productId)) {
+              user.entitlements.push({ code: productId, paymentId, grantedAt: now });
+            }
           } else if ((productType === 'course' || productType === 'job_pass') && productId) {
-            const alreadyPresent = (user.coursePurchases || []).some(p => p.courseSlug === productId);
+            if (!user.coursePurchases) user.coursePurchases = [];
+            const alreadyPresent = user.coursePurchases.some(p => p.courseSlug === productId);
             if (!alreadyPresent) {
               user.coursePurchases.push({
                 courseSlug: productId,
@@ -344,6 +390,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
                 amount: 499,
                 purchasedAt: now
               });
+            }
+            if (!user.entitlements.some(e => e.code === productId)) {
+              user.entitlements.push({ code: productId, paymentId, grantedAt: now });
             }
           }
           await user.save();

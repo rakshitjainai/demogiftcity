@@ -76,9 +76,16 @@ export async function startRazorpayCheckout({
       throw new Error(orderData.message || 'Failed to create payment order on server.');
     }
 
-    const productName = productType === 'membership'
-      ? 'RegMate All-Access Annual Membership (1 Year)'
-      : `Regulatory Master: ${(productId || '').toUpperCase()} Course Pass`;
+    let productName = 'RegMate Product Pass';
+    if (productType === 'membership') {
+      productName = 'RegMate All-Access Annual Membership (1 Year)';
+    } else if (productType === 'exam_pass') {
+      productName = productId === 'REGREADY_FME_001'
+        ? 'RegReady: IFSCA FME Full-Length Mock Test Pass'
+        : `RegReady: ${(productId || '').toUpperCase()} Mock Test Pass`;
+    } else {
+      productName = `Regulatory Master: ${(productId || '').toUpperCase()} Course Pass`;
+    }
 
     // Step 2: Open Razorpay Checkout Widget
     const options = {
@@ -103,7 +110,7 @@ export async function startRazorpayCheckout({
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
               productType,
-              productId: productType === 'course' ? productId : 'full_access'
+              productId: productType === 'membership' ? 'full_access' : productId
             })
           });
 
