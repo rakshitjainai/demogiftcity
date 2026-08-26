@@ -67,7 +67,7 @@ export async function startRazorpayCheckout({
       },
       body: JSON.stringify({
         productType,
-        productId: productType === 'course' ? productId : 'full_access'
+        productId: productType === 'membership' ? 'full_access' : productId
       })
     });
 

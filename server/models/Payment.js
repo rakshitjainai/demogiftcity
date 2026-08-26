@@ -32,7 +32,7 @@ const paymentSchema = new mongoose.Schema(
     },
     productType: {
       type: String,
-      enum: ['course', 'membership'],
+      enum: ['course', 'exam_pass', 'job_pass', 'membership'],
       required: true
     },
     productId: {
