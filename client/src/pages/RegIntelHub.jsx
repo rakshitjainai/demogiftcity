@@ -27,8 +27,24 @@ export default function RegIntelHub() {
   const [impactFilter, setImpactFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   
-  const [updates, setUpdates] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [updates, setUpdates] = useState(() => 
+    LATEST_UPDATES.map(u => ({
+      id: u.id,
+      title: u.title,
+      slug: u.slug || u.id,
+      regulator: u.category?.split(' ')[0] || 'IFSC',
+      regulatorId: (u.category || '').toLowerCase().includes('gift') ? 'ifsca' : 'all',
+      type: 'Circular',
+      impact: 'High Impact',
+      date: u.date,
+      summary: u.summary || '',
+      desc: u.summary || '',
+      whatChanged: u.summary || 'Statutory regulatory update and compliance guideline.',
+      targetAudience: u.category || 'Compliance Officers',
+      content: ''
+    }))
+  );
+  const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(false);
 
   const fetchUpdates = () => {
@@ -41,14 +57,28 @@ export default function RegIntelHub() {
         return res.json();
       })
       .then(data => {
-        if (data && data.posts) {
-          setUpdates(data.posts);
+        if (data && Array.isArray(data.posts) && data.posts.length > 0) {
+          const formatted = data.posts.map(p => ({
+            id: p.id || p.slug,
+            title: p.title || '',
+            slug: p.slug || '',
+            regulator: p.regulator || p.category || 'Regulatory Intelligence',
+            regulatorId: p.regulatorId || (p.category ? p.category.toLowerCase() : 'all'),
+            type: p.type || 'Circular',
+            impact: p.impact || (p.title && p.title.length > 35 ? 'High Impact' : 'Medium Impact'),
+            date: p.date || 'Recent',
+            summary: p.desc || p.summary || '',
+            desc: p.desc || p.summary || '',
+            whatChanged: p.whatChanged || p.desc || p.summary || 'Statutory updates and regulatory compliance guidelines.',
+            targetAudience: p.targetAudience || p.category || 'Corporate Professionals & Compliance Officers',
+            content: p.content || ''
+          }));
+          setUpdates(formatted);
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching regulatory updates:', err);
-        setApiError(true);
+        console.warn('Using fallback regulatory updates:', err.message);
         setLoading(false);
       });
   };
@@ -59,12 +89,21 @@ export default function RegIntelHub() {
 
   const filteredItems = useMemo(() => {
     return updates.filter((item) => {
-      const matchReg = activeReg === 'all' || item.regulatorId === activeReg;
-      const matchImpact = impactFilter === 'all' || item.impact.toLowerCase().includes(impactFilter.toLowerCase());
-      const matchSearch = !searchQuery ||
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchQuery.toLowerCase());
+      if (!item) return false;
+      const itemReg = (item.regulatorId || item.category || item.regulator || '').toLowerCase();
+      const matchReg = activeReg === 'all' || itemReg.includes(activeReg.toLowerCase()) || activeReg.toLowerCase().includes(itemReg);
+      
+      const itemImpact = (item.impact || 'High Impact').toLowerCase();
+      const matchImpact = impactFilter === 'all' || itemImpact.includes(impactFilter.toLowerCase());
+      
+      const q = (searchQuery || '').toLowerCase().trim();
+      const matchSearch = !q ||
+        (item.title && item.title.toLowerCase().includes(q)) ||
+        (item.desc && item.desc.toLowerCase().includes(q)) ||
+        (item.summary && item.summary.toLowerCase().includes(q)) ||
+        (item.content && item.content.toLowerCase().includes(q)) ||
+        (item.category && item.category.toLowerCase().includes(q));
+
       return matchReg && matchImpact && matchSearch;
     });
   }, [updates, activeReg, impactFilter, searchQuery]);
@@ -153,17 +192,17 @@ export default function RegIntelHub() {
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded-md bg-[var(--forest)] text-white text-[11px] font-bold">
-                        {item.regulator}
+                        {item.regulator || 'Update'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md bg-[var(--mint-deep)] text-[var(--forest-deep)] text-[11px] font-medium">
-                        {item.type}
+                      <span className="px-2.5 py-0.5 rounded-md bg-[var(--mint-deep)] text-[var(--forest-deep)] text-[11px] font-medium">
+                        {item.type || 'Circular'}
                       </span>
                       <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                        item.impact.includes('High')
+                        (item.impact || '').toLowerCase().includes('high')
                           ? 'bg-rose-100 text-rose-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}>
-                        {item.impact}
+                        {item.impact || 'High Impact'}
                       </span>
                     </div>
                     <span className="text-xs text-[var(--ink-soft)] font-medium flex items-center gap-1">
@@ -191,7 +230,7 @@ export default function RegIntelHub() {
                       <strong>Applies to:</strong> {item.targetAudience || item.category}
                     </span>
                     <Link
-                      to={`/free-resources/blogs`}
+                      to={item.slug ? `/free-resources/blogs/${item.slug}` : `/free-resources/blogs`}
                       className="inline-flex items-center gap-1 font-bold text-[var(--leaf)] hover:text-[var(--forest)] whitespace-nowrap ml-2"
                     >
                       <span>Read Order</span>
