@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowRight, Bell, BookOpen, Sparkles, User, Clock,
   FileCheck, Award, Layers, ShieldCheck, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { LATEST_UPDATES, LATEST_BLOGS, LEARNING_MODULES } from '../data/mockData';
+import { LATEST_UPDATES, LEARNING_MODULES, LATEST_BLOGS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 
 const iconMap = { FileCheck, Award, Layers, ShieldCheck };
 
 export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectModule }) {
   const { user } = useAuth();
+  const [blogs, setBlogs] = useState(LATEST_BLOGS);
+  const [loadingBlogs, setLoadingBlogs] = useState(false);
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/blogs`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setBlogs(data.filter(b => b.slug));
+        } else if (data.ok && Array.isArray(data.posts) && data.posts.length > 0) {
+          setBlogs(data.posts.filter(b => b.slug));
+        } else {
+          setBlogs(LATEST_BLOGS);
+        }
+      })
+      .catch(err => {
+        console.warn('Using mockData fallback for blogs list:', err.message);
+        setBlogs(LATEST_BLOGS);
+      });
+  }, []);
 
   return (
     <section className="py-12" style={{ background: 'var(--mint)', borderBottom: '1px solid var(--line)' }}>
@@ -114,47 +136,54 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
               </Link>
             </div>
 
-            <div className="flex flex-col gap-3">
-              {LATEST_BLOGS.map((blog) => {
-                const IconComp = iconMap[blog.iconName] || BookOpen;
-                return (
-                  <Link
-                    key={blog.id}
-                    to={`/free-resources/blogs/${blog.slug || blog.id}`}
-                    className="flex items-start gap-3 p-2 rounded-xl cursor-pointer group transition-all hover:bg-[var(--mint)] -mx-2 px-2 no-underline"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    {/* Gradient thumbnail */}
-                    <div
-                      className={`w-14 h-14 rounded-xl flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-br ${blog.imageBg} group-hover:scale-105 transition-transform`}
-                      style={{ boxShadow: '0 2px 8px rgba(11,77,51,0.15)' }}
+            {loadingBlogs ? (
+              <div className="flex justify-center py-8">
+                <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>Loading articles...</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {blogs.map((blog) => {
+                  if (!blog.slug) return null;
+                  const IconComp = iconMap[blog.iconName] || BookOpen;
+                  return (
+                    <Link
+                      key={blog.slug}
+                      to={`/free-resources/blogs/${blog.slug}`}
+                      className="flex items-start gap-3 p-2 rounded-xl cursor-pointer group transition-all hover:bg-[var(--mint)] -mx-2 px-2 no-underline"
+                      style={{ textDecoration: 'none' }}
                     >
-                      <IconComp className="w-5 h-5 text-white/80" />
-                      <span className="text-[8px] font-bold text-white/60 mt-0.5 uppercase tracking-tight">
-                        {blog.category.split(' ')[0]}
-                      </span>
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h4
-                        className="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-[var(--forest)]"
-                        style={{ color: 'var(--ink)' }}
+                      {/* Gradient thumbnail */}
+                      <div
+                        className={`w-14 h-14 rounded-xl flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-br ${blog.imageBg || 'from-emerald-800 to-slate-900'} group-hover:scale-105 transition-transform`}
+                        style={{ boxShadow: '0 2px 8px rgba(11,77,51,0.15)' }}
                       >
-                        {blog.title}
-                      </h4>
-                      <div className="flex items-center gap-2 mt-1.5 text-[11px]" style={{ color: 'var(--ink-soft)' }}>
-                        <span className="flex items-center gap-1">
-                          <User className="w-3 h-3" /> {blog.author}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {blog.date}
+                        <IconComp className="w-5 h-5 text-white/80" />
+                        <span className="text-[8px] font-bold text-white/60 mt-0.5 uppercase tracking-tight">
+                          {blog.category?.split(' ')[0] || ''}
                         </span>
                       </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h4
+                          className="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-[var(--forest)]"
+                          style={{ color: 'var(--ink)' }}
+                        >
+                          {blog.title}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1.5 text-[11px]" style={{ color: 'var(--ink-soft)' }}>
+                          <span className="flex items-center gap-1">
+                            <User className="w-3 h-3" /> {blog.author}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {blog.date}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* ─── Column 3: Popular Learning Modules ─── */}
@@ -253,6 +282,7 @@ export default function ContentGrid({ onSelectArticle, onSelectUpdate, onSelectM
           </div>
 
         </div>
+
       </div>
     </section>
   );

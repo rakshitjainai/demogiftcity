@@ -76,7 +76,8 @@ export const LATEST_UPDATES = [
 export const LATEST_BLOGS = [
   {
     id: "blog-1",
-    title: "How to Design an ESOP Scheme That Works for Startups in India",
+    slug: "esop-design-for-startups-india",
+    title: "How to Design an ESOP Scheme that Works for Startups in India",
     author: "CS Prashant Kumar",
     date: "August 5, 2026",
     category: "Startups / ESOP",
@@ -85,6 +86,7 @@ export const LATEST_BLOGS = [
   },
   {
     id: "blog-2",
+    slug: "does-scra-apply-to-ifsc-listings-indian-companies",
     title: "Does the Securities Contracts (Regulation) Act Automatically Apply to IFSC Listings of Indian Companies?",
     author: "CS Prashant Kumar",
     date: "August 4, 2026",
@@ -94,7 +96,8 @@ export const LATEST_BLOGS = [
   },
   {
     id: "blog-3",
-    title: "UAE Trademark Examination Explained (2026 Guide)",
+    slug: "uae-trademark-filing-process",
+    title: "UAE Trademark Filing Process Explained: A Step-by-Step 2026 Guide for Indian Brands",
     author: "CS Prashant Kumar",
     date: "August 3, 2026",
     category: "IPR",
@@ -103,7 +106,8 @@ export const LATEST_BLOGS = [
   },
   {
     id: "blog-4",
-    title: "Board Resolution Format — Appointment of Additional Director (Sec. 161)",
+    slug: "board-resolution-appointment-additional-director-india",
+    title: "Board Resolution for Appointment of an Additional Director – Format, Compliance & Filing Guide",
     author: "CS Prashant Kumar",
     date: "August 2, 2026",
     category: "Docs & Formats",
@@ -112,7 +116,8 @@ export const LATEST_BLOGS = [
   },
   {
     id: "blog-5",
-    title: "Board Resolution Format — Appointment of First Auditor (Sec. 139(6))",
+    slug: "board-resolution-appointment-first-auditor",
+    title: "Board Resolution for Appointment of First Auditor (ADT-1 Filing)",
     author: "CS Prashant Kumar",
     date: "August 1, 2026",
     category: "Docs & Formats",

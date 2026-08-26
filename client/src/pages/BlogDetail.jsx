@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Share2, Bookmark, AlertCircle, Loader2 } from 'lucide-react';
 import DOMPurify from 'dompurify';
+
+// Known legacy identifiers mapped to their canonical slugs
+const LEGACY_ID_REDIRECTS = {
+  'blog-1': 'esop-design-for-startups-india',
+  'blog-2': 'does-scra-apply-to-ifsc-listings-indian-companies',
+  'blog-3': 'uae-trademark-filing-process',
+  'blog-4': 'board-resolution-appointment-additional-director-india',
+  'blog-5': 'board-resolution-appointment-first-auditor',
+};
 
 // Runtime shortcode parser to convert leftover WordPress shortcodes into interactive UI CTA cards
 function parseShortcodes(rawContent = '') {
@@ -68,6 +77,7 @@ function parseShortcodes(rawContent = '') {
 
 export default function BlogDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [prevPost, setPrevPost] = useState(null);
   const [nextPost, setNextPost] = useState(null);
@@ -75,6 +85,12 @@ export default function BlogDetail() {
 
   // Dynamically load post data chunk when slug changes
   useEffect(() => {
+    // 1. Check if slug is a known legacy ID that should redirect to canonical slug
+    if (LEGACY_ID_REDIRECTS[slug]) {
+      navigate(`/free-resources/blogs/${LEGACY_ID_REDIRECTS[slug]}`, { replace: true });
+      return;
+    }
+
     setLoading(true);
     window.scrollTo(0, 0);
 
@@ -84,6 +100,11 @@ export default function BlogDetail() {
       .then(res => res.json())
       .then(data => {
         if (data.ok && data.post) {
+          // If API matched a legacy ID or different slug, normalize URL to canonical slug
+          if (data.post.slug && data.post.slug !== slug) {
+            navigate(`/free-resources/blogs/${data.post.slug}`, { replace: true });
+            return;
+          }
           setPost(data.post);
           setLoading(false);
         } else {
@@ -99,12 +120,23 @@ export default function BlogDetail() {
               const timeB = new Date(b.rawDate || b.date).getTime() || 0;
               return timeB - timeA;
             });
-            const index = postsData.findIndex(p => p.slug === slug || p.id === slug || p._id === slug);
+            
+            // 2. Look up by canonical slug first
+            let index = postsData.findIndex(p => p.slug === slug);
+
+            // 3. If not found by slug, check if slug was a numeric post id
+            if (index === -1) {
+              const idIndex = postsData.findIndex(p => p.id === slug || p.id === `wp-${slug}` || `wp-${p.id}` === slug);
+              if (idIndex !== -1 && postsData[idIndex].slug) {
+                navigate(`/free-resources/blogs/${postsData[idIndex].slug}`, { replace: true });
+                return;
+              }
+            }
 
             if (index !== -1) {
               setPost(postsData[index]);
-              setPrevPost(index > 0 ? postsData[index - 1] : null);
-              setNextPost(index < postsData.length - 1 ? postsData[index + 1] : null);
+              setPrevPost(postsData[index - 1] && postsData[index - 1].slug ? postsData[index - 1] : null);
+              setNextPost(postsData[index + 1] && postsData[index + 1].slug ? postsData[index + 1] : null);
             } else {
               setPost(null);
             }
@@ -112,7 +144,7 @@ export default function BlogDetail() {
           .catch(() => setPost(null))
           .finally(() => setLoading(false));
       });
-  }, [slug]);
+  }, [slug, navigate]);
 
   // Loading skeleton state
   if (loading) {
@@ -260,36 +292,34 @@ export default function BlogDetail() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {/* Previous Post Link */}
-          {prevPost ? (
-            <Link
-              to={`/free-resources/blogs/${prevPost.slug || prevPost.id}`}
-              className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift transition-all cursor-pointer"
-            >
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
-                ← Previous Article
-              </span>
-              <span className="font-display font-bold text-sm text-[var(--forest-deep)] group-hover:text-[var(--leaf)] line-clamp-1">
-                {prevPost.title}
-              </span>
-            </Link>
-          ) : (
-            <div />
-          )}
+            {prevPost?.slug ? (
+              <Link
+                to={`/free-resources/blogs/${prevPost.slug}`}
+                className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift transition-all cursor-pointer"
+              >
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
+                  ← Previous Article
+                </span>
+                <span className="font-display font-bold text-sm text-[var(--forest-deep)] group-hover:text-[var(--leaf)] line-clamp-1">
+                  {prevPost.title}
+                </span>
+              </Link>
+            ) : null}
 
           {/* Next Post Link */}
-          {nextPost && (
-            <Link
-              to={`/free-resources/blogs/${nextPost.slug || nextPost.id}`}
-              className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift text-right transition-all cursor-pointer"
-            >
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
-                Next Article →
-              </span>
-              <span className="font-display font-bold text-sm text-[var(--forest-deep)] group-hover:text-[var(--leaf)] line-clamp-1">
-                {nextPost.title}
-              </span>
-            </Link>
-          )}
+            {nextPost?.slug && (
+              <Link
+                to={`/free-resources/blogs/${nextPost.slug}`}
+                className="cursor-target group p-4 rounded-xl border border-[var(--line)] bg-white hover:border-[var(--leaf)] hover-lift text-right transition-all cursor-pointer"
+              >
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
+                  Next Article →
+                </span>
+                <span className="font-display font-bold text-sm text-[var(--forest-deep)] group-hover:text-[var(--leaf)] line-clamp-1">
+                  {nextPost.title}
+                </span>
+              </Link>
+            )}
         </div>
 
         {/* Back to Blog Button */}

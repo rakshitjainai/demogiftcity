@@ -140,7 +140,7 @@ export default function FreeResourcesHub() {
             {LATEST_BLOGS.slice(0, 3).map((blog) => (
               <Link
                 key={blog.id}
-                to={`/free-resources/blogs/${blog.id}`}
+                to={`/free-resources/blogs/${blog.slug || blog.id}`}
                 className="group p-5 rounded-2xl bg-[var(--paper)] border border-[var(--line)] hover:border-[var(--leaf)] hover:shadow-md transition-all flex flex-col justify-between"
               >
                 <div>

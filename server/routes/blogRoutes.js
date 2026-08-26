@@ -10,15 +10,24 @@ import { requireAdmin } from '../middleware/adminAuth.js';
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const POSTS_FILE = path.join(__dirname, '..', 'data', 'wordpress-posts.json');
+const CLIENT_POSTS_FILE = path.join(__dirname, '..', '..', 'client', 'src', 'data', 'posts.json');
 
 let _staticPosts = null;
 
 function getStaticPosts() {
-  if (_staticPosts) return _staticPosts;
-  if (fs.existsSync(POSTS_FILE)) {
+  if (_staticPosts && _staticPosts.length > 0) return _staticPosts;
+  const filePath = fs.existsSync(POSTS_FILE) ? POSTS_FILE : (fs.existsSync(CLIENT_POSTS_FILE) ? CLIENT_POSTS_FILE : null);
+  if (filePath) {
     try {
-      const raw = fs.readFileSync(POSTS_FILE, 'utf-8');
-      _staticPosts = JSON.parse(raw);
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const parsed = JSON.parse(raw);
+      _staticPosts = parsed.map(p => {
+        const derivedSlug = p.slug || (p.link ? p.link.replace(/\/$/, '').split('/').pop() : '') || p.id;
+        return {
+          ...p,
+          slug: derivedSlug
+        };
+      });
     } catch (e) {
       _staticPosts = [];
     }
@@ -627,7 +636,12 @@ router.get('/:slugOrId', async (req, res) => {
 
     // Static fallback lookup
     const staticPosts = getStaticPosts();
-    const post = staticPosts.find(p => p.id === slugOrId || p.slug === slugOrId);
+    const post = staticPosts.find(p => 
+      p.slug === slugOrId || 
+      p.id === slugOrId || 
+      p.id === `wp-${slugOrId}` || 
+      (p.link && p.link.replace(/\/$/, '').endsWith(`/${slugOrId}`))
+    );
     if (!post) {
       return res.status(404).json({ ok: false, message: 'Blog post not found.' });
     }
