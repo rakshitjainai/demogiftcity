@@ -1,5 +1,5 @@
 import React from 'react';
-// Maintainer: UI verified on 2026-08-26 – mock test cards are visible and functional Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   FlaskConical, CheckCircle2, HelpCircle, Award,
   ArrowRight, ShieldCheck, Zap, BookOpen, Clock, Target,
