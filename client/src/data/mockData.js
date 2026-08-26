@@ -28,6 +28,7 @@ export const STATS = [
 export const LATEST_UPDATES = [
   {
     id: "up-1",
+    slug: "gift-ifsc-aircraft-ship-leasing-legal-framework-setup-process",
     title: "Aircraft & Ship Leasing in GIFT IFSC",
     author: "CS Prashant Kumar",
     date: "August 10, 2026",
@@ -37,6 +38,7 @@ export const LATEST_UPDATES = [
   },
   {
     id: "up-2",
+    slug: "open-company-in-singapore-from-india",
     title: "Singapore Company Setup from India: 2025 Legal & FEMA Guide",
     author: "CS Prashant Kumar",
     date: "August 9, 2026",
@@ -46,6 +48,7 @@ export const LATEST_UPDATES = [
   },
   {
     id: "up-3",
+    slug: "sfac-fpo-funding-support-india",
     title: "SFAC Schemes and Funding Support for FPOs in India",
     author: "CS Prashant Kumar",
     date: "August 8, 2026",
@@ -55,6 +58,7 @@ export const LATEST_UPDATES = [
   },
   {
     id: "up-4",
+    slug: "design-registration-documents-checklist-india",
     title: "Required Documents for Design Registration in India",
     author: "CS Prashant Kumar",
     date: "August 7, 2026",
@@ -64,6 +68,7 @@ export const LATEST_UPDATES = [
   },
   {
     id: "up-5",
+    slug: "difference-between-esop-sweat-equity-and-phantom-stock-india",
     title: "Difference Between ESOP, Sweat Equity, and Phantom Stock in India",
     author: "CS Prashant Kumar",
     date: "August 6, 2026",

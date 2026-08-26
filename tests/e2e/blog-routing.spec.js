@@ -88,38 +88,47 @@ for (const vp of ALL_VIEWPORTS) {
       await expect(body).toBeVisible();
     });
 
-    test('Prev/Next navigation, direct load, back/forward history', async ({ page }) => {
-      await page.goto('http://localhost:5173/free-resources/blogs/esop-design-for-startups-india');
+    test('Homepage Latest Updates -> Modal Reader -> Authentic Unique Legal Content', async ({ page }) => {
+      await page.goto('http://localhost:5173/');
       await page.waitForLoadState('networkidle');
 
-      const initialTitle = await page.locator('h1').first().textContent();
+      const updateRows = page.locator('.grid > div:nth-child(1) .divide-y > div');
+      const count = await updateRows.count();
+      expect(count).toBeGreaterThanOrEqual(5);
 
-      // Test refresh
-      await page.reload();
-      await page.waitForLoadState('networkidle');
-      expect(await page.locator('h1').first().textContent()).toBe(initialTitle);
+      const fingerprints = new Set();
 
-      // Test Next/Prev if available
-      const nextBtn = page.locator('footer a:has-text("Next Article")');
-      if (await nextBtn.isVisible()) {
-        const nextHref = await nextBtn.getAttribute('href');
-        expect(nextHref).toMatch(/^\/free-resources\/blogs\/[a-z0-9-]+$/);
-        expect(nextHref).not.toContain('blog-');
-
-        await nextBtn.click();
+      for (let i = 0; i < Math.min(count, 5); i++) {
+        await page.goto('http://localhost:5173/');
         await page.waitForLoadState('networkidle');
-        expect(page.url()).toContain(nextHref);
 
-        // Test browser back
-        await page.goBack();
-        await page.waitForLoadState('networkidle');
-        expect(page.url()).toContain('esop-design-for-startups-india');
+        const row = page.locator('.grid > div:nth-child(1) .divide-y > div').nth(i);
+        const cardTitle = (await row.locator('h4').textContent())?.trim();
 
-        // Test browser forward
-        await page.goForward();
-        await page.waitForLoadState('networkidle');
-        expect(page.url()).toContain(nextHref);
+        await row.click();
+        await page.waitForSelector('.article-modal-body, [aria-label="Close modal"]');
+
+        const modalHeading = (await page.locator('.fixed h2').textContent())?.trim();
+        expect(modalHeading.length).toBeGreaterThan(0);
+
+        const modalBody = (await page.locator('.article-modal-body').textContent())?.trim() || '';
+        expect(modalBody.length).toBeGreaterThan(200);
+
+        // Strict assertion: Must NOT contain generic hardcoded fallback text
+        expect(modalBody).not.toContain('This guidance document outlines statutory procedures');
+        expect(modalBody).not.toContain('Key Compliance Takeaways for Corporate Secretaries');
+
+        // Add to fingerprint set to ensure 0 duplicates across different articles
+        const fp = modalBody.slice(0, 100).replace(/\s+/g, ' ');
+        expect(fingerprints.has(fp)).toBe(false);
+        fingerprints.add(fp);
+
+        // Close modal
+        await page.click('[aria-label="Close modal"]');
+        await page.waitForSelector('.fixed', { state: 'detached' });
       }
+
+      expect(fingerprints.size).toBe(Math.min(count, 5));
     });
   });
 }
