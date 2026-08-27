@@ -399,7 +399,7 @@ export default function BlogDetail() {
             to="/free-resources/blogs"
             className="cursor-target inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white font-bold text-sm transition-all cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" /> Explore All 192 Blog Posts
+            <ArrowLeft className="w-4 h-4" /> Explore All Articles & Analysis
           </Link>
         </div>
 
