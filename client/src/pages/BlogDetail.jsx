@@ -146,6 +146,65 @@ export default function BlogDetail() {
       });
   }, [slug, navigate]);
 
+  // Dynamically update document title, description, canonical, and OG meta tags
+  useEffect(() => {
+    if (!post) return;
+
+    const pageTitle = post.metaTitle || post.title || 'Regulatory Article';
+    document.title = `${pageTitle} | RegMate`;
+
+    const metaDesc = post.metaDescription || post.desc || post.subtitle || '';
+    let descTag = document.querySelector('meta[name="description"]');
+    if (!descTag) {
+      descTag = document.createElement('meta');
+      descTag.name = 'description';
+      document.head.appendChild(descTag);
+    }
+    descTag.content = metaDesc;
+
+    const canonicalHref = post.canonicalUrl
+      ? (post.canonicalUrl.startsWith('http') ? post.canonicalUrl : `https://regmate.in${post.canonicalUrl}`)
+      : `https://regmate.in/free-resources/blogs/${post.slug || slug}`;
+    
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement('link');
+      canonicalTag.rel = 'canonical';
+      document.head.appendChild(canonicalTag);
+    }
+    canonicalTag.href = canonicalHref;
+
+    // OG Title
+    let ogTitleTag = document.querySelector('meta[property="og:title"]');
+    if (!ogTitleTag) {
+      ogTitleTag = document.createElement('meta');
+      ogTitleTag.setAttribute('property', 'og:title');
+      document.head.appendChild(ogTitleTag);
+    }
+    ogTitleTag.content = post.ogTitle || pageTitle;
+
+    // OG Description
+    let ogDescTag = document.querySelector('meta[property="og:description"]');
+    if (!ogDescTag) {
+      ogDescTag = document.createElement('meta');
+      ogDescTag.setAttribute('property', 'og:description');
+      document.head.appendChild(ogDescTag);
+    }
+    ogDescTag.content = post.ogDescription || metaDesc;
+
+    // OG Image
+    const ogImg = post.ogImage || post.coverImage || post.image || '';
+    if (ogImg) {
+      let ogImgTag = document.querySelector('meta[property="og:image"]');
+      if (!ogImgTag) {
+        ogImgTag = document.createElement('meta');
+        ogImgTag.setAttribute('property', 'og:image');
+        document.head.appendChild(ogImgTag);
+      }
+      ogImgTag.content = ogImg;
+    }
+  }, [post, slug]);
+
   // Loading skeleton state
   if (loading) {
     return (
@@ -281,9 +340,21 @@ export default function BlogDetail() {
         </div>
       </header>
 
+      {/* Hero Cover Image */}
+      {(post.coverImage || post.image) && (
+        <div className="w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden mb-10 shadow-md border border-[var(--line)] bg-slate-100">
+          <img
+            src={post.coverImage || post.image}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+        </div>
+      )}
+
       {/* Cleaned & Shortcode-Parsed Post Body */}
       <div
-        className="blog-content-body mb-16"
+        className="blog-content-body mb-16 prose prose-emerald max-w-none text-[var(--ink)] leading-relaxed font-sans"
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       />
 

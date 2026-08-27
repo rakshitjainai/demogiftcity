@@ -3,6 +3,22 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import dns from 'dns';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Configure DNS servers first
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+  console.log('🌐 Node.js DNS servers configured: 8.8.8.8, 1.1.1.1');
+} catch (dnsErr) {
+  console.warn('⚠️ Unable to set custom DNS servers:', dnsErr.message);
+}
+
+dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config();
 
 import authRoutes from './routes/authRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
@@ -13,17 +29,6 @@ import jobRoutes from './routes/jobRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 
-dotenv.config();
-
-// Configure Node.js DNS resolution to use Cloudflare and Google DNS servers
-// to reliably resolve MongoDB SRV (_mongodb._tcp) records and prevent ECONNREFUSED errors.
-try {
-  dns.setServers(['1.1.1.1', '8.8.8.8']);
-  console.log('🌐 Node.js DNS servers configured: 1.1.1.1, 8.8.8.8');
-} catch (dnsErr) {
-  console.warn('⚠️ Unable to set custom DNS servers:', dnsErr.message);
-}
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/regmate';
@@ -33,6 +38,8 @@ const allowedOrigins = [
   'https://demogiftcity.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
+  'http://localhost:4173',
+  'http://localhost:3000',
   process.env.CLIENT_URL
 ].filter(Boolean);
 
@@ -49,7 +56,8 @@ app.use(
     credentials: true
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -77,6 +85,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Global API Error Handler: Ensure all uncaught errors return JSON and never HTML
+app.use((err, req, res, next) => {
+  console.error('Unhandled Server Error:', err);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    ok: false,
+    error: err.name || 'SERVER_ERROR',
+    message: err.message || 'An unexpected server error occurred.'
+  });
+});
 
 // Start Express Server reliably first
 app.listen(PORT, () => {

@@ -14,7 +14,7 @@ const blogPostSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
+      required: [true, 'Blog slug is required'],
       unique: true,
       lowercase: true,
       trim: true,
@@ -42,6 +42,35 @@ const blogPostSchema = new mongoose.Schema(
     tags: {
       type: [String],
       default: []
+    },
+    metaTitle: {
+      type: String,
+      default: '',
+      trim: true
+    },
+    metaDescription: {
+      type: String,
+      default: '',
+      trim: true
+    },
+    canonicalUrl: {
+      type: String,
+      default: '',
+      trim: true
+    },
+    ogTitle: {
+      type: String,
+      default: '',
+      trim: true
+    },
+    ogDescription: {
+      type: String,
+      default: '',
+      trim: true
+    },
+    ogImage: {
+      type: String,
+      default: ''
     },
     author: {
       name: { type: String, default: 'RegMate Editorial Team' },
@@ -77,16 +106,22 @@ const blogPostSchema = new mongoose.Schema(
   }
 );
 
-// Auto-generate slug from title if not provided
+// Auto-generate slug from title if not provided or clean custom slug
 blogPostSchema.pre('validate', function (next) {
-  if (this.title && !this.slug) {
+  if (!this.slug && this.title) {
     this.slug = this.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4);
+      .replace(/(^-|-$)+/g, '');
+  } else if (this.slug) {
+    this.slug = this.slug
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
   }
   next();
 });
 
 const BlogPost = mongoose.model('BlogPost', blogPostSchema);
 export default BlogPost;
+

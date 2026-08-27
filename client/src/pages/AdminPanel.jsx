@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UserDetailsModal from '../components/UserDetailsModal';
+import { api } from '../utils/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -53,11 +54,8 @@ export default function AdminPanel() {
       if (blogCategory !== 'all') queryParams.append('category', blogCategory);
       if (blogRegulator !== 'all') queryParams.append('regulator', blogRegulator);
 
-      const res = await fetch(`${API_BASE_URL}/blogs/admin/all?${queryParams.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok && data.posts) {
+      const data = await api.get(`/blogs/admin/all?${queryParams.toString()}`);
+      if (data.ok && data.posts) {
         setBlogPosts(data.posts);
         if (data.counts) setBlogCounts(data.counts);
       }
@@ -94,11 +92,8 @@ export default function AdminPanel() {
       true,
       async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.ok) fetchBlogPosts();
+          await api.delete(`/blogs/admin/${postId}`);
+          fetchBlogPosts();
         } catch (err) {
           console.error('Error trashing blog post:', err);
         }
@@ -115,11 +110,8 @@ export default function AdminPanel() {
       true,
       async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/permanent`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.ok) fetchBlogPosts();
+          await api.delete(`/blogs/admin/${postId}/permanent`);
+          fetchBlogPosts();
         } catch (err) {
           console.error('Error permanently deleting blog post:', err);
         }
@@ -130,11 +122,8 @@ export default function AdminPanel() {
   // 3. Restore Post from Trash
   const handleRestore = async (postId) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/restore`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) fetchBlogPosts();
+      await api.post(`/blogs/admin/${postId}/restore`, {});
+      fetchBlogPosts();
     } catch (err) {
       console.error('Error restoring blog post:', err);
     }
@@ -155,11 +144,8 @@ export default function AdminPanel() {
       async () => {
         try {
           const endpoint = isCurrentlyPublished ? 'unpublish' : 'publish';
-          const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/${endpoint}`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.ok) fetchBlogPosts();
+          await api.post(`/blogs/admin/${postId}/${endpoint}`, {});
+          fetchBlogPosts();
         } catch (err) {
           console.error(`Error ${actionName.toLowerCase()}ing post:`, err);
         }
@@ -170,13 +156,8 @@ export default function AdminPanel() {
   // 5. Duplicate / Clone Post
   const handleDuplicate = async (postId) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/admin/${postId}/duplicate`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        fetchBlogPosts();
-      }
+      await api.post(`/blogs/admin/${postId}/duplicate`, {});
+      fetchBlogPosts();
     } catch (err) {
       console.error('Error duplicating post:', err);
     }
@@ -228,18 +209,9 @@ export default function AdminPanel() {
 
     triggerConfirmModal(title, msg, 'Confirm Bulk Action', isDanger, async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/blogs/admin/bulk-action`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ ids: selectedPostIds, action })
-        });
-        if (res.ok) {
-          setSelectedPostIds([]);
-          fetchBlogPosts();
-        }
+        await api.post('/blogs/admin/bulk-action', { ids: selectedPostIds, action });
+        setSelectedPostIds([]);
+        fetchBlogPosts();
       } catch (err) {
         console.error('Bulk action error:', err);
       }

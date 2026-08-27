@@ -491,8 +491,8 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Start w
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Image URL</label>
                   <input
-                    type="url"
-                    placeholder="https://images.unsplash.com/..."
+                    type="text"
+                    placeholder="https://images.unsplash.com/... or data:image/..."
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-forest"

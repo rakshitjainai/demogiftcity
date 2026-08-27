@@ -270,12 +270,12 @@ export default function BlogIndex({ categoryFilter }) {
                       key={idx}
                       className="text-[11px] font-bold uppercase tracking-wider text-[var(--forest)] bg-[var(--mint)] px-2.5 py-1 rounded-md border border-[var(--mint-deep)]"
                     >
-                      {cat.name}
+                      {typeof cat === 'object' ? cat.name : cat}
                     </span>
                   ))
                 ) : (
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--forest)] bg-[var(--mint)] px-2.5 py-1 rounded-md">
-                    Blog
+                    {post.category || 'Blog Article'}
                   </span>
                 )}
               </div>
@@ -287,7 +287,7 @@ export default function BlogIndex({ categoryFilter }) {
 
               {/* Excerpt */}
               <p className="text-[var(--ink-soft)] text-sm line-clamp-3 mb-6 flex-grow leading-relaxed">
-                {post.excerpt}
+                {post.excerpt || post.subtitle || post.desc || ''}
               </p>
 
               {/* Author & Date Metadata */}

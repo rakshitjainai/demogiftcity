@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, Share2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Share2, Bookmark, AlertCircle } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { LATEST_BLOGS, LATEST_UPDATES } from '../data/mockData';
 
@@ -10,7 +10,29 @@ export default function Article() {
   // Try to find the article by id from the slug
   const id = slug?.replace('article-', '');
   const allArticles = [...LATEST_BLOGS, ...LATEST_UPDATES];
-  const article = allArticles.find(a => String(a.id) === id) || allArticles[0];
+  const article = allArticles.find(a => String(a.id) === id || a.slug === slug);
+
+  if (!article) {
+    return (
+      <div className="py-20 px-6 max-w-4xl mx-auto text-center animate-fade-in-up">
+        <div className="w-16 h-16 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-6 border border-red-100">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+        <h1 className="text-3xl font-display font-bold text-forest-deep mb-4">
+          Article Not Found
+        </h1>
+        <p className="text-ink-soft mb-8 max-w-md mx-auto text-sm">
+          The requested article <code className="text-xs bg-slate-100 px-2 py-1 rounded">{slug}</code> could not be found.
+        </p>
+        <Link
+          to="/free-resources/blogs"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-forest text-white font-bold text-sm hover:bg-forest-deep transition-all shadow-md"
+        >
+          <ArrowLeft className="w-4 h-4" /> Explore All Regulatory Articles
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="py-16 px-6 max-w-4xl mx-auto animate-fade-in-up">

@@ -37,6 +37,16 @@ function getStaticPosts() {
   return _staticPosts;
 }
 
+// Helper to normalize strings into URL-safe kebab-case slugs
+function normalizeSlug(str = '') {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // remove non-word, non-space, non-hyphen
+    .replace(/[\s_]+/g, '-')  // replace spaces and underscores with hyphen
+    .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
+}
+
 // Allowed HTML tags and attributes for rich text sanitization
 const SANITIZE_OPTIONS = {
   allowedTags: [
@@ -46,7 +56,7 @@ const SANITIZE_OPTIONS = {
     'img', 'span', 'u', 's', 'mark'
   ],
   allowedAttributes: {
-    a: ['href', 'name', 'target', 'rel'],
+    a: ['href', 'name', 'target', 'rel', 'style', 'class'],
     img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class'],
     span: ['style', 'class'],
     p: ['style', 'class'],
@@ -54,8 +64,14 @@ const SANITIZE_OPTIONS = {
     h1: ['style', 'class'],
     h2: ['style', 'class'],
     h3: ['style', 'class'],
-    td: ['colspan', 'rowspan', 'style'],
-    th: ['colspan', 'rowspan', 'style']
+    h4: ['style', 'class'],
+    h5: ['style', 'class'],
+    h6: ['style', 'class'],
+    table: ['style', 'class', 'border', 'cellpadding', 'cellspacing'],
+    tr: ['style', 'class'],
+    td: ['colspan', 'rowspan', 'style', 'class'],
+    th: ['colspan', 'rowspan', 'style', 'class'],
+    blockquote: ['style', 'class']
   },
   allowedStyles: {
     '*': {
@@ -63,7 +79,15 @@ const SANITIZE_OPTIONS = {
       'background-color': [/^#(0-9a-f]{3,6})$/i, /^rgb\(/, /^hsl\(/, /^[a-z]+$/i],
       'text-align': [/^left$/, /^right$/, /^center$/, /^justify$/],
       'font-size': [/^\d+(px|em|rem|%)$/],
-      'font-weight': [/^\d+$/, /^bold$/, /^normal$/]
+      'font-weight': [/^\d+$/, /^bold$/, /^normal$/],
+      'text-decoration': [/^underline$/, /^line-through$/, /^none$/],
+      'border': [/.*$/],
+      'border-radius': [/.*$/],
+      'margin': [/.*$/],
+      'padding': [/.*$/],
+      'max-width': [/.*$/],
+      'width': [/.*$/],
+      'height': [/.*$/]
     }
   },
   selfClosing: ['img', 'br', 'hr'],
@@ -71,6 +95,59 @@ const SANITIZE_OPTIONS = {
 };
 
 // ─── 1. ADMIN-ONLY ROUTES (Must be defined BEFORE parameterized /:slugOrId) ──
+
+// @route   GET /api/blogs/admin/check-slug
+// @desc    Validate slug uniqueness in real-time for Create/Edit forms
+router.get('/admin/check-slug', requireAdmin, async (req, res) => {
+  try {
+    const { slug, excludeId } = req.query;
+    if (!slug || !slug.trim()) {
+      return res.json({ ok: true, available: false, message: 'Slug is empty.' });
+    }
+
+    const cleanSlug = normalizeSlug(slug);
+    if (!cleanSlug) {
+      return res.json({ ok: true, available: false, message: 'Invalid slug pattern.' });
+    }
+
+    // Check MongoDB for conflicting slug
+    const query = { slug: cleanSlug };
+    if (excludeId && mongoose.Types.ObjectId.isValid(excludeId)) {
+      query._id = { $ne: excludeId };
+    }
+    const existingDb = await BlogPost.findOne(query).lean();
+
+    if (existingDb) {
+      return res.json({
+        ok: true,
+        available: false,
+        slug: cleanSlug,
+        message: 'This slug is already used by another article in the database.'
+      });
+    }
+
+    // Check static posts
+    const staticPosts = getStaticPosts();
+    const existingStatic = staticPosts.find(p => p.slug === cleanSlug && (!excludeId || p.id !== excludeId));
+    if (existingStatic) {
+      return res.json({
+        ok: true,
+        available: false,
+        slug: cleanSlug,
+        message: 'This slug is reserved by a published core resource.'
+      });
+    }
+
+    return res.json({
+      ok: true,
+      available: true,
+      slug: cleanSlug,
+      message: 'Slug is available!'
+    });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
+  }
+});
 
 // @route   GET /api/blogs/admin/all
 // @desc    Get all blog posts with search, filter, status tab, and sorting
@@ -92,13 +169,15 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
       filter.regulatorId = regulator.toLowerCase();
     }
 
-    if (search) {
+    if (search && search.trim()) {
       const q = search.trim();
+      const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
-        { title: { $regex: q, $options: 'i' } },
-        { subtitle: { $regex: q, $options: 'i' } },
-        { content: { $regex: q, $options: 'i' } },
-        { tags: { $regex: q, $options: 'i' } }
+        { title: { $regex: escaped, $options: 'i' } },
+        { subtitle: { $regex: escaped, $options: 'i' } },
+        { slug: { $regex: escaped, $options: 'i' } },
+        { content: { $regex: escaped, $options: 'i' } },
+        { tags: { $regex: escaped, $options: 'i' } }
       ];
     }
 
@@ -118,7 +197,7 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
 
     // Get count statistics for tabs
     const [totalCount, publishedCount, draftCount, trashCount] = await Promise.all([
-      BlogPost.countDocuments({}),
+      BlogPost.countDocuments({ status: { $ne: 'trash' } }),
       BlogPost.countDocuments({ status: 'published' }),
       BlogPost.countDocuments({ status: 'draft' }),
       BlogPost.countDocuments({ status: 'trash' })
@@ -135,7 +214,8 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
         const q = search.toLowerCase();
         staticPosts = staticPosts.filter(p =>
           (p.title && p.title.toLowerCase().includes(q)) ||
-          (p.desc && p.desc.toLowerCase().includes(q))
+          (p.desc && p.desc.toLowerCase().includes(q)) ||
+          (p.slug && p.slug.toLowerCase().includes(q))
         );
       }
     }
@@ -145,14 +225,20 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
       _id: p._id.toString(),
       isDynamic: true,
       title: p.title,
-      subtitle: p.subtitle,
+      subtitle: p.subtitle || '',
       slug: p.slug,
       content: p.content,
-      coverImage: p.coverImage,
-      category: p.category,
-      regulatorId: p.regulatorId,
-      tags: p.tags,
-      author: p.author,
+      coverImage: p.coverImage || '',
+      category: p.category || 'Regulatory Intelligence',
+      regulatorId: p.regulatorId || 'general',
+      tags: p.tags || [],
+      metaTitle: p.metaTitle || '',
+      metaDescription: p.metaDescription || '',
+      canonicalUrl: p.canonicalUrl || `/free-resources/blogs/${p.slug}`,
+      ogTitle: p.ogTitle || '',
+      ogDescription: p.ogDescription || '',
+      ogImage: p.ogImage || p.coverImage || '',
+      author: p.author || { name: 'RegMate Editorial Team' },
       status: p.status,
       deletedAt: p.deletedAt,
       publishedAt: p.publishedAt,
@@ -173,26 +259,151 @@ router.get('/admin/all', requireAdmin, async (req, res) => {
       posts: [...formattedDb, ...staticPosts]
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
+  }
+});
+
+// @route   GET /api/blogs/admin/:id
+// @desc    Get any article (draft, published, or trash) by ID for admin editing
+router.get('/admin/:id', requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      // Check static fallback
+      const staticPost = getStaticPosts().find(p => p.id === id || p.slug === id);
+      if (staticPost) {
+        return res.json({ ok: true, post: { ...staticPost, isStatic: true } });
+      }
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
+    }
+
+    const post = await BlogPost.findById(id).lean();
+    if (!post) {
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
+    }
+
+    return res.json({
+      ok: true,
+      post: {
+        id: post._id.toString(),
+        _id: post._id.toString(),
+        isDynamic: true,
+        title: post.title,
+        subtitle: post.subtitle || '',
+        slug: post.slug,
+        content: post.content,
+        coverImage: post.coverImage || '',
+        category: post.category || 'Regulatory Intelligence',
+        regulatorId: post.regulatorId || 'general',
+        tags: post.tags || [],
+        metaTitle: post.metaTitle || '',
+        metaDescription: post.metaDescription || '',
+        canonicalUrl: post.canonicalUrl || `/free-resources/blogs/${post.slug}`,
+        ogTitle: post.ogTitle || '',
+        ogDescription: post.ogDescription || '',
+        ogImage: post.ogImage || post.coverImage || '',
+        author: post.author,
+        status: post.status,
+        publishedAt: post.publishedAt,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        revisions: post.revisions || []
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
 // @route   POST /api/blogs/admin/create
-// @desc    Create new blog post with server-side HTML sanitization
+// @desc    Create new blog post with server-side validation, sanitization & SEO fields
 router.post('/admin/create', requireAdmin, async (req, res) => {
   try {
-    const { title, subtitle, content, coverImage, category, regulatorId, tags, status } = req.body;
+    const {
+      title,
+      subtitle,
+      slug,
+      content,
+      coverImage,
+      category,
+      regulatorId,
+      tags,
+      metaTitle,
+      metaDescription,
+      canonicalUrl,
+      ogTitle,
+      ogDescription,
+      ogImage,
+      status
+    } = req.body;
 
-    if (!title || !content) {
-      return res.status(400).json({ ok: false, message: 'Title and content are required fields.' });
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'title',
+        message: 'Article title is required.'
+      });
+    }
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'content',
+        message: 'Article body content is required.'
+      });
+    }
+
+    const cleanSlug = normalizeSlug(slug || title);
+    if (!cleanSlug) {
+      return res.status(400).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'slug',
+        message: 'Please provide a valid slug or title.'
+      });
+    }
+
+    // Check slug uniqueness across DB and static posts
+    const existingDb = await BlogPost.findOne({ slug: cleanSlug });
+    if (existingDb) {
+      return res.status(409).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'slug',
+        message: `The slug "${cleanSlug}" is already in use by another article. Please modify the slug.`
+      });
+    }
+
+    const staticConflict = getStaticPosts().find(p => p.slug === cleanSlug);
+    if (staticConflict) {
+      return res.status(409).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'slug',
+        message: `The slug "${cleanSlug}" is reserved by an existing core resource. Please modify the slug.`
+      });
     }
 
     const cleanContent = sanitizeHtml(content, SANITIZE_OPTIONS);
+    const plainExcerpt = (subtitle || cleanContent.replace(/<[^>]+>/g, '')).slice(0, 160).trim();
 
-    const cleanSlug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4);
+    // Auto-generate sensible SEO defaults if not provided
+    const finalMetaTitle = (metaTitle || title).trim().slice(0, 70);
+    const finalMetaDesc = (metaDescription || plainExcerpt).trim().slice(0, 200);
+    const finalCanonicalUrl = (canonicalUrl || `/free-resources/blogs/${cleanSlug}`).trim();
+    const finalOgTitle = (ogTitle || finalMetaTitle).trim();
+    const finalOgDesc = (ogDescription || finalMetaDesc).trim();
+    const finalOgImage = (ogImage || coverImage || '').trim();
+
+    const normalizedTags = Array.isArray(tags)
+      ? tags.map(t => String(t).trim()).filter(Boolean)
+      : (tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    const uniqueTags = Array.from(new Set(normalizedTags));
+
+    const isPublished = status === 'published';
 
     const post = new BlogPost({
       title: title.trim(),
@@ -202,19 +413,25 @@ router.post('/admin/create', requireAdmin, async (req, res) => {
       coverImage: coverImage || '',
       category: category || 'Regulatory Intelligence',
       regulatorId: (regulatorId || 'general').toLowerCase(),
-      tags: Array.isArray(tags) ? tags : (tags || '').split(',').map(t => t.trim()).filter(Boolean),
+      tags: uniqueTags,
+      metaTitle: finalMetaTitle,
+      metaDescription: finalMetaDesc,
+      canonicalUrl: finalCanonicalUrl,
+      ogTitle: finalOgTitle,
+      ogDescription: finalOgDesc,
+      ogImage: finalOgImage,
       author: {
-        name: req.user.name || 'System Admin',
-        email: req.user.email,
-        picture: req.user.picture || ''
+        name: req.user?.name || 'CS Prashant Kumar',
+        email: req.user?.email || 'editorial@regmate.com',
+        picture: req.user?.picture || ''
       },
-      status: status === 'published' ? 'published' : 'draft',
-      publishedAt: status === 'published' ? new Date() : null,
+      status: isPublished ? 'published' : 'draft',
+      publishedAt: isPublished ? new Date() : null,
       revisions: [{
         title: title.trim(),
         subtitle: (subtitle || '').trim(),
         content: cleanContent,
-        savedBy: req.user.name || 'System Admin',
+        savedBy: req.user?.name || 'System Admin',
         savedAt: new Date()
       }]
     });
@@ -223,35 +440,94 @@ router.post('/admin/create', requireAdmin, async (req, res) => {
 
     return res.status(201).json({
       ok: true,
-      message: `Blog post ${post.status === 'published' ? 'published' : 'saved as draft'} successfully!`,
+      message: `Article ${post.status === 'published' ? 'published' : 'saved as draft'} successfully!`,
       post
     });
   } catch (err) {
     console.error('Error creating blog post:', err);
-    return res.status(500).json({ ok: false, message: err.message });
+    if (err.code === 11000) {
+      return res.status(409).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'slug',
+        message: 'An article with this slug already exists. Please choose a unique slug.'
+      });
+    }
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
 // @route   PUT /api/blogs/admin/:id
-// @desc    Update existing blog post with Revision Safety history
+// @desc    Update existing blog post with slug check, SEO fields & Revision Safety history
 router.put('/admin/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, subtitle, content, coverImage, category, regulatorId, tags, status } = req.body;
+    const {
+      title,
+      subtitle,
+      slug,
+      content,
+      coverImage,
+      category,
+      regulatorId,
+      tags,
+      metaTitle,
+      metaDescription,
+      canonicalUrl,
+      ogTitle,
+      ogDescription,
+      ogImage,
+      status
+    } = req.body;
 
     const post = await BlogPost.findById(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
-    // Save previous revision state (Revision Safety - keeps last 5 snapshots)
+    // Slug validation and uniqueness check if slug is changing
+    if (slug) {
+      const cleanSlug = normalizeSlug(slug);
+      if (!cleanSlug) {
+        return res.status(400).json({
+          ok: false,
+          error: 'VALIDATION_ERROR',
+          field: 'slug',
+          message: 'Please provide a valid slug.'
+        });
+      }
+
+      if (cleanSlug !== post.slug) {
+        const existingDb = await BlogPost.findOne({ slug: cleanSlug, _id: { $ne: id } });
+        if (existingDb) {
+          return res.status(409).json({
+            ok: false,
+            error: 'VALIDATION_ERROR',
+            field: 'slug',
+            message: `The slug "${cleanSlug}" is already in use by another article.`
+          });
+        }
+        const staticConflict = getStaticPosts().find(p => p.slug === cleanSlug && p.id !== id);
+        if (staticConflict) {
+          return res.status(409).json({
+            ok: false,
+            error: 'VALIDATION_ERROR',
+            field: 'slug',
+            message: `The slug "${cleanSlug}" is reserved by an existing resource.`
+          });
+        }
+        post.slug = cleanSlug;
+      }
+    }
+
+    // Save previous revision state (keeps last 5 snapshots)
     if (post.title && post.content) {
       if (!post.revisions) post.revisions = [];
       post.revisions.unshift({
         title: post.title,
         subtitle: post.subtitle || '',
         content: post.content,
-        savedBy: req.user.name || 'System Admin',
+        savedBy: req.user?.name || 'System Admin',
         savedAt: new Date()
       });
       if (post.revisions.length > 5) {
@@ -265,7 +541,21 @@ router.put('/admin/:id', requireAdmin, async (req, res) => {
     if (coverImage !== undefined) post.coverImage = coverImage;
     if (category) post.category = category;
     if (regulatorId) post.regulatorId = regulatorId.toLowerCase();
-    if (tags) post.tags = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(Boolean);
+
+    if (tags !== undefined) {
+      const rawTags = Array.isArray(tags)
+        ? tags.map(t => String(t).trim()).filter(Boolean)
+        : (tags || '').split(',').map(t => t.trim()).filter(Boolean);
+      post.tags = Array.from(new Set(rawTags));
+    }
+
+    // SEO updates
+    if (metaTitle !== undefined) post.metaTitle = metaTitle.trim();
+    if (metaDescription !== undefined) post.metaDescription = metaDescription.trim();
+    if (canonicalUrl !== undefined) post.canonicalUrl = canonicalUrl.trim();
+    if (ogTitle !== undefined) post.ogTitle = ogTitle.trim();
+    if (ogDescription !== undefined) post.ogDescription = ogDescription.trim();
+    if (ogImage !== undefined) post.ogImage = ogImage.trim();
 
     if (status) {
       if (status === 'published' && post.status !== 'published') {
@@ -278,12 +568,20 @@ router.put('/admin/:id', requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: 'Blog post updated successfully!',
+      message: 'Article updated successfully!',
       post
     });
   } catch (err) {
     console.error('Error updating blog post:', err);
-    return res.status(500).json({ ok: false, message: err.message });
+    if (err.code === 11000) {
+      return res.status(409).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        field: 'slug',
+        message: 'An article with this slug already exists. Please choose a unique slug.'
+      });
+    }
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -294,7 +592,7 @@ router.post('/admin/:id/unpublish', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const post = await BlogPost.findById(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
     post.status = 'draft';
@@ -302,11 +600,11 @@ router.post('/admin/:id/unpublish', requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: 'Blog post unpublished and reverted to draft status.',
+      message: 'Article unpublished and reverted to draft status.',
       post
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -317,20 +615,22 @@ router.post('/admin/:id/publish', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const post = await BlogPost.findById(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
     post.status = 'published';
-    post.publishedAt = new Date();
+    if (!post.publishedAt) {
+      post.publishedAt = new Date();
+    }
     await post.save();
 
     return res.json({
       ok: true,
-      message: 'Blog post published successfully!',
+      message: 'Article published successfully!',
       post
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -341,11 +641,11 @@ router.post('/admin/:id/duplicate', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const original = await BlogPost.findById(id);
     if (!original) {
-      return res.status(404).json({ ok: false, message: 'Source blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Source blog post not found.' });
     }
 
-    const newTitle = `[Copy] ${original.title}`;
-    const newSlug = original.slug + '-copy-' + Date.now().toString().slice(-4);
+    const newTitle = `${original.title} (Copy)`;
+    const newSlug = normalizeSlug(`${original.slug}-copy-${Date.now().toString().slice(-4)}`);
 
     const clonedPost = new BlogPost({
       title: newTitle,
@@ -356,10 +656,16 @@ router.post('/admin/:id/duplicate', requireAdmin, async (req, res) => {
       category: original.category,
       regulatorId: original.regulatorId,
       tags: original.tags,
+      metaTitle: original.metaTitle,
+      metaDescription: original.metaDescription,
+      canonicalUrl: `/free-resources/blogs/${newSlug}`,
+      ogTitle: original.ogTitle,
+      ogDescription: original.ogDescription,
+      ogImage: original.ogImage,
       author: {
-        name: req.user.name || 'System Admin',
-        email: req.user.email,
-        picture: req.user.picture || ''
+        name: req.user?.name || 'CS Prashant Kumar',
+        email: req.user?.email || 'editorial@regmate.com',
+        picture: req.user?.picture || ''
       },
       status: 'draft',
       publishedAt: null,
@@ -367,7 +673,7 @@ router.post('/admin/:id/duplicate', requireAdmin, async (req, res) => {
         title: newTitle,
         subtitle: original.subtitle,
         content: original.content,
-        savedBy: req.user.name || 'System Admin',
+        savedBy: req.user?.name || 'System Admin',
         savedAt: new Date()
       }]
     });
@@ -376,12 +682,12 @@ router.post('/admin/:id/duplicate', requireAdmin, async (req, res) => {
 
     return res.status(201).json({
       ok: true,
-      message: `Blog post duplicated successfully as new draft "${newTitle}"!`,
+      message: `Article duplicated successfully as new draft "${newTitle}"!`,
       post: clonedPost
     });
   } catch (err) {
     console.error('Error duplicating blog post:', err);
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -392,7 +698,7 @@ router.delete('/admin/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const post = await BlogPost.findById(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
     post.status = 'trash';
@@ -401,12 +707,12 @@ router.delete('/admin/:id', requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: `Blog post "${post.title}" moved to Trash. It can be restored from the Trash tab.`,
+      message: `Article "${post.title}" moved to Trash.`,
       post
     });
   } catch (err) {
     console.error('Error moving post to trash:', err);
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -417,7 +723,7 @@ router.post('/admin/:id/restore', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const post = await BlogPost.findById(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
     post.status = 'draft';
@@ -426,35 +732,35 @@ router.post('/admin/:id/restore', requireAdmin, async (req, res) => {
 
     return res.json({
       ok: true,
-      message: `Blog post "${post.title}" restored back to Draft status.`,
+      message: `Article "${post.title}" restored back to Draft status.`,
       post
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
 // @route   DELETE /api/blogs/admin/:id/permanent
-// @desc    Permanently delete post from MongoDB (Double confirmation required)
+// @desc    Permanently delete post from MongoDB
 router.delete('/admin/:id/permanent', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const post = await BlogPost.findByIdAndDelete(id);
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
     return res.json({
       ok: true,
-      message: `Blog post "${post.title}" permanently deleted.`
+      message: `Article "${post.title}" permanently deleted.`
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
 // @route   POST /api/blogs/admin/bulk-action
-// @desc    Bulk actions (trash, permanent-delete, publish, unpublish, restore) across selected post IDs
+// @desc    Bulk actions (trash, permanent-delete, publish, unpublish, restore)
 router.post('/admin/bulk-action', requireAdmin, async (req, res) => {
   try {
     const { ids, action } = req.body;
@@ -471,25 +777,25 @@ router.post('/admin/bulk-action', requireAdmin, async (req, res) => {
 
     if (action === 'trash') {
       await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'trash', deletedAt: new Date() });
-      resultMsg = `${ids.length} post(s) moved to Trash.`;
+      resultMsg = `${ids.length} article(s) moved to Trash.`;
     } else if (action === 'permanent-delete') {
       await BlogPost.deleteMany({ _id: { $in: ids } });
-      resultMsg = `${ids.length} post(s) permanently deleted.`;
+      resultMsg = `${ids.length} article(s) permanently deleted.`;
     } else if (action === 'publish') {
       await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'published', publishedAt: new Date() });
-      resultMsg = `${ids.length} post(s) published successfully.`;
+      resultMsg = `${ids.length} article(s) published successfully.`;
     } else if (action === 'unpublish') {
       await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'draft' });
-      resultMsg = `${ids.length} post(s) unpublished to Draft.`;
+      resultMsg = `${ids.length} article(s) unpublished to Draft.`;
     } else if (action === 'restore') {
       await BlogPost.updateMany({ _id: { $in: ids } }, { status: 'draft', deletedAt: null });
-      resultMsg = `${ids.length} post(s) restored from Trash to Draft.`;
+      resultMsg = `${ids.length} article(s) restored from Trash to Draft.`;
     }
 
     return res.json({ ok: true, message: resultMsg });
   } catch (err) {
     console.error('Error executing bulk action:', err);
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -499,11 +805,11 @@ router.post('/admin/:id/restore-revision/:revisionIndex', requireAdmin, async (r
   try {
     const { id, revisionIndex } = req.params;
     const post = await BlogPost.findById(id);
-    if (!post) return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+    if (!post) return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
 
     const idx = parseInt(revisionIndex, 10);
     if (!post.revisions || !post.revisions[idx]) {
-      return res.status(404).json({ ok: false, message: 'Selected revision snapshot not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Selected revision snapshot not found.' });
     }
 
     const rev = post.revisions[idx];
@@ -515,11 +821,11 @@ router.post('/admin/:id/restore-revision/:revisionIndex', requireAdmin, async (r
 
     return res.json({
       ok: true,
-      message: `Blog post restored to revision snapshot from ${new Date(rev.savedAt).toLocaleString()}!`,
+      message: `Article restored to revision snapshot from ${new Date(rev.savedAt).toLocaleString()}!`,
       post
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -529,7 +835,7 @@ router.post('/admin/:id/restore-revision/:revisionIndex', requireAdmin, async (r
 // @desc    Get all published blog posts
 router.get('/', async (req, res) => {
   try {
-    const { reg, category, search, limit = 50 } = req.query;
+    const { reg, category, search, limit = 100 } = req.query;
 
     let dbPosts = [];
     try {
@@ -538,7 +844,6 @@ router.get('/', async (req, res) => {
       console.warn('MongoDB disconnected or empty, using static posts only:', dbErr.message);
     }
 
-    // Filter out automated test posts and fixtures from DB results
     const cleanDbPosts = (dbPosts || []).filter(p => p && p.slug && !p.slug.startsWith('bulk-test-post'));
 
     const formattedDbPosts = cleanDbPosts.map(p => ({
@@ -555,8 +860,15 @@ router.get('/', async (req, res) => {
       categories: [p.category || 'Regulatory Intelligence'],
       regulatorId: p.regulatorId || 'general',
       tags: p.tags || [],
+      metaTitle: p.metaTitle || p.title,
+      metaDescription: p.metaDescription || p.subtitle || '',
+      canonicalUrl: p.canonicalUrl || `/free-resources/blogs/${p.slug}`,
+      ogTitle: p.ogTitle || p.title,
+      ogDescription: p.ogDescription || p.subtitle || '',
+      ogImage: p.ogImage || p.coverImage || '',
       author: p.author?.name || 'CS Prashant Kumar',
       date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
+      publishedAt: p.publishedAt,
       status: p.status,
       createdAt: p.createdAt
     }));
@@ -564,7 +876,7 @@ router.get('/', async (req, res) => {
     const staticPosts = getStaticPosts();
     let allPosts = [...formattedDbPosts, ...staticPosts];
 
-    // Deduplicate by canonical slug and title so each article is completely unique
+    // Deduplicate by canonical slug
     const uniqueMap = new Map();
     for (const post of allPosts) {
       if (post && post.slug && !post.slug.startsWith('bulk-test-post')) {
@@ -591,7 +903,8 @@ router.get('/', async (req, res) => {
       allPosts = allPosts.filter(p =>
         (p.title && p.title.toLowerCase().includes(q)) ||
         (p.desc && p.desc.toLowerCase().includes(q)) ||
-        (p.content && p.content.toLowerCase().includes(q))
+        (p.content && p.content.toLowerCase().includes(q)) ||
+        (p.slug && p.slug.toLowerCase().includes(q))
       );
     }
 
@@ -602,7 +915,7 @@ router.get('/', async (req, res) => {
       posts: allPosts.slice(0, resultLimit)
     });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
@@ -616,7 +929,7 @@ router.get('/:slugOrId', async (req, res) => {
     try {
       let dbPost = await BlogPost.findOne({
         $or: [
-          { slug: slugOrId },
+          { slug: slugOrId.toLowerCase() },
           { _id: mongoose.Types.ObjectId.isValid(slugOrId) ? slugOrId : null }
         ]
       }).lean();
@@ -637,9 +950,16 @@ router.get('/:slugOrId', async (req, res) => {
             category: dbPost.category,
             categories: [dbPost.category],
             regulatorId: dbPost.regulatorId,
-            tags: dbPost.tags,
-            author: dbPost.author?.name || 'RegMate Editorial Team',
+            tags: dbPost.tags || [],
+            metaTitle: dbPost.metaTitle || dbPost.title,
+            metaDescription: dbPost.metaDescription || dbPost.subtitle || '',
+            canonicalUrl: dbPost.canonicalUrl || `/free-resources/blogs/${dbPost.slug}`,
+            ogTitle: dbPost.ogTitle || dbPost.title,
+            ogDescription: dbPost.ogDescription || dbPost.subtitle || '',
+            ogImage: dbPost.ogImage || dbPost.coverImage || '',
+            author: dbPost.author?.name || 'CS Prashant Kumar',
             date: dbPost.publishedAt ? new Date(dbPost.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
+            publishedAt: dbPost.publishedAt,
             status: dbPost.status
           }
         });
@@ -657,12 +977,23 @@ router.get('/:slugOrId', async (req, res) => {
       (p.link && p.link.replace(/\/$/, '').endsWith(`/${slugOrId}`))
     );
     if (!post) {
-      return res.status(404).json({ ok: false, message: 'Blog post not found.' });
+      return res.status(404).json({ ok: false, error: 'NOT_FOUND', message: 'Blog post not found.' });
     }
 
-    return res.json({ ok: true, post });
+    return res.json({
+      ok: true,
+      post: {
+        ...post,
+        metaTitle: post.metaTitle || post.title,
+        metaDescription: post.metaDescription || post.desc || '',
+        canonicalUrl: post.canonicalUrl || `/free-resources/blogs/${post.slug || post.id}`,
+        ogTitle: post.ogTitle || post.title,
+        ogDescription: post.ogDescription || post.desc || '',
+        ogImage: post.ogImage || post.coverImage || post.image || ''
+      }
+    });
   } catch (err) {
-    return res.status(500).json({ ok: false, message: err.message });
+    return res.status(500).json({ ok: false, error: 'SERVER_ERROR', message: err.message });
   }
 });
 
