@@ -35,6 +35,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/regmate';
 
+// ─── Site constants ───────────────────────────────────────────────────────────
+const SITE_ROOT = 'https://www.regmate.in';
+const FALLBACK_OG_IMAGE = `${SITE_ROOT}/assets/og-fallback-blog.jpg`;
+
 // Allowed origins for CORS
 const allowedOrigins = [
   'https://demogiftcity.vercel.app',
@@ -68,16 +72,25 @@ if (fs.existsSync(clientDistPath)) {
   app.use(express.static(clientDistPath));
 }
 
-// ─── Authoritative Data Hierarchy for Blog SSR ──────────────────────────────
-// 1. MongoDB BlogPost model (primary dynamic/CMS data source)
-// 2. server/data/wordpress-posts.json (authoritative server static fallback)
-// 3. client/src/data/posts.json (client bundle static fallback)
+// ─── Blog SSR: Data Lookup ────────────────────────────────────────────────────
+// Priority: MongoDB → server/data/wordpress-posts.json → client/src/data/posts.json
+
+const LEGACY_ID_MAP = {
+  'blog-1': 'esop-design-for-startups-india',
+  'blog-2': 'does-scra-apply-to-ifsc-listings-indian-companies',
+  'blog-3': 'uae-trademark-filing-process',
+  'blog-4': 'board-resolution-appointment-additional-director-india',
+  'blog-5': 'board-resolution-appointment-first-auditor',
+};
 
 async function getBlogPostForSSR(slug) {
   if (!slug) return null;
-  const cleanSlug = slug.toLowerCase().trim();
+  let cleanSlug = slug.toLowerCase().trim();
+  if (LEGACY_ID_MAP[cleanSlug]) {
+    cleanSlug = LEGACY_ID_MAP[cleanSlug];
+  }
 
-  // 1. Check MongoDB
+  // 1. MongoDB (primary CMS source)
   try {
     const dbPost = await BlogPost.findOne({
       $or: [
@@ -86,57 +99,194 @@ async function getBlogPostForSSR(slug) {
       ]
     }).lean();
     if (dbPost && dbPost.status === 'published') return dbPost;
-  } catch (e) {
-    // Continue to static lookup
+  } catch (_e) {
+    // Fall through to static files
   }
 
-  // 2. Check static server posts
+  // 2. Static JSON fallback files
   const serverPostsPath = path.join(__dirname, 'data', 'wordpress-posts.json');
   const clientPostsPath = path.join(__dirname, '..', 'client', 'src', 'data', 'posts.json');
-  const targetFile = fs.existsSync(serverPostsPath) ? serverPostsPath : (fs.existsSync(clientPostsPath) ? clientPostsPath : null);
+  const targetFile = fs.existsSync(serverPostsPath)
+    ? serverPostsPath
+    : fs.existsSync(clientPostsPath)
+    ? clientPostsPath
+    : null;
 
   if (targetFile) {
     try {
       const raw = fs.readFileSync(targetFile, 'utf-8');
       const posts = JSON.parse(raw);
-      const matched = posts.find(p => p.slug === cleanSlug || p.id === cleanSlug || p.id === `wp-${cleanSlug}`);
+      const matched = posts.find(
+        p => p.slug === cleanSlug || p.id === cleanSlug || p.id === `wp-${cleanSlug}`
+      );
       if (matched) return matched;
-    } catch (e) {
-      // Continue
+    } catch (_e) {
+      // Fall through
     }
   }
 
-  if (cleanSlug === 'retail-fme-gift-ifsc-setup') {
-    return {
-      title: 'Setting Up a Retail FME in GIFT IFSC: Process, Eligibility, Cost and Timeline',
-      slug: 'retail-fme-gift-ifsc-setup',
-      metaDescription: 'A practical guide to setting up a Retail FME in GIFT IFSC, covering eligibility, IFSCA registration, costs, key requirements and the timeline from setup to launch.',
-      ogImage: 'https://www.regmate.in/images/blog/retail-fme-gift-ifsc-cover.jpg'
-    };
+  return null; // Unknown slug — caller will use generic brand fallback
+}
+
+// ─── Blog SSR: Helpers ────────────────────────────────────────────────────────
+
+function decodeHtmlEntities(str = '') {
+  return String(str || '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&#8211;/g, '–')
+    .replace(/&#8212;/g, '—')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&#91;[^&#]+&#93;/gi, '')
+    .replace(/\[[^\]]+\]/g, '');
+}
+
+function extractDescription(post, maxLen = 160) {
+  if (!post) return '';
+  let raw =
+    post.metaDescription ||
+    post.ogDescription ||
+    post.excerpt ||
+    post.desc ||
+    post.subtitle ||
+    '';
+
+  if (!raw && post.content) {
+    raw = post.content
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<[^>]+>/g, ' ');
   }
 
-  return null;
+  const cleaned = decodeHtmlEntities(raw)
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleaned.slice(0, maxLen).trim();
 }
+
+function resolveOgImage(post) {
+  let img = (
+    post
+      ? post.ogImage || post.coverImage || post.image || post.featuredImage || ''
+      : ''
+  ).trim();
+
+  // If no explicit image, extract first <img> tag from content
+  if (!img && post && post.content) {
+    const match = post.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (match && match[1]) {
+      img = match[1].trim();
+    }
+  }
+
+  if (!img) return FALLBACK_OG_IMAGE;
+  if (img.startsWith('http://') || img.startsWith('https://')) {
+    return img.replace(/^http:\/\//i, 'https://');
+  }
+  return `${SITE_ROOT}${img.startsWith('/') ? '' : '/'}${img}`;
+}
+
+/**
+ * Strip all existing OG/Twitter/description/title/canonical/robots tags from the HTML
+ * and inject a fresh, fully-populated, crawlable meta block before </head>.
+ */
+function injectOGMetaIntoHtml(html, { title, description, ogImage, canonicalUrl, publishedTime }) {
+  let out = html;
+
+  // Remove existing meta/title/link tags to avoid duplicate metadata
+  out = out.replace(/<title>[\s\S]*?<\/title>/i, '');
+  out = out.replace(/<meta\s[^>]*name=["']description["'][^>]*\/?>/gi, '');
+  out = out.replace(/<meta\s[^>]*property=["']og:[^"']*["'][^>]*\/?>/gi, '');
+  out = out.replace(/<meta\s[^>]*name=["']twitter:[^"']*["'][^>]*\/?>/gi, '');
+  out = out.replace(/<meta\s[^>]*name=["']robots["'][^>]*\/?>/gi, '');
+  out = out.replace(/<link\s[^>]*rel=["']canonical["'][^>]*\/?>/gi, '');
+
+  // HTML-safe values
+  const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const cleanTitle = decodeHtmlEntities(title);
+  const displayTitle = cleanTitle.includes('RegMate') ? cleanTitle : `${cleanTitle} | RegMate`;
+  const t = esc(cleanTitle);
+  const dt = esc(displayTitle);
+  const d = esc(description);
+  const img = ogImage; // already absolute HTTPS URL
+  const url = canonicalUrl;
+
+  let imageType = 'image/jpeg';
+  if (img.toLowerCase().endsWith('.png')) imageType = 'image/png';
+  else if (img.toLowerCase().endsWith('.webp')) imageType = 'image/webp';
+  else if (img.toLowerCase().endsWith('.gif')) imageType = 'image/gif';
+  else if (img.toLowerCase().endsWith('.svg')) imageType = 'image/svg+xml';
+
+  const metaBlock = `
+    <!-- SSR Blog Social Meta — RegMate OG Engine -->
+    <title>${dt}</title>
+    <meta name="description" content="${d}">
+    <link rel="canonical" href="${url}">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    <!-- Open Graph (Facebook, WhatsApp, Telegram, LinkedIn, iMessage) -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="RegMate">
+    <meta property="og:title" content="${t}">
+    <meta property="og:description" content="${d}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:image" content="${img}">
+    <meta property="og:image:secure_url" content="${img}">
+    <meta property="og:image:type" content="${imageType}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${t}">
+    ${publishedTime ? `<meta property="article:published_time" content="${publishedTime}">` : ''}
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@RegMateIn">
+    <meta name="twitter:title" content="${t}">
+    <meta name="twitter:description" content="${d}">
+    <meta name="twitter:image" content="${img}">
+    <meta name="twitter:image:alt" content="${t}">
+`;
+
+  return out.replace('</head>', `${metaBlock}</head>`);
+}
+
+// ─── Blog SSR Route Handler ───────────────────────────────────────────────────
 
 async function handleBlogSSR(req, res, next) {
   try {
     const slug = req.params.slug;
+    const ua = req.headers['user-agent'] || '';
+    if (ua.match(/WhatsApp|facebookexternalhit|Twitterbot|LinkedInBot|bot|crawler|curl/i)) {
+      console.log(`🤖 Social Bot Request [${ua.slice(0, 40)}] -> ${req.originalUrl}`);
+    }
+
     const post = await getBlogPostForSSR(slug);
+    const targetSlug = (post && post.slug) ? post.slug : slug;
 
-    const title = post ? (post.metaTitle || post.title) : "Setting Up a Retail FME in GIFT IFSC: Process, Eligibility, Cost and Timeline";
-    const rawDesc = post ? (post.metaDescription || post.desc || post.subtitle || (post.content ? post.content.replace(/<[^>]+>/g, '').slice(0, 160) : '')) : "A practical guide to setting up a Retail FME in GIFT IFSC, covering eligibility, IFSCA registration, costs, key requirements and the timeline from setup to launch.";
-    const description = (rawDesc || "RegMate - Corporate law, GIFT City IFSC and compliance learning platform.").trim().replace(/"/g, '&quot;');
+    const title = post
+      ? post.ogTitle || post.metaTitle || post.title || 'RegMate Blog'
+      : 'RegMate — Navigate Regulations. Stay Ahead.';
 
-    let ogImage = post ? (post.ogImage || post.coverImage || post.image) : "https://www.regmate.in/images/blog/retail-fme-gift-ifsc-cover.jpg";
-    if (!ogImage || !ogImage.trim()) {
-      ogImage = "https://www.regmate.in/assets/og-fallback-blog.jpg";
-    }
-    if (!ogImage.startsWith('http://') && !ogImage.startsWith('https://')) {
-      ogImage = `https://www.regmate.in${ogImage.startsWith('/') ? '' : '/'}${ogImage}`;
-    }
+    const description = post
+      ? extractDescription(post) ||
+        'Expert insights on Indian corporate law, GIFT City IFSC and compliance.'
+      : "RegMate is India's premier compliance learning platform for CS, CA, and legal professionals.";
 
-    const canonicalUrl = `https://www.regmate.in/free-resources/blogs/${slug || ''}`;
+    const ogImage = resolveOgImage(post);
+    const canonicalUrl = `${SITE_ROOT}/free-resources/blogs/${targetSlug || ''}`;
+    const publishedTime =
+      post && (post.publishedAt || post.rawDate)
+        ? new Date(post.publishedAt || post.rawDate).toISOString()
+        : null;
 
+    // Load HTML shell
     const distHtmlPath = path.join(__dirname, '..', 'client', 'dist', 'index.html');
     const srcHtmlPath = path.join(__dirname, '..', 'client', 'index.html');
     let html = '';
@@ -145,53 +295,58 @@ async function handleBlogSSR(req, res, next) {
     } else if (fs.existsSync(srcHtmlPath)) {
       html = fs.readFileSync(srcHtmlPath, 'utf-8');
     } else {
-      return res.status(404).send('HTML template not found.');
+      return res.status(404).send('HTML shell not found.');
     }
 
-    const headMetaBlock = `
-    <!-- Dynamic Server-Rendered Social Meta Tags (RegMate SSR Engine) -->
-    <title>${title} | RegMate</title>
-    <meta name="description" content="${description}">
-    <link rel="canonical" href="${canonicalUrl}">
-
-    <!-- Open Graph / Social Cards -->
-    <meta property="og:type" content="article">
-    <meta property="og:site_name" content="RegMate">
-    <meta property="og:title" content="${title.replace(/"/g, '&quot;')}">
-    <meta property="og:description" content="${description}">
-    <meta property="og:url" content="${canonicalUrl}">
-    <meta property="og:image" content="${ogImage}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${title.replace(/"/g, '&quot;')}">
-
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${title.replace(/"/g, '&quot;')}">
-    <meta name="twitter:description" content="${description}">
-    <meta name="twitter:image" content="${ogImage}">
-`;
-
-    let modifiedHtml = html
-      .replace(/<title>.*?<\/title>/i, '')
-      .replace(/<meta name="description".*?>/i, '')
-      .replace(/<meta property="og:.*?".*?>/gi, '')
-      .replace(/<meta name="twitter:.*?".*?>/gi, '')
-      .replace('</head>', `${headMetaBlock}\n</head>`);
+    const modifiedHtml = injectOGMetaIntoHtml(html, {
+      title,
+      description,
+      ogImage,
+      canonicalUrl,
+      publishedTime
+    });
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('X-Robots-Tag', 'index, follow, max-image-preview:large');
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
     return res.status(200).send(modifiedHtml);
   } catch (err) {
-    console.error('SSR Meta Generation Error:', err);
+    console.error('SSR OG Injection Error:', err);
     return next();
   }
 }
 
-// ─── Blog SSR Routes ────────────────────────────────────────────────────────
+// ─── Blog SSR Routes (MUST come before static file middleware) ────────────────
 app.get('/free-resources/blogs/:slug', handleBlogSSR);
 app.get('/blog/:slug', handleBlogSSR);
 
-// Routes
+// ─── robots.txt — dynamically served so it's always accurate ─────────────────
+app.get('/robots.txt', (_req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send(
+    [
+      'User-agent: *',
+      'Allow: /',
+      '',
+      '# Allow all social media crawlers explicitly',
+      'User-agent: facebookexternalhit',
+      'Allow: /',
+      '',
+      'User-agent: Twitterbot',
+      'Allow: /',
+      '',
+      'User-agent: LinkedInBot',
+      'Allow: /',
+      '',
+      'User-agent: WhatsApp',
+      'Allow: /',
+      '',
+      `Sitemap: ${SITE_ROOT}/sitemap.xml`
+    ].join('\n')
+  );
+});
+
+// ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/user', progressRoutes);
 app.use('/api/regulatory-master', regulatoryMasterRoutes);
@@ -204,20 +359,17 @@ app.use('/api/blogs', blogRoutes);
 app.use('/Regmate-backend/api', jobRoutes);
 app.use('/api/job', jobRoutes);
 
-// Health check endpoint (lightweight for deployment / health monitors)
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
-
-app.get('/api/health', (req, res) => {
+// Health check endpoint
+app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
+app.get('/api/health', (_req, res) =>
   res.json({
     status: 'ok',
     timestamp: new Date(),
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-  });
-});
+  })
+);
 
-// Fallback SPA route for non-API GET requests
+// ─── SPA Fallback ─────────────────────────────────────────────────────────────
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/Regmate-backend')) {
     return next();
@@ -229,8 +381,8 @@ app.get('*', (req, res, next) => {
   return next();
 });
 
-// Global API Error Handler: Ensure all uncaught errors return JSON and never HTML
-app.use((err, req, res, next) => {
+// ─── Global Error Handler ─────────────────────────────────────────────────────
+app.use((err, _req, res, _next) => {
   console.error('Unhandled Server Error:', err);
   const status = err.status || err.statusCode || 500;
   res.status(status).json({
@@ -240,33 +392,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Express Server only when not in serverless or test mode
+// ─── Start Server ─────────────────────────────────────────────────────────────
 if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`🚀 RegMate Server running on http://localhost:${PORT}`);
   });
 }
 
-// MongoDB Connection Logic with comprehensive error handling
+// ─── MongoDB ──────────────────────────────────────────────────────────────────
 console.log('⏳ Connecting to MongoDB...');
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
-    console.log('✅ Connected successfully to MongoDB Database');
-  })
-  .catch((err) => {
+  .then(() => console.log('✅ Connected successfully to MongoDB Database'))
+  .catch(err => {
     console.error('❌ MongoDB Connection Error:', err.message);
-    console.warn('⚠️ Application is running in fallback mode (Database operations will be unavailable until reconnected).');
+    console.warn('⚠️ Application running in fallback mode — DB unavailable.');
   });
 
-// Handle Mongoose connection event listeners
-mongoose.connection.on('error', (err) => {
-  console.error('❌ Mongoose Runtime Error:', err.message);
-});
-
-mongoose.connection.on('disconnected', () => {
-  console.warn('⚠️ Mongoose disconnected from MongoDB database.');
-});
+mongoose.connection.on('error', err => console.error('❌ Mongoose Runtime Error:', err.message));
+mongoose.connection.on('disconnected', () => console.warn('⚠️ Mongoose disconnected.'));
 
 export default app;
-

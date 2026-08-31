@@ -153,7 +153,10 @@ export default function BlogDetail() {
     const pageTitle = post.metaTitle || post.title || 'Regulatory Article';
     document.title = `${pageTitle} | RegMate`;
 
-    const metaDesc = post.metaDescription || post.desc || post.subtitle || '';
+    let metaDesc = post.metaDescription || post.ogDescription || post.excerpt || post.desc || post.subtitle || '';
+    if (!metaDesc && post.content) {
+      metaDesc = post.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+    }
 
     const canonicalHref = post.canonicalUrl
       ? (post.canonicalUrl.startsWith('http') ? post.canonicalUrl : `https://www.regmate.in${post.canonicalUrl}`)
@@ -175,18 +178,25 @@ export default function BlogDetail() {
     setOrUpdateTag('meta', 'name', 'description', 'content', metaDesc);
     setOrUpdateTag('link', 'rel', 'canonical', 'href', canonicalHref);
 
+    let ogImg = post.ogImage || post.coverImage || post.image || post.featuredImage || '';
+    if (!ogImg && post.content) {
+      const match = post.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (match && match[1]) ogImg = match[1].trim();
+    }
+    if (!ogImg) ogImg = 'https://www.regmate.in/assets/og-fallback-blog.jpg';
+    if (ogImg && !ogImg.startsWith('http://') && !ogImg.startsWith('https://')) {
+      ogImg = `https://www.regmate.in${ogImg.startsWith('/') ? '' : '/'}${ogImg}`;
+    }
+    ogImg = ogImg.replace(/^http:\/\//i, 'https://');
+
     // Open Graph Tags
     setOrUpdateTag('meta', 'property', 'og:type', 'content', 'article');
     setOrUpdateTag('meta', 'property', 'og:site_name', 'content', 'RegMate');
     setOrUpdateTag('meta', 'property', 'og:title', 'content', post.ogTitle || pageTitle);
     setOrUpdateTag('meta', 'property', 'og:description', 'content', post.ogDescription || metaDesc);
     setOrUpdateTag('meta', 'property', 'og:url', 'content', canonicalHref);
-
-    let ogImg = post.ogImage || post.coverImage || post.image || 'https://www.regmate.in/assets/og-fallback-blog.jpg';
-    if (ogImg && !ogImg.startsWith('http://') && !ogImg.startsWith('https://')) {
-      ogImg = `https://www.regmate.in${ogImg.startsWith('/') ? '' : '/'}${ogImg}`;
-    }
     setOrUpdateTag('meta', 'property', 'og:image', 'content', ogImg);
+    setOrUpdateTag('meta', 'property', 'og:image:secure_url', 'content', ogImg);
     setOrUpdateTag('meta', 'property', 'og:image:width', 'content', '1200');
     setOrUpdateTag('meta', 'property', 'og:image:height', 'content', '630');
     setOrUpdateTag('meta', 'property', 'og:image:alt', 'content', pageTitle);
