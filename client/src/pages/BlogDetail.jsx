@@ -146,7 +146,7 @@ export default function BlogDetail() {
       });
   }, [slug, navigate]);
 
-  // Dynamically update document title, description, canonical, and OG meta tags
+  // Dynamically update document title, description, canonical, and OG/Twitter meta tags in place
   useEffect(() => {
     if (!post) return;
 
@@ -154,55 +154,48 @@ export default function BlogDetail() {
     document.title = `${pageTitle} | RegMate`;
 
     const metaDesc = post.metaDescription || post.desc || post.subtitle || '';
-    let descTag = document.querySelector('meta[name="description"]');
-    if (!descTag) {
-      descTag = document.createElement('meta');
-      descTag.name = 'description';
-      document.head.appendChild(descTag);
-    }
-    descTag.content = metaDesc;
 
     const canonicalHref = post.canonicalUrl
-      ? (post.canonicalUrl.startsWith('http') ? post.canonicalUrl : `https://regmate.in${post.canonicalUrl}`)
-      : `https://regmate.in/free-resources/blogs/${post.slug || slug}`;
+      ? (post.canonicalUrl.startsWith('http') ? post.canonicalUrl : `https://www.regmate.in${post.canonicalUrl}`)
+      : `https://www.regmate.in/free-resources/blogs/${post.slug || slug}`;
     
-    let canonicalTag = document.querySelector('link[rel="canonical"]');
-    if (!canonicalTag) {
-      canonicalTag = document.createElement('link');
-      canonicalTag.rel = 'canonical';
-      document.head.appendChild(canonicalTag);
-    }
-    canonicalTag.href = canonicalHref;
-
-    // OG Title
-    let ogTitleTag = document.querySelector('meta[property="og:title"]');
-    if (!ogTitleTag) {
-      ogTitleTag = document.createElement('meta');
-      ogTitleTag.setAttribute('property', 'og:title');
-      document.head.appendChild(ogTitleTag);
-    }
-    ogTitleTag.content = post.ogTitle || pageTitle;
-
-    // OG Description
-    let ogDescTag = document.querySelector('meta[property="og:description"]');
-    if (!ogDescTag) {
-      ogDescTag = document.createElement('meta');
-      ogDescTag.setAttribute('property', 'og:description');
-      document.head.appendChild(ogDescTag);
-    }
-    ogDescTag.content = post.ogDescription || metaDesc;
-
-    // OG Image
-    const ogImg = post.ogImage || post.coverImage || post.image || '';
-    if (ogImg) {
-      let ogImgTag = document.querySelector('meta[property="og:image"]');
-      if (!ogImgTag) {
-        ogImgTag = document.createElement('meta');
-        ogImgTag.setAttribute('property', 'og:image');
-        document.head.appendChild(ogImgTag);
+    // Helper to select node by selector or create if absent (ensures 0 duplicates)
+    const setOrUpdateTag = (tagName, attrKey, attrVal, contentKey, contentVal) => {
+      let tag = document.querySelector(`${tagName}[${attrKey}="${attrVal}"]`);
+      if (!tag) {
+        tag = document.createElement(tagName);
+        tag.setAttribute(attrKey, attrVal);
+        document.head.appendChild(tag);
       }
-      ogImgTag.content = ogImg;
+      if (contentKey && contentVal !== undefined) {
+        tag.setAttribute(contentKey, contentVal);
+      }
+    };
+
+    setOrUpdateTag('meta', 'name', 'description', 'content', metaDesc);
+    setOrUpdateTag('link', 'rel', 'canonical', 'href', canonicalHref);
+
+    // Open Graph Tags
+    setOrUpdateTag('meta', 'property', 'og:type', 'content', 'article');
+    setOrUpdateTag('meta', 'property', 'og:site_name', 'content', 'RegMate');
+    setOrUpdateTag('meta', 'property', 'og:title', 'content', post.ogTitle || pageTitle);
+    setOrUpdateTag('meta', 'property', 'og:description', 'content', post.ogDescription || metaDesc);
+    setOrUpdateTag('meta', 'property', 'og:url', 'content', canonicalHref);
+
+    let ogImg = post.ogImage || post.coverImage || post.image || 'https://www.regmate.in/assets/og-fallback-blog.jpg';
+    if (ogImg && !ogImg.startsWith('http://') && !ogImg.startsWith('https://')) {
+      ogImg = `https://www.regmate.in${ogImg.startsWith('/') ? '' : '/'}${ogImg}`;
     }
+    setOrUpdateTag('meta', 'property', 'og:image', 'content', ogImg);
+    setOrUpdateTag('meta', 'property', 'og:image:width', 'content', '1200');
+    setOrUpdateTag('meta', 'property', 'og:image:height', 'content', '630');
+    setOrUpdateTag('meta', 'property', 'og:image:alt', 'content', pageTitle);
+
+    // Twitter Card Tags
+    setOrUpdateTag('meta', 'name', 'twitter:card', 'content', 'summary_large_image');
+    setOrUpdateTag('meta', 'name', 'twitter:title', 'content', post.ogTitle || pageTitle);
+    setOrUpdateTag('meta', 'name', 'twitter:description', 'content', post.ogDescription || metaDesc);
+    setOrUpdateTag('meta', 'name', 'twitter:image', 'content', ogImg);
   }, [post, slug]);
 
   // Loading skeleton state
@@ -232,7 +225,7 @@ export default function BlogDetail() {
         </p>
         <Link
           to="/free-resources/blogs"
-          className="cursor-target inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--forest)] text-white font-bold text-sm hover:bg-[var(--forest-deep)] transition-all cursor-pointer shadow-md"
+          className="cursor-target inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--forest)] text-white font-bold text-sm hover:bg-[var(--forest-deep)] transition-all cursor-pointer shadow-md min-h-[44px]"
         >
           <ArrowLeft className="w-4 h-4" /> Return to Blog Index
         </Link>
@@ -251,19 +244,19 @@ export default function BlogDetail() {
   });
 
   return (
-    <article className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto animate-fade-in-up">
+    <article className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto animate-fade-in-up overflow-x-hidden">
       
       {/* Top Back Link */}
       <Link
         to="/free-resources/blogs"
-        className="cursor-target inline-flex items-center text-sm font-semibold text-[var(--ink-soft)] hover:text-[var(--leaf)] mb-8 transition-colors group cursor-pointer"
+        className="cursor-target inline-flex items-center text-sm font-semibold text-[var(--ink-soft)] hover:text-[var(--leaf)] mb-6 transition-colors group cursor-pointer min-h-[44px] py-2"
       >
         <ArrowLeft className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
         Back to Blogs & Analysis
       </Link>
 
       {/* Header Section */}
-      <header className="mb-10 pb-8 border-b border-[var(--line)]">
+      <header className="mb-8 pb-8 border-b border-[var(--line)]">
         
         {/* Categories */}
         <div className="flex flex-wrap gap-2 mb-4">
@@ -284,7 +277,7 @@ export default function BlogDetail() {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-[var(--forest-deep)] mb-6 leading-tight">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-display font-bold text-[var(--forest-deep)] mb-6 leading-tight">
           {post.title}
         </h1>
 
@@ -317,7 +310,7 @@ export default function BlogDetail() {
           </div>
 
           {/* Social Share & Bookmark Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => {
                 if (navigator.clipboard) {
@@ -325,14 +318,16 @@ export default function BlogDetail() {
                   alert('Link copied to clipboard!');
                 }
               }}
-              className="cursor-target p-2 rounded-full border border-[var(--line)] hover:bg-[var(--mint)] text-[var(--forest)] transition-colors cursor-pointer"
+              className="cursor-target min-w-[44px] min-h-[44px] p-2.5 rounded-full border border-[var(--line)] hover:bg-[var(--mint)] text-[var(--forest)] transition-colors cursor-pointer flex items-center justify-center"
               title="Share Article"
+              aria-label="Share Article"
             >
               <Share2 className="w-4 h-4" />
             </button>
             <button
-              className="cursor-target p-2 rounded-full border border-[var(--line)] hover:bg-[var(--mint)] text-[var(--forest)] transition-colors cursor-pointer"
+              className="cursor-target min-w-[44px] min-h-[44px] p-2.5 rounded-full border border-[var(--line)] hover:bg-[var(--mint)] text-[var(--forest)] transition-colors cursor-pointer flex items-center justify-center"
               title="Bookmark Article"
+              aria-label="Bookmark Article"
             >
               <Bookmark className="w-4 h-4" />
             </button>
@@ -340,13 +335,13 @@ export default function BlogDetail() {
         </div>
       </header>
 
-      {/* Hero Cover Image */}
+      {/* Hero Cover Image (Uncropped, native aspect ratio) */}
       {(post.coverImage || post.image) && (
-        <div className="w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden mb-10 shadow-md border border-[var(--line)] bg-slate-100">
+        <div className="w-full rounded-3xl overflow-hidden mb-10 shadow-md border border-[var(--line)] bg-slate-100 p-1 sm:p-2">
           <img
             src={post.coverImage || post.image}
             alt={post.title}
-            className="w-full h-full object-cover"
+            className="blog-cover-image w-full h-auto object-contain block rounded-2xl max-h-[600px] mx-auto"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
         </div>

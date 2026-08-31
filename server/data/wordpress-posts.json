@@ -1,5 +1,29 @@
 [
   {
+    "id": "retail-fme-gift-ifsc-setup",
+    "title": "Setting Up a Retail FME in GIFT IFSC: Process, Eligibility, Cost and Timeline",
+    "slug": "retail-fme-gift-ifsc-setup",
+    "date": "31 Aug 2026",
+    "rawDate": "Mon, 31 Aug 2026 12:00:00 +0000",
+    "author": "CS Prashant Kumar",
+    "categories": [
+      {
+        "name": "GIFT IFSC",
+        "slug": "gift-ifsc"
+      }
+    ],
+    "category": "GIFT IFSC",
+    "desc": "A practical guide to setting up a Retail FME in GIFT IFSC, covering eligibility, IFSCA registration, costs, key requirements and the timeline from setup to launch.",
+    "metaTitle": "Setting Up a Retail FME in GIFT IFSC: Process, Eligibility, Cost and Timeline",
+    "metaDescription": "A practical guide to setting up a Retail FME in GIFT IFSC, covering eligibility, IFSCA registration, costs, key requirements and the timeline from setup to launch.",
+    "ogTitle": "Setting Up a Retail FME in GIFT IFSC: Process, Eligibility, Cost and Timeline",
+    "ogDescription": "A practical guide to setting up a Retail FME in GIFT IFSC, covering eligibility, IFSCA registration, costs, key requirements and the timeline from setup to launch.",
+    "coverImage": "https://www.regmate.in/images/blog/retail-fme-gift-ifsc-cover.jpg",
+    "ogImage": "https://www.regmate.in/images/blog/retail-fme-gift-ifsc-cover.jpg",
+    "canonicalUrl": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+    "content": "<p>Setting up a Retail Fund Management Entity (FME) in GIFT IFSC provides fund managers with unprecedented access to international financial markets and global capital pools under the regulatory oversight of the International Financial Services Centres Authority (IFSCA).</p><h2>Overview of Retail FME Framework</h2><p>Under the IFSCA (Fund Management) Regulations, 2022, a Retail FME is authorized to launch retail schemes, non-retail schemes, portfolio management services, and advisory services in GIFT City.</p><h2>Eligibility and Capital Requirements</h2><ul><li><strong>Net Worth Requirement:</strong> Minimum USD 500,000 net worth for Retail FME status.</li><li><strong>Legal Structure:</strong> Company or LLP registered in GIFT IFSC.</li><li><strong>Principal Officer:</strong> Must possess relevant professional certification and minimum 5 years of fund management experience.</li></ul><h2>IFSCA Registration Process and Costs</h2><p>The registration process involves filing Form A with IFSCA, submitting organizational blueprints, internal controls, AML/CFT manuals, and paying the statutory application fee.</p>"
+  },
+  {
     "id": "6",
     "title": "How Art Shapes the Way We Experience Everyday Life",
     "slug": "how-art-shapes-the-way-we-experience-everyday-life",
