@@ -1,0 +1,5178 @@
+{
+  "timestamp": "2026-08-31T11:10:42.465Z",
+  "totalPageAudits": 36,
+  "totalButtonsAudited": 2460,
+  "deadButtonsFound": [],
+  "consoleErrorsFound": [],
+  "smallTouchTargetsFound": [
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore",
+      "width": 66,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View All Quizzes",
+      "width": 327,
+      "height": 24
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View All",
+      "width": 62,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View All",
+      "width": 62,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Learn",
+      "width": 32,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All Regulators",
+      "width": 110,
+      "height": 28
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "IFSCA",
+      "width": 66,
+      "height": 30
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SEBI",
+      "width": 58,
+      "height": 30
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "MCA",
+      "width": 58,
+      "height": 30
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RBI",
+      "width": 50,
+      "height": 30
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home",
+      "width": 33,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Chapters & Provisions (47)",
+      "width": 200,
+      "height": 30
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Complete View",
+      "width": 109,
+      "height": 28
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Statutory Text",
+      "width": 104,
+      "height": 28
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explanation",
+      "width": 91,
+      "height": 28
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Points",
+      "width": 128,
+      "height": 28
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Risk & Interview",
+      "width": 117,
+      "height": 28
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Tools",
+      "width": 30,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All Tools",
+      "width": 78,
+      "height": 28
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Planners & Calendars",
+      "width": 153,
+      "height": 30
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Filing Trackers",
+      "width": 115,
+      "height": 30
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Statutory Calculators",
+      "width": 153,
+      "height": 30
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Risk Diagnostics",
+      "width": 125,
+      "height": 30
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Checklists",
+      "width": 90,
+      "height": 30
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Launch Tool",
+      "width": 91,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Tools",
+      "width": 30,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All (117)",
+      "width": 70,
+      "height": 28
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Not Assessed (117)",
+      "width": 133,
+      "height": 30
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Likely Compliant (0)",
+      "width": 140,
+      "height": 30
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Evidence Gap (0)",
+      "width": 122,
+      "height": 30
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Potential Exception (0)",
+      "width": 156,
+      "height": 30
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Not Applicable (0)",
+      "width": 129,
+      "height": 30
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Full Statutory Text & Why It Matters",
+      "width": 251,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All Updates",
+      "width": 95,
+      "height": 28
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "MCA",
+      "width": 58,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SEBI",
+      "width": 58,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "IFSCA",
+      "width": 66,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RBI",
+      "width": 50,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "FEMA",
+      "width": 64,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "IRDAI",
+      "width": 62,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Tax",
+      "width": 50,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Other Regulators",
+      "width": 128,
+      "height": 30
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Order",
+      "width": 82,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Browse All Blogs",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Download Templates",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Read Guides",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "View Checklists",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore FAQs",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Browse Glossary",
+      "width": 294,
+      "height": 32
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Art Culture (2)",
+      "width": 111,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Inspiration (2)",
+      "width": 108,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Artist Stories (2)",
+      "width": 123,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home Styling (2)",
+      "width": 125,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Creative Living (2)",
+      "width": 131,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Interior Design (2)",
+      "width": 131,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Minimal Living (2)",
+      "width": 129,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "IPR (34)",
+      "width": 75,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "TRADEMARKS (15)",
+      "width": 137,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "COMPANIES ACT, 2013 (3)",
+      "width": 180,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "COMPANY LAW COMPLIANCES (10)",
+      "width": 233,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "COMPLIANCES (10)",
+      "width": 141,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "CORPORATE LAW (9)",
+      "width": 150,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "ESOP (11)",
+      "width": 83,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "STARTUPS (3)",
+      "width": 111,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "DOING BUSINESS IN INDIA (16)",
+      "width": 209,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "INSIGHT ON ADJUDICATION ORDER (1)",
+      "width": 251,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "INCORPORATION & STRUCTURING (3)",
+      "width": 249,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "FUNDRAISING & INVESTMENTS (1)",
+      "width": 231,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "GIFT City & IFSC Law (56)",
+      "width": 176,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "CHECKLISTS & PROCEDURES (1)",
+      "width": 218,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "VISA & BUSINESS IMMIGRATION COMPLIANCE (2)",
+      "width": 321,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "FEMA & FDI REGULATIONS (5)",
+      "width": 204,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "TAXATION (8)",
+      "width": 108,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "BOARD RESOLUTIONS (4)",
+      "width": 178,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "DOCS & FORMATS (4)",
+      "width": 155,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "FPO (8)",
+      "width": 72,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "INTERNATIONAL TRADEMARK (26)",
+      "width": 232,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "CORPORATE TAX PLANNING (2)",
+      "width": 214,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "INTERNATIONAL TAXATION (1)",
+      "width": 206,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "DESIGNS (3)",
+      "width": 102,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SINGAPORE EXPANSION SERIES — FOR INDIAN BUSINESSES",
+      "width": 404,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "GO GLOBAL SERIES (10)",
+      "width": 168,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "UAE EXPANSION SERIES – FOR INDIAN BUSINESS (5)",
+      "width": 337,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Blog (2)",
+      "width": 73,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "PATENTS (8)",
+      "width": 102,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "UAE Trademark (15)",
+      "width": 142,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Saudi Arabia Trademark (5)",
+      "width": 184,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "GIFT City Capital Markets Documentation Series (6)",
+      "width": 322,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Fund Management & AIF in GIFT IFSC (10)",
+      "width": 266,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Capital Markets & Listings in GIFT IFSC (4)",
+      "width": 270,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Aircraft & Ship Leasing in GIFT IFSC (2)",
+      "width": 251,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "LABOUR & EMPLOYMENT LAWS (2)",
+      "width": 232,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SEZ Advisory (1)",
+      "width": 121,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Updates (1)",
+      "width": 158,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "IFSC Advisory (1)",
+      "width": 125,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "FEMA Advisory (1)",
+      "width": 132,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "INCOME TAX (1)",
+      "width": 120,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Lifestyle (1)",
+      "width": 95,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SECRETARIAL STANDARDS (1)",
+      "width": 204,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "SEBI & SECURITIES LAWS (1)",
+      "width": 195,
+      "height": 30
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All Features",
+      "width": 97,
+      "height": 28
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Core Platform",
+      "width": 107,
+      "height": 28
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Learning & Quizzes",
+      "width": 137,
+      "height": 28
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Career Prep",
+      "width": 96,
+      "height": 28
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Tools & Formats",
+      "width": 119,
+      "height": 28
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Explore Feature",
+      "width": 111,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Home",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLearn — Courses",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegLens — Regulations",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegPractice — Tests & Quizzes",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegTools — Compliance Tools",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegReady — Role Preparation",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "RegIntel — Updates & Tracker",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Blogs & Analysis",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Board Formats & Templates",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Compliance Checklists",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Regulatory Calendar",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Adjudication Orders",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About RegMate",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "All-Access Membership",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Member Dashboard",
+      "width": 343,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "About Us",
+      "width": 51,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Pricing",
+      "width": 39,
+      "height": 16
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "text": "Disclaimers",
+      "width": 65,
+      "height": 16
+    }
+  ],
+  "pageResults": [
+    {
+      "route": "/",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 81,
+      "validButtons": 81,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/learn",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 46,
+      "validButtons": 46,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/understand",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 51,
+      "validButtons": 51,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 35,
+      "validButtons": 35,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 37,
+      "validButtons": 37,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 34,
+      "validButtons": 34,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 45,
+      "validButtons": 45,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 33,
+      "validButtons": 33,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 389,
+      "validButtons": 389,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 31,
+      "validButtons": 31,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 33,
+      "validButtons": 33,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 192,
+      "validButtons": 192,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 40,
+      "validButtons": 40,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 100,
+      "validButtons": 100,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 34,
+      "validButtons": 34,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 47,
+      "validButtons": 47,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/about",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 47,
+      "validButtons": 47,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/membership",
+      "viewport": "Desktop (1280x800)",
+      "totalButtons": 34,
+      "validButtons": 34,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 71,
+      "validButtons": 71,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/learn",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 38,
+      "validButtons": 38,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/understand",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 32,
+      "validButtons": 32,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 27,
+      "validButtons": 27,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice/quizzes",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 29,
+      "validButtons": 29,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/practice/mock-tests",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 26,
+      "validButtons": 26,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 37,
+      "validButtons": 37,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools/compliance-calendar",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 25,
+      "validButtons": 25,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/tools/regready-assessment",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 381,
+      "validButtons": 381,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/prepare",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 23,
+      "validButtons": 23,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/prepare/fme",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 25,
+      "validButtons": 25,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/regintel",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 184,
+      "validButtons": 184,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 31,
+      "validButtons": 31,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/blogs",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 92,
+      "validButtons": 92,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/blogs/retail-fme-gift-ifsc-setup",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 26,
+      "validButtons": 26,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/free-resources/templates",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 39,
+      "validButtons": 39,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/about",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 39,
+      "validButtons": 39,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    },
+    {
+      "route": "/membership",
+      "viewport": "Mobile / Phone (375x667)",
+      "totalButtons": 26,
+      "validButtons": 26,
+      "deadButtonsCount": 0,
+      "errorsCount": 0
+    }
+  ]
+}
