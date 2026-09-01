@@ -5,7 +5,7 @@ import {
   ChevronRight, Lock, HelpCircle, FileText, Layers, RefreshCw, Volume2, VolumeX, Shield, Timer
 } from 'lucide-react';
 import {
-  recordStepAnswer, getStepPosition, saveStepPosition,
+  recordStepAnswer, recordModuleCompletion, getStepPosition, saveStepPosition,
   playGamificationSound, triggerConfetti, recordMistake, removeMistake,
   isAudioMuted, setAudioMuted
 } from '../utils/learnProgress';
@@ -321,6 +321,13 @@ export default function ProgressiveStepEngine({
     setIsFlipped(false);
   }, [currentStep]);
 
+  // Interactive Scored Question Steps Filter
+  const scoredSteps = useMemo(() => {
+    return steps.filter(s => ['MCQ', 'SPOT_THE_MISTAKE', 'REGULATION_COMPARISON', 'TRUE_FALSE'].includes(s.type));
+  }, [steps]);
+
+  const totalScoredQuestions = scoredSteps.length;
+
   // Handle Option Select
   const handleSelectOption = (idx) => {
     if (currentSlot.submitted) return;
@@ -338,13 +345,24 @@ export default function ProgressiveStepEngine({
       isCorrect = currentSlot.selected === (currentStep.correctIdx ?? 0);
     }
 
+    const wasAlreadySubmitted = Boolean(currentSlot.submitted);
+    const firstAttemptCorrect = wasAlreadySubmitted ? currentSlot.firstAttemptCorrect : isCorrect;
+
     setStepStates(prev => ({
       ...prev,
-      [currentStep.id]: { ...(prev[currentStep.id] || {}), submitted: true, isCorrect }
+      [currentStep.id]: {
+        ...(prev[currentStep.id] || {}),
+        selected: currentSlot.selected,
+        submitted: true,
+        isCorrect,
+        firstAttemptCorrect,
+      }
     }));
 
-    // Record answer progress & XP
-    recordStepAnswer(courseSlug, chapter.num, isCorrect, { isFirstAttempt: true });
+    // Only record answer progress & XP on the first attempt
+    if (!wasAlreadySubmitted) {
+      recordStepAnswer(courseSlug, chapter.num, isCorrect, { isFirstAttempt: true });
+    }
 
     if (isCorrect) {
       playGamificationSound('correct');
@@ -366,11 +384,58 @@ export default function ProgressiveStepEngine({
     }
   };
 
+  // Live Scored Results Calculation
+  const scoredResults = useMemo(() => {
+    let attempted = 0;
+    let correctFirstAttempts = 0;
+
+    scoredSteps.forEach(s => {
+      const slot = stepStates[s.id];
+      if (slot && slot.submitted) {
+        attempted++;
+        if (slot.firstAttemptCorrect) {
+          correctFirstAttempts++;
+        }
+      }
+    });
+
+    const accuracyPct = totalScoredQuestions > 0
+      ? Math.round((correctFirstAttempts / totalScoredQuestions) * 100)
+      : 100;
+
+    let masteryLevel = 1;
+    if (accuracyPct >= 80) masteryLevel = 5;
+    else if (accuracyPct >= 65) masteryLevel = 4;
+    else if (accuracyPct >= 50) masteryLevel = 3;
+    else if (accuracyPct >= 30) masteryLevel = 2;
+    else masteryLevel = 1;
+
+    const bonusXP = accuracyPct >= 80 ? 100 : accuracyPct >= 65 ? 50 : accuracyPct >= 50 ? 30 : 15;
+    const totalEarnedXP = (correctFirstAttempts * 25) + bonusXP;
+
+    return {
+      totalScoredQuestions,
+      attempted,
+      correctFirstAttempts,
+      accuracyPct,
+      masteryLevel,
+      bonusXP,
+      totalEarnedXP,
+    };
+  }, [scoredSteps, stepStates, totalScoredQuestions]);
+
   // Move to Next Step
   const handleNext = () => {
     if (isLastStep) {
       triggerConfetti();
-      playGamificationSound('levelUp');
+      playGamificationSound(scoredResults.masteryLevel >= 5 ? 'levelUp' : 'success');
+      recordModuleCompletion(courseSlug, chapter.num, {
+        totalQuestions: scoredResults.totalScoredQuestions,
+        correctCount: scoredResults.correctFirstAttempts,
+        accuracyPct: scoredResults.accuracyPct,
+        masteryLevel: scoredResults.masteryLevel,
+        bonusXP: scoredResults.bonusXP,
+      });
       if (onComplete) onComplete();
       return;
     }
@@ -438,7 +503,7 @@ export default function ProgressiveStepEngine({
       <div className="bg-white rounded-3xl p-5 sm:p-7 border border-forest/10 shadow-lg min-h-[380px] flex flex-col justify-between relative overflow-hidden transition-all duration-300">
         
         {/* Internal Scrollable Content Box */}
-                <div className="max-h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden pr-1 space-y-5 break-words">
+        <div className="max-h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden pr-1 space-y-5 break-words">
           
           {/* STEP TYPE 1: INTRO */}
           {currentStep.type === 'INTRO' && (
@@ -654,12 +719,35 @@ export default function ProgressiveStepEngine({
                 🪜
               </div>
               <h3 className="text-xl font-bold text-forest-deep">{currentStep.title}</h3>
-              <p className="text-xs text-gray-600 max-w-sm mx-auto">{currentStep.question}</p>
+              <p className="text-xs text-gray-600 max-w-sm mx-auto">
+                {totalScoredQuestions > 0
+                  ? `You have answered ${scoredResults.attempted} of ${totalScoredQuestions} scored questions. Current score: ${scoredResults.accuracyPct}% (${scoredResults.correctFirstAttempts}/${totalScoredQuestions} correct on first attempt).`
+                  : `You have completed all curriculum steps for Chapter ${chapter.num}: ${chapter.title}.`
+                }
+              </p>
 
               <div className="space-y-2 max-w-xs mx-auto text-xs font-mono">
-                {['Level 5 — Mastered (80%+)', 'Level 4 — Proficient', 'Level 3 — Practicing', 'Level 2 — Familiar', 'Level 1 — Learning'].map((l, i) => (
-                  <div key={i} className={`p-2.5 rounded-xl border ${i === 0 ? 'bg-emerald-700 text-white font-bold' : 'bg-gray-50 text-gray-600'}`}>
-                    {l}
+                {[
+                  { lvl: 5, label: 'Level 5 — Mastered (80%+)', active: scoredResults.masteryLevel >= 5 },
+                  { lvl: 4, label: 'Level 4 — Proficient (65%–79%)', active: scoredResults.masteryLevel === 4 },
+                  { lvl: 3, label: 'Level 3 — Practicing (50%–64%)', active: scoredResults.masteryLevel === 3 },
+                  { lvl: 2, label: 'Level 2 — Familiar (30%–49%)', active: scoredResults.masteryLevel === 2 },
+                  { lvl: 1, label: 'Level 1 — Learning (<30%)', active: scoredResults.masteryLevel === 1 },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`p-2.5 rounded-xl border transition-all flex items-center justify-between ${
+                      item.active
+                        ? 'bg-emerald-700 text-white font-bold shadow-sm border-emerald-800'
+                        : 'bg-gray-50 text-gray-500 border-gray-200'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {item.active && (
+                      <span className="px-2 py-0.5 rounded-md bg-white/20 text-white text-[10px] font-bold">
+                        {scoredResults.accuracyPct}%
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -670,22 +758,39 @@ export default function ProgressiveStepEngine({
           {currentStep.type === 'SUMMARY' && (
             <div className="text-center space-y-5 py-4 animate-fadeIn">
               <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-700 flex items-center justify-center mx-auto text-2xl font-bold shadow-lg">
-                🏆
+                {scoredResults.masteryLevel >= 5 ? '🏆' : scoredResults.masteryLevel === 4 ? '🎯' : scoredResults.masteryLevel === 3 ? '📈' : '🔄'}
               </div>
-              <h2 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep">Module Mastered!</h2>
+              <h2 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep">
+                {scoredResults.masteryLevel >= 5
+                  ? 'Module Mastered!'
+                  : scoredResults.masteryLevel === 4
+                  ? 'Module Completed — Proficient!'
+                  : scoredResults.masteryLevel === 3
+                  ? 'Module Completed — Practicing'
+                  : 'Module Completed — Needs Review'
+                }
+              </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
-                Congratulations! You have completed all interactive step cards for Chapter {chapter.num}: {chapter.title}.
+                {totalScoredQuestions > 0
+                  ? `You achieved ${scoredResults.accuracyPct}% accuracy (${scoredResults.correctFirstAttempts} of ${totalScoredQuestions} questions correct on first attempt) for Chapter ${chapter.num}: ${chapter.title}.`
+                  : `Congratulations! You have completed all interactive step cards for Chapter ${chapter.num}: ${chapter.title}.`
+                }
               </p>
 
               <div className="flex items-center justify-center gap-6 py-3 bg-paper rounded-2xl border border-forest/10 max-w-sm mx-auto">
                 <div>
                   <div className="text-xs text-ink-soft font-medium">XP Earned</div>
-                  <div className="text-xl font-bold font-mono text-emerald-600">+100 XP</div>
+                  <div className="text-xl font-bold font-mono text-emerald-600">+{scoredResults.totalEarnedXP} XP</div>
                 </div>
                 <div className="w-px h-8 bg-gray-200" />
                 <div>
                   <div className="text-xs text-ink-soft font-medium">Status</div>
-                  <div className="text-xl font-bold font-mono text-forest">80%+ Mastered</div>
+                  <div className="text-xl font-bold font-mono text-forest">
+                    {scoredResults.masteryLevel >= 5
+                      ? `${scoredResults.accuracyPct}% Mastered`
+                      : `${scoredResults.accuracyPct}% Accuracy`
+                    }
+                  </div>
                 </div>
               </div>
             </div>

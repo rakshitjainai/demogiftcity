@@ -305,21 +305,6 @@ export function recordStepAnswer(slug, chId, isCorrect, options = {}) {
   ch.practiceAttempts = [...(ch.practiceAttempts || []), { correct: isCorrect, isFirstAttempt: options.isFirstAttempt, timestamp: Date.now() }];
   ch.lastActivity = Date.now();
 
-  const recent = ch.practiceAttempts.slice(-8);
-  const acc = recent.filter(a => a.correct).length / recent.length;
-
-  // 80% Single Source of Truth Mastery Threshold Logic
-  if (acc >= 0.80 && ch.practiceAttempts.length >= 3) {
-    ch.masteryLevel = 5;
-    p.weakChapterIds = (p.weakChapterIds || []).filter(id => String(id) !== String(chId));
-  } else if (acc >= 0.65) {
-    ch.masteryLevel = Math.max(ch.masteryLevel, 4);
-  } else if (isCorrect) {
-    ch.masteryLevel = Math.max(ch.masteryLevel, 2);
-  } else {
-    if (!p.weakChapterIds.includes(chId)) p.weakChapterIds.push(chId);
-  }
-
   p.chapters[chId] = ch;
   updateStreak(p);
 
@@ -329,6 +314,63 @@ export function recordStepAnswer(slug, chId, isCorrect, options = {}) {
 
   saveProgress(slug, p);
   return { p, ch };
+}
+
+export function recordModuleCompletion(slug, chId, result = {}) {
+  const p = getProgress(slug);
+  const ch = { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
+
+  const totalQuestions = typeof result.totalQuestions === 'number' ? result.totalQuestions : 0;
+  const correctCount = typeof result.correctCount === 'number' ? result.correctCount : 0;
+  
+  // Deterministic accuracy percentage
+  const accuracyPct = totalQuestions > 0
+    ? Math.round((correctCount / totalQuestions) * 100)
+    : (typeof result.accuracyPct === 'number' ? result.accuracyPct : 100);
+
+  // Derive Mastery Level directly from accuracy percentage
+  let masteryLevel = 1;
+  if (accuracyPct >= 80) masteryLevel = 5;
+  else if (accuracyPct >= 65) masteryLevel = 4;
+  else if (accuracyPct >= 50) masteryLevel = 3;
+  else if (accuracyPct >= 30) masteryLevel = 2;
+  else masteryLevel = 1;
+
+  ch.lessonRead = true;
+  ch.masteryLevel = masteryLevel;
+  ch.accuracyPct = accuracyPct;
+  ch.lastScore = {
+    total: totalQuestions,
+    correct: correctCount,
+    accuracyPct,
+    timestamp: Date.now(),
+  };
+  ch.lastActivity = Date.now();
+
+  if (masteryLevel >= 5) {
+    p.weakChapterIds = (p.weakChapterIds || []).filter(id => String(id) !== String(chId));
+  } else if (masteryLevel <= 2 && totalQuestions > 0) {
+    if (!p.weakChapterIds.includes(chId)) p.weakChapterIds.push(chId);
+  }
+
+  // Award completion bonus XP based on genuine performance
+  const bonusXP = typeof result.bonusXP === 'number'
+    ? result.bonusXP
+    : (accuracyPct >= 80 ? 100 : accuracyPct >= 65 ? 50 : accuracyPct >= 50 ? 30 : 15);
+
+  if (bonusXP > 0) {
+    addXP(slug, bonusXP, masteryLevel >= 5 ? 'Module Mastered' : 'Module Completed');
+  }
+
+  if (masteryLevel >= 5 && !p.badges.includes('first_module')) {
+    p.badges.push('first_module');
+  }
+
+  p.chapters[chId] = ch;
+  updateStreak(p);
+  saveProgress(slug, p);
+
+  return { p, ch, accuracyPct, masteryLevel, bonusXP };
 }
 
 export function recordChallengeScore(slug, chId, type, score, total) {

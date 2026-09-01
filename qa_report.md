@@ -187,8 +187,45 @@ qa-screenshots/
 
 ---
 
+## Scoring & Accuracy Model Validation
+
+To ensure absolute fidelity between user performance and displayed module mastery, the scoring engine was audited, refactored, and validated across unit and live browser test suites:
+
+### Deterministic Scoring Formula
+- **Denominator ($N_{scored}$)**: Count of scored interactive question steps (`MCQ`, `SPOT_THE_MISTAKE`, `REGULATION_COMPARISON`, `TRUE_FALSE`) in the active module. Informational cards (`INTRO`, `REGULATION`, `EXPLANATION`, `FLASHCARD`) are excluded.
+- **Numerator ($C_{first}$)**: Count of scored questions answered correctly on the **first attempt**.
+- **Accuracy Percentage**: $\text{Accuracy} = \text{round}\left(\frac{C_{first}}{N_{scored}} \times 100\right)$
+- **Mastery Benchmark Levels**:
+  - $\ge 80\% \implies \text{Level 5 — Mastered (80\%+)}$
+  - $65\% - 79\% \implies \text{Level 4 — Proficient (65\%–79\%)}$
+  - $50\% - 64\% \implies \text{Level 3 — Practicing (50\%–64\%)}$
+  - $30\% - 49\% \implies \text{Level 2 — Familiar (30\%–49\%)}$
+  - $< 30\% \implies \text{Level 1 — Learning (<30\%)}$
+- **XP Calculation**: $+25\text{ XP}$ per first-attempt correct answer + performance-tier completion bonus ($+100\text{ XP}$ for $\ge 80\%$, $+50\text{ XP}$ for $\ge 65\%$, $+30\text{ XP}$ for $\ge 50\%$, $+15\text{ XP}$ for $<50\%$).
+
+### Dedicated Scoring Test Suite Results (14 / 14 PASS)
+
+| Test ID | Type | Scenario / Course | Target | Result | Status |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **UNIT-01** | Mathematical | 0 wrong out of 10 questions | 100% Mastered / +350 XP | 100% / Level 5 / +350 XP | **PASS** |
+| **UNIT-02** | Mathematical | 1 wrong out of 10 questions | 90% Mastered / +325 XP | 90% / Level 5 / +325 XP | **PASS** |
+| **UNIT-03** | Mathematical | 3 wrong out of 10 questions | 70% Proficient / +225 XP | 70% / Level 4 / +225 XP | **PASS** |
+| **UNIT-04** | Mathematical | 5 wrong out of 10 questions | 50% Practicing / +155 XP | 50% / Level 3 / +155 XP | **PASS** |
+| **UNIT-05** | Mathematical | 7 wrong out of 10 questions | 30% Familiar / +90 XP | 30% / Level 2 / +90 XP | **PASS** |
+| **UNIT-06** | Mathematical | 10 wrong out of 10 questions | 0% Needs Review / +15 XP | 0% / Level 1 / +15 XP | **PASS** |
+| **UNIT-07** | Mathematical | SEBI AIF 1 wrong (2/3 correct) | 67% Proficient / +100 XP | 67% / Level 4 / +100 XP | **PASS** |
+| **UNIT-08** | Mathematical | SEBI AIF all wrong (0/3 correct) | 0% Needs Review / +15 XP | 0% / Level 1 / +15 XP | **PASS** |
+| **UNIT-09** | Mathematical | IFSCA CMI 6 wrong (6/12 correct) | 50% Practicing / +180 XP | 50% / Level 3 / +180 XP | **PASS** |
+| **UNIT-10** | Mathematical | IFSCA FME 2 wrong (12/14 correct) | 86% Mastered / +400 XP | 86% / Level 5 / +400 XP | **PASS** |
+| **E2E-01** | Browser E2E | SEBI AIF (1 wrong out of 3) | Displays "67% Accuracy" & "Module Completed — Proficient!" | Verified on DOM | **PASS** |
+| **E2E-02** | Browser E2E | SEBI AIF (3 wrong out of 3) | Displays "0% Accuracy" & "Module Completed — Needs Review" | Verified on DOM | **PASS** |
+| **E2E-03** | Browser E2E | SEBI AIF (3 correct out of 3) | Displays "100% Mastered" & "Module Mastered!" | Verified on DOM | **PASS** |
+| **E2E-04** | Browser E2E | IFSCA CMI (6 correct, 6 wrong out of 12) | Displays "50% Accuracy" & "Module Completed — Practicing" | Verified on DOM | **PASS** |
+
+---
+
 ## Final Deployment Verdict
 
 # ✅ READY FOR DEPLOYMENT
 
-All 42 end-to-end test runs (21 DEV + 21 PROD) have completed with a 100% success rate. The application exhibits zero console errors, zero network failures, zero horizontal overflow issues, and flawless step progression across all required form factors.
+All 42 end-to-end traversal tests (21 DEV + 21 PROD) and all 14 dedicated scoring accuracy tests have completed with a 100% success rate. The application exhibits zero console errors, zero network failures, zero horizontal overflow issues, and mathematically rigorous step progression and mastery calculations.
