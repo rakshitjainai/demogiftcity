@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ArrowLeft, ArrowRight, CheckCircle2, X, AlertCircle, Sparkles,
   BookOpen, Brain, Zap, Target, Award, Flame, RotateCcw, Check,
-  ChevronRight, Lock, HelpCircle, FileText, Layers, RefreshCw, Volume2, VolumeX, Shield, Timer, Search, HelpCircle as QuestionIcon
+  ChevronRight, Lock, HelpCircle, FileText, Layers, RefreshCw, Volume2, VolumeX, Shield, Timer
 } from 'lucide-react';
 import {
   recordStepAnswer, getStepPosition, saveStepPosition,
@@ -10,7 +10,7 @@ import {
   isAudioMuted, setAudioMuted
 } from '../utils/learnProgress';
 
-function formatProvision(p) {
+export function formatProvision(p) {
   if (!p) return '';
   if (typeof p === 'string') return p;
   if (typeof p === 'object') {
@@ -21,14 +21,14 @@ function formatProvision(p) {
   return String(p);
 }
 
-// ─── Step Transformer Function ──────────────────────────────────────────────
+// ─── Strictly Validated Step Transformer Function ───────────────────────────
 export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
   if (!chapter) return [];
 
-  const steps = [];
+  const rawSteps = [];
 
-  // Step 1: INTRO
-  steps.push({
+  // Step 1: INTRO (Always present)
+  rawSteps.push({
     id: `step-intro-${chapter.num}`,
     type: 'INTRO',
     title: chapter.title || `Chapter ${chapter.num}`,
@@ -38,286 +38,206 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
     activitiesCount: (chapter.activities || []).length,
   });
 
-  // Step 2: TODAY'S 3 THINGS
-  steps.push({
+  // Step 2: TODAY'S 3 THINGS (Derived from chapter concepts)
+  const concepts = chapter.concepts || [];
+  let takeaways = [];
+  if (concepts.length >= 3) {
+    takeaways = concepts.slice(0, 3).map(c => c.title || c.hook).filter(Boolean);
+  } else if (concepts.length > 0) {
+    takeaways = concepts.map(c => c.title || c.hook).filter(Boolean);
+  }
+  if (takeaways.length === 0) {
+    takeaways = [
+      `Understand core statutory provisions for Chapter ${chapter.num}`,
+      `Identify statutory eligibility, capital, and reporting thresholds`,
+      `Master practical compliance requirements and regulatory obligations`
+    ];
+  }
+
+  rawSteps.push({
     id: `step-todays3-${chapter.num}`,
     type: 'TODAYS_3_THINGS',
     title: "Today's 3 Key Statutory Takeaways",
-    takeaways: [
-      `Understand statutory eligibility requirements under Chapter ${chapter.num}`,
-      `Identify net worth, corpus, and investment threshold rules`,
-      `Master practitioner filing timelines and compliance reporting obligations`
-    ]
+    takeaways
   });
 
   const activities = chapter.activities || [];
 
-  // Process concepts & activities into structured step cards
   activities.forEach((act, actIdx) => {
     const p = act.payload || {};
-    const type = act.type || act.activity_type || 'lesson';
+    const type = (act.type || act.activity_type || '').toLowerCase();
 
-    // 1. FLASHCARD / SMART_FLIP_CARDS step
-    if (act.recallCards && act.recallCards.length > 0) {
-      act.recallCards.forEach((rc, rIdx) => {
-        steps.push({
-          id: `step-fc-${act.uid || actIdx}-${rIdx}`,
-          type: 'FLASHCARD',
-          title: rc.front || 'Key Term / Definition',
-          front: rc.front,
-          back: rc.back,
-          tag: rc.tag || 'Recall',
-          provision: act.provision || act.prov || '',
+    // 1. LESSON / STATUTORY CARDS OR FRONT/BACK FLASHCARDS IN CARDS
+    const cards = act.cards || p.cards || [];
+    if (cards.length > 0) {
+      if (cards[0].front && cards[0].back) {
+        // High quality flashcards in cards array
+        cards.forEach((c, cIdx) => {
+          if (c.front && c.back) {
+            rawSteps.push({
+              id: `step-fc-${act.uid || actIdx}-${cIdx}`,
+              type: 'FLASHCARD',
+              title: c.front,
+              front: c.front,
+              back: c.back,
+              tag: c.tag || 'Statutory Recall',
+              provision: formatProvision(act.provision || ''),
+              sourceUid: act.uid,
+            });
+          }
         });
-      });
-    }
-
-    // 2. EXPLANATION / REGULATION / EXAMPLE steps
-    if (type === 'lesson' || p.cards || p.story || p.provision_text) {
-      const cards = act.cards || p.cards || [];
-      if (cards.length > 0) {
+      } else {
         cards.forEach((c, cIdx) => {
           const cardObj = typeof c === 'string' ? { title: 'Statutory Rule', law: c } : c;
-          steps.push({
-            id: `step-card-${act.uid || actIdx}-${cIdx}`,
-            type: cardObj.law ? 'REGULATION' : 'EXPLANATION',
-            title: cardObj.title || act.title || 'Core Rule',
-            explanation: cardObj.means || cardObj.explain || '',
-            statutoryText: cardObj.law || '',
-            tag: cardObj.tag || 'Rule',
-            provision: act.provision || '',
-            effectiveDate: act.effectiveDate || '',
-          });
+          const law = cardObj.law || cardObj.text || '';
+          const means = cardObj.means || cardObj.explain || cardObj.explanation || '';
+          const title = cardObj.title || act.title || 'Core Rule';
+          const watch = cardObj.watch || '';
+
+          if (law || means) {
+            rawSteps.push({
+              id: `step-card-${act.uid || actIdx}-${cIdx}`,
+              type: law ? 'REGULATION' : 'EXPLANATION',
+              title,
+              explanation: means,
+              statutoryText: law,
+              practicalTip: watch,
+              tag: cardObj.tag || (law ? 'Statutory Provision' : 'Explanation'),
+              provision: formatProvision(act.provision || cardObj.provision || ''),
+              effectiveDate: act.effectiveDate || '',
+              sourceUid: act.uid,
+            });
+          }
         });
-      } else if (p.story) {
-        steps.push({
+      }
+
+      if (p.story || act.story) {
+        rawSteps.push({
           id: `step-example-${act.uid || actIdx}`,
           type: 'EXAMPLE',
           title: act.title || 'Practitioner Case Study',
-          story: p.story,
-          remember: p.remember || p.tip || '',
-          provision: act.provision || '',
+          story: p.story || act.story,
+          remember: p.remember || p.tip || act.remember || '',
+          provision: formatProvision(act.provision || ''),
+          sourceUid: act.uid,
         });
       }
     }
 
-    // 3. BUILD THE REGULATION step
-    if (p.law_fragments || (act.provision && act.provision.length > 30 && actIdx % 3 === 0)) {
-      const ruleText = act.provision || "An AIF scheme shall maintain the minimum required corpus and investor limit";
-      const fragments = ruleText.split(' ').filter(Boolean);
-      if (fragments.length >= 4) {
-        const chunkSize = Math.ceil(fragments.length / 4);
-        const pieces = [];
-        for (let i = 0; i < fragments.length; i += chunkSize) {
-          pieces.push(fragments.slice(i, i + chunkSize).join(' '));
+    // 2. FLASHCARDS / FLASH_RECALL (Only if cards array didn't already contain front/back)
+    const recallCards = act.recallCards || p.recallCards || [];
+    const hasHandledCards = cards.length > 0 && cards[0].front && cards[0].back;
+    
+    if (!hasHandledCards && recallCards.length > 0) {
+      recallCards.forEach((rc, rIdx) => {
+        if (rc.front && rc.back && rc.front !== 'Key Provision') {
+          rawSteps.push({
+            id: `step-fc-${act.uid || actIdx}-${rIdx}`,
+            type: 'FLASHCARD',
+            title: rc.front,
+            front: rc.front,
+            back: rc.back,
+            tag: rc.tag || 'Recall Check',
+            provision: formatProvision(act.provision || ''),
+            sourceUid: act.uid,
+          });
         }
-        steps.push({
-          id: `step-build-${act.uid || actIdx}`,
-          type: 'BUILD_THE_REGULATION',
-          title: 'Build the Regulation',
-          instruction: 'Tap the fragmented statutory clauses in the correct legal sequence:',
-          correctPieces: pieces,
-          provision: act.provision || '',
+      });
+    } else if (!hasHandledCards && type === 'flash_recall' && act.question && (act.correctKey || act.explanation)) {
+      rawSteps.push({
+        id: `step-fc-${act.uid || actIdx}`,
+        type: 'FLASHCARD',
+        title: act.title || 'Key Recall Point',
+        front: act.question,
+        back: act.correctKey || act.explanation,
+        tag: 'Statutory Recall',
+        provision: formatProvision(act.provision || ''),
+        sourceUid: act.uid,
+      });
+    }
+
+    // 3. MCQ / SPOT_LAPSE / OLD_VS_NEW / TRUEFALSE
+    if (['mcq', 'spot_lapse', 'old_vs_new', 'truefalse'].includes(type) || act.options?.length > 0 || p.options?.length > 0 || p.optionsFormatted?.length > 0) {
+      const qText = act.question || p.question || act.title || '';
+      const optsRaw = act.options || p.optionsFormatted || p.options || [];
+
+      let options = [];
+      let correctKey = act.correctKey || p.answer || act.answer?.correct || 'A';
+
+      if (Array.isArray(optsRaw) && optsRaw.length > 0) {
+        options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
+      }
+
+      if (type === 'truefalse' && options.length === 0) {
+        options = ['True', 'False'];
+      }
+
+      let correctIdx = typeof act.correctIdx === 'number' ? act.correctIdx : -1;
+      if (correctIdx === -1 && Array.isArray(optsRaw)) {
+        correctIdx = optsRaw.findIndex(o => (typeof o === 'object' ? o.key : null) === correctKey);
+      }
+      if (correctIdx === -1) {
+        if (correctKey === 'true') correctIdx = 0;
+        else if (correctKey === 'false') correctIdx = 1;
+        else {
+          correctIdx = ['A', 'B', 'C', 'D'].indexOf(String(correctKey).toUpperCase());
+          if (correctIdx === -1) correctIdx = 0;
+        }
+      }
+
+      const explanation = act.explanation || p.explanation || act.answer?.explanation || '';
+
+      if (qText && options.length >= 2) {
+        let stepType = 'MCQ';
+        if (type === 'spot_lapse') stepType = 'SPOT_THE_MISTAKE';
+        else if (type === 'old_vs_new') stepType = 'REGULATION_COMPARISON';
+        else if (type === 'truefalse') stepType = 'TRUE_FALSE';
+
+        rawSteps.push({
+          id: `step-q-${act.uid || actIdx}`,
+          type: stepType,
+          question: qText,
+          options,
+          correctIdx,
+          correctKey,
+          explanation: explanation || 'Refer to the statutory provision for details.',
+          provision: formatProvision(act.provision || p.provision || ''),
+          uid: act.uid || `q-${actIdx}`,
+          chapterNum: chapter.num,
+          sourceUid: act.uid,
         });
       }
     }
 
-    // 4. COMPLETE THE RULE step
-    if (p.rule_clause || (act.title && act.explanation && actIdx % 2 === 1)) {
-      steps.push({
-        id: `step-complete-${act.uid || actIdx}`,
-        type: 'COMPLETE_THE_RULE',
-        title: 'Complete the Statutory Rule',
-        clause: act.title || 'Minimum corpus requirement per scheme',
-        options: ['twenty crore rupees', 'five crore rupees', 'fifty crore rupees'],
-        correctIdx: 0,
-        explanation: act.explanation || 'Statutory floor attaches to each scheme individually.',
-        provision: act.provision || '',
-      });
-    }
-
-    // 5. SNAPSHOT (15s) step
-    if (actIdx === 2 || p.snapshot) {
-      steps.push({
-        id: `step-snap-${act.uid || actIdx}`,
-        type: 'SNAPSHOT_15S',
-        title: 'Snapshot (15s Memory Drill)',
-        statutoryFact: act.provision || 'Continuous net worth must be maintained at all times during registration validity.',
-        question: 'What is the continuous compliance requirement mentioned in the snapshot?',
-        options: ['Maintained at all times', 'Checked only annually', 'Checked only on renewal'],
-        correctIdx: 0,
-        explanation: 'Statutory compliance is a continuous obligation, not a periodic event.',
-      });
-    }
-
-    // 6. SPOT THE TRAP step
-    if (actIdx === 3 || p.trap) {
-      steps.push({
-        id: `step-trap-${act.uid || actIdx}`,
-        type: 'SPOT_THE_TRAP',
-        title: 'Spot the Compliance Trap',
-        scenario: 'Review these two similar regulatory statements and identify the deceptive trap:',
-        statementA: 'Unified registration consolidates registration certificates across desks.',
-        statementB: 'Unified registration consolidates and dilutes Chapter IV compliance obligations.',
-        trapIndex: 1, // Statement B is the trap
-        explanation: 'Unified registration consolidates the certificate, NOT the compliance. Each desk retains its full obligations.',
-        provision: act.provision || '',
-      });
-    }
-
-    // 7. TEACH THE JUNIOR step
-    if (actIdx === 4 || p.junior_query) {
-      steps.push({
-        id: `step-teach-${act.uid || actIdx}`,
-        type: 'TEACH_THE_JUNIOR',
-        title: 'Teach the Junior Colleague',
-        query: 'Junior Ask: "Can a Category I AIF invest in listed equities beyond the prescribed cap without prior SEBI approval?"',
-        options: [
-          'No, Category I AIFs must adhere strictly to investment concentration limits.',
-          'Yes, investment managers can override caps at their discretion.',
-          'Yes, as long as investors give verbal consent.'
-        ],
-        correctIdx: 0,
-        explanation: 'Advise your junior colleague that statutory investment limits are binding laws.',
-      });
-    }
-
-    // 8. EXPLAIN LIKE A PROFESSIONAL step
-    if (actIdx === 5 || p.professional_points) {
-      steps.push({
-        id: `step-prof-${act.uid || actIdx}`,
-        type: 'EXPLAIN_LIKE_A_PROFESSIONAL',
-        title: 'Explain Like a Professional',
-        prompt: 'Select the 3 essential compliance points you must highlight to the Board:',
-        points: [
-          { text: 'Verify continuous liquid net worth requirements', isCorrect: true },
-          { text: 'File PPM changes prior to launching new scheme', isCorrect: true },
-          { text: 'Ensure mandatory dematerialisation of scheme units', isCorrect: true },
-          { text: 'Ignore periodic compliance audit filings', isCorrect: false },
-        ]
-      });
-    }
-
-    // 9. MCQ / QUICK_CHECK step
-    if (type === 'mcq' || (act.options && act.options.length > 0)) {
-      const optsRaw = act.options || p.optionsFormatted || p.options || [];
-      const options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
-      const correctKey = act.correctKey || act.answer?.correct || p.answer || 'A';
-      
-      let correctIdx = typeof act.correctIdx === 'number'
-        ? act.correctIdx
-        : optsRaw.findIndex(o => (typeof o === 'object' ? o.key : null) === correctKey);
-      if (correctIdx === -1) {
-        correctIdx = ['A', 'B', 'C', 'D'].indexOf(correctKey);
-        if (correctIdx === -1) correctIdx = 0;
+    // 4. FILL IN THE BLANK
+    if (type === 'fill' && act.question) {
+      const qText = act.question;
+      const answerText = act.explanation || act.answer?.explanation || '';
+      if (qText && answerText) {
+        rawSteps.push({
+          id: `step-fill-${act.uid || actIdx}`,
+          type: 'FLASHCARD',
+          title: 'Complete the Statutory Phrase',
+          front: qText,
+          back: answerText,
+          tag: 'Fill in the Blank',
+          provision: formatProvision(act.provision || ''),
+          sourceUid: act.uid,
+        });
       }
-
-      steps.push({
-        id: `step-mcq-${act.uid || actIdx}`,
-        type: 'MCQ',
-        question: act.question || p.question || act.title || '',
-        options,
-        correctIdx,
-        correctKey,
-        explanation: act.explanation || p.explanation || act.answer?.explanation || '',
-        provision: act.provision || p.provision || '',
-        uid: act.uid || `q-${actIdx}`,
-        chapterNum: chapter.num,
-      });
     }
-
-    // 10. TRUE_FALSE step
-    if (type === 'truefalse') {
-      steps.push({
-        id: `step-tf-${act.uid || actIdx}`,
-        type: 'TRUE_FALSE',
-        question: act.question || p.question || act.title || '',
-        options: ['True', 'False'],
-        correctIdx: (p.answer === 'true' || act.answer?.correct === 'true' || act.answer?.correct === 'A') ? 0 : 1,
-        explanation: act.explanation || p.explanation || '',
-        provision: act.provision || '',
-        uid: act.uid || `tf-${actIdx}`,
-        chapterNum: chapter.num,
-      });
-    }
-
-    // 11. SPOT THE MISTAKE step
-    if (type === 'find_the_mistake' || p.lapses) {
-      steps.push({
-        id: `step-mistake-${act.uid || actIdx}`,
-        type: 'SPOT_THE_MISTAKE',
-        title: 'Spot the Compliance Lapse',
-        scenario: p.scenario || act.question || 'Identify which statement or action violates regulatory requirements.',
-        statements: p.statements || p.options || [],
-        correctIdx: p.correctIdx || 0,
-        explanation: p.explanation || 'One or more of the above actions violates statutory provisions.',
-        provision: act.provision || '',
-        uid: act.uid || `m-${actIdx}`,
-        chapterNum: chapter.num,
-      });
-    }
-
-    // 12. PUT IN ORDER step
-    if (type === 'put_in_order' || p.process_steps) {
-      const initialItems = p.process_steps || p.items || ['Filing Application', 'Authority Observation', 'Final Disclosure'];
-      steps.push({
-        id: `step-order-${act.uid || actIdx}`,
-        type: 'PUT_IN_ORDER',
-        title: 'Put Compliance Process in Order',
-        instruction: 'Arrange the statutory steps in correct chronological sequence.',
-        correctOrder: initialItems,
-        explanation: p.explanation || 'Regulatory filings follow strict sequential timelines.',
-        provision: act.provision || '',
-        uid: act.uid || `ord-${actIdx}`,
-        chapterNum: chapter.num,
-      });
-    }
-
-    // 13. REGULATION COMPARISON step
-    if (type === 'old_vs_new' || p.comparison) {
-      steps.push({
-        id: `step-comp-${act.uid || actIdx}`,
-        type: 'REGULATION_COMPARISON',
-        title: act.title || 'Regulatory Comparison (2022 vs 2025/2026)',
-        oldRule: p.oldRule || 'Former Provision Requirement',
-        newRule: p.newRule || 'Current Amended Framework',
-        question: p.question || 'Which framework applies to the scenario described?',
-        options: ['Former Framework', 'Amended Framework'],
-        correctIdx: p.correctIdx || 1,
-        explanation: p.explanation || 'Framework amendments updated statutory compliance expectations.',
-        provision: act.provision || '',
-        uid: act.uid || `comp-${actIdx}`,
-        chapterNum: chapter.num,
-      });
-    }
-  });
-
-  // Step N-2: BOSS LEVEL CHALLENGE
-  steps.push({
-    id: `step-boss-${chapter.num}`,
-    type: 'BOSS_LEVEL',
-    title: `Boss Level — Chapter ${chapter.num} Comprehensive Challenge`,
-    subtitle: 'High-stakes statutory scenario test before module completion.',
-    question: `A multi-activity entity in GIFT IFSC operates across desks. What is the supreme compliance mandate?`,
-    options: [
-      'Each activity desk must comply with its respective Chapter IV obligations independently.',
-      'Unified registration waives desk-specific conduct codes.',
-      'Only the primary desk requires statutory reporting.'
-    ],
-    correctIdx: 0,
-    explanation: 'Unified registration unifies the certificate, NOT compliance. Chapter IV obligations attach desk by desk.'
   });
 
   // Step N-1: MASTERY LADDER
-  steps.push({
+  rawSteps.push({
     id: `step-mastery-${chapter.num}`,
     type: 'MASTERY_LADDER',
-    title: 'Module Mastery Ladder',
-    question: `You have reached Level 5 on the Mastery Ladder for Chapter ${chapter.num}: ${chapter.title}. Verify your 80%+ benchmark status below:`,
+    title: 'Module Mastery Benchmark',
+    question: `You have completed all curriculum steps for Chapter ${chapter.num}: ${chapter.title}. Verify your 80%+ benchmark status below:`,
   });
 
   // Step Final: SUMMARY
-  steps.push({
+  rawSteps.push({
     id: `step-summary-${chapter.num}`,
     type: 'SUMMARY',
     title: 'Module Mastered!',
@@ -325,7 +245,39 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
     chapterTitle: chapter.title,
   });
 
-  return steps;
+  // ─── STRICT STEP VALIDATOR FILTER ───
+  const validatedSteps = [];
+  rawSteps.forEach((step, idx) => {
+    let isValid = true;
+    const missing = [];
+
+    if (!step.type) { isValid = false; missing.push('type'); }
+    if (!step.id) { isValid = false; missing.push('id'); }
+
+    if (step.type === 'INTRO') {
+      if (!step.title) { isValid = false; missing.push('title'); }
+    } else if (step.type === 'TODAYS_3_THINGS') {
+      if (!step.takeaways || step.takeaways.length === 0) { isValid = false; missing.push('takeaways'); }
+    } else if (step.type === 'REGULATION' || step.type === 'EXPLANATION') {
+      if (!step.statutoryText && !step.explanation) { isValid = false; missing.push('statutoryText/explanation'); }
+    } else if (step.type === 'FLASHCARD') {
+      if (!step.front || !step.back) { isValid = false; missing.push('front/back'); }
+    } else if (['MCQ', 'SPOT_THE_MISTAKE', 'REGULATION_COMPARISON', 'TRUE_FALSE'].includes(step.type)) {
+      if (!step.question) { isValid = false; missing.push('question'); }
+      if (!step.options || step.options.length < 2) { isValid = false; missing.push('options (< 2)'); }
+      if (typeof step.correctIdx !== 'number' || step.correctIdx < 0 || step.correctIdx >= (step.options?.length || 0)) {
+        isValid = false; missing.push('correctIdx');
+      }
+    }
+
+    if (isValid) {
+      validatedSteps.push(step);
+    } else {
+      console.error(`[RegLearn] Invalid step filtered out: course=${courseSlug}, chapter=${chapter.num}, stepIdx=${idx}, type=${step.type}, missing=${missing.join(', ')}`);
+    }
+  });
+
+  return validatedSteps;
 }
 
 // ─── Main Component: ProgressiveStepEngine ─────────────────────────────────
@@ -360,47 +312,14 @@ export default function ProgressiveStepEngine({
 
   // Interaction State per Step ID
   const [stepStates, setStepStates] = useState({});
-  const currentSlot = stepStates[currentStep.id] || { selected: null, submitted: false, isCorrect: false };
+  const currentSlot = stepStates[currentStep?.id] || { selected: null, submitted: false, isCorrect: false };
 
   // Flashcard flip state
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Snapshot 15s Timer State
-  const [snapTime, setSnapTime] = useState(15);
-  const [snapHidden, setSnapHidden] = useState(false);
-
   useEffect(() => {
-    if (currentStep.type === 'SNAPSHOT_15S') {
-      setSnapTime(15);
-      setSnapHidden(false);
-      const timer = setInterval(() => {
-        setSnapTime(prev => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setSnapHidden(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
     setIsFlipped(false);
   }, [currentStep]);
-
-  // Build Regulation State
-  const [builtPieces, setBuiltPieces] = useState([]);
-  const [availablePieces, setAvailablePieces] = useState([]);
-
-  useEffect(() => {
-    if (currentStep.type === 'BUILD_THE_REGULATION' && currentStep.correctPieces) {
-      setBuiltPieces([]);
-      setAvailablePieces([...currentStep.correctPieces].sort(() => Math.random() - 0.5));
-    }
-  }, [currentStep]);
-
-  // Explain Like a Professional Points Selection State
-  const [selectedProfPoints, setSelectedProfPoints] = useState([]);
 
   // Handle Option Select
   const handleSelectOption = (idx) => {
@@ -415,16 +334,8 @@ export default function ProgressiveStepEngine({
   const handleSubmitAnswer = () => {
     let isCorrect = false;
 
-    if (['MCQ', 'TRUE_FALSE', 'REGULATION_COMPARISON', 'SPOT_THE_MISTAKE', 'SNAPSHOT_15S', 'SPOT_THE_TRAP', 'TEACH_THE_JUNIOR', 'BOSS_LEVEL', 'COMPLETE_THE_RULE'].includes(currentStep.type)) {
-      isCorrect = currentSlot.selected === (currentStep.correctIdx ?? currentStep.trapIndex ?? 0);
-    } else if (currentStep.type === 'PUT_IN_ORDER') {
-      isCorrect = true; // Auto-validated
-    } else if (currentStep.type === 'BUILD_THE_REGULATION') {
-      isCorrect = JSON.stringify(builtPieces) === JSON.stringify(currentStep.correctPieces);
-    } else if (currentStep.type === 'EXPLAIN_LIKE_A_PROFESSIONAL') {
-      isCorrect = selectedProfPoints.length >= 2;
-    } else if (currentStep.type === 'TODAYS_3_THINGS') {
-      isCorrect = true;
+    if (['MCQ', 'TRUE_FALSE', 'REGULATION_COMPARISON', 'SPOT_THE_MISTAKE'].includes(currentStep.type)) {
+      isCorrect = currentSlot.selected === (currentStep.correctIdx ?? 0);
     }
 
     setStepStates(prev => ({
@@ -479,18 +390,25 @@ export default function ProgressiveStepEngine({
   };
 
   // Calculate Progress %
-  const progressPct = Math.round(((currentStepIdx + 1) / steps.length) * 100);
+  const progressPct = steps.length > 0 ? Math.round(((currentStepIdx + 1) / steps.length) * 100) : 0;
 
-  // Check if primary CTA is enabled
-  const isQuestionType = ['MCQ', 'TRUE_FALSE', 'SPOT_THE_MISTAKE', 'PUT_IN_ORDER', 'REGULATION_COMPARISON', 'SNAPSHOT_15S', 'BUILD_THE_REGULATION', 'COMPLETE_THE_RULE', 'SPOT_THE_TRAP', 'TEACH_THE_JUNIOR', 'EXPLAIN_LIKE_A_PROFESSIONAL', 'BOSS_LEVEL'].includes(currentStep.type);
-  const isNextDisabled = isQuestionType && !currentSlot.submitted;
+  // Check if question type requires answer attempt before Next is unlocked
+  const isQuestionType = ['MCQ', 'TRUE_FALSE', 'SPOT_THE_MISTAKE', 'REGULATION_COMPARISON'].includes(currentStep?.type);
+
+  if (!currentStep) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-8 text-center text-forest-deep">
+        <p>No content available for this module.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-4 sm:py-6 space-y-4 pb-28">
+    <div className="max-w-3xl mx-auto px-4 py-4 sm:py-6 space-y-4 pb-36 overflow-x-hidden relative" style={{ minHeight: '100vh' }}>
       
       {/* ─── Top Progress Header ─── */}
       <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 border border-forest/10 shadow-sm space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-forest-deep">
+        <div className="flex flex-nowrap items-center justify-between text-xs font-semibold text-forest-deep">
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full bg-forest/10 text-forest font-mono font-bold">
               Chapter {chapter.num}
@@ -500,12 +418,8 @@ export default function ProgressiveStepEngine({
 
           <div className="flex items-center gap-3 font-mono text-xs font-bold text-forest">
             {/* Audio Toggle */}
-            <button
-              onClick={handleToggleMute}
-              className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
-              title={muted ? 'Unmute Audio' : 'Mute Audio'}
-            >
-              {muted ? <VolumeX className="w-4 h-4 text-rose-500" /> : <Volume2 className="w-4 h-4 text-forest" />}
+            <button onClick={handleToggleMute} className="p-3 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors" title={muted ? 'Unmute Audio' : 'Mute Audio'} aria-label={muted ? 'Unmute Audio' : 'Mute Audio'}>
+              {muted ? <VolumeX className="w-5 h-5 text-rose-500" /> : <Volume2 className="w-5 h-5 text-forest" />}
             </button>
             <span>Step {currentStepIdx + 1} of {steps.length}</span>
           </div>
@@ -523,8 +437,8 @@ export default function ProgressiveStepEngine({
       {/* ─── Primary Step Card Container ─── */}
       <div className="bg-white rounded-3xl p-5 sm:p-7 border border-forest/10 shadow-lg min-h-[380px] flex flex-col justify-between relative overflow-hidden transition-all duration-300">
         
-        {/* Internal Scrollable Content Box (Fixes Mobile Overflow Issue F1) */}
-        <div className="max-h-[60vh] overflow-y-auto pr-1 space-y-5">
+        {/* Internal Scrollable Content Box */}
+                <div className="max-h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden pr-1 space-y-5 break-words">
           
           {/* STEP TYPE 1: INTRO */}
           {currentStep.type === 'INTRO' && (
@@ -552,7 +466,7 @@ export default function ProgressiveStepEngine({
           {currentStep.type === 'TODAYS_3_THINGS' && (
             <div className="space-y-5 animate-fadeIn">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" /> Today's 3 Things
+                <Sparkles className="w-3.5 h-3.5" /> Today's Key Takeaways
               </div>
               <h3 className="text-xl font-display font-bold text-forest-deep">{currentStep.title}</h3>
               <div className="space-y-3">
@@ -585,11 +499,11 @@ export default function ProgressiveStepEngine({
               <h3 className="text-xl sm:text-2xl font-display font-bold text-forest-deep">{currentStep.title}</h3>
 
               {currentStep.statutoryText && (
-                <div className="bg-amber-50/60 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-2">
+                <div className="bg-amber-50/60 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-2 break-words">
                   <div className="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" /> Verbatim Statutory Rule
                   </div>
-                  <p className="text-sm font-serif text-amber-950 leading-relaxed italic">
+                  <p className="text-sm font-serif text-amber-950 leading-relaxed italic break-words">
                     "{currentStep.statutoryText}"
                   </p>
                 </div>
@@ -600,217 +514,52 @@ export default function ProgressiveStepEngine({
                   {currentStep.explanation}
                 </p>
               )}
-            </div>
-          )}
 
-          {/* STEP TYPE 4: SNAPSHOT (15s) */}
-          {currentStep.type === 'SNAPSHOT_15S' && (
-            <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold uppercase tracking-wider flex items-center gap-1">
-                  <Timer className="w-3.5 h-3.5" /> Snapshot 15s Drill
-                </span>
-                <span className="font-mono text-sm font-bold text-purple-600 bg-purple-100 px-3 py-0.5 rounded-full">
-                  {snapTime}s
-                </span>
-              </div>
-
-              <h3 className="text-lg font-bold text-forest-deep">{currentStep.title}</h3>
-
-              {!snapHidden ? (
-                <div className="p-5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-950 text-sm sm:text-base leading-relaxed font-serif italic">
-                  "{currentStep.statutoryFact}"
-                </div>
-              ) : (
-                <div className="space-y-4 animate-fadeIn">
-                  <div className="p-3 bg-gray-100 text-gray-600 rounded-xl text-xs font-semibold">
-                    🔒 Snapshot hidden! Answer from memory:
-                  </div>
-                  <p className="text-sm font-bold text-forest-deep">{currentStep.question}</p>
-                  <div className="space-y-2">
-                    {currentStep.options.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSelectOption(idx)}
-                        disabled={currentSlot.submitted}
-                        className={`w-full text-left p-3.5 rounded-xl border text-xs font-semibold ${
-                          currentSlot.selected === idx ? 'border-purple-600 bg-purple-50 text-purple-900' : 'border-gray-200 bg-white'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
+              {currentStep.practicalTip && (
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2">
+                  <Shield className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Compliance Watch: </span>
+                    {currentStep.practicalTip}
                   </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* STEP TYPE 5: BUILD THE REGULATION */}
-          {currentStep.type === 'BUILD_THE_REGULATION' && (
+          {/* STEP TYPE 4: EXAMPLE / CASE STUDY */}
+          {currentStep.type === 'EXAMPLE' && (
             <div className="space-y-5 animate-fadeIn">
-              <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider">
-                Build the Regulation
+              <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                Practitioner Case Study
               </span>
-              <h3 className="text-base font-bold text-forest-deep">{currentStep.title}</h3>
-              <p className="text-xs text-gray-600">{currentStep.instruction}</p>
-
-              {/* Assembled Area */}
-              <div className="p-4 min-h-[70px] bg-paper rounded-2xl border-2 border-dashed border-emerald-300 flex flex-wrap gap-2">
-                {builtPieces.map((p, idx) => (
-                  <span
-                    key={idx}
-                    onClick={() => {
-                      setBuiltPieces(prev => prev.filter((_, i) => i !== idx));
-                      setAvailablePieces(prev => [...prev, p]);
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-700 text-white text-xs font-semibold cursor-pointer shadow-xs"
-                  >
-                    {p} ✕
-                  </span>
-                ))}
-              </div>
-
-              {/* Available Area */}
-              <div className="flex flex-wrap gap-2">
-                {availablePieces.map((p, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setAvailablePieces(prev => prev.filter((_, i) => i !== idx));
-                      setBuiltPieces(prev => [...prev, p]);
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-300 hover:border-emerald-600 text-xs font-medium text-gray-800"
-                  >
-                    + {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP TYPE 6: SPOT THE TRAP */}
-          {currentStep.type === 'SPOT_THE_TRAP' && (
-            <div className="space-y-5 animate-fadeIn">
-              <span className="px-3 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-bold uppercase tracking-wider">
-                Spot the Trap
-              </span>
-              <h3 className="text-lg font-bold text-forest-deep">{currentStep.title}</h3>
-              <p className="text-xs text-gray-600">{currentStep.scenario}</p>
-
-              <div className="space-y-3">
-                <button
-                  onClick={() => handleSelectOption(0)}
-                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all text-xs font-semibold ${
-                    currentSlot.selected === 0 ? 'border-rose-500 bg-rose-50' : 'border-gray-200'
-                  }`}
-                >
-                  Statement A: {currentStep.statementA}
-                </button>
-
-                <button
-                  onClick={() => handleSelectOption(1)}
-                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all text-xs font-semibold ${
-                    currentSlot.selected === 1 ? 'border-rose-500 bg-rose-50' : 'border-gray-200'
-                  }`}
-                >
-                  Statement B: {currentStep.statementB}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP TYPE 7: TEACH THE JUNIOR */}
-          {currentStep.type === 'TEACH_THE_JUNIOR' && (
-            <div className="space-y-5 animate-fadeIn">
-              <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider">
-                Teach the Junior Colleague
-              </span>
-              <h3 className="text-lg font-bold text-forest-deep">{currentStep.title}</h3>
-              
-              <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 text-xs text-indigo-950 font-semibold leading-relaxed">
-                {currentStep.query}
-              </div>
-
-              <div className="space-y-2">
-                {currentStep.options.map((opt, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelectOption(idx)}
-                    disabled={currentSlot.submitted}
-                    className={`w-full text-left p-3.5 rounded-xl border text-xs font-semibold ${
-                      currentSlot.selected === idx ? 'border-indigo-600 bg-indigo-50 text-indigo-900' : 'border-gray-200 bg-white'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP TYPE 8: BOSS LEVEL */}
-          {currentStep.type === 'BOSS_LEVEL' && (
-            <div className="space-y-5 animate-fadeIn">
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-red-900 to-slate-900 text-white space-y-2">
-                <span className="px-2.5 py-0.5 rounded bg-red-500 text-white font-mono font-bold text-[10px] uppercase">
-                  BOSS LEVEL (+150 XP)
-                </span>
-                <h3 className="text-lg font-bold">{currentStep.title}</h3>
-                <p className="text-xs text-white/80">{currentStep.subtitle}</p>
-              </div>
-
-              <p className="text-sm font-bold text-forest-deep">{currentStep.question}</p>
-
-              <div className="space-y-2">
-                {currentStep.options.map((opt, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelectOption(idx)}
-                    disabled={currentSlot.submitted}
-                    className={`w-full text-left p-3.5 rounded-xl border text-xs font-semibold ${
-                      currentSlot.selected === idx ? 'border-red-600 bg-red-50 text-red-950' : 'border-gray-200 bg-white'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP TYPE 9: MASTERY LADDER */}
-          {currentStep.type === 'MASTERY_LADDER' && (
-            <div className="space-y-5 animate-fadeIn text-center">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto text-2xl font-bold">
-                🪜
-              </div>
               <h3 className="text-xl font-bold text-forest-deep">{currentStep.title}</h3>
-              <p className="text-xs text-gray-600 max-w-sm mx-auto">{currentStep.question}</p>
-
-              <div className="space-y-2 max-w-xs mx-auto text-xs font-mono">
-                {['Level 5 — Mastered (80%+)', 'Level 4 — Proficient', 'Level 3 — Practicing', 'Level 2 — Familiar', 'Level 1 — Learning'].map((l, i) => (
-                  <div key={i} className={`p-2.5 rounded-xl border ${i === 0 ? 'bg-emerald-700 text-white font-bold' : 'bg-gray-50 text-gray-600'}`}>
-                    {l}
-                  </div>
-                ))}
+              
+              <div className="p-5 rounded-2xl bg-paper border border-forest/10 text-sm text-gray-800 leading-relaxed">
+                {currentStep.story}
               </div>
+
+              {currentStep.remember && (
+                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-medium">
+                  💡 <span className="font-bold">Key Takeaway:</span> {currentStep.remember}
+                </div>
+              )}
             </div>
           )}
 
-          {/* STEP TYPE 10: FLASHCARD */}
+          {/* STEP TYPE 5: FLASHCARD */}
           {currentStep.type === 'FLASHCARD' && (
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold uppercase tracking-wider">
-                  Smart Flip Card
+                  {currentStep.tag || 'Smart Flip Card'}
                 </span>
                 <span className="text-xs text-ink-soft">Tap card to flip</span>
               </div>
 
               <div
                 onClick={() => { setIsFlipped(!isFlipped); playGamificationSound('flip'); }}
-                className="cursor-pointer bg-gradient-to-br from-paper to-white p-8 rounded-2xl border-2 border-forest/20 shadow-md min-h-[200px] flex flex-col items-center justify-center text-center transition-all duration-500 hover:border-forest"
+                className="cursor-pointer bg-gradient-to-br from-paper to-white p-8 rounded-2xl border-2 border-forest/20 shadow-md min-h-[200px] max-h-[300px] overflow-y-auto flex flex-col items-center justify-center text-center transition-all duration-500 hover:border-forest"
               >
                 {!isFlipped ? (
                   <div className="space-y-3">
@@ -820,7 +569,7 @@ export default function ProgressiveStepEngine({
                   </div>
                 ) : (
                   <div className="space-y-3 animate-fadeIn">
-                    <div className="text-xs font-bold text-emerald-700 uppercase tracking-wider">BACK</div>
+                    <div className="text-xs font-bold text-emerald-700 uppercase tracking-wider">BACK / STATUTORY RECALL</div>
                     <p className="text-sm sm:text-base text-gray-800 leading-relaxed">{currentStep.back}</p>
                   </div>
                 )}
@@ -828,12 +577,18 @@ export default function ProgressiveStepEngine({
             </div>
           )}
 
-          {/* STEP TYPE 11: MCQ & QUICK_CHECK */}
-          {currentStep.type === 'MCQ' && (
+          {/* STEP TYPE 6: MCQ / SPOT_THE_MISTAKE / REGULATION_COMPARISON / TRUE_FALSE */}
+          {['MCQ', 'SPOT_THE_MISTAKE', 'REGULATION_COMPARISON', 'TRUE_FALSE'].includes(currentStep.type) && (
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                  Quick Recall Check
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                  currentStep.type === 'SPOT_THE_MISTAKE' ? 'bg-red-50 text-red-700' :
+                  currentStep.type === 'REGULATION_COMPARISON' ? 'bg-indigo-50 text-indigo-700' :
+                  'bg-amber-50 text-amber-800'
+                }`}>
+                  {currentStep.type === 'SPOT_THE_MISTAKE' ? 'Spot the Compliance Lapse' :
+                   currentStep.type === 'REGULATION_COMPARISON' ? 'Regulatory Comparison' :
+                   currentStep.type === 'TRUE_FALSE' ? 'True / False Check' : 'Knowledge Check'}
                 </span>
                 {currentStep.provision && (
                   <span className="text-xs font-mono text-ink-soft bg-gray-100 px-2 py-0.5 rounded">
@@ -867,7 +622,7 @@ export default function ProgressiveStepEngine({
                       className={`w-full text-left p-3.5 rounded-xl border-2 transition-all text-xs flex items-start gap-3 ${btnStyle}`}
                     >
                       <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-mono font-bold text-xs flex-shrink-0 mt-0.5">
-                        {String.fromCharCode(65 + idx)}
+                        {currentStep.type === 'TRUE_FALSE' ? (idx === 0 ? 'T' : 'F') : String.fromCharCode(65 + idx)}
                       </span>
                       <span className="flex-grow">{opt}</span>
                       {currentSlot.submitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />}
@@ -892,7 +647,26 @@ export default function ProgressiveStepEngine({
             </div>
           )}
 
-          {/* STEP TYPE 12: SUMMARY */}
+          {/* STEP TYPE 7: MASTERY LADDER */}
+          {currentStep.type === 'MASTERY_LADDER' && (
+            <div className="space-y-5 animate-fadeIn text-center">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto text-2xl font-bold">
+                🪜
+              </div>
+              <h3 className="text-xl font-bold text-forest-deep">{currentStep.title}</h3>
+              <p className="text-xs text-gray-600 max-w-sm mx-auto">{currentStep.question}</p>
+
+              <div className="space-y-2 max-w-xs mx-auto text-xs font-mono">
+                {['Level 5 — Mastered (80%+)', 'Level 4 — Proficient', 'Level 3 — Practicing', 'Level 2 — Familiar', 'Level 1 — Learning'].map((l, i) => (
+                  <div key={i} className={`p-2.5 rounded-xl border ${i === 0 ? 'bg-emerald-700 text-white font-bold' : 'bg-gray-50 text-gray-600'}`}>
+                    {l}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP TYPE 8: SUMMARY */}
           {currentStep.type === 'SUMMARY' && (
             <div className="text-center space-y-5 py-4 animate-fadeIn">
               <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-700 flex items-center justify-center mx-auto text-2xl font-bold shadow-lg">
@@ -920,12 +694,13 @@ export default function ProgressiveStepEngine({
         </div>
 
         {/* ─── Sticky Bottom Navigation Bar ─── */}
-        <div className="pt-4 border-t border-gray-100 flex items-center justify-between gap-4 mt-4 flex-shrink-0">
+        <div className="sticky bottom-0 bg-white/90 backdrop-blur-md pt-4 border-t border-gray-100 flex items-center justify-between gap-4 mt-4 flex-shrink-0 z-10">
           
           {/* Previous Button */}
           <button
             onClick={handlePrevious}
             disabled={isFirstStep}
+            aria-disabled={isFirstStep}
             className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
               isFirstStep
                 ? 'opacity-30 cursor-not-allowed bg-gray-100 text-gray-400'
@@ -939,9 +714,9 @@ export default function ProgressiveStepEngine({
           {isQuestionType && !currentSlot.submitted ? (
             <button
               onClick={handleSubmitAnswer}
-              disabled={currentSlot.selected === null && currentStep.type !== 'BUILD_THE_REGULATION'}
+              disabled={currentSlot.selected === null}
               className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${
-                currentSlot.selected === null && currentStep.type !== 'BUILD_THE_REGULATION'
+                currentSlot.selected === null
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-forest text-white hover:bg-forest-deep shadow-md'
               }`}
@@ -951,6 +726,7 @@ export default function ProgressiveStepEngine({
           ) : (
             <button
               onClick={handleNext}
+              aria-label={isLastStep ? 'Complete Module' : 'Next'}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-forest text-white hover:bg-forest-deep shadow-md transition-all"
             >
               {isLastStep ? 'Complete Module ✓' : 'Next →'}

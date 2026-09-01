@@ -37,4 +37,5 @@ client/node_modules/
 test-results/
 audit_coverage_report.json
 verification_results.json
+qa-screenshots/
 
