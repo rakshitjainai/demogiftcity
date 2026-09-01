@@ -1,8 +1,9 @@
-﻿// client/src/utils/learnProgress.js
-// RegLearn Gamification State Manager
-// Mastery is earned through actual quiz performance, not just reading.
+// client/src/utils/learnProgress.js
+// RegLearn Progressive Gamification & Learning State Manager
 
 const KEY = (slug) => `regmate_learn_${slug}`;
+const MISTAKES_KEY = 'regmate_learn_mistakes_global';
+const XP_LEVELS = [0, 100, 250, 500, 850, 1300, 1850, 2500, 3250, 4100, 5000, 6100, 7300, 8600, 10000];
 
 export const MASTERY_LEVELS = {
   0: { id: 0, label: 'Not Started', bg: '#F3F4F6', text: '#6B7280', short: 'Untouched' },
@@ -13,16 +14,44 @@ export const MASTERY_LEVELS = {
   5: { id: 5, label: 'Mastered',    bg: '#0B4D33', text: '#ffffff', short: 'Mastered' },
 };
 
+export const AVAILABLE_BADGES = [
+  { id: 'first_step', title: 'Statutory Scout', desc: 'Completed your first RegLearn step card', icon: '🌱' },
+  { id: 'streak_3', title: 'Daily Disciplined', desc: 'Maintained a 3-day learning streak', icon: '🔥' },
+  { id: 'streak_7', title: 'Compliance Torch', desc: 'Maintained a 7-day learning streak', icon: '⚡' },
+  { id: 'first_module', title: 'Regulation Master', desc: 'Mastered your first full course module', icon: '🏆' },
+  { id: 'mistake_remover', title: 'Flawless Recovery', desc: 'Successfully resolved a mistake in My Mistakes', icon: '🛡️' },
+  { id: 'challenge_ace', title: '60-Sec Speedster', desc: 'Completed a 60-Second Challenge with >80% accuracy', icon: '⏱️' },
+  { id: 'perfectionist', title: 'First-Attempt Hero', desc: 'Answered 5 consecutive questions correctly on first try', icon: '🎯' },
+];
+
 function getDefaultProgress(slug) {
-  return { courseSlug: slug, chapters: {}, streak: 0, lastSessionDate: null,
-    totalChallengesCompleted: 0, weakChapterIds: [], recallDue: [],
-    dailySessionDate: null };
+  return {
+    courseSlug: slug,
+    chapters: {},
+    streak: 0,
+    lastSessionDate: null,
+    totalChallengesCompleted: 0,
+    weakChapterIds: [],
+    recallDue: [],
+    xp: 0,
+    level: 1,
+    badges: [],
+    stepPositions: {}, // { [chNum]: stepIndex }
+  };
 }
 
 function getDefaultChapter(chId) {
-  return { chapterId: chId, lessonRead: false, walkthroughDone: false,
-    recallDone: false, practiceAttempts: [], challengeScores: [],
-    masteryLevel: 0, lastActivity: null };
+  return {
+    chapterId: chId,
+    lessonRead: false,
+    walkthroughDone: false,
+    recallDone: false,
+    practiceAttempts: [],
+    challengeScores: [],
+    masteryLevel: 0,
+    lastActivity: null,
+    stepProgress: 0,
+  };
 }
 
 export function getProgress(slug) {
@@ -49,6 +78,217 @@ function updateStreak(p) {
   else if (p.lastSessionDate === yesterday) p.streak = (p.streak || 0) + 1;
   else p.streak = 1;
   p.lastSessionDate = today;
+
+  if (p.streak >= 3 && !p.badges.includes('streak_3')) p.badges.push('streak_3');
+  if (p.streak >= 7 && !p.badges.includes('streak_7')) p.badges.push('streak_7');
+}
+
+export function calculateLevel(xp = 0) {
+  let lvl = 1;
+  for (let i = 0; i < XP_LEVELS.length; i++) {
+    if (xp >= XP_LEVELS[i]) lvl = i + 1;
+    else break;
+  }
+  const currentLvlXP = XP_LEVELS[lvl - 1] || 0;
+  const nextLvlXP = XP_LEVELS[lvl] || currentLvlXP + 1000;
+  const progressInLvl = xp - currentLvlXP;
+  const range = nextLvlXP - currentLvlXP;
+  const pct = Math.min(100, Math.round((progressInLvl / range) * 100));
+
+  return { level: lvl, currentLvlXP, nextLvlXP, pct };
+}
+
+export function addXP(slug, amount, reason = '') {
+  const p = getProgress(slug);
+  const oldLevel = calculateLevel(p.xp || 0).level;
+  p.xp = (p.xp || 0) + amount;
+  const newLevelData = calculateLevel(p.xp);
+  p.level = newLevelData.level;
+
+  let leveledUp = false;
+  if (p.level > oldLevel) {
+    leveledUp = true;
+    playGamificationSound('levelUp');
+  } else if (amount > 0) {
+    playGamificationSound('success');
+  }
+
+  saveProgress(slug, p);
+  return { p, leveledUp, xpAdded: amount, reason };
+}
+
+// Sound Mute Toggle Preference
+export function isAudioMuted() {
+  try {
+    return localStorage.getItem('regmate_audio_muted') === 'true';
+  } catch { return false; }
+}
+
+export function setAudioMuted(muted) {
+  try {
+    localStorage.setItem('regmate_audio_muted', muted ? 'true' : 'false');
+  } catch {}
+}
+
+// ─── Web Audio API Synthesizer Sound Effects ──────────────────────────────
+export function playGamificationSound(type = 'click') {
+  if (isAudioMuted()) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+
+    if (type === 'correct' || type === 'success') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
+      osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'wrong' || type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(150, now + 0.2);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else if (type === 'levelUp' || type === 'badge') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(554.37, now + 0.1);
+      osc.frequency.setValueAtTime(659.25, now + 0.2);
+      osc.frequency.setValueAtTime(880, now + 0.3);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } else if (type === 'flip') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+  } catch (e) {}
+}
+
+// ─── Visual Confetti Burst Trigger ─────────────────────────────────────────
+export function triggerConfetti() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '999999';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const pieces = Array.from({ length: 45 }).map(() => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.3,
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 3 + 2,
+      size: Math.random() * 6 + 3,
+      color: ['#0B4D33', '#059669', '#F59E0B', '#2563EB'][Math.floor(Math.random() * 4)],
+      rotation: Math.random() * 360,
+    }));
+
+    let frame = 0;
+    function anim() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += 4;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+      });
+      frame++;
+      if (frame < 45) requestAnimationFrame(anim);
+      else canvas.remove();
+    }
+    requestAnimationFrame(anim);
+  } catch (e) {}
+}
+
+// ─── Mistakes Store ────────────────────────────────────────────────────────
+export function getMistakes() {
+  try {
+    const raw = localStorage.getItem(MISTAKES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+export function recordMistake(mistakeData) {
+  const list = getMistakes();
+  const existingIdx = list.findIndex(m => m.id === mistakeData.id || m.question === mistakeData.question);
+  if (existingIdx >= 0) {
+    list[existingIdx].wrongCount = (list[existingIdx].wrongCount || 1) + 1;
+    list[existingIdx].lastAttemptDate = Date.now();
+  } else {
+    list.unshift({
+      id: mistakeData.id || `m-${Date.now()}`,
+      courseSlug: mistakeData.courseSlug || 'sebi-aif',
+      chapterNum: mistakeData.chapterNum || 1,
+      question: mistakeData.question,
+      selectedAnswer: mistakeData.selectedAnswer,
+      correctAnswer: mistakeData.correctAnswer,
+      explanation: mistakeData.explanation,
+      provision: mistakeData.provision || '',
+      wrongCount: 1,
+      lastAttemptDate: Date.now(),
+    });
+  }
+  try { localStorage.setItem(MISTAKES_KEY, JSON.stringify(list)); } catch {}
+  return list;
+}
+
+export function removeMistake(idOrQuestion) {
+  const list = getMistakes();
+  const filtered = list.filter(m => m.id !== idOrQuestion && m.question !== idOrQuestion);
+  try { localStorage.setItem(MISTAKES_KEY, JSON.stringify(filtered)); } catch {}
+  return filtered;
+}
+
+// ─── Step Engine Position & Progress Tracking ──────────────────────────────
+export function saveStepPosition(slug, chNum, stepIdx) {
+  const p = getProgress(slug);
+  p.stepPositions = p.stepPositions || {};
+  p.stepPositions[chNum] = stepIdx;
+  saveProgress(slug, p);
+}
+
+export function getStepPosition(slug, chNum) {
+  const p = getProgress(slug);
+  return (p.stepPositions || {})[chNum] || 0;
 }
 
 export function markLessonRead(slug, chId) {
@@ -59,36 +299,36 @@ export function markLessonRead(slug, chId) {
   p.chapters[chId] = ch; updateStreak(p); saveProgress(slug, p); return p;
 }
 
-export function markWalkthroughDone(slug, chId) {
+export function recordStepAnswer(slug, chId, isCorrect, options = {}) {
   const p = getProgress(slug);
   const ch = { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
-  ch.walkthroughDone = true; ch.lastActivity = Date.now();
-  if (ch.masteryLevel < 2) ch.masteryLevel = 2;
-  p.chapters[chId] = ch; saveProgress(slug, p); return p;
-}
-
-export function recordRecall(slug, chId) {
-  const p = getProgress(slug);
-  const ch = { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
-  ch.recallDone = true; ch.lastActivity = Date.now();
-  if (ch.masteryLevel < 2) ch.masteryLevel = 2;
-  p.recallDue = (p.recallDue || []).filter(id => id !== chId);
-  p.chapters[chId] = ch; updateStreak(p); saveProgress(slug, p); return p;
-}
-
-export function recordPracticeAnswer(slug, chId, correct, optionIdx) {
-  const p = getProgress(slug);
-  const ch = { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
-  ch.practiceAttempts = [...(ch.practiceAttempts || []), { correct, optionIdx, timestamp: Date.now() }];
+  ch.practiceAttempts = [...(ch.practiceAttempts || []), { correct: isCorrect, isFirstAttempt: options.isFirstAttempt, timestamp: Date.now() }];
   ch.lastActivity = Date.now();
-  const recent = ch.practiceAttempts.slice(-5);
+
+  const recent = ch.practiceAttempts.slice(-8);
   const acc = recent.filter(a => a.correct).length / recent.length;
-  if (acc >= 0.8 && ch.masteryLevel < 4) ch.masteryLevel = Math.max(ch.masteryLevel, 3);
-  if (correct && ch.masteryLevel < 3) ch.masteryLevel = Math.max(ch.masteryLevel, 2);
+
+  // 80% Single Source of Truth Mastery Threshold Logic
+  if (acc >= 0.80 && ch.practiceAttempts.length >= 3) {
+    ch.masteryLevel = 5;
+    p.weakChapterIds = (p.weakChapterIds || []).filter(id => String(id) !== String(chId));
+  } else if (acc >= 0.65) {
+    ch.masteryLevel = Math.max(ch.masteryLevel, 4);
+  } else if (isCorrect) {
+    ch.masteryLevel = Math.max(ch.masteryLevel, 2);
+  } else {
+    if (!p.weakChapterIds.includes(chId)) p.weakChapterIds.push(chId);
+  }
+
   p.chapters[chId] = ch;
-  if (!correct && !p.weakChapterIds.includes(chId)) p.weakChapterIds = [...p.weakChapterIds, chId];
-  if (correct && acc >= 0.8) p.weakChapterIds = p.weakChapterIds.filter(id => id !== chId);
-  saveProgress(slug, p); return { p, ch };
+  updateStreak(p);
+
+  // Award XP (First attempt gets +25 XP, standard gets +10 XP)
+  const xpAmount = isCorrect ? (options.isFirstAttempt ? 25 : 10) : 0;
+  if (xpAmount > 0) addXP(slug, xpAmount, isCorrect ? 'Correct Answer' : '');
+
+  saveProgress(slug, p);
+  return { p, ch };
 }
 
 export function recordChallengeScore(slug, chId, type, score, total) {
@@ -98,14 +338,24 @@ export function recordChallengeScore(slug, chId, type, score, total) {
   ch.challengeScores = [...(ch.challengeScores || []), { type, score, total, timestamp: Date.now() }];
   ch.lastActivity = Date.now();
   p.totalChallengesCompleted = (p.totalChallengesCompleted || 0) + 1;
-  if (ch.walkthroughDone && ch.recallDone) {
-    const rp = (ch.practiceAttempts || []).slice(-5);
-    const pa = rp.length > 0 ? rp.filter(a => a.correct).length / rp.length : 0;
-    if (pct >= 0.8 && pa >= 0.6) { ch.masteryLevel = 5; p.weakChapterIds = p.weakChapterIds.filter(id => id !== chId); }
-    else if (pct >= 0.6) ch.masteryLevel = Math.max(ch.masteryLevel, 4);
-    else ch.masteryLevel = Math.max(ch.masteryLevel, 3);
+
+  // 80% Single Source of Truth Mastery Threshold Logic
+  if (pct >= 0.80) {
+    ch.masteryLevel = 5;
+    p.weakChapterIds = (p.weakChapterIds || []).filter(id => String(id) !== String(chId));
+  } else if (pct >= 0.65) {
+    ch.masteryLevel = Math.max(ch.masteryLevel, 4);
   }
-  p.chapters[chId] = ch; updateStreak(p); saveProgress(slug, p); return { p, ch };
+
+  p.chapters[chId] = ch;
+  updateStreak(p);
+
+  // Timed challenge XP bonus
+  const bonusXP = Math.round(pct * 50) + (score * 5);
+  addXP(slug, bonusXP, 'Challenge Completed');
+
+  saveProgress(slug, p);
+  return { p, ch };
 }
 
 export function getCourseStats(slug, chapters = []) {
@@ -120,12 +370,25 @@ export function getCourseStats(slug, chapters = []) {
     if (lvl >= 3) completed++;
     if (lvl >= 5) mastered++;
   });
-  return { total, started, completed, mastered,
+
+  const levelInfo = calculateLevel(p.xp || 0);
+
+  return {
+    total,
+    started,
+    completed,
+    mastered,
     overallPct: Math.round((pts / (total * 5)) * 100),
     streak: p.streak || 0,
+    xp: p.xp || 0,
+    level: levelInfo.level,
+    levelPct: levelInfo.pct,
+    nextLvlXP: levelInfo.nextLvlXP,
+    badges: p.badges || [],
     weakAreas: (p.weakChapterIds || []).length,
     recallDue: (p.recallDue || []).length,
-    totalChallengesCompleted: p.totalChallengesCompleted || 0 };
+    totalChallengesCompleted: p.totalChallengesCompleted || 0,
+  };
 }
 
 export function getCurrentChapter(slug, chapters = []) {
@@ -146,3 +409,4 @@ export function getChapterNextAction(slug, chId) {
   if (!(ch.challengeScores || []).length) return 'challenge';
   return ch.masteryLevel >= 5 ? 'mastered' : 'review';
 }
+

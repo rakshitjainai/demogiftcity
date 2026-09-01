@@ -16,6 +16,36 @@ const CHALLENGE_TYPES = {
     icon: Brain, color: '#2563EB', bg: '#EFF6FF',
     time: 30, qCount: 5,
   },
+  'daily-5': {
+    title: 'Daily 5 Recall',
+    subtitle: '5-minute daily recall session covering active regulations.',
+    icon: Brain, color: '#2563EB', bg: '#EFF6FF',
+    time: 30, qCount: 5,
+  },
+  'quick-3': {
+    title: 'Quick 3 Recall',
+    subtitle: 'Three quick questions from recently learned statutory material.',
+    icon: Zap, color: '#059669', bg: '#ECFDF5',
+    time: 20, qCount: 3,
+  },
+  '60-second': {
+    title: '60-Second Challenge',
+    subtitle: 'Answer as many statutory questions as possible within 60 seconds.',
+    icon: Clock, color: '#DC2626', bg: '#FEF2F2',
+    time: 60, qCount: 8,
+  },
+  'boss-level': {
+    title: 'Boss Level Challenge',
+    subtitle: 'Comprehensive high-difficulty end-of-module challenge.',
+    icon: Award, color: '#7C3AED', bg: '#F5F3FF',
+    time: 60, qCount: 5,
+  },
+  'regulation-detective': {
+    title: 'Regulation Detective',
+    subtitle: 'Investigate compliance scenarios and identify the applicable rule.',
+    icon: Target, color: '#D97706', bg: '#FFFBEB',
+    time: 45, qCount: 5,
+  },
   'quick-recall': {
     title: 'Quick Recall',
     subtitle: 'Answer 5 questions from key provisions in this regulation.',

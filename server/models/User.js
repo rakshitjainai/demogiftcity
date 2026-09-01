@@ -92,7 +92,22 @@ const userSchema = new mongoose.Schema(
     courseProgress: [courseProgressSchema],
     readingProgress: readingProgressSchema,
     filingStatus: [filingStatusSchema],
-    examReadyAttempts: [examReadyAttemptSchema]
+    examReadyAttempts: [examReadyAttemptSchema],
+    xp: { type: Number, default: 0 },
+    streak: { type: Number, default: 0 },
+    badges: [{ type: String }],
+    mistakesLog: [{
+      id: String,
+      courseSlug: String,
+      chapterNum: Number,
+      question: String,
+      selectedAnswer: String,
+      correctAnswer: String,
+      explanation: String,
+      provision: String,
+      wrongCount: { type: Number, default: 1 },
+      lastAttemptDate: { type: Date, default: Date.now }
+    }]
   },
   { timestamps: true }
 );

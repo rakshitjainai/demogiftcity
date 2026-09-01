@@ -14,7 +14,11 @@ router.get('/progress', protect, async (req, res) => {
       quizProgress: user.quizProgress || [],
       learningProgress: user.learningProgress || [],
       courseProgress: user.courseProgress || [],
-      readingProgress: user.readingProgress || null
+      readingProgress: user.readingProgress || null,
+      xp: user.xp || 0,
+      streak: user.streak || 0,
+      badges: user.badges || [],
+      mistakesLog: user.mistakesLog || []
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error fetching progress', error: error.message });
