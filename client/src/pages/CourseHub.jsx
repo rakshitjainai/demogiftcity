@@ -7,8 +7,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import coursesData from '../data/courses.json';
+import { getClassicStudyContent } from '../utils/courseContentResolver';
 import {
-  getCourseStats, getChapterProgress, getChapterNextAction,
+  getCourseStats, getChapterProgress, getChapterNextAction, isModuleUnlocked,
   MASTERY_LEVELS, getMistakes, removeMistake, AVAILABLE_BADGES
 } from '../utils/learnProgress';
 
@@ -33,6 +34,21 @@ const COURSES_META = {
     color: 'from-amber-900 via-amber-800 to-orange-900',
     difficulty: 'Advanced', durationHours: 14,
   },
+  'companies-act': {
+    code: 'MCA-CA2013', regulator: 'MCA',
+    color: 'from-teal-900 via-emerald-950 to-slate-900',
+    difficulty: 'Beginner to Intermediate', durationHours: 18,
+  },
+  'mca-ca2013': {
+    code: 'MCA-CA2013', regulator: 'MCA',
+    color: 'from-teal-900 via-emerald-950 to-slate-900',
+    difficulty: 'Beginner to Intermediate', durationHours: 18,
+  },
+  'sebi-lodr': {
+    code: 'SEBI-LODR', regulator: 'SEBI',
+    color: 'from-sky-900 via-indigo-900 to-slate-900',
+    difficulty: 'Intermediate', durationHours: 10,
+  }
 };
 
 const MOCK_LEADERBOARD = [
@@ -77,8 +93,15 @@ export default function CourseHub() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMistakesModal, setShowMistakesModal] = useState(false);
 
-  const course = coursesData[courseSlug];
-  const meta = COURSES_META[courseSlug] || {};
+  const resolvedPackage = useMemo(() => getClassicStudyContent(courseSlug), [courseSlug]);
+  const course = coursesData[courseSlug] || (!resolvedPackage.notFound ? resolvedPackage : null);
+  const meta = COURSES_META[courseSlug] || {
+    code: course?.code || (courseSlug || '').toUpperCase(),
+    regulator: course?.regulator || 'Regulatory',
+    color: 'from-forest-deep to-forest',
+    difficulty: course?.difficulty || 'Intermediate',
+    durationHours: course?.durationHours || 12,
+  };
   const chapters = course?.chapters || [];
   const isOwned = Boolean(isMember || hasCourseAccess?.(courseSlug));
   const stats = useMemo(() => getCourseStats(courseSlug, chapters), [courseSlug, chapters]);
@@ -87,12 +110,8 @@ export default function CourseHub() {
   const chapterStates = useMemo(() => chapters.map((ch, idx) => {
     const cp = getChapterProgress(courseSlug, ch.num);
     const nextAction = getChapterNextAction(courseSlug, ch.num);
-    const isLocked = !isOwned && idx > 0;
-    // Sequential lock policy
-    const prevCh = idx > 0 ? chapters[idx - 1] : null;
-    const prevCp = prevCh ? getChapterProgress(courseSlug, prevCh.num) : null;
-    const isSeqLocked = idx > 0 && !(prevCp && (prevCp.masteryLevel >= 3 || prevCp.lessonRead));
-    return { ...ch, cp, nextAction, isLocked: isLocked || isSeqLocked, idx };
+    const unlockStatus = isModuleUnlocked(courseSlug, idx, chapters, isOwned);
+    return { ...ch, cp, nextAction, isLocked: !unlockStatus.unlocked, unlockStatus, idx };
   }), [courseSlug, chapters, isOwned]);
 
   const currentChapter = chapterStates.find(c => !c.isLocked && c.cp.masteryLevel < 5) || chapterStates[0];

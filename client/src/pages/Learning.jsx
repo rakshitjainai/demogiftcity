@@ -11,6 +11,7 @@ import LockOverlay from '../components/LockOverlay';
 import Breadcrumb from '../components/Breadcrumb';
 import BadgeChip from '../components/BadgeChip';
 import { getCourseStats, MASTERY_LEVELS } from '../utils/learnProgress';
+import { normalizeCourseSlug } from '../utils/courseContentResolver';
 import coursesData from '../data/courses.json';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -38,34 +39,16 @@ const ACTIVE_COURSES = [
   category: c.category
 }));
 
-const UPCOMING_COURSES = [
-  {
-    id: 'mod-lodr',
-    code: 'SEBI-LODR',
-    slug: 'sebi-lodr',
-    regulator: 'SEBI',
-    title: 'SEBI (Listing Obligations and Disclosure Requirements) 2015',
-    description: 'Governance, board composition, committee mandates, material event reporting, and periodic disclosure framework for listed entities.',
-    badge: 'Coming Soon',
-    difficulty: 'Intermediate',
-    durationHours: 10,
-    color: 'from-sky-900 via-indigo-900 to-slate-900',
-    accentColor: 'bg-sky-500',
-    totalChapters: 12,
-    totalLessons: 24,
-    totalQuestions: 75,
-    category: 'Corporate Governance',
-    isUpcoming: true,
-  },
+const ADDITIONAL_COURSES = [
   {
     id: 'mod-companies',
     code: 'MCA-CA2013',
-    slug: 'mca-ca2013',
+    slug: 'companies-act',
     regulator: 'MCA',
     title: 'Companies Act 2013: Essential Secretarial Compliance',
     description: 'Practical walkthrough of incorporation, director disqualifications, related-party transactions, secretarial standards (SS-1, SS-2) & MCA-21 v3 filings.',
     badge: 'Preview Available',
-    difficulty: 'Beginner',
+    difficulty: 'Beginner to Intermediate',
     durationHours: 18,
     color: 'from-teal-900 via-emerald-950 to-slate-900',
     accentColor: 'bg-teal-500',
@@ -73,11 +56,29 @@ const UPCOMING_COURSES = [
     totalLessons: 30,
     totalQuestions: 90,
     category: 'Company Law',
-    isUpcoming: true,
+    isUpcoming: false,
+  },
+  {
+    id: 'mod-lodr',
+    code: 'SEBI-LODR',
+    slug: 'sebi-lodr',
+    regulator: 'SEBI',
+    title: 'SEBI (Listing Obligations and Disclosure Requirements) 2015',
+    description: 'Governance, board composition, committee mandates, material event reporting, and periodic disclosure framework for listed entities.',
+    badge: 'Preview Available',
+    difficulty: 'Intermediate',
+    durationHours: 10,
+    color: 'from-sky-900 via-indigo-900 to-slate-900',
+    accentColor: 'bg-sky-500',
+    totalChapters: 12,
+    totalLessons: 24,
+    totalQuestions: 72,
+    category: 'Corporate Governance',
+    isUpcoming: false,
   }
 ];
 
-const COURSES = [...ACTIVE_COURSES, ...UPCOMING_COURSES];
+const COURSES = [...ACTIVE_COURSES, ...ADDITIONAL_COURSES];
 
 const LEARNING_PATHS = [
   {
@@ -110,12 +111,31 @@ export default function Learning() {
   const [selectedRegulator, setSelectedRegulator] = useState('ALL');
   const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'IN_PROGRESS' | 'COMPLETED' | 'PATHS'
 
-  // Auto-launch modal if query param (e.g. ?course=ifsca-cmi) is provided
+  // Handle URL query parameters (?reg=companies-act, ?course=ifsca-cmi, ?slug=sebi-aif)
   useEffect(() => {
-    const courseParam = searchParams.get('course') || searchParams.get('track') || searchParams.get('slug');
+    const regParam = searchParams.get('reg') || searchParams.get('regulator');
+    if (regParam) {
+      const cleanReg = regParam.toLowerCase().trim();
+      if (['mca', 'mca-ca2013', 'ca2013', 'companies-act', 'companies'].includes(cleanReg)) {
+        setSelectedRegulator('MCA');
+      } else if (['sebi', 'sebi-aif', 'sebi-lodr', 'aif', 'lodr'].includes(cleanReg)) {
+        setSelectedRegulator('SEBI');
+      } else if (['ifsca', 'ifsca-cmi', 'ifsca-fme', 'cmi', 'fme'].includes(cleanReg)) {
+        setSelectedRegulator('IFSCA');
+      } else if (['rbi', 'fema'].includes(cleanReg)) {
+        setSelectedRegulator('RBI');
+      }
+    }
+
+    const courseParam = searchParams.get('course') || searchParams.get('track') || searchParams.get('slug') || searchParams.get('study');
     if (courseParam) {
-      const match = COURSES.find(c => c.slug === courseParam || c.code.toLowerCase() === courseParam.toLowerCase() || c.id === courseParam);
-      if (match && !match.isUpcoming) {
+      const normalized = normalizeCourseSlug(courseParam);
+      const match = COURSES.find(c => 
+        normalizeCourseSlug(c.slug) === normalized ||
+        normalizeCourseSlug(c.code) === normalized ||
+        c.id === courseParam
+      );
+      if (match) {
         setSelectedCourse(match);
       }
     }
@@ -156,7 +176,7 @@ export default function Learning() {
         c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.regulator.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesRegulator = selectedRegulator === 'ALL' || c.regulator === selectedRegulator;
+      const matchesRegulator = selectedRegulator === 'ALL' || c.regulator.toUpperCase() === selectedRegulator.toUpperCase();
 
       const hasAccess = hasCourseAccess(c.slug);
       if (activeTab === 'IN_PROGRESS') {
@@ -168,7 +188,6 @@ export default function Learning() {
       return matchesSearch && matchesRegulator;
     });
   }, [searchQuery, selectedRegulator, activeTab, hasCourseAccess]);
-
 
   return (
     <div className="min-h-screen bg-paper py-8 px-4 sm:px-6 lg:px-8">
@@ -321,80 +340,58 @@ export default function Learning() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setActiveTab('ALL')}
-                  className="w-full py-3 rounded-xl bg-forest hover:bg-leaf text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
+                <Link
+                  to="/membership"
+                  className="w-full py-3 rounded-xl bg-forest hover:bg-forest-deep text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 mt-4"
                 >
-                  <span>View Included Courses</span>
+                  <span>Explore Track with Membership</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             ))}
           </div>
         ) : (
-          /* Course Cards Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          /* View Mode: Standard Course Cards Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map((course) => {
-              const meta = courseMeta[course.slug];
-              const chaptersCount = meta?.totalChapters || course.totalChapters;
-              const lessonsCount = meta?.totalLessons || course.totalLessons;
-              const questionsCount = meta?.totalQuestions || course.totalQuestions;
+              const isOwned = Boolean(isMember || hasCourseAccess(course.slug) || user?.role === 'admin');
+              const stats = getCourseStats(course.slug);
+              const hasProgress = stats.completed > 0;
+              const masteryLvl = stats.masteryLevel || 1;
+              const ml = MASTERY_LEVELS[masteryLvl] || MASTERY_LEVELS[1];
 
-              const isOwned = hasCourseAccess(course.slug);
-              const isLocked = !isOwned && !course.isUpcoming;
-
-              // Gamification stats from localStorage
-              const courseChapters = coursesData[course.slug]?.chapters || [];
-              const stats = getCourseStats(course.slug, courseChapters);
-              const hasProgress = stats.started > 0;
-              const masteryLvl = stats.mastered > 0
-                ? 5 : stats.completed > 0 ? 4 : stats.started > 0 ? 2 : 0;
-              const ml = MASTERY_LEVELS[masteryLvl] || MASTERY_LEVELS[0];
+              // Live derived counts from meta or fallback to definition
+              const chaptersCount = courseMeta[course.slug]?.chapters || course.totalChapters;
+              const questionsCount = courseMeta[course.slug]?.questions || course.totalQuestions;
 
               return (
                 <div
                   key={course.id}
-                  className={`bg-white rounded-3xl border border-line card-shadow hover-lift flex flex-col justify-between overflow-hidden transition-all ${
-                    course.isUpcoming ? 'opacity-85' : ''
-                  }`}
+                  className="bg-white rounded-3xl border border-line card-shadow hover-lift overflow-hidden flex flex-col justify-between transition-all"
                 >
-                  {/* Top Header Gradient */}
-                  <div className={`p-6 bg-gradient-to-br ${course.color} text-white relative`}>
+                  {/* Card Header Banner */}
+                  <div className={`p-6 bg-gradient-to-br ${course.color || 'from-[#073321] to-[#042C1D]'} text-white relative`}>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="px-2.5 py-1 rounded-md bg-white/20 backdrop-blur-sm text-white font-bold text-xs">
+                      <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/15 backdrop-blur-xs border border-white/20 text-white">
                         {course.code}
                       </span>
-                      <div className="flex items-center gap-1.5">
-                        {stats.streak > 0 && (
-                          <span className="flex items-center gap-0.5 text-amber-300 text-[10px] font-bold">
-                            <Flame className="w-3 h-3" />{stats.streak}d
-                          </span>
-                        )}
-                        <span className="text-[11px] font-semibold text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-300/30">
-                          {course.badge}
-                        </span>
-                      </div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold/20 text-amber-300 border border-gold/40">
+                        {course.badge}
+                      </span>
                     </div>
 
-                    <h3 className="font-display font-bold text-lg sm:text-xl text-white leading-snug line-clamp-2 min-h-[3.25rem]">
+                    <h3 className="font-serif font-bold text-lg text-white leading-snug min-h-[3rem] line-clamp-2">
                       {course.title}
                     </h3>
 
-                    {/* Progress bar on header if has progress */}
-                    {hasProgress && !course.isUpcoming && (
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between text-[10px] text-white/70 mb-1">
-                          <span className="font-medium">Progress</span>
-                          <span className="font-bold">{stats.overallPct}%</span>
-                        </div>
-                        <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-white rounded-full transition-all duration-700"
-                            style={{ width: `${stats.overallPct}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-3 mt-3 text-xs text-white/80 font-mono">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-emerald-300" />
+                        {course.durationHours} hrs
+                      </span>
+                      <span>•</span>
+                      <span className="capitalize">{course.difficulty}</span>
+                    </div>
                   </div>
 
                   {/* Body Content */}
@@ -420,7 +417,7 @@ export default function Learning() {
                     </div>
 
                     {/* Mastery Badge */}
-                    {hasProgress && !course.isUpcoming && (
+                    {hasProgress && (
                       <div className="flex items-center gap-2">
                         <span
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
@@ -438,45 +435,44 @@ export default function Learning() {
                     )}
 
                     {/* Footer Actions */}
-                    <div className="pt-1">
-                      {course.isUpcoming ? (
-                        <div className="w-full py-3 rounded-xl bg-gray-100 text-gray-500 font-semibold text-xs text-center border border-gray-200">
-                          Curriculum in Editorial Review
-                        </div>
-                      ) : isOwned ? (
-                        <div className="space-y-2">
+                    <div className="pt-1 space-y-2">
+                      {['ifsca-cmi', 'ifsca-fme', 'sebi-aif'].includes(course.slug) && (
+                        isOwned ? (
                           <Link
                             to={`/learn/${course.slug}`}
-                            className="w-full py-3 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
+                            className="w-full py-2.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2"
                           >
                             <TrendingUp className="w-4 h-4" />
-                            <span>{hasProgress ? 'Continue Learning' : 'Start Learning'}</span>
+                            <span>{hasProgress ? 'Continue Progressive Learning' : 'Start Progressive Learning'}</span>
                           </Link>
-                          <button
-                            onClick={() => setSelectedCourse(course)}
-                            className="w-full py-2 rounded-xl bg-mint text-forest hover:bg-mint-deep font-semibold text-xs transition-colors border border-mint-deep flex items-center justify-center gap-1.5 cursor-pointer"
-                          >
-                            <PlayCircle className="w-3.5 h-3.5" />
-                            <span>Classic Study Mode</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
+                        ) : (
                           <Link
                             to={`/learn/${course.slug}`}
                             className="w-full py-2.5 rounded-xl bg-mint text-forest hover:bg-mint-deep font-bold text-xs transition-colors border border-mint-deep flex items-center justify-center gap-1.5"
                           >
                             <Sparkles className="w-3.5 h-3.5 text-leaf" />
-                            <span>Preview Free Chapter</span>
+                            <span>Preview Free Progressive Chapter</span>
                           </Link>
-                          <Link
-                            to="/membership"
-                            className="w-full py-2.5 rounded-xl bg-forest hover:bg-leaf text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-                          >
-                            <Lock className="w-3.5 h-3.5" />
-                            <span>Unlock Full Course (₹499)</span>
-                          </Link>
-                        </div>
+                        )
+                      )}
+
+                      {/* Universal Classic Study Mode for All Courses */}
+                      <button
+                        onClick={() => setSelectedCourse(course)}
+                        className="w-full py-2.5 rounded-xl bg-mint text-forest hover:bg-mint-deep font-semibold text-xs transition-colors border border-mint-deep flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                      >
+                        <PlayCircle className="w-3.5 h-3.5 text-forest" />
+                        <span>Classic Study Mode</span>
+                      </button>
+
+                      {!isOwned && (
+                        <button
+                          onClick={() => initiateCheckout({ productType: 'course', productId: course.slug })}
+                          className="w-full py-2 rounded-xl bg-gradient-to-r from-amber-600 via-gold to-amber-700 hover:brightness-105 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                        >
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>Unlock Full Course (₹499)</span>
+                        </button>
                       )}
                     </div>
                   </div>

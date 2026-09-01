@@ -30,7 +30,7 @@ const PRODUCT_PRICING = {
   membership: 199900  // ₹1,999 in paise (1 year access)
 };
 
-const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme', 'job_ready', 'interview_pro'];
+const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme', 'companies-act', 'sebi-lodr', 'mca-ca2013', 'job_ready', 'interview_pro'];
 const VALID_EXAM_PASSES = ['REGREADY_FME_001', 'fme-full-length-mock-test', 'cmi-full-length-mock-test', 'ifsca-cmi'];
 
 // ─── GET /api/payments/key-id ─────────────────────────────────────────────

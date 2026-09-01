@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, ChevronRight, BookOpen, Lock, Award
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import coursesData from '../data/courses.json';
-import { getChapterProgress } from '../utils/learnProgress';
+import { isModuleUnlocked } from '../utils/learnProgress';
+import { getClassicStudyContent } from '../utils/courseContentResolver';
 import ProgressiveStepEngine from '../components/ProgressiveStepEngine';
 
 export default function ChapterLearning() {
@@ -13,22 +14,18 @@ export default function ChapterLearning() {
   const navigate = useNavigate();
   const { isMember, hasCourseAccess, initiateCheckout } = useAuth();
 
-  const course = coursesData[courseSlug];
+  const resolvedPackage = useMemo(() => getClassicStudyContent(courseSlug), [courseSlug]);
+  const course = coursesData[courseSlug] || (!resolvedPackage.notFound ? resolvedPackage : null);
   const chapters = course?.chapters || [];
-  const chIdx = chapters.findIndex(c => String(c.num) === String(chapterId));
+  const chIdx = chapters.findIndex(c => String(c.num || c.chapterNo) === String(chapterId));
   const chapter = chapters[chIdx];
 
   const isOwned = Boolean(isMember || hasCourseAccess?.(courseSlug));
 
-  // Sequential Module Lock Policy (Decision A3 & Question 3):
-  // Chapter 1 is unlocked for everyone (or preview).
-  // Chapter N requires Chapter N-1 to be completed or mastered.
-  const prevChapter = chIdx > 0 ? chapters[chIdx - 1] : null;
-  const prevChapterProgress = prevChapter ? getChapterProgress(courseSlug, prevChapter.num) : null;
-  const isPrevDone = prevChapterProgress ? (prevChapterProgress.masteryLevel >= 3 || prevChapterProgress.lessonRead) : true;
-
-  const isLocked = !isOwned && chIdx > 0;
-  const isSequentialLocked = chIdx > 0 && !isPrevDone;
+  // Canonical Sequential Module Lock Check
+  const unlockStatus = isModuleUnlocked(courseSlug, chIdx, chapters, isOwned);
+  const isLocked = !unlockStatus.unlocked && unlockStatus.reason === 'membership_required';
+  const isSequentialLocked = !unlockStatus.unlocked && unlockStatus.reason === 'sequential_locked';
 
   const nextChapter = chIdx < chapters.length - 1 ? chapters[chIdx + 1] : null;
 
@@ -47,7 +44,7 @@ export default function ChapterLearning() {
   }
 
   // Handle Locked State
-  if (isLocked || isSequentialLocked) {
+  if (!unlockStatus.unlocked) {
     return (
       <div className="min-h-screen bg-paper flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl p-8 border border-forest/10 shadow-xl max-w-md text-center space-y-5">
@@ -60,7 +57,7 @@ export default function ChapterLearning() {
           <p className="text-sm text-gray-600 leading-relaxed">
             {isLocked
               ? `Access to Chapter ${chapter.num}: "${chapter.title}" requires full course membership.`
-              : `RegLearn enforces sequential module mastery. Please complete Chapter ${prevChapter?.num}: "${prevChapter?.title}" before unlocking this chapter.`}
+              : `RegLearn enforces sequential module mastery. Please complete Chapter ${unlockStatus.prevChapterNum}: "${unlockStatus.prevChapterTitle}" before unlocking this chapter.`}
           </p>
           <div className="pt-2 flex flex-col gap-3">
             {isLocked ? (
@@ -72,10 +69,10 @@ export default function ChapterLearning() {
               </button>
             ) : (
               <Link
-                to={`/learn/${courseSlug}/chapter/${prevChapter?.num}`}
+                to={`/learn/${courseSlug}/chapter/${unlockStatus.prevChapterNum}`}
                 className="w-full py-3 rounded-xl bg-forest text-white font-bold text-sm shadow-md hover:bg-forest-deep transition-all block text-center"
               >
-                Go to Chapter {prevChapter?.num} →
+                Go to Chapter {unlockStatus.prevChapterNum} →
               </Link>
             )}
             <Link to={`/learn/${courseSlug}`} className="text-xs text-forest font-semibold hover:underline">

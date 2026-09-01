@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import {
   recordStepAnswer, recordModuleCompletion, getStepPosition, saveStepPosition,
+  saveChapterStepStates, getChapterStepStates, calculateModuleScore,
   playGamificationSound, triggerConfetti, recordMistake, removeMistake,
   isAudioMuted, setAudioMuted
 } from '../utils/learnProgress';
@@ -240,7 +241,7 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
   rawSteps.push({
     id: `step-summary-${chapter.num}`,
     type: 'SUMMARY',
-    title: 'Module Mastered!',
+    title: 'Module Summary',
     chapterNum: chapter.num,
     chapterTitle: chapter.title,
   });
@@ -298,11 +299,20 @@ export default function ProgressiveStepEngine({
     setAudioMuted(nextState);
   };
 
-  // Restore saved step position
+  // Restore saved step position & stepStates
+  const [stepStates, setStepStates] = useState(() => getChapterStepStates(courseSlug, chapter?.num) || {});
+
+  useEffect(() => {
+    const loaded = getChapterStepStates(courseSlug, chapter?.num);
+    setStepStates(loaded || {});
+  }, [courseSlug, chapter?.num]);
+
   useEffect(() => {
     const savedPos = getStepPosition(courseSlug, chapter?.num);
     if (savedPos > 0 && savedPos < steps.length) {
       setCurrentStepIdx(savedPos);
+    } else {
+      setCurrentStepIdx(0);
     }
   }, [courseSlug, chapter?.num, steps.length]);
 
@@ -310,8 +320,6 @@ export default function ProgressiveStepEngine({
   const isFirstStep = currentStepIdx === 0;
   const isLastStep = currentStepIdx === steps.length - 1;
 
-  // Interaction State per Step ID
-  const [stepStates, setStepStates] = useState({});
   const currentSlot = stepStates[currentStep?.id] || { selected: null, submitted: false, isCorrect: false };
 
   // Flashcard flip state
@@ -321,20 +329,17 @@ export default function ProgressiveStepEngine({
     setIsFlipped(false);
   }, [currentStep]);
 
-  // Interactive Scored Question Steps Filter
-  const scoredSteps = useMemo(() => {
-    return steps.filter(s => ['MCQ', 'SPOT_THE_MISTAKE', 'REGULATION_COMPARISON', 'TRUE_FALSE'].includes(s.type));
-  }, [steps]);
-
-  const totalScoredQuestions = scoredSteps.length;
-
   // Handle Option Select
   const handleSelectOption = (idx) => {
     if (currentSlot.submitted) return;
-    setStepStates(prev => ({
-      ...prev,
-      [currentStep.id]: { ...(prev[currentStep.id] || {}), selected: idx }
-    }));
+    setStepStates(prev => {
+      const updated = {
+        ...prev,
+        [currentStep.id]: { ...(prev[currentStep.id] || {}), selected: idx }
+      };
+      saveChapterStepStates(courseSlug, chapter.num, updated);
+      return updated;
+    });
   };
 
   // Handle Answer Check / Submission
@@ -348,16 +353,22 @@ export default function ProgressiveStepEngine({
     const wasAlreadySubmitted = Boolean(currentSlot.submitted);
     const firstAttemptCorrect = wasAlreadySubmitted ? currentSlot.firstAttemptCorrect : isCorrect;
 
-    setStepStates(prev => ({
-      ...prev,
-      [currentStep.id]: {
-        ...(prev[currentStep.id] || {}),
-        selected: currentSlot.selected,
-        submitted: true,
-        isCorrect,
-        firstAttemptCorrect,
-      }
-    }));
+    const updatedSlot = {
+      ...(stepStates[currentStep.id] || {}),
+      selected: currentSlot.selected,
+      submitted: true,
+      isCorrect,
+      firstAttemptCorrect,
+    };
+
+    setStepStates(prev => {
+      const updated = {
+        ...prev,
+        [currentStep.id]: updatedSlot
+      };
+      saveChapterStepStates(courseSlug, chapter.num, updated);
+      return updated;
+    });
 
     // Only record answer progress & XP on the first attempt
     if (!wasAlreadySubmitted) {
@@ -384,57 +395,33 @@ export default function ProgressiveStepEngine({
     }
   };
 
-  // Live Scored Results Calculation
+  // Live Scored Results Calculation (Single Canonical Function)
   const scoredResults = useMemo(() => {
-    let attempted = 0;
-    let correctFirstAttempts = 0;
+    return calculateModuleScore(stepStates, steps);
+  }, [stepStates, steps]);
 
-    scoredSteps.forEach(s => {
-      const slot = stepStates[s.id];
-      if (slot && slot.submitted) {
-        attempted++;
-        if (slot.firstAttemptCorrect) {
-          correctFirstAttempts++;
-        }
-      }
-    });
-
-    const accuracyPct = totalScoredQuestions > 0
-      ? Math.round((correctFirstAttempts / totalScoredQuestions) * 100)
-      : 100;
-
-    let masteryLevel = 1;
-    if (accuracyPct >= 80) masteryLevel = 5;
-    else if (accuracyPct >= 65) masteryLevel = 4;
-    else if (accuracyPct >= 50) masteryLevel = 3;
-    else if (accuracyPct >= 30) masteryLevel = 2;
-    else masteryLevel = 1;
-
-    const bonusXP = accuracyPct >= 80 ? 100 : accuracyPct >= 65 ? 50 : accuracyPct >= 50 ? 30 : 15;
-    const totalEarnedXP = (correctFirstAttempts * 25) + bonusXP;
-
-    return {
-      totalScoredQuestions,
-      attempted,
-      correctFirstAttempts,
-      accuracyPct,
-      masteryLevel,
-      bonusXP,
-      totalEarnedXP,
-    };
-  }, [scoredSteps, stepStates, totalScoredQuestions]);
+  // Restart / Retake Module from Step 1
+  const handleRestartModule = () => {
+    setStepStates({});
+    saveChapterStepStates(courseSlug, chapter.num, {});
+    setCurrentStepIdx(0);
+    saveStepPosition(courseSlug, chapter.num, 0);
+    playGamificationSound('click');
+  };
 
   // Move to Next Step
   const handleNext = () => {
     if (isLastStep) {
       triggerConfetti();
-      playGamificationSound(scoredResults.masteryLevel >= 5 ? 'levelUp' : 'success');
+      playGamificationSound(scoredResults.isMastered ? 'levelUp' : 'success');
       recordModuleCompletion(courseSlug, chapter.num, {
         totalQuestions: scoredResults.totalScoredQuestions,
         correctCount: scoredResults.correctFirstAttempts,
         accuracyPct: scoredResults.accuracyPct,
         masteryLevel: scoredResults.masteryLevel,
+        isMastered: scoredResults.isMastered,
         bonusXP: scoredResults.bonusXP,
+        stepStates,
       });
       if (onComplete) onComplete();
       return;
@@ -720,8 +707,8 @@ export default function ProgressiveStepEngine({
               </div>
               <h3 className="text-xl font-bold text-forest-deep">{currentStep.title}</h3>
               <p className="text-xs text-gray-600 max-w-sm mx-auto">
-                {totalScoredQuestions > 0
-                  ? `You have answered ${scoredResults.attempted} of ${totalScoredQuestions} scored questions. Current score: ${scoredResults.accuracyPct}% (${scoredResults.correctFirstAttempts}/${totalScoredQuestions} correct on first attempt).`
+                {scoredResults.totalScoredQuestions > 0
+                  ? `You have answered ${scoredResults.attempted} of ${scoredResults.totalScoredQuestions} scored questions. Current score: ${scoredResults.accuracyPct}% (${scoredResults.correctFirstAttempts}/${scoredResults.totalScoredQuestions} correct on first attempt).`
                   : `You have completed all curriculum steps for Chapter ${chapter.num}: ${chapter.title}.`
                 }
               </p>
@@ -761,18 +748,11 @@ export default function ProgressiveStepEngine({
                 {scoredResults.masteryLevel >= 5 ? '🏆' : scoredResults.masteryLevel === 4 ? '🎯' : scoredResults.masteryLevel === 3 ? '📈' : '🔄'}
               </div>
               <h2 className="text-2xl sm:text-3xl font-display font-bold text-forest-deep">
-                {scoredResults.masteryLevel >= 5
-                  ? 'Module Mastered!'
-                  : scoredResults.masteryLevel === 4
-                  ? 'Module Completed — Proficient!'
-                  : scoredResults.masteryLevel === 3
-                  ? 'Module Completed — Practicing'
-                  : 'Module Completed — Needs Review'
-                }
+                {scoredResults.badgeTitle}
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
-                {totalScoredQuestions > 0
-                  ? `You achieved ${scoredResults.accuracyPct}% accuracy (${scoredResults.correctFirstAttempts} of ${totalScoredQuestions} questions correct on first attempt) for Chapter ${chapter.num}: ${chapter.title}.`
+                {scoredResults.totalScoredQuestions > 0
+                  ? `You achieved ${scoredResults.accuracyPct}% accuracy (${scoredResults.correctFirstAttempts} of ${scoredResults.totalScoredQuestions} questions correct on first attempt) for Chapter ${chapter.num}: ${chapter.title}.`
                   : `Congratulations! You have completed all interactive step cards for Chapter ${chapter.num}: ${chapter.title}.`
                 }
               </p>
@@ -792,6 +772,15 @@ export default function ProgressiveStepEngine({
                     }
                   </div>
                 </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={handleRestartModule}
+                  className="text-xs text-forest hover:underline font-semibold inline-flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Retake / Review from Step 1
+                </button>
               </div>
             </div>
           )}
