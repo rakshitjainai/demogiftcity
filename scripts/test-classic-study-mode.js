@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-const PREVIEW_PORT = 4173;
+const PREVIEW_PORT = process.env.PORT || 5173;
 const BASE_URL = `http://localhost:${PREVIEW_PORT}`;
 
 async function runClassicStudyModeTests() {

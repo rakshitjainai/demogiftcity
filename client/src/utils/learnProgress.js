@@ -386,7 +386,8 @@ export function isModuleUnlocked(slug, chIndex, chapters = [], isOwned = true) {
     return { unlocked: true, reason: 'no_prev_chapter' };
   }
 
-  const prevProgress = getChapterProgress(slug, prevChapter.num);
+  const prevNum = prevChapter.num || prevChapter.chapterNo || prevChapter.number || chIndex;
+  const prevProgress = getChapterProgress(slug, prevNum);
   
   // Unlocked only if previous chapter has genuinely been traversed/completed or attempted
   const isPrevCompleted = Boolean(
@@ -397,8 +398,8 @@ export function isModuleUnlocked(slug, chIndex, chapters = [], isOwned = true) {
     return {
       unlocked: false,
       reason: 'sequential_locked',
-      prevChapterNum: prevChapter.num,
-      prevChapterTitle: prevChapter.title,
+      prevChapterNum: prevNum,
+      prevChapterTitle: prevChapter.title || `Chapter ${prevNum}`,
     };
   }
 
@@ -554,8 +555,9 @@ export function getCourseStats(slug, chapters = []) {
   const p = getProgress(slug);
   const total = chapters.length || 1;
   let started = 0, completed = 0, mastered = 0, pts = 0;
-  chapters.forEach(ch => {
-    const cp = p.chapters[ch.id || ch.num] || {};
+  chapters.forEach((ch, idx) => {
+    const chNum = ch.num || ch.chapterNo || ch.number || (idx + 1);
+    const cp = p.chapters[chNum] || p.chapters[ch.id] || {};
     const lvl = cp.masteryLevel || 0;
     pts += lvl;
     if (lvl >= 1 || cp.lessonRead || cp.isCompleted) started++;

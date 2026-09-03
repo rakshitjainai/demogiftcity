@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import coursesData from '../data/courses.json';
+import { getClassicStudyContent } from '../utils/courseContentResolver';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const CHALLENGE_TYPES = {
@@ -104,6 +105,7 @@ function renderProvision(p) {
 function extractChallengeQuestions(course, chapters, challengeType) {
   const allQs = [];
   (chapters || []).forEach(ch => {
+    const chNum = ch.num || ch.chapterNo || ch.number || 1;
     const rawQs = (ch.questions && ch.questions.length > 0)
       ? ch.questions
       : (ch.activities || []).filter(a => a.type === 'mcq' || a.question);
@@ -122,18 +124,33 @@ function extractChallengeQuestions(course, chapters, challengeType) {
       }
 
       allQs.push({
-        id: q.uid || `q-${ch.num}-${allQs.length}`,
+        id: q.uid || `q-${chNum}-${allQs.length}`,
         q: q.question || payload.question || payload.q || q.title || '',
         options,
         correctIdx,
         explain: q.explanation || payload.explanation || payload.scenario || payload.tip || '',
         provision: renderProvision(q.provision || ''),
-        chapterNum: ch.num,
+        chapterNum: chNum,
         chapterTitle: ch.title,
         type: q.type || 'mcq',
         difficulty: q.difficulty || '1',
       });
     });
+
+    if (ch.practiceQuestion && Array.isArray(ch.practiceOptions) && ch.practiceOptions.length >= 2) {
+      allQs.push({
+        id: `q-${chNum}-${allQs.length}`,
+        q: ch.practiceQuestion,
+        options: ch.practiceOptions,
+        correctIdx: typeof ch.practiceAnswer === 'number' ? ch.practiceAnswer : 0,
+        explain: ch.practiceExplain || 'Refer to statutory provision.',
+        provision: renderProvision(ch.sourceRef || ''),
+        chapterNum: chNum,
+        chapterTitle: ch.title,
+        type: 'mcq',
+        difficulty: '1',
+      });
+    }
   });
 
   // Shuffle
@@ -147,8 +164,22 @@ export default function ChallengeEngine() {
   const [searchParams] = useSearchParams();
   const { isMember, hasCourseAccess } = useAuth();
 
-  const course = coursesData[courseSlug];
-  const chapters = course?.chapters || [];
+  const resolvedPackage = useMemo(() => getClassicStudyContent(courseSlug), [courseSlug]);
+  const course = coursesData[courseSlug] || (!resolvedPackage.notFound ? resolvedPackage : null);
+  const rawChapters = course?.chapters || [];
+  const chapters = useMemo(() => {
+    return rawChapters.map((c, idx) => {
+      const num = c.num || c.chapterNo || c.number || (idx + 1);
+      return {
+        ...c,
+        num,
+        chapterNo: num,
+        id: c.id || `ch_${num}`,
+        title: c.title || `Chapter ${num}`,
+      };
+    });
+  }, [rawChapters]);
+
   const isOwned = Boolean(isMember || hasCourseAccess?.(courseSlug));
 
   const challengeMeta = CHALLENGE_TYPES[challengeType] || CHALLENGE_TYPES['rapid-recall'];

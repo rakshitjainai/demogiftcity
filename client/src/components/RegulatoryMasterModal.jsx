@@ -178,7 +178,11 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     const wasCompleted = completedSet.has(uid);
     setCompletedSet(prev => {
       const next = new Set(prev);
-      wasCompleted ? next.delete(uid) : next.add(uid);
+      if (wasCompleted) {
+        next.delete(uid);
+      } else {
+        next.add(uid);
+      }
       return next;
     });
 
@@ -327,7 +331,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
             onClick={onClose}
             className="cursor-pointer p-1.5 sm:p-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors shadow-2xs border border-slate-200 min-h-[36px] min-w-[36px] flex items-center justify-center"
             title="Exit Learning Mode"
-            aria-label="Exit Learning Mode"
+            aria-label="Close modal"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>

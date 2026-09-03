@@ -31,7 +31,8 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const isAdmin = email.toLowerCase().includes('admin') || (process.env.ADMIN_EMAIL && email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase());
+    const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase();
+    const isAdmin = Boolean(adminEmail && email.toLowerCase() === adminEmail);
 
     const user = await User.create({
       name,
@@ -112,8 +113,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid password. Please check your credentials.' });
     }
 
-    // Ensure role is admin if email contains admin
-    if ((normalizedEmail.includes('admin') || (adminEmail && normalizedEmail === adminEmail)) && user.role !== 'admin') {
+    // Ensure role is admin only if email strictly matches configured admin email
+    if (adminEmail && normalizedEmail === adminEmail && user.role !== 'admin') {
       user.role = 'admin';
       user.membershipStatus = 'active';
       await user.save();

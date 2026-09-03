@@ -1,4 +1,4 @@
-import coursesData from '../data/courses.json';
+import coursesData from '../data/courses.json' with { type: 'json' };
 
 /**
  * ─── Canonical Course Slug & ID Normalizer ──────────────────────────────────
@@ -732,7 +732,8 @@ function extractChaptersFromCoursesJson(slug) {
     return null;
   }
 
-  return courseObj.chapters.map((ch) => {
+  return courseObj.chapters.map((ch, idx) => {
+    const chNum = ch.num || ch.chapterNo || (idx + 1);
     const primaryLesson = ch.lessons?.[0] || {};
     const p = primaryLesson.payload || {};
     const cards = normalizeCards(p.cards || primaryLesson.cards || []);
@@ -749,17 +750,25 @@ function extractChaptersFromCoursesJson(slug) {
     const walkthroughBody = p.summary || p.practitioner_note || (cards.length > 0 ? cards.map(c => c.means || c.law).join(' ') : 'Review operational guidelines and regulatory workflows.');
     const walkthroughCalloutTitle = 'PRACTITIONER NOTE';
     const walkthroughCalloutBody = p.tip || p.practitioner_note || (cards[0]?.watch ? `Watch: ${cards[0].watch}` : 'Verify all regulatory filings and disclosures before execution.');
-    const practiceQuestion = qp.q || primaryQ.question || primaryQ.title || `What is the core regulatory mandate under Chapter ${ch.num} (${ch.title})?`;
+    const practiceQuestion = qp.q || primaryQ.question || primaryQ.title || `What is the core regulatory mandate under Chapter ${chNum} (${ch.title})?`;
     const practiceExplain = qp.scenario || primaryQ.explanation || p.tip || p.summary || 'Statutory compliance is enforced per regulation.';
     const rememberBody = p.summary || p.takeaway || (cards.length > 0 ? cards.map(c => `${c.title}: ${c.means || c.law}`).join('; ') : understandBody);
     const rememberComplianceTip = p.tip || p.practitioner_note || 'Verify all regulatory thresholds against the latest circulars.';
 
+    const provStr = typeof primaryLesson.provision === 'object'
+      ? (primaryLesson.provision?.provision || primaryLesson.provision?.authority || '')
+      : (primaryLesson.provision || '');
+    const sourceRef = provStr ? `${provStr} · ${courseObj.title}` : `Chapter ${chNum} · ${courseObj.title}`;
+
     return {
-      id: primaryLesson.uid || `ch_${ch.num}`,
-      chapterNo: ch.num,
-      title: ch.title,
-      band: ch.band || '',
-      sourceRef: primaryLesson.provision ? `Reg. ${primaryLesson.provision} - ${courseObj.title}` : `Chapter ${ch.num} - ${courseObj.title}`,
+      ...ch,
+      id: primaryLesson.uid || ch.id || `ch_${chNum}`,
+      num: chNum,
+      chapterNo: chNum,
+      title: ch.title || `Chapter ${chNum}`,
+      description: ch.description || understandBody,
+      band: ch.band || 'Regulatory Framework',
+      sourceRef,
       understandBody,
       understandCalloutTitle,
       understandCalloutBody,
@@ -773,8 +782,28 @@ function extractChaptersFromCoursesJson(slug) {
       rememberBody,
       rememberComplianceTip,
       cards,
+      concepts: ch.concepts || [],
+      activities: ch.activities || [],
+      lessons: ch.lessons || [],
+      questions: ch.questions || [],
       totalLessons: ch.lessons?.length || 0,
       totalQuestions: ch.questions?.length || 0,
+    };
+  });
+}
+
+function normalizeChapterList(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map((ch, idx) => {
+    const chNum = ch.num || ch.chapterNo || (idx + 1);
+    return {
+      ...ch,
+      num: chNum,
+      chapterNo: chNum,
+      id: ch.id || `ch_${chNum}`,
+      title: ch.title || `Chapter ${chNum}`,
+      description: ch.description || ch.understandBody || 'Statutory compliance and operational requirements.',
+      band: ch.band || 'Core Statutory Mandate',
     };
   });
 }
@@ -793,6 +822,7 @@ export function getClassicStudyContent(courseIdOrSlug) {
 
   // 1. Companies Act 2013
   if (canonicalSlug === 'companies-act') {
+    const chapters = normalizeChapterList(COMPANIES_ACT_CHAPTERS);
     return {
       courseId: 'companies-act',
       slug: 'companies-act',
@@ -803,15 +833,16 @@ export function getClassicStudyContent(courseIdOrSlug) {
       badge: 'Preview Available',
       difficulty: 'Beginner to Intermediate',
       durationHours: 18,
-      totalChapters: COMPANIES_ACT_CHAPTERS.length,
-      totalQuestions: COMPANIES_ACT_CHAPTERS.length * 6,
-      chapters: COMPANIES_ACT_CHAPTERS,
+      totalChapters: chapters.length,
+      totalQuestions: chapters.length * 6,
+      chapters,
       isUpcoming: false
     };
   }
 
   // 2. SEBI LODR 2015
   if (canonicalSlug === 'sebi-lodr') {
+    const chapters = normalizeChapterList(SEBI_LODR_CHAPTERS);
     return {
       courseId: 'sebi-lodr',
       slug: 'sebi-lodr',
@@ -822,9 +853,9 @@ export function getClassicStudyContent(courseIdOrSlug) {
       badge: 'Preview Available',
       difficulty: 'Intermediate',
       durationHours: 10,
-      totalChapters: SEBI_LODR_CHAPTERS.length,
-      totalQuestions: SEBI_LODR_CHAPTERS.length * 6,
-      chapters: SEBI_LODR_CHAPTERS,
+      totalChapters: chapters.length,
+      totalQuestions: chapters.length * 6,
+      chapters,
       isUpcoming: false
     };
   }

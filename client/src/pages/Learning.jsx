@@ -436,7 +436,7 @@ export default function Learning() {
 
                     {/* Footer Actions */}
                     <div className="pt-1 space-y-2">
-                      {['ifsca-cmi', 'ifsca-fme', 'sebi-aif'].includes(course.slug) && (
+                      {['ifsca-cmi', 'ifsca-fme', 'sebi-aif', 'companies-act', 'sebi-lodr'].includes(course.slug) && (
                         isOwned ? (
                           <Link
                             to={`/learn/${course.slug}`}

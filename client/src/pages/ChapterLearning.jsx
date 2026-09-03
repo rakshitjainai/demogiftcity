@@ -16,9 +16,28 @@ export default function ChapterLearning() {
 
   const resolvedPackage = useMemo(() => getClassicStudyContent(courseSlug), [courseSlug]);
   const course = coursesData[courseSlug] || (!resolvedPackage.notFound ? resolvedPackage : null);
-  const chapters = course?.chapters || [];
-  const chIdx = chapters.findIndex(c => String(c.num || c.chapterNo) === String(chapterId));
+  const rawChapters = course?.chapters || [];
+  const chapters = useMemo(() => {
+    return rawChapters.map((c, idx) => {
+      const num = c.num || c.chapterNo || c.number || (idx + 1);
+      return {
+        ...c,
+        num,
+        chapterNo: num,
+        id: c.id || `ch_${num}`,
+        title: c.title || `Chapter ${num}`,
+        description: c.description || c.understandBody || 'Statutory compliance and operational requirements.',
+        band: c.band || 'Regulatory Framework',
+      };
+    });
+  }, [rawChapters]);
+
+  let chIdx = chapters.findIndex(c => String(c.num) === String(chapterId) || String(c.id) === String(chapterId));
+  if (chIdx === -1 && !isNaN(Number(chapterId)) && Number(chapterId) >= 1 && Number(chapterId) <= chapters.length) {
+    chIdx = Number(chapterId) - 1;
+  }
   const chapter = chapters[chIdx];
+  const chNum = chapter ? (chapter.num || (chIdx + 1)) : 1;
 
   const isOwned = Boolean(isMember || hasCourseAccess?.(courseSlug));
 
@@ -27,7 +46,8 @@ export default function ChapterLearning() {
   const isLocked = !unlockStatus.unlocked && unlockStatus.reason === 'membership_required';
   const isSequentialLocked = !unlockStatus.unlocked && unlockStatus.reason === 'sequential_locked';
 
-  const nextChapter = chIdx < chapters.length - 1 ? chapters[chIdx + 1] : null;
+  const nextChapter = chIdx >= 0 && chIdx < chapters.length - 1 ? chapters[chIdx + 1] : null;
+  const nextChNum = nextChapter ? (nextChapter.num || (chIdx + 2)) : null;
 
   if (!course || !chapter) {
     return (
@@ -56,7 +76,7 @@ export default function ChapterLearning() {
           </h2>
           <p className="text-sm text-gray-600 leading-relaxed">
             {isLocked
-              ? `Access to Chapter ${chapter.num}: "${chapter.title}" requires full course membership.`
+              ? `Access to Chapter ${chNum}: "${chapter.title}" requires full course membership.`
               : `RegLearn enforces sequential module mastery. Please complete Chapter ${unlockStatus.prevChapterNum}: "${unlockStatus.prevChapterTitle}" before unlocking this chapter.`}
           </p>
           <div className="pt-2 flex flex-col gap-3">
@@ -95,12 +115,12 @@ export default function ChapterLearning() {
               <ArrowLeft className="w-3.5 h-3.5" /> Course Map
             </Link>
             <ChevronRight className="w-3 h-3 text-gray-400" />
-            <span className="font-mono text-ink-soft">Ch {chapter.num} of {chapters.length}</span>
+            <span className="font-mono text-ink-soft">Ch {chNum} of {chapters.length}</span>
           </div>
 
           <div className="flex items-center gap-2">
             <Link
-              to={`/learn/${courseSlug}/challenge/rapid-recall?chapter=${chapter.num}`}
+              to={`/learn/${courseSlug}/challenge/rapid-recall?chapter=${chNum}`}
               className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold border border-amber-200 hover:bg-amber-100 transition-colors"
             >
               <Award className="w-3.5 h-3.5 text-amber-600" /> Timed Challenge
@@ -116,8 +136,8 @@ export default function ChapterLearning() {
           chapter={chapter}
           courseSlug={courseSlug}
           onComplete={() => {
-            if (nextChapter) {
-              navigate(`/learn/${courseSlug}/chapter/${nextChapter.num}`);
+            if (nextChapter && nextChNum) {
+              navigate(`/learn/${courseSlug}/chapter/${nextChNum}`);
             } else {
               navigate(`/learn/${courseSlug}`);
             }

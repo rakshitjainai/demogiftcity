@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer';
 
-const PREVIEW_PORT = 4173;
+const PREVIEW_PORT = process.env.PORT || 5173;
 const BASE_URL = `http://localhost:${PREVIEW_PORT}`;
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'http://localhost:5000/api';
 
 const VIEWPORTS = [
   { name: 'phone_320x568', width: 320, height: 568 },

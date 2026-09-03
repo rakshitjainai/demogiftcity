@@ -99,6 +99,16 @@ router.post('/create-order', protect, async (req, res) => {
       }
     }
 
+    if (productType === 'course' && !VALID_COURSES.includes(cleanProductId)) {
+      return res.status(400).json({ message: `Invalid course product ID: ${cleanProductId}` });
+    }
+    if (productType === 'exam_pass' && !VALID_EXAM_PASSES.includes(cleanProductId)) {
+      return res.status(400).json({ message: `Invalid exam pass product ID: ${cleanProductId}` });
+    }
+    if (productType === 'job_pass' && !['job_ready', 'interview_pro', 'fme-interview'].includes(cleanProductId)) {
+      return res.status(400).json({ message: `Invalid job pass product ID: ${cleanProductId}` });
+    }
+
     const now = new Date();
 
     // Check if user already has an active All-Access Membership
@@ -205,6 +215,18 @@ router.post('/verify', protect, async (req, res) => {
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     if (!keySecret) {
       return res.status(500).json({ message: 'RAZORPAY_KEY_SECRET is not configured on the server.' });
+    }
+
+    // Verify order existence, user ownership, and prevent replay attacks
+    const existingPayment = await Payment.findOne({ razorpayOrderId: razorpay_order_id });
+    if (!existingPayment) {
+      return res.status(404).json({ message: 'Payment order record not found.' });
+    }
+    if (existingPayment.userId && existingPayment.userId.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: 'Access denied: Payment order belongs to another user.' });
+    }
+    if (existingPayment.status === 'captured') {
+      return res.status(400).json({ message: 'Payment has already been verified and processed.' });
     }
 
     // HMAC SHA256 signature verification

@@ -40,6 +40,37 @@ const COURSE_FILES = {
   'sebi-aif':  'reglearn-aif-content.json',
 };
 
+const ADDITIONAL_COURSE_META = {
+  'companies-act': {
+    isSynthetic: true,
+    courseSlug: 'companies-act',
+    title: 'Companies Act 2013: Essential Secretarial Compliance',
+    counts: { totalChapters: 15, totalLessons: 30, totalQuestions: 90, totalActivities: 45 },
+    chapters: Array.from({ length: 15 }, (_, i) => ({
+      num: i + 1,
+      name: `Chapter ${i + 1}`,
+      lessonCount: 2,
+      questionCount: 6,
+      totalItems: 9,
+      isLocked: i > 0
+    }))
+  },
+  'sebi-lodr': {
+    isSynthetic: true,
+    courseSlug: 'sebi-lodr',
+    title: 'SEBI (Listing Obligations and Disclosure Requirements) 2015',
+    counts: { totalChapters: 12, totalLessons: 24, totalQuestions: 72, totalActivities: 36 },
+    chapters: Array.from({ length: 12 }, (_, i) => ({
+      num: i + 1,
+      name: `Chapter ${i + 1}`,
+      lessonCount: 2,
+      questionCount: 6,
+      totalItems: 9,
+      isLocked: i > 0
+    }))
+  }
+};
+
 const DATA_DIR = path.join(__dirname, '..', 'data', 'regulatory-master');
 
 // Cache loaded JSON in memory (loaded once, never mutated)
@@ -47,6 +78,7 @@ const _cache = {};
 
 function loadCourse(courseSlug) {
   if (_cache[courseSlug]) return _cache[courseSlug];
+  if (ADDITIONAL_COURSE_META[courseSlug]) return ADDITIONAL_COURSE_META[courseSlug];
   const filename = COURSE_FILES[courseSlug];
   if (!filename) return null;
   const filePath = path.join(DATA_DIR, filename);
@@ -89,6 +121,24 @@ router.get('/:courseSlug/meta', async (req, res) => {
   }
 
   const { hasAccess, isMember, user } = await resolveUserAccess(req, req.params.courseSlug);
+
+  if (course.isSynthetic) {
+    return res.json({
+      courseSlug: req.params.courseSlug,
+      plugin: course.plugin || '',
+      source: course.source || '',
+      counts: course.counts || {},
+      chapters: (course.chapters || []).map(ch => ({
+        ...ch,
+        isLocked: ch.num > 1 ? !hasAccess : false
+      })),
+      userAccess: {
+        hasAccess,
+        isMember,
+        isAuthenticated: Boolean(user)
+      }
+    });
+  }
 
   // Build chapter map from concepts (group by chapter)
   const chapterMap = {};

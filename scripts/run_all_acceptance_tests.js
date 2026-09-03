@@ -49,8 +49,12 @@ const VIEWPORTS = [
     const cardTitle = await page.evaluate(el => el.querySelector('h4')?.innerText.trim(), await page.$(rowSelector));
 
     await page.click(rowSelector);
-    await page.waitForSelector('.article-modal-body, [aria-label="Close modal"]', { timeout: 5000 });
-    await new Promise(r => setTimeout(r, 400));
+    await page.waitForSelector('.article-modal-body', { timeout: 5000 });
+    await page.waitForFunction(() => {
+      const el = document.querySelector('.article-modal-body');
+      return el && el.innerText.trim().length > 300;
+    }, { timeout: 5000 }).catch(() => {});
+    await new Promise(r => setTimeout(r, 300));
 
     const modalData = await page.evaluate(() => {
       const h2 = document.querySelector('.fixed h2')?.innerText.trim() || '';

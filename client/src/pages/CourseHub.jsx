@@ -102,7 +102,22 @@ export default function CourseHub() {
     difficulty: course?.difficulty || 'Intermediate',
     durationHours: course?.durationHours || 12,
   };
-  const chapters = course?.chapters || [];
+  const rawChapters = course?.chapters || [];
+  const chapters = useMemo(() => {
+    return rawChapters.map((c, idx) => {
+      const num = c.num || c.chapterNo || c.number || (idx + 1);
+      return {
+        ...c,
+        num,
+        chapterNo: num,
+        id: c.id || `ch_${num}`,
+        title: c.title || `Chapter ${num}`,
+        description: c.description || c.understandBody || 'Statutory compliance and operational requirements.',
+        band: c.band || 'Regulatory Framework',
+      };
+    });
+  }, [rawChapters]);
+
   const isOwned = Boolean(isMember || hasCourseAccess?.(courseSlug));
   const stats = useMemo(() => getCourseStats(courseSlug, chapters), [courseSlug, chapters]);
   const mistakes = useMemo(() => getMistakes().filter(m => m.courseSlug === courseSlug), [courseSlug]);

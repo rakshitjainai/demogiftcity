@@ -25,21 +25,22 @@ export function formatProvision(p) {
 // ─── Strictly Validated Step Transformer Function ───────────────────────────
 export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
   if (!chapter) return [];
+  const chNum = chapter.num || chapter.chapterNo || chapter.number || 1;
 
   const rawSteps = [];
 
   // Step 1: INTRO (Always present)
   rawSteps.push({
-    id: `step-intro-${chapter.num}`,
+    id: `step-intro-${chNum}`,
     type: 'INTRO',
-    title: chapter.title || `Chapter ${chapter.num}`,
+    title: chapter.title || `Chapter ${chNum}`,
     subTitle: chapter.band || 'Regulatory Framework',
-    content: chapter.description || 'Master the essential regulatory provisions and practitioner compliance rules for this module.',
+    content: chapter.description || chapter.understandBody || 'Master the essential regulatory provisions and practitioner compliance rules for this module.',
     conceptsCount: (chapter.concepts || []).length,
     activitiesCount: (chapter.activities || []).length,
   });
 
-  // Step 2: TODAY'S 3 THINGS (Derived from chapter concepts)
+  // Step 2: TODAY'S 3 THINGS (Derived from chapter concepts or structured callouts)
   const concepts = chapter.concepts || [];
   let takeaways = [];
   if (concepts.length >= 3) {
@@ -47,16 +48,27 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
   } else if (concepts.length > 0) {
     takeaways = concepts.map(c => c.title || c.hook).filter(Boolean);
   }
+  
+  if (takeaways.length === 0) {
+    if (chapter.understandCalloutBody || chapter.walkthroughCalloutBody || chapter.rememberBody) {
+      takeaways = [
+        chapter.understandCalloutBody,
+        chapter.walkthroughCalloutBody,
+        chapter.rememberBody
+      ].filter(Boolean);
+    }
+  }
+
   if (takeaways.length === 0) {
     takeaways = [
-      `Understand core statutory provisions for Chapter ${chapter.num}`,
+      `Understand core statutory provisions for Chapter ${chNum}`,
       `Identify statutory eligibility, capital, and reporting thresholds`,
       `Master practical compliance requirements and regulatory obligations`
     ];
   }
 
   rawSteps.push({
-    id: `step-todays3-${chapter.num}`,
+    id: `step-todays3-${chNum}`,
     type: 'TODAYS_3_THINGS',
     title: "Today's 3 Key Statutory Takeaways",
     takeaways
@@ -64,185 +76,240 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
 
   const activities = chapter.activities || [];
 
-  activities.forEach((act, actIdx) => {
-    const p = act.payload || {};
-    const type = (act.type || act.activity_type || '').toLowerCase();
+  if (activities.length === 0) {
+    // Structured curriculum package without activities array (e.g. Companies Act, SEBI LODR)
+    if (chapter.understandBody) {
+      rawSteps.push({
+        id: `step-reg-${chNum}`,
+        type: 'REGULATION',
+        title: chapter.understandCalloutTitle || 'Core Statutory Mandate',
+        statutoryText: chapter.understandBody,
+        explanation: chapter.understandCalloutBody || chapter.understandBody,
+        practicalTip: chapter.walkthroughCalloutBody || '',
+        tag: chapter.understandCalloutTitle || 'Statutory Provision',
+        provision: formatProvision(chapter.sourceRef || ''),
+      });
+    }
 
-    // 1. LESSON / STATUTORY CARDS OR FRONT/BACK FLASHCARDS IN CARDS
-    const cards = act.cards || p.cards || [];
-    if (cards.length > 0) {
-      if (cards[0].front && cards[0].back) {
-        // High quality flashcards in cards array
-        cards.forEach((c, cIdx) => {
-          if (c.front && c.back) {
+    if (chapter.walkthroughBody) {
+      rawSteps.push({
+        id: `step-walkthrough-${chNum}`,
+        type: 'EXPLANATION',
+        title: chapter.walkthroughCalloutTitle || 'Practitioner Operational Walkthrough',
+        explanation: chapter.walkthroughBody,
+        practicalTip: chapter.walkthroughCalloutBody || chapter.rememberComplianceTip || '',
+        tag: 'Practitioner Guide',
+        provision: formatProvision(chapter.sourceRef || ''),
+      });
+    }
+
+    if (chapter.rememberBody) {
+      rawSteps.push({
+        id: `step-fc-${chNum}`,
+        type: 'FLASHCARD',
+        title: 'Key Compliance Mandate',
+        front: `What is the core compliance requirement under ${chapter.sourceRef || chapter.title}?`,
+        back: chapter.rememberBody,
+        tag: 'Statutory Recall',
+        provision: formatProvision(chapter.sourceRef || ''),
+      });
+    }
+
+    if (chapter.practiceQuestion && Array.isArray(chapter.practiceOptions) && chapter.practiceOptions.length >= 2) {
+      rawSteps.push({
+        id: `step-q-${chNum}`,
+        type: 'MCQ',
+        question: chapter.practiceQuestion,
+        options: chapter.practiceOptions,
+        correctIdx: typeof chapter.practiceAnswer === 'number' ? chapter.practiceAnswer : 0,
+        correctKey: ['A', 'B', 'C', 'D'][typeof chapter.practiceAnswer === 'number' ? chapter.practiceAnswer : 0] || 'A',
+        explanation: chapter.practiceExplain || 'Refer to the statutory provision for details.',
+        provision: formatProvision(chapter.sourceRef || ''),
+        uid: `q-${chNum}`,
+        chapterNum: chNum,
+      });
+    }
+  } else {
+    activities.forEach((act, actIdx) => {
+      const p = act.payload || {};
+      const type = (act.type || act.activity_type || '').toLowerCase();
+
+      // 1. LESSON / STATUTORY CARDS OR FRONT/BACK FLASHCARDS IN CARDS
+      const cards = act.cards || p.cards || [];
+      if (cards.length > 0) {
+        if (cards[0].front && cards[0].back) {
+          // High quality flashcards in cards array
+          cards.forEach((c, cIdx) => {
+            if (c.front && c.back) {
+              rawSteps.push({
+                id: `step-fc-${act.uid || actIdx}-${cIdx}`,
+                type: 'FLASHCARD',
+                title: c.front,
+                front: c.front,
+                back: c.back,
+                tag: c.tag || 'Statutory Recall',
+                provision: formatProvision(act.provision || ''),
+                sourceUid: act.uid,
+              });
+            }
+          });
+        } else {
+          cards.forEach((c, cIdx) => {
+            const cardObj = typeof c === 'string' ? { title: 'Statutory Rule', law: c } : c;
+            const law = cardObj.law || cardObj.text || '';
+            const means = cardObj.means || cardObj.explain || cardObj.explanation || '';
+            const title = cardObj.title || act.title || 'Core Rule';
+            const watch = cardObj.watch || '';
+
+            if (law || means) {
+              rawSteps.push({
+                id: `step-card-${act.uid || actIdx}-${cIdx}`,
+                type: law ? 'REGULATION' : 'EXPLANATION',
+                title,
+                explanation: means,
+                statutoryText: law,
+                practicalTip: watch,
+                tag: cardObj.tag || (law ? 'Statutory Provision' : 'Explanation'),
+                provision: formatProvision(act.provision || cardObj.provision || ''),
+                effectiveDate: act.effectiveDate || '',
+                sourceUid: act.uid,
+              });
+            }
+          });
+        }
+
+        if (p.story || act.story) {
+          rawSteps.push({
+            id: `step-example-${act.uid || actIdx}`,
+            type: 'EXAMPLE',
+            title: act.title || 'Practitioner Case Study',
+            story: p.story || act.story,
+            remember: p.remember || p.tip || act.remember || '',
+            provision: formatProvision(act.provision || ''),
+            sourceUid: act.uid,
+          });
+        }
+      }
+
+      // 2. FLASHCARDS / FLASH_RECALL (Only if cards array didn't already contain front/back)
+      const recallCards = act.recallCards || p.recallCards || [];
+      const hasHandledCards = cards.length > 0 && cards[0].front && cards[0].back;
+      
+      if (!hasHandledCards && recallCards.length > 0) {
+        recallCards.forEach((rc, rIdx) => {
+          if (rc.front && rc.back && rc.front !== 'Key Provision') {
             rawSteps.push({
-              id: `step-fc-${act.uid || actIdx}-${cIdx}`,
+              id: `step-fc-${act.uid || actIdx}-${rIdx}`,
               type: 'FLASHCARD',
-              title: c.front,
-              front: c.front,
-              back: c.back,
-              tag: c.tag || 'Statutory Recall',
+              title: rc.front,
+              front: rc.front,
+              back: rc.back,
+              tag: rc.tag || 'Recall Check',
               provision: formatProvision(act.provision || ''),
               sourceUid: act.uid,
             });
           }
         });
-      } else {
-        cards.forEach((c, cIdx) => {
-          const cardObj = typeof c === 'string' ? { title: 'Statutory Rule', law: c } : c;
-          const law = cardObj.law || cardObj.text || '';
-          const means = cardObj.means || cardObj.explain || cardObj.explanation || '';
-          const title = cardObj.title || act.title || 'Core Rule';
-          const watch = cardObj.watch || '';
-
-          if (law || means) {
-            rawSteps.push({
-              id: `step-card-${act.uid || actIdx}-${cIdx}`,
-              type: law ? 'REGULATION' : 'EXPLANATION',
-              title,
-              explanation: means,
-              statutoryText: law,
-              practicalTip: watch,
-              tag: cardObj.tag || (law ? 'Statutory Provision' : 'Explanation'),
-              provision: formatProvision(act.provision || cardObj.provision || ''),
-              effectiveDate: act.effectiveDate || '',
-              sourceUid: act.uid,
-            });
-          }
-        });
-      }
-
-      if (p.story || act.story) {
+      } else if (!hasHandledCards && type === 'flash_recall' && act.question && (act.correctKey || act.explanation)) {
         rawSteps.push({
-          id: `step-example-${act.uid || actIdx}`,
-          type: 'EXAMPLE',
-          title: act.title || 'Practitioner Case Study',
-          story: p.story || act.story,
-          remember: p.remember || p.tip || act.remember || '',
+          id: `step-fc-${act.uid || actIdx}`,
+          type: 'FLASHCARD',
+          title: act.title || 'Key Recall Point',
+          front: act.question,
+          back: act.correctKey || act.explanation,
+          tag: 'Statutory Recall',
           provision: formatProvision(act.provision || ''),
           sourceUid: act.uid,
         });
       }
-    }
 
-    // 2. FLASHCARDS / FLASH_RECALL (Only if cards array didn't already contain front/back)
-    const recallCards = act.recallCards || p.recallCards || [];
-    const hasHandledCards = cards.length > 0 && cards[0].front && cards[0].back;
-    
-    if (!hasHandledCards && recallCards.length > 0) {
-      recallCards.forEach((rc, rIdx) => {
-        if (rc.front && rc.back && rc.front !== 'Key Provision') {
+      // 3. MCQ / SPOT_LAPSE / OLD_VS_NEW / TRUEFALSE
+      if (['mcq', 'spot_lapse', 'old_vs_new', 'truefalse'].includes(type) || act.options?.length > 0 || p.options?.length > 0 || p.optionsFormatted?.length > 0) {
+        const qText = act.question || p.question || act.title || '';
+        const optsRaw = act.options || p.optionsFormatted || p.options || [];
+
+        let options = [];
+        let correctKey = act.correctKey || p.answer || act.answer?.correct || 'A';
+
+        if (Array.isArray(optsRaw) && optsRaw.length > 0) {
+          options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
+        }
+
+        if (type === 'truefalse' && options.length === 0) {
+          options = ['True', 'False'];
+        }
+
+        let correctIdx = typeof act.correctIdx === 'number' ? act.correctIdx : -1;
+        if (correctIdx === -1 && Array.isArray(optsRaw)) {
+          correctIdx = optsRaw.findIndex(o => (typeof o === 'object' ? o.key : null) === correctKey);
+        }
+        if (correctIdx === -1) {
+          if (correctKey === 'true') correctIdx = 0;
+          else if (correctKey === 'false') correctIdx = 1;
+          else {
+            correctIdx = ['A', 'B', 'C', 'D'].indexOf(String(correctKey).toUpperCase());
+            if (correctIdx === -1) correctIdx = 0;
+          }
+        }
+
+        const explanation = act.explanation || p.explanation || act.answer?.explanation || '';
+
+        if (qText && options.length >= 2) {
+          let stepType = 'MCQ';
+          if (type === 'spot_lapse') stepType = 'SPOT_THE_MISTAKE';
+          else if (type === 'old_vs_new') stepType = 'REGULATION_COMPARISON';
+          else if (type === 'truefalse') stepType = 'TRUE_FALSE';
+
           rawSteps.push({
-            id: `step-fc-${act.uid || actIdx}-${rIdx}`,
+            id: `step-q-${act.uid || actIdx}`,
+            type: stepType,
+            question: qText,
+            options,
+            correctIdx,
+            correctKey,
+            explanation: explanation || 'Refer to the statutory provision for details.',
+            provision: formatProvision(act.provision || p.provision || ''),
+            uid: act.uid || `q-${actIdx}`,
+            chapterNum: chNum,
+            sourceUid: act.uid,
+          });
+        }
+      }
+
+      // 4. FILL IN THE BLANK
+      if (type === 'fill' && act.question) {
+        const qText = act.question;
+        const answerText = act.explanation || act.answer?.explanation || '';
+        if (qText && answerText) {
+          rawSteps.push({
+            id: `step-fill-${act.uid || actIdx}`,
             type: 'FLASHCARD',
-            title: rc.front,
-            front: rc.front,
-            back: rc.back,
-            tag: rc.tag || 'Recall Check',
+            title: 'Complete the Statutory Phrase',
+            front: qText,
+            back: answerText,
+            tag: 'Fill in the Blank',
             provision: formatProvision(act.provision || ''),
             sourceUid: act.uid,
           });
         }
-      });
-    } else if (!hasHandledCards && type === 'flash_recall' && act.question && (act.correctKey || act.explanation)) {
-      rawSteps.push({
-        id: `step-fc-${act.uid || actIdx}`,
-        type: 'FLASHCARD',
-        title: act.title || 'Key Recall Point',
-        front: act.question,
-        back: act.correctKey || act.explanation,
-        tag: 'Statutory Recall',
-        provision: formatProvision(act.provision || ''),
-        sourceUid: act.uid,
-      });
-    }
-
-    // 3. MCQ / SPOT_LAPSE / OLD_VS_NEW / TRUEFALSE
-    if (['mcq', 'spot_lapse', 'old_vs_new', 'truefalse'].includes(type) || act.options?.length > 0 || p.options?.length > 0 || p.optionsFormatted?.length > 0) {
-      const qText = act.question || p.question || act.title || '';
-      const optsRaw = act.options || p.optionsFormatted || p.options || [];
-
-      let options = [];
-      let correctKey = act.correctKey || p.answer || act.answer?.correct || 'A';
-
-      if (Array.isArray(optsRaw) && optsRaw.length > 0) {
-        options = optsRaw.map(o => typeof o === 'string' ? o : o.text || o.t || String(o));
       }
-
-      if (type === 'truefalse' && options.length === 0) {
-        options = ['True', 'False'];
-      }
-
-      let correctIdx = typeof act.correctIdx === 'number' ? act.correctIdx : -1;
-      if (correctIdx === -1 && Array.isArray(optsRaw)) {
-        correctIdx = optsRaw.findIndex(o => (typeof o === 'object' ? o.key : null) === correctKey);
-      }
-      if (correctIdx === -1) {
-        if (correctKey === 'true') correctIdx = 0;
-        else if (correctKey === 'false') correctIdx = 1;
-        else {
-          correctIdx = ['A', 'B', 'C', 'D'].indexOf(String(correctKey).toUpperCase());
-          if (correctIdx === -1) correctIdx = 0;
-        }
-      }
-
-      const explanation = act.explanation || p.explanation || act.answer?.explanation || '';
-
-      if (qText && options.length >= 2) {
-        let stepType = 'MCQ';
-        if (type === 'spot_lapse') stepType = 'SPOT_THE_MISTAKE';
-        else if (type === 'old_vs_new') stepType = 'REGULATION_COMPARISON';
-        else if (type === 'truefalse') stepType = 'TRUE_FALSE';
-
-        rawSteps.push({
-          id: `step-q-${act.uid || actIdx}`,
-          type: stepType,
-          question: qText,
-          options,
-          correctIdx,
-          correctKey,
-          explanation: explanation || 'Refer to the statutory provision for details.',
-          provision: formatProvision(act.provision || p.provision || ''),
-          uid: act.uid || `q-${actIdx}`,
-          chapterNum: chapter.num,
-          sourceUid: act.uid,
-        });
-      }
-    }
-
-    // 4. FILL IN THE BLANK
-    if (type === 'fill' && act.question) {
-      const qText = act.question;
-      const answerText = act.explanation || act.answer?.explanation || '';
-      if (qText && answerText) {
-        rawSteps.push({
-          id: `step-fill-${act.uid || actIdx}`,
-          type: 'FLASHCARD',
-          title: 'Complete the Statutory Phrase',
-          front: qText,
-          back: answerText,
-          tag: 'Fill in the Blank',
-          provision: formatProvision(act.provision || ''),
-          sourceUid: act.uid,
-        });
-      }
-    }
-  });
+    });
+  }
 
   // Step N-1: MASTERY LADDER
   rawSteps.push({
-    id: `step-mastery-${chapter.num}`,
+    id: `step-mastery-${chNum}`,
     type: 'MASTERY_LADDER',
     title: 'Module Mastery Benchmark',
-    question: `You have completed all curriculum steps for Chapter ${chapter.num}: ${chapter.title}. Verify your 80%+ benchmark status below:`,
+    question: `You have completed all curriculum steps for Chapter ${chNum}: ${chapter.title}. Verify your 80%+ benchmark status below:`,
   });
 
   // Step Final: SUMMARY
   rawSteps.push({
-    id: `step-summary-${chapter.num}`,
+    id: `step-summary-${chNum}`,
     type: 'SUMMARY',
     title: 'Module Summary',
-    chapterNum: chapter.num,
+    chapterNum: chNum,
     chapterTitle: chapter.title,
   });
 
@@ -274,7 +341,7 @@ export function transformChapterToSteps(chapter, courseSlug = 'sebi-aif') {
     if (isValid) {
       validatedSteps.push(step);
     } else {
-      console.error(`[RegLearn] Invalid step filtered out: course=${courseSlug}, chapter=${chapter.num}, stepIdx=${idx}, type=${step.type}, missing=${missing.join(', ')}`);
+      console.error(`[RegLearn] Invalid step filtered out: course=${courseSlug}, chapter=${chNum}, stepIdx=${idx}, type=${step.type}, missing=${missing.join(', ')}`);
     }
   });
 
@@ -288,6 +355,7 @@ export default function ProgressiveStepEngine({
   courseSlug = 'sebi-aif',
   onComplete,
 }) {
+  const chNum = chapter?.num || chapter?.chapterNo || chapter?.number || 1;
   const steps = useMemo(() => transformChapterToSteps(chapter, courseSlug), [chapter, courseSlug]);
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [muted, setMuted] = useState(isAudioMuted());
@@ -300,21 +368,21 @@ export default function ProgressiveStepEngine({
   };
 
   // Restore saved step position & stepStates
-  const [stepStates, setStepStates] = useState(() => getChapterStepStates(courseSlug, chapter?.num) || {});
+  const [stepStates, setStepStates] = useState(() => getChapterStepStates(courseSlug, chNum) || {});
 
   useEffect(() => {
-    const loaded = getChapterStepStates(courseSlug, chapter?.num);
+    const loaded = getChapterStepStates(courseSlug, chNum);
     setStepStates(loaded || {});
-  }, [courseSlug, chapter?.num]);
+  }, [courseSlug, chNum]);
 
   useEffect(() => {
-    const savedPos = getStepPosition(courseSlug, chapter?.num);
+    const savedPos = getStepPosition(courseSlug, chNum);
     if (savedPos > 0 && savedPos < steps.length) {
       setCurrentStepIdx(savedPos);
     } else {
       setCurrentStepIdx(0);
     }
-  }, [courseSlug, chapter?.num, steps.length]);
+  }, [courseSlug, chNum, steps.length]);
 
   const currentStep = steps[currentStepIdx] || steps[0];
   const isFirstStep = currentStepIdx === 0;
@@ -337,7 +405,7 @@ export default function ProgressiveStepEngine({
         ...prev,
         [currentStep.id]: { ...(prev[currentStep.id] || {}), selected: idx }
       };
-      saveChapterStepStates(courseSlug, chapter.num, updated);
+      saveChapterStepStates(courseSlug, chNum, updated);
       return updated;
     });
   };
@@ -366,13 +434,13 @@ export default function ProgressiveStepEngine({
         ...prev,
         [currentStep.id]: updatedSlot
       };
-      saveChapterStepStates(courseSlug, chapter.num, updated);
+      saveChapterStepStates(courseSlug, chNum, updated);
       return updated;
     });
 
     // Only record answer progress & XP on the first attempt
     if (!wasAlreadySubmitted) {
-      recordStepAnswer(courseSlug, chapter.num, isCorrect, { isFirstAttempt: true });
+      recordStepAnswer(courseSlug, chNum, isCorrect, { isFirstAttempt: true });
     }
 
     if (isCorrect) {
@@ -384,7 +452,7 @@ export default function ProgressiveStepEngine({
         recordMistake({
           id: currentStep.uid || `m-${Date.now()}`,
           courseSlug,
-          chapterNum: chapter.num,
+          chapterNum: chNum,
           question: currentStep.question || currentStep.title,
           selectedAnswer: currentStep.options?.[currentSlot.selected] || '',
           correctAnswer: currentStep.options?.[currentStep.correctIdx] || '',
@@ -403,9 +471,9 @@ export default function ProgressiveStepEngine({
   // Restart / Retake Module from Step 1
   const handleRestartModule = () => {
     setStepStates({});
-    saveChapterStepStates(courseSlug, chapter.num, {});
+    saveChapterStepStates(courseSlug, chNum, {});
     setCurrentStepIdx(0);
-    saveStepPosition(courseSlug, chapter.num, 0);
+    saveStepPosition(courseSlug, chNum, 0);
     playGamificationSound('click');
   };
 
@@ -414,7 +482,7 @@ export default function ProgressiveStepEngine({
     if (isLastStep) {
       triggerConfetti();
       playGamificationSound(scoredResults.isMastered ? 'levelUp' : 'success');
-      recordModuleCompletion(courseSlug, chapter.num, {
+      recordModuleCompletion(courseSlug, chNum, {
         totalQuestions: scoredResults.totalScoredQuestions,
         correctCount: scoredResults.correctFirstAttempts,
         accuracyPct: scoredResults.accuracyPct,
@@ -428,7 +496,7 @@ export default function ProgressiveStepEngine({
     }
     const nextIdx = currentStepIdx + 1;
     setCurrentStepIdx(nextIdx);
-    saveStepPosition(courseSlug, chapter.num, nextIdx);
+    saveStepPosition(courseSlug, chNum, nextIdx);
     playGamificationSound('click');
   };
 
@@ -437,7 +505,7 @@ export default function ProgressiveStepEngine({
     if (isFirstStep) return;
     const prevIdx = currentStepIdx - 1;
     setCurrentStepIdx(prevIdx);
-    saveStepPosition(courseSlug, chapter.num, prevIdx);
+    saveStepPosition(courseSlug, chNum, prevIdx);
     playGamificationSound('click');
   };
 
@@ -795,6 +863,7 @@ export default function ProgressiveStepEngine({
             onClick={handlePrevious}
             disabled={isFirstStep}
             aria-disabled={isFirstStep}
+            data-action="step-prev"
             className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
               isFirstStep
                 ? 'opacity-30 cursor-not-allowed bg-gray-100 text-gray-400'
@@ -809,6 +878,7 @@ export default function ProgressiveStepEngine({
             <button
               onClick={handleSubmitAnswer}
               disabled={currentSlot.selected === null}
+              data-action="step-check"
               className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${
                 currentSlot.selected === null
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -821,7 +891,8 @@ export default function ProgressiveStepEngine({
             <button
               onClick={handleNext}
               aria-label={isLastStep ? 'Complete Module' : 'Next'}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-forest text-white hover:bg-forest-deep shadow-md transition-all"
+              data-action="step-next"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-forest text-white hover:bg-forest-deep shadow-md transition-all cursor-pointer"
             >
               {isLastStep ? 'Complete Module ✓' : 'Next →'}
             </button>

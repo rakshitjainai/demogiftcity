@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, Clock, Share2, BookOpen, Bookmark, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 export default function ArticleModal({ article, onClose }) {
   const [resolvedPost, setResolvedPost] = useState(article);
@@ -114,12 +115,12 @@ export default function ArticleModal({ article, onClose }) {
             {rawContent ? (
               <div 
                 className="article-modal-body prose max-w-none text-sm space-y-4 leading-relaxed [&_h2]:text-lg [&_h2]:font-bold [&_h2]:font-serif [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-[var(--forest-deep)] [&_h3]:text-base [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-1 [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_li]:mb-1 [&_table]:w-full [&_table]:border [&_table]:my-4 [&_th]:bg-[var(--mint)] [&_th]:p-2 [&_th]:border [&_td]:p-2 [&_td]:border"
-                dangerouslySetInnerHTML={{ __html: rawContent }} 
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(rawContent) }} 
               />
             ) : (
-              <p className="text-sm italic text-[var(--ink-soft)] py-6 text-center">
-                Article content unavailable.
-              </p>
+              <div className="article-modal-body prose max-w-none text-sm space-y-4 leading-relaxed">
+                <p>{displaySummary || 'Statutory overview and regulatory compliance guidance.'}</p>
+              </div>
             )}
           </div>
 
