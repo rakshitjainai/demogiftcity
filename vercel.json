@@ -23,28 +23,28 @@
   ],
   "routes": [
     {
-      "src": "/free-resources/blogs/([^/]+)",
-      "dest": "/api/index.js?ssrSlug=$1"
+      "src": "/free-resources/blogs/(.*)",
+      "dest": "api/index.js"
     },
     {
-      "src": "/blog/([^/]+)",
-      "dest": "/api/index.js?ssrSlug=$1"
+      "src": "/blog/(.*)",
+      "dest": "api/index.js"
     },
     {
       "src": "/robots.txt",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/Regmate-backend/(.*)",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/health",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot|json|map|txt|xml|mp4|webm|pdf|zip))",
