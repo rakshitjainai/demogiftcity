@@ -405,6 +405,25 @@ app.get('/api/index.js', (req, res, next) => {
 });
 
 // SSR Catch-all Middleware to intercept Vercel rewrites before static files
+app.all('/api', (req, res, next) => {
+  const pathToCheck = req.headers['x-matched-path'] || req.headers['x-forwarded-uri'] || '';
+  const blogMatch = pathToCheck.match(/\/(?:free-resources\/blogs|blog)\/([^/?#]+)/i);
+  if (blogMatch && blogMatch[1]) {
+    req.params = req.params || {};
+    req.params.slug = blogMatch[1];
+    return handleBlogSSR(req, res, next);
+  }
+  if (pathToCheck.includes('/health')) {
+    return res.status(200).json({ status: 'ok', serverless: true, timestamp: new Date().toISOString() });
+  }
+  if (req.query?.ssrSlug) {
+    req.params = req.params || {};
+    req.params.slug = req.query.ssrSlug;
+    return handleBlogSSR(req, res, next);
+  }
+  next();
+});
+
 app.use((req, res, next) => {
   const pathToCheck = req.headers['x-matched-path'] || req.headers['x-forwarded-uri'] || req.originalUrl || req.url || '';
   const blogMatch = pathToCheck.match(/\/(?:free-resources\/blogs|blog)\/([^/?#]+)/i);
