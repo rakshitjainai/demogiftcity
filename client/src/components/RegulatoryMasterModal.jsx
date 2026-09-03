@@ -10,6 +10,13 @@ import { useAuth } from '../context/AuthContext';
 import LockOverlay from './LockOverlay';
 import UpgradeModal from './UpgradeModal';
 import { getClassicStudyContent, normalizeCourseSlug } from '../utils/courseContentResolver';
+import {
+  getChapterSectionProgress,
+  getActiveChapterSection,
+  saveChapterSectionProgress,
+  playGamificationSound,
+  triggerConfetti
+} from '../utils/learnProgress';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -143,7 +150,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
 
   // Tab navigation: default to 'home' (Chapter 1 Interactive Free Preview first!)
   const [activeTab, setActiveTab] = useState('home');
-  const [regLearnStep, setRegLearnStep] = useState('understand');
+  const [sectionProgressVersion, setSectionProgressVersion] = useState(0);
   const [topicIndex, setTopicIndex] = useState(0);
   const [practiceSelectedOption, setPracticeSelectedOption] = useState(null);
   const [chaptersPage, setChaptersPage] = useState(0);
@@ -156,6 +163,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
     setTopicIndex(0);
     setPracticeSelectedOption(null);
     setChaptersPage(0);
+    setSectionProgressVersion(v => v + 1);
   }, [course]);
 
   // Progress state
@@ -290,8 +298,8 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                 const selectedT = topicsList[idx];
                 if (selectedT) setSelectedTopicId(selectedT.id);
                 setActiveTab('home');
-                setRegLearnStep('understand');
                 setPracticeSelectedOption(null);
+                setSectionProgressVersion(v => v + 1);
               }}
               className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-[#073321] focus:outline-none focus:border-forest truncate max-w-[120px] sm:max-w-[170px] min-h-[36px]"
             >
@@ -399,26 +407,58 @@ function RegulatoryMasterModalInner({ course, onClose }) {
             );
           }
 
-          const stepNumber = regLearnStep === 'understand' ? 1 : regLearnStep === 'walkthrough' ? 2 : regLearnStep === 'remember' ? 3 : 4;
+          const isCurrentTopicCompleted = completedSet.has(currentTopic?.id);
+          const sectionProgress = useMemo(() => {
+            if (!currentTopic) {
+              return {
+                understandCompleted: false,
+                walkthroughCompleted: false,
+                rememberCompleted: false,
+                practiceCompleted: false,
+              };
+            }
+            return getChapterSectionProgress(resolvedSlug, currentTopic.id, isCurrentTopicCompleted);
+          }, [resolvedSlug, currentTopic, isCurrentTopicCompleted, sectionProgressVersion]);
+
+          const activeSection = useMemo(() => {
+            return getActiveChapterSection(sectionProgress);
+          }, [sectionProgress]);
+
+          const stepNumber = activeSection === 'understand' ? 1 : activeSection === 'walkthrough' ? 2 : activeSection === 'remember' ? 3 : 4;
           const totalSteps = 4;
 
           const handleNextStep = () => {
-            if (regLearnStep === 'understand') {
-              setRegLearnStep('walkthrough');
-            } else if (regLearnStep === 'walkthrough') {
-              setRegLearnStep('remember');
-            } else if (regLearnStep === 'remember') {
-              setRegLearnStep('practice');
+            if (activeSection === 'understand') {
+              saveChapterSectionProgress(resolvedSlug, currentTopic.id, 'understand', { chNum: topicIndex + 1 });
+              playGamificationSound('click');
+              setSectionProgressVersion(v => v + 1);
+            } else if (activeSection === 'walkthrough') {
+              saveChapterSectionProgress(resolvedSlug, currentTopic.id, 'walkthrough', { chNum: topicIndex + 1 });
+              playGamificationSound('click');
+              setSectionProgressVersion(v => v + 1);
+            } else if (activeSection === 'remember') {
+              saveChapterSectionProgress(resolvedSlug, currentTopic.id, 'remember', { chNum: topicIndex + 1 });
+              playGamificationSound('click');
               setPracticeSelectedOption(null);
-            } else if (regLearnStep === 'practice') {
+              setSectionProgressVersion(v => v + 1);
+            } else if (activeSection === 'practice') {
+              if (currentTopic.practiceQuestion && practiceSelectedOption === null && !sectionProgress.practiceCompleted) {
+                return;
+              }
+              saveChapterSectionProgress(resolvedSlug, currentTopic.id, 'practice', { chNum: topicIndex + 1 });
               handleToggleComplete(currentTopic.id);
+              playGamificationSound('levelUp');
+              triggerConfetti();
               setPracticeSelectedOption(null);
+              setSectionProgressVersion(v => v + 1);
+
               if (topicIndex < topicsList.length - 1) {
                 const nextIdx = topicIndex + 1;
                 setTopicIndex(nextIdx);
                 const nextT = topicsList[nextIdx];
                 if (nextT) setSelectedTopicId(nextT.id);
-                setRegLearnStep('understand');
+                setPracticeSelectedOption(null);
+                setSectionProgressVersion(v => v + 1);
               } else {
                 setSelectedTopicId(null);
                 setActiveTab('modules');
@@ -431,29 +471,76 @@ function RegulatoryMasterModalInner({ course, onClose }) {
               {/* ─── The Main RegLearn Card ─── */}
               <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm space-y-6 text-left relative">
 
-                {/* ─── 4 Stepper Tabs ─── */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl mx-auto">
+                {/* ─── 4 Strictly Sequential Stepper Tabs ─── */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl mx-auto" role="tablist" aria-label="Chapter learning sections">
                   {[
                     { id: 'understand', label: 'Understand' },
                     { id: 'walkthrough', label: 'Walkthrough' },
                     { id: 'remember', label: 'Remember' },
                     { id: 'practice', label: 'Practice' },
                   ].map((s) => {
-                    const isActive = regLearnStep === s.id;
+                    let isCompleted = false;
+                    let isLocked = false;
+
+                    if (s.id === 'understand') {
+                      isCompleted = sectionProgress.understandCompleted;
+                      isLocked = false;
+                    } else if (s.id === 'walkthrough') {
+                      isCompleted = sectionProgress.walkthroughCompleted;
+                      isLocked = !sectionProgress.understandCompleted;
+                    } else if (s.id === 'remember') {
+                      isCompleted = sectionProgress.rememberCompleted;
+                      isLocked = !sectionProgress.walkthroughCompleted;
+                    } else if (s.id === 'practice') {
+                      isCompleted = sectionProgress.practiceCompleted;
+                      isLocked = !sectionProgress.rememberCompleted;
+                    }
+
+                    const isActive = activeSection === s.id && (!sectionProgress.practiceCompleted || s.id === 'practice');
+
+                    if (isCompleted) {
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          disabled={true}
+                          tabIndex={-1}
+                          aria-disabled="true"
+                          title={`${s.label} completed. Learning sequence is strictly forward-only.`}
+                          className="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-center border bg-emerald-50 text-emerald-800 border-emerald-300 shadow-2xs cursor-not-allowed select-none transition-none pointer-events-none"
+                        >
+                          ✓ {s.label}
+                        </button>
+                      );
+                    }
+
+                    if (isActive) {
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          tabIndex={0}
+                          aria-current="step"
+                          title={`Active section: ${s.label}`}
+                          className="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-center border bg-[#E6F4ED] text-[#073321] border-[#073321] shadow-xs ring-2 ring-[#073321]/20 cursor-default select-none transition-all"
+                        >
+                          🔓 {s.label}
+                        </button>
+                      );
+                    }
+
+                    // Locked section
                     return (
                       <button
                         key={s.id}
-                        onClick={() => {
-                          setRegLearnStep(s.id);
-                          setPracticeSelectedOption(null);
-                        }}
-                        className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all text-center border cursor-pointer ${
-                          isActive
-                            ? 'bg-[#E6F4ED] text-[#073321] border-[#073321] font-bold shadow-xs'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-forest hover:text-forest'
-                        }`}
+                        type="button"
+                        disabled={true}
+                        tabIndex={-1}
+                        aria-disabled="true"
+                        title={`Complete previous section to unlock ${s.label}`}
+                        className="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-center border bg-slate-100/70 text-slate-400 border-slate-200 cursor-not-allowed select-none opacity-50 shadow-none transition-none pointer-events-none"
                       >
-                        {s.label}
+                        🔒 {s.label}
                       </button>
                     );
                   })}
@@ -465,17 +552,17 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                 </div>
 
                 {/* Eyebrow */}
-                <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#073321]">
-                  {regLearnStep.toUpperCase()}
+                <div data-testid="active-section-eyebrow" className="text-xs font-mono font-bold uppercase tracking-wider text-[#073321]">
+                  {activeSection.toUpperCase()}
                 </div>
 
                 {/* Heading */}
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#073321] tracking-tight leading-tight">
-                  {regLearnStep === 'remember' ? 'One-Minute Summary & Traps' : currentTopic.title}
+                  {activeSection === 'remember' ? 'One-Minute Summary & Traps' : currentTopic.title}
                 </h2>
 
                 {/* Content Body */}
-                {regLearnStep === 'practice' ? (
+                {activeSection === 'practice' ? (
                   <div className="space-y-4 pt-2 text-left">
                     <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
                       <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
@@ -507,7 +594,10 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                           <button
                             key={oIdx}
                             disabled={isSubmitted}
-                            onClick={() => setPracticeSelectedOption(oIdx)}
+                            onClick={() => {
+                              setPracticeSelectedOption(oIdx);
+                              playGamificationSound(isCorrect ? 'correct' : 'wrong');
+                            }}
                             className={`w-full p-4 rounded-2xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between gap-3 min-h-[48px] cursor-pointer ${optStyles}`}
                           >
                             <span>{opt}</span>
@@ -535,13 +625,13 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                 ) : (
                   <div className="space-y-5 text-sm sm:text-base text-slate-700 leading-relaxed font-sans">
                     <p className="whitespace-pre-line">
-                      {regLearnStep === 'understand' && currentTopic.understandBody}
-                      {regLearnStep === 'walkthrough' && currentTopic.walkthroughBody}
-                      {regLearnStep === 'remember' && currentTopic.rememberBody}
+                      {activeSection === 'understand' && currentTopic.understandBody}
+                      {activeSection === 'walkthrough' && currentTopic.walkthroughBody}
+                      {activeSection === 'remember' && currentTopic.rememberBody}
                     </p>
 
                     {/* Step-specific Callout */}
-                    {regLearnStep === 'understand' && (
+                    {activeSection === 'understand' && (
                       <div className="p-4 sm:p-5 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs sm:text-sm text-amber-950 space-y-1.5">
                         <strong className="block font-mono uppercase text-[10px] tracking-wider text-amber-800 font-bold">
                           {currentTopic.understandCalloutTitle || 'WHY THIS MATTERS'}
@@ -550,7 +640,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                       </div>
                     )}
 
-                    {regLearnStep === 'walkthrough' && (
+                    {activeSection === 'walkthrough' && (
                       <div className="p-4 sm:p-5 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-xs sm:text-sm text-emerald-950 space-y-1.5">
                         <strong className="block font-mono uppercase text-[10px] tracking-wider text-emerald-800 font-bold">
                           {currentTopic.walkthroughCalloutTitle || 'PRACTITIONER NOTE'}
@@ -559,7 +649,7 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                       </div>
                     )}
 
-                    {regLearnStep === 'remember' && currentTopic.rememberComplianceTip && (
+                    {activeSection === 'remember' && currentTopic.rememberComplianceTip && (
                       <div className="p-4 sm:p-5 bg-[#E6F4ED] border border-emerald-300 rounded-2xl text-xs sm:text-sm text-[#073321] space-y-1.5">
                         <strong className="block font-mono uppercase text-[10px] tracking-wider text-emerald-800 font-bold">
                           COMPLIANCE TIP
@@ -584,31 +674,32 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                   </div>
 
                   <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                    {regLearnStep !== 'understand' && (
+                    {/* Backward navigation intentionally omitted: strictly one-way forward learning flow */}
+
+                    {activeSection === 'practice' && currentTopic.practiceQuestion && practiceSelectedOption === null && !sectionProgress.practiceCompleted ? (
                       <button
-                        onClick={() => {
-                          if (regLearnStep === 'practice') setRegLearnStep('remember');
-                          else if (regLearnStep === 'remember') setRegLearnStep('walkthrough');
-                          else if (regLearnStep === 'walkthrough') setRegLearnStep('understand');
-                        }}
-                        className="flex-1 sm:flex-none px-4 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+                        type="button"
+                        disabled={true}
+                        className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-200 text-slate-400 border border-slate-300 rounded-xl text-xs sm:text-sm font-bold transition-none flex items-center justify-center gap-1.5 cursor-not-allowed select-none min-h-[44px]"
+                        title="Select an answer above to complete this chapter"
                       >
-                        ← Back
+                        <span>Select an Answer to Complete</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleNextStep}
+                        className="flex-1 sm:flex-none px-6 py-2.5 bg-[#073321] hover:bg-[#052819] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px]"
+                      >
+                        <span>
+                          {activeSection === 'practice'
+                            ? topicIndex < topicsList.length - 1
+                              ? 'Complete & Next Chapter →'
+                              : 'Complete Course 🎉'
+                            : 'Next Step →'}
+                        </span>
                       </button>
                     )}
-
-                    <button
-                      onClick={handleNextStep}
-                      className="flex-1 sm:flex-none px-6 py-2.5 bg-[#073321] hover:bg-[#052819] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px]"
-                    >
-                      <span>
-                        {regLearnStep === 'practice'
-                          ? topicIndex < topicsList.length - 1
-                            ? 'Complete & Next Chapter →'
-                            : 'Complete Course 🎉'
-                          : 'Next Step →'}
-                      </span>
-                    </button>
                   </div>
                 </div>
 
@@ -698,8 +789,8 @@ function RegulatoryMasterModalInner({ course, onClose }) {
                                 setTopicIndex(idx);
                                 setSelectedTopicId(topic.id);
                                 setActiveTab('home');
-                                setRegLearnStep('understand');
                                 setPracticeSelectedOption(null);
+                                setSectionProgressVersion(v => v + 1);
                               }
                             }}
                             className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-md ${

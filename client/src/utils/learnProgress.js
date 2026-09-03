@@ -43,6 +43,10 @@ function getDefaultProgress(slug) {
 function getDefaultChapter(chId) {
   return {
     chapterId: chId,
+    understandCompleted: false,
+    walkthroughCompleted: false,
+    rememberCompleted: false,
+    practiceCompleted: false,
     lessonRead: false,
     walkthroughDone: false,
     recallDone: false,
@@ -68,6 +72,96 @@ export function saveProgress(slug, data) {
 export function getChapterProgress(slug, chId) {
   const p = getProgress(slug);
   return { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
+}
+
+/**
+ * Derives the strict sequential completion status for the 4 chapter sections:
+ * UNDERSTAND → WALKTHROUGH → REMEMBER → PRACTICE
+ */
+export function getChapterSectionProgress(slug, chId, isChapterCompletedInSet = false) {
+  if (isChapterCompletedInSet) {
+    return {
+      understandCompleted: true,
+      walkthroughCompleted: true,
+      rememberCompleted: true,
+      practiceCompleted: true,
+    };
+  }
+
+  const p = getProgress(slug);
+  const ch = p.chapters[chId] || {};
+
+  // Sequential validation: each stage requires the prior stage to have completed
+  const understandCompleted = Boolean(ch.understandCompleted || ch.lessonRead);
+  const walkthroughCompleted = Boolean(understandCompleted && (ch.walkthroughCompleted || ch.walkthroughDone));
+  const rememberCompleted = Boolean(walkthroughCompleted && (ch.rememberCompleted || ch.recallDone));
+  const practiceCompleted = Boolean(rememberCompleted && (ch.practiceCompleted || ch.isCompleted));
+
+  return {
+    understandCompleted,
+    walkthroughCompleted,
+    rememberCompleted,
+    practiceCompleted,
+  };
+}
+
+/**
+ * Authoritatively returns the active section based on current progression state.
+ * Prevents jumping forward or skipping unfinished sections.
+ */
+export function getActiveChapterSection(sectionProgress) {
+  if (!sectionProgress || !sectionProgress.understandCompleted) return 'understand';
+  if (!sectionProgress.walkthroughCompleted) return 'walkthrough';
+  if (!sectionProgress.rememberCompleted) return 'remember';
+  return 'practice';
+}
+
+/**
+ * Persists sequential completion of a specific chapter section and awards XP.
+ */
+export function saveChapterSectionProgress(slug, chId, sectionId, metadata = {}) {
+  const p = getProgress(slug);
+  const ch = { ...getDefaultChapter(chId), ...(p.chapters[chId] || {}) };
+
+  let xpToAdd = 0;
+
+  if (sectionId === 'understand') {
+    if (!ch.understandCompleted) xpToAdd = 10;
+    ch.understandCompleted = true;
+    ch.lessonRead = true;
+    if (ch.masteryLevel < 1) ch.masteryLevel = 1;
+  } else if (sectionId === 'walkthrough') {
+    if (!ch.walkthroughCompleted) xpToAdd = 15;
+    ch.walkthroughCompleted = true;
+    ch.walkthroughDone = true;
+    if (ch.masteryLevel < 2) ch.masteryLevel = 2;
+  } else if (sectionId === 'remember') {
+    if (!ch.rememberCompleted) xpToAdd = 15;
+    ch.rememberCompleted = true;
+    ch.recallDone = true;
+    if (ch.masteryLevel < 3) ch.masteryLevel = 3;
+  } else if (sectionId === 'practice') {
+    if (!ch.practiceCompleted) xpToAdd = 25;
+    ch.practiceCompleted = true;
+    ch.isCompleted = true;
+    if (ch.masteryLevel < 4) ch.masteryLevel = 4;
+  }
+
+  ch.lastActivity = Date.now();
+  p.chapters[chId] = ch;
+
+  // Also sync by chNum if provided
+  if (metadata.chNum && String(metadata.chNum) !== String(chId)) {
+    p.chapters[metadata.chNum] = ch;
+  }
+
+  updateStreak(p);
+  if (xpToAdd > 0) {
+    addXP(slug, xpToAdd, `${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)} Section Complete`);
+  }
+
+  saveProgress(slug, p);
+  return { p, ch };
 }
 
 function updateStreak(p) {
