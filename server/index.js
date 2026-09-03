@@ -6,9 +6,21 @@ import dns from 'dns';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+
+// In-memory bundled static posts for Vercel Serverless reliability
+let staticWordpressPosts = null;
+try {
+  staticWordpressPosts = require('./data/wordpress-posts.json');
+} catch (_e1) {
+  try {
+    staticWordpressPosts = require('../server/data/wordpress-posts.json');
+  } catch (_e2) {}
+}
 
 // Configure DNS servers first
 try {
@@ -47,6 +59,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:4173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:4173',
   'http://localhost:3000',
   process.env.CLIENT_URL
 ].filter(Boolean);
@@ -111,28 +125,49 @@ async function getBlogPostForSSR(slug) {
     // Fall through to static files
   }
 
-  // 2. Static JSON fallback files
+  // 2. Static JSON fallback files & debug logging (as requested in Step 2)
   const serverPostsPath = path.join(__dirname, 'data', 'wordpress-posts.json');
   const clientPostsPath = path.join(__dirname, '..', 'client', 'src', 'data', 'posts.json');
-  const targetFile = fs.existsSync(serverPostsPath)
-    ? serverPostsPath
-    : fs.existsSync(clientPostsPath)
-    ? clientPostsPath
-    : null;
+  const cwdServerPosts = path.join(process.cwd(), 'server', 'data', 'wordpress-posts.json');
+  const cwdClientPosts = path.join(process.cwd(), 'client', 'src', 'data', 'posts.json');
 
-  if (targetFile) {
-    try {
-      const raw = fs.readFileSync(targetFile, 'utf-8');
-      const posts = JSON.parse(raw);
-      const matched = posts.find(
-        p => p.slug === cleanSlug || p.id === cleanSlug || p.id === `wp-${cleanSlug}`
-      );
-      if (matched) return matched;
-    } catch (_e) {
-      // Fall through
+  console.log(`[SSR DEBUG] getBlogPostForSSR slug: "${slug}", cleanSlug: "${cleanSlug}"`);
+  console.log(`[SSR DEBUG] serverPostsPath exists: ${fs.existsSync(serverPostsPath)} (${serverPostsPath})`);
+  console.log(`[SSR DEBUG] clientPostsPath exists: ${fs.existsSync(clientPostsPath)} (${clientPostsPath})`);
+  console.log(`[SSR DEBUG] cwdServerPosts exists: ${fs.existsSync(cwdServerPosts)} (${cwdServerPosts})`);
+  console.log(`[SSR DEBUG] cwdClientPosts exists: ${fs.existsSync(cwdClientPosts)} (${cwdClientPosts})`);
+
+  const candidateFiles = [serverPostsPath, cwdServerPosts, clientPostsPath, cwdClientPosts];
+  for (const f of candidateFiles) {
+    if (fs.existsSync(f)) {
+      try {
+        const raw = fs.readFileSync(f, 'utf-8');
+        const posts = JSON.parse(raw);
+        const matched = posts.find(
+          p => p.slug === cleanSlug || p.id === cleanSlug || p.id === `wp-${cleanSlug}`
+        );
+        if (matched) {
+          console.log(`[SSR DEBUG] Found post on filesystem in "${f}": "${matched.title}"`);
+          return matched;
+        }
+      } catch (_e) {
+        // Continue to next candidate
+      }
     }
   }
 
+  // 3. In-memory bundled JSON fallback (guaranteed in Vercel lambda bundle)
+  if (Array.isArray(staticWordpressPosts)) {
+    const matched = staticWordpressPosts.find(
+      p => p.slug === cleanSlug || p.id === cleanSlug || p.id === `wp-${cleanSlug}`
+    );
+    if (matched) {
+      console.log(`[SSR DEBUG] Found post in bundled staticWordpressPosts: "${matched.title}"`);
+      return matched;
+    }
+  }
+
+  console.warn(`[SSR DEBUG] Post not found for slug "${cleanSlug}". Using default site meta.`);
   return null; // Unknown slug — caller will use generic brand fallback
 }
 
@@ -269,11 +304,16 @@ function injectOGMetaIntoHtml(html, { title, description, ogImage, canonicalUrl,
 
 async function handleBlogSSR(req, res, next) {
   try {
-    const slug = req.params.slug;
-    const ua = req.headers['user-agent'] || '';
-    if (ua.match(/WhatsApp|facebookexternalhit|Twitterbot|LinkedInBot|bot|crawler|curl/i)) {
-      console.log(`🤖 Social Bot Request [${ua.slice(0, 40)}] -> ${req.originalUrl}`);
+    const rawSlug = req.params?.slug || req.query?.ssrSlug;
+    let slug = rawSlug;
+    if (!slug) {
+      const matchedPath = req.headers['x-matched-path'] || req.headers['x-forwarded-uri'] || req.originalUrl || req.url || '';
+      const m = matchedPath.match(/\/(?:free-resources\/blogs|blog)\/([^/?#]+)/i);
+      if (m) slug = m[1];
     }
+
+    const ua = req.headers['user-agent'] || '';
+    console.log(`🤖 Social/SSR Request [${ua.slice(0, 40)}] -> url: ${req.originalUrl || req.url}, extracted slug: "${slug}"`);
 
     const post = await getBlogPostForSSR(slug);
     const targetSlug = (post && post.slug) ? post.slug : slug;
@@ -294,16 +334,46 @@ async function handleBlogSSR(req, res, next) {
         ? new Date(post.publishedAt || post.rawDate).toISOString()
         : null;
 
-    // Load HTML shell
-    const distHtmlPath = path.join(__dirname, '..', 'client', 'dist', 'index.html');
-    const srcHtmlPath = path.join(__dirname, '..', 'client', 'index.html');
+    // Load HTML shell candidates (checking both __dirname and process.cwd() for Vercel lambdas)
+    const candidateHtmlPaths = [
+      path.join(__dirname, '..', 'client', 'dist', 'index.html'),
+      path.join(process.cwd(), 'client', 'dist', 'index.html'),
+      path.join(process.cwd(), 'dist', 'index.html'),
+      path.join(__dirname, '..', 'client', 'index.html'),
+      path.join(process.cwd(), 'client', 'index.html'),
+      path.join(process.cwd(), 'index.html')
+    ];
+
+    console.log('[SSR DEBUG] HTML shell candidate lookup:');
     let html = '';
-    if (fs.existsSync(distHtmlPath)) {
-      html = fs.readFileSync(distHtmlPath, 'utf-8');
-    } else if (fs.existsSync(srcHtmlPath)) {
-      html = fs.readFileSync(srcHtmlPath, 'utf-8');
-    } else {
-      return res.status(404).send('HTML shell not found.');
+    for (const p of candidateHtmlPaths) {
+      const exists = fs.existsSync(p);
+      console.log(`  Candidate: ${p} -> exists: ${exists}`);
+      if (exists && !html) {
+        try {
+          html = fs.readFileSync(p, 'utf-8');
+        } catch (e) {
+          console.error(`  Error reading ${p}:`, e.message);
+        }
+      }
+    }
+
+    if (!html) {
+      console.warn('[SSR DEBUG] No static HTML shell file found on filesystem. Using standalone shell.');
+      html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/assets/sitelogo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>`;
     }
 
     const modifiedHtml = injectOGMetaIntoHtml(html, {
@@ -327,6 +397,29 @@ async function handleBlogSSR(req, res, next) {
 // ─── Blog SSR Routes (MUST come before static file middleware) ────────────────
 app.get('/free-resources/blogs/:slug', handleBlogSSR);
 app.get('/blog/:slug', handleBlogSSR);
+app.get('/api/index.js', (req, res, next) => {
+  if (req.query?.ssrSlug || req.headers['x-matched-path']?.includes('/blog')) {
+    return handleBlogSSR(req, res, next);
+  }
+  next();
+});
+
+// SSR Catch-all Middleware to intercept Vercel rewrites before static files
+app.use((req, res, next) => {
+  const pathToCheck = req.headers['x-matched-path'] || req.headers['x-forwarded-uri'] || req.originalUrl || req.url || '';
+  const blogMatch = pathToCheck.match(/\/(?:free-resources\/blogs|blog)\/([^/?#]+)/i);
+  if (blogMatch && blogMatch[1]) {
+    req.params = req.params || {};
+    req.params.slug = blogMatch[1];
+    return handleBlogSSR(req, res, next);
+  }
+  if (req.query?.ssrSlug) {
+    req.params = req.params || {};
+    req.params.slug = req.query.ssrSlug;
+    return handleBlogSSR(req, res, next);
+  }
+  next();
+});
 
 // ─── robots.txt — dynamically served so it's always accurate ─────────────────
 app.get('/robots.txt', (_req, res) => {

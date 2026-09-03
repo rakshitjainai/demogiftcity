@@ -10,17 +10,25 @@
     },
     {
       "src": "api/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "server/data/**/*.json",
+          "client/src/data/**/*.json",
+          "client/dist/**",
+          "client/index.html"
+        ]
+      }
     }
   ],
   "routes": [
     {
-      "src": "/free-resources/blogs/([^/]+)",
-      "dest": "/api/index.js"
+      "src": "/free-resources/blogs/(?<slug>[^/]+)",
+      "dest": "/api/index.js?ssrSlug=$slug"
     },
     {
-      "src": "/blog/([^/]+)",
-      "dest": "/api/index.js"
+      "src": "/blog/(?<slug>[^/]+)",
+      "dest": "/api/index.js?ssrSlug=$slug"
     },
     {
       "src": "/robots.txt",
