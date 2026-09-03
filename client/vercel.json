@@ -1,7 +1,4 @@
 {
-  "version": 2,
-  "buildCommand": "cd client && npm run build",
-  "outputDirectory": "client/dist",
   "rewrites": [
     {
       "source": "/free-resources/blogs/:slug*",
@@ -16,8 +13,8 @@
       "destination": "/api/test"
     },
     {
-      "source": "/health",
-      "destination": "/api/test"
+      "source": "/api/blog-ssr",
+      "destination": "/api/blog-ssr"
     },
     {
       "source": "/(.*)",
