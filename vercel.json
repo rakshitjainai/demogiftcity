@@ -23,12 +23,12 @@
   ],
   "routes": [
     {
-      "src": "/free-resources/blogs/(?<slug>[^/]+)",
-      "dest": "/api/index.js?ssrSlug=$slug"
+      "src": "/free-resources/blogs/([^/]+)",
+      "dest": "/api/index.js?ssrSlug=$1"
     },
     {
-      "src": "/blog/(?<slug>[^/]+)",
-      "dest": "/api/index.js?ssrSlug=$slug"
+      "src": "/blog/([^/]+)",
+      "dest": "/api/index.js?ssrSlug=$1"
     },
     {
       "src": "/robots.txt",
