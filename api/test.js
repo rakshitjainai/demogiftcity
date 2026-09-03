@@ -1,3 +1,0 @@
-export default function handler(req, res) {
-  res.status(200).json({ status: 'ok', message: 'Hello from Vercel Serverless Function', time: new Date().toISOString() });
-}
