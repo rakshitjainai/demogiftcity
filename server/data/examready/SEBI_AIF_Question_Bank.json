@@ -1,0 +1,1852 @@
+[
+  {
+    "question_code": "AIF-Q0001",
+    "title": "The minimum corpus prescribed for each scheme of an AIF is:",
+    "question_text": "The minimum corpus prescribed for each scheme of an AIF is:",
+    "topic_number": 1,
+    "topic_name": "Fund Architecture: Corpus, Ticket & Investors",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Twenty crore rupees, reduced to five crore for a social impact fund"
+      },
+      {
+        "key": "B",
+        "text": "Twenty crore rupees for the fund as a whole, whatever its schemes"
+      },
+      {
+        "key": "C",
+        "text": "Ten crore rupees per scheme, with no concession for any category"
+      },
+      {
+        "key": "D",
+        "text": "Five crore rupees per scheme, raised to twenty crore for Category III"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Reg. 10(b): each scheme shall have a corpus of at least twenty crore rupees, with the proviso reducing this to five crore for each scheme of a social impact fund. The test is per scheme, not per fund.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 1 · Fund Architecture: Corpus, Ticket & Investors"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "Twenty crore rupees, reduced to five crore for a social impact fund",
+    "option_b": "Twenty crore rupees for the fund as a whole, whatever its schemes",
+    "option_c": "Ten crore rupees per scheme, with no concession for any category",
+    "option_d": "Five crore rupees per scheme, raised to twenty crore for Category III"
+  },
+  {
+    "question_code": "AIF-Q0002",
+    "title": "An accredited investor proposes to commit fifty lakh rupees to a Categ",
+    "question_text": "An accredited investor proposes to commit fifty lakh rupees to a Categ",
+    "topic_number": 1,
+    "topic_name": "Fund Architecture: Corpus, Ticket & Investors",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "The commitment fails, because one crore is the floor for every investor"
+      },
+      {
+        "key": "B",
+        "text": "The commitment is permissible, because the minimum does not apply to an accredited investor"
+      },
+      {
+        "key": "C",
+        "text": "The commitment fails, because twenty-five lakh applies only to insiders"
+      },
+      {
+        "key": "D",
+        "text": "The commitment is permissible only if the investor is also a director of the Manager"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "The second proviso to Reg. 10(c) disapplies the minimum-investment clause altogether for an accredited investor. It is not a reduced threshold but an exemption from the clause.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 1 · Fund Architecture: Corpus, Ticket & Investors"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "The commitment fails, because one crore is the floor for every investor",
+    "option_b": "The commitment is permissible, because the minimum does not apply to an accredited investor",
+    "option_c": "The commitment fails, because twenty-five lakh applies only to insiders",
+    "option_d": "The commitment is permissible only if the investor is also a director of the Manager"
+  },
+  {
+    "question_code": "AIF-Q0003",
+    "title": "A scheme has 940 investors and proposes to admit 80 more, each investi",
+    "question_text": "A scheme has 940 investors and proposes to admit 80 more, each investi",
+    "topic_number": 1,
+    "topic_name": "Fund Architecture: Corpus, Ticket & Investors",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "The admissions are permissible, since each investor exceeds the one crore minimum"
+      },
+      {
+        "key": "B",
+        "text": "The ceiling applies to the fund as a whole, so the scheme has ample headroom"
+      },
+      {
+        "key": "C",
+        "text": "The admissions would breach the ceiling of one thousand investors for the scheme"
+      },
+      {
+        "key": "D",
+        "text": "The admissions are permissible if the additional investors are all accredited"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Reg. 10(f) caps a scheme at one thousand investors. Satisfying the ticket size does not cure a breach of the investor ceiling, and the cap is per scheme. Accreditation relaxes the minimum investment, not the count.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 1 · Fund Architecture: Corpus, Ticket & Investors"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "The admissions are permissible, since each investor exceeds the one crore minimum",
+    "option_b": "The ceiling applies to the fund as a whole, so the scheme has ample headroom",
+    "option_c": "The admissions would breach the ceiling of one thousand investors for the scheme",
+    "option_d": "The admissions are permissible if the additional investors are all accredited"
+  },
+  {
+    "question_code": "AIF-Q0004",
+    "title": "A close-ended Category II fund seeks to extend its tenure. The require",
+    "question_text": "A close-ended Category II fund seeks to extend its tenure. The require",
+    "topic_number": 2,
+    "topic_name": "Structure & Tenure by Category",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "A simple majority of the unit holders, counted by number of holders"
+      },
+      {
+        "key": "B",
+        "text": "Three-fourths of the unit holders by value of their investment in the fund"
+      },
+      {
+        "key": "C",
+        "text": "Two-thirds of the unit holders by number, with the Board's prior approval"
+      },
+      {
+        "key": "D",
+        "text": "Two-thirds of the unit holders by value of their investment in the fund"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Reg. 13(5): extension of up to two years requires approval of two-thirds of the unit holders BY VALUE of their investment. The vote is value-weighted, not a headcount.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 2 · Structure & Tenure by Category"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "A simple majority of the unit holders, counted by number of holders",
+    "option_b": "Three-fourths of the unit holders by value of their investment in the fund",
+    "option_c": "Two-thirds of the unit holders by number, with the Board's prior approval",
+    "option_d": "Two-thirds of the unit holders by value of their investment in the fund"
+  },
+  {
+    "question_code": "AIF-Q0005",
+    "title": "A sponsor proposes an open-ended Category II fund with a two-year tenu",
+    "question_text": "A sponsor proposes an open-ended Category II fund with a two-year tenu",
+    "topic_number": 2,
+    "topic_name": "Structure & Tenure by Category",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two defects — Category II must be close-ended and the tenure is below three years"
+      },
+      {
+        "key": "B",
+        "text": "One defect — only the tenure, since Category II funds may be open-ended"
+      },
+      {
+        "key": "C",
+        "text": "One defect — only the structure, since two years is a permissible tenure"
+      },
+      {
+        "key": "D",
+        "text": "No defect, provided the tenure is fixed at the time of the application"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Reg. 13(1) requires Categories I and II to be close-ended, and Reg. 13(2) sets a minimum tenure of three years. Both limbs fail independently — the open-ended option belongs to Category III alone.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 2 · Structure & Tenure by Category"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Two defects — Category II must be close-ended and the tenure is below three years",
+    "option_b": "One defect — only the tenure, since Category II funds may be open-ended",
+    "option_c": "One defect — only the structure, since two years is a permissible tenure",
+    "option_d": "No defect, provided the tenure is fixed at the time of the application"
+  },
+  {
+    "question_code": "AIF-Q0006",
+    "title": "For a Category II AIF, the continuing interest of the Manager or Spons",
+    "question_text": "For a Category II AIF, the continuing interest of the Manager or Spons",
+    "topic_number": 3,
+    "topic_name": "Continuing Interest of Manager & Sponsor",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Five percent of the corpus or ten crore rupees, whichever is lower"
+      },
+      {
+        "key": "B",
+        "text": "Two and a half percent of the corpus or five crore rupees, whichever is lower"
+      },
+      {
+        "key": "C",
+        "text": "Two and a half percent of the corpus or five crore rupees, whichever is higher"
+      },
+      {
+        "key": "D",
+        "text": "Five percent of the corpus, with no monetary cap applying to the figure"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 10(d): 2.5% of corpus or five crore rupees, whichever is LOWER, for Categories I and II. The 5%/ten crore pair applies to Category III, and the test is the lower of the two, not the higher.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 3 · Continuing Interest of Manager & Sponsor"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Five percent of the corpus or ten crore rupees, whichever is lower",
+    "option_b": "Two and a half percent of the corpus or five crore rupees, whichever is lower",
+    "option_c": "Two and a half percent of the corpus or five crore rupees, whichever is higher",
+    "option_d": "Five percent of the corpus, with no monetary cap applying to the figure"
+  },
+  {
+    "question_code": "AIF-Q0007",
+    "title": "A Category III fund with a corpus of four hundred crore rupees propose",
+    "question_text": "A Category III fund with a corpus of four hundred crore rupees propose",
+    "topic_number": 3,
+    "topic_name": "Continuing Interest of Manager & Sponsor",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "The amount is short, since five percent of four hundred crore is twenty crore"
+      },
+      {
+        "key": "B",
+        "text": "Category III funds are not subject to any continuing interest requirement at all"
+      },
+      {
+        "key": "C",
+        "text": "The interest must be an actual investment and cannot be a waiver of management fees"
+      },
+      {
+        "key": "D",
+        "text": "The waiver is permissible only if disclosed to investors in the placement memorandum"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Two points. The rupee cap means ten crore would satisfy the amount, since the test is the lower of 5% or ten crore. But Reg. 10(d) requires the interest to take the form of investment and expressly excludes a waiver of management fees, so the structure fails on form regardless of quantum.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 3 · Continuing Interest of Manager & Sponsor"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "The amount is short, since five percent of four hundred crore is twenty crore",
+    "option_b": "Category III funds are not subject to any continuing interest requirement at all",
+    "option_c": "The interest must be an actual investment and cannot be a waiver of management fees",
+    "option_d": "The waiver is permissible only if disclosed to investors in the placement memorandum"
+  },
+  {
+    "question_code": "AIF-Q0008",
+    "title": "A Category III fund obtains investor consent and employs leverage with",
+    "question_text": "A Category III fund obtains investor consent and employs leverage with",
+    "topic_number": 4,
+    "topic_name": "Category III: Leverage & Disclosure",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Leverage requires the prior approval of the Board in addition to investor consent"
+      },
+      {
+        "key": "B",
+        "text": "Category III funds may not employ leverage arising from derivative positions at all"
+      },
+      {
+        "key": "C",
+        "text": "Reporting is required monthly rather than quarterly for any leveraged Category III fund"
+      },
+      {
+        "key": "D",
+        "text": "The disclosure must break out cash borrowing, derivatives and the main source too"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "The proviso to Reg. 17(c) requires disclosure of the overall level of leverage, the level arising from borrowing of cash, the level arising from derivatives or complex products, and the main source — to investors and to the Board. An aggregate figure alone is incomplete.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 4 · Category III: Leverage & Disclosure"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Leverage requires the prior approval of the Board in addition to investor consent",
+    "option_b": "Category III funds may not employ leverage arising from derivative positions at all",
+    "option_c": "Reporting is required monthly rather than quarterly for any leveraged Category III fund",
+    "option_d": "The disclosure must break out cash borrowing, derivatives and the main source too"
+  },
+  {
+    "question_code": "AIF-Q0009",
+    "title": "Leverage by a Category III AIF is permitted subject to:",
+    "question_text": "Leverage by a Category III AIF is permitted subject to:",
+    "topic_number": 4,
+    "topic_name": "Category III: Leverage & Disclosure",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Consent from the investors and a maximum limit as specified by the Board"
+      },
+      {
+        "key": "B",
+        "text": "The prior written approval of the Board for each borrowing transaction"
+      },
+      {
+        "key": "C",
+        "text": "Consent of two-thirds of unit holders by value of their investment in the fund"
+      },
+      {
+        "key": "D",
+        "text": "A maximum limit specified in the placement memorandum by the Manager"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Reg. 17(c): leverage or borrowing is subject to consent from the investors and to a maximum limit as may be specified by the Board. Transaction-by-transaction approval and the two-thirds-by-value test belong to other provisions.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 4 · Category III: Leverage & Disclosure"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Consent from the investors and a maximum limit as specified by the Board",
+    "option_b": "The prior written approval of the Board for each borrowing transaction",
+    "option_c": "Consent of two-thirds of unit holders by value of their investment in the fund",
+    "option_d": "A maximum limit specified in the placement memorandum by the Manager"
+  },
+  {
+    "question_code": "AIF-Q0010",
+    "title": "Where established valuation policies would not produce a fair and appr",
+    "question_text": "Where established valuation policies would not produce a fair and appr",
+    "topic_number": 5,
+    "topic_name": "Valuation & the Manager's Responsibility",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "May continue applying the policy, provided the limitation is disclosed to investors"
+      },
+      {
+        "key": "B",
+        "text": "Shall deviate from the policy, document the rationale, and report the deviation"
+      },
+      {
+        "key": "C",
+        "text": "Must obtain the Board's prior approval before departing from the stated policy"
+      },
+      {
+        "key": "D",
+        "text": "Shall refer the valuation to the trustee, whose determination is then final"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "The provisos to Reg. 23 make deviation mandatory in that situation ('shall deviate'), coupled with documentation of the rationale and reporting of the deviation and its rationale to the trustee, board or designated partners and to investors.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 5 · Valuation & the Manager's Responsibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "May continue applying the policy, provided the limitation is disclosed to investors",
+    "option_b": "Shall deviate from the policy, document the rationale, and report the deviation",
+    "option_c": "Must obtain the Board's prior approval before departing from the stated policy",
+    "option_d": "Shall refer the valuation to the trustee, whose determination is then final"
+  },
+  {
+    "question_code": "AIF-Q0011",
+    "title": "An AIF appoints an independent valuer who computes the portfolio value",
+    "question_text": "An AIF appoints an independent valuer who computes the portfolio value",
+    "topic_number": 5,
+    "topic_name": "Valuation & the Manager's Responsibility",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Passes to the independent valuer once the appointment has been made"
+      },
+      {
+        "key": "B",
+        "text": "Is shared between the Manager and the trustee in equal measure"
+      },
+      {
+        "key": "C",
+        "text": "Remains with the Manager, notwithstanding the valuer's appointment"
+      },
+      {
+        "key": "D",
+        "text": "Rests with the trustee, who must countersign the valuation report"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The Manager must ensure an independent valuer is appointed, but Reg. 23 separately makes the Manager responsible for true and fair valuation. Appointing a valuer discharges the appointment duty, not the responsibility for the outcome.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 5 · Valuation & the Manager's Responsibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Passes to the independent valuer once the appointment has been made",
+    "option_b": "Is shared between the Manager and the trustee in equal measure",
+    "option_c": "Remains with the Manager, notwithstanding the valuer's appointment",
+    "option_d": "Rests with the trustee, who must countersign the valuation report"
+  },
+  {
+    "question_code": "AIF-Q0012",
+    "title": "A fund proposes a private-equity strategy in unlisted companies but wa",
+    "question_text": "A fund proposes a private-equity strategy in unlisted companies but wants the flexibility to short listed equity through derivatives as a core part of its returns. Which category must it register in, and why?",
+    "topic_number": 6,
+    "topic_name": "Categories I, II & III: Taxonomy & Sub-Categories",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Category I, as private-equity funding of companies carries a positive economic spillover"
+      },
+      {
+        "key": "B",
+        "text": "Category II, since its core holdings are unlisted private-equity positions in companies"
+      },
+      {
+        "key": "C",
+        "text": "Category III, since strategic leverage through listed or unlisted derivatives is its marker"
+      },
+      {
+        "key": "D",
+        "text": "Either II or III at the applicant's option, as the fund straddles both models"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The derivatives-based shorting is strategic leverage. Under Reg. 2(1)(c) that is the Category III marker, and it overrides the unlisted-PE character that would otherwise suggest Category II. Category is not optional where a defining feature is present.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 6 · Categories I, II & III: Taxonomy & Sub-Categories"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Category I, as private-equity funding of companies carries a positive economic spillover",
+    "option_b": "Category II, since its core holdings are unlisted private-equity positions in companies",
+    "option_c": "Category III, since strategic leverage through listed or unlisted derivatives is its marker",
+    "option_d": "Either II or III at the applicant's option, as the fund straddles both models"
+  },
+  {
+    "question_code": "AIF-Q0013",
+    "title": "Which of the following is a correct and current statement of Category ",
+    "question_text": "Which of the following is a correct and current statement of Category I sub-categories?",
+    "topic_number": 6,
+    "topic_name": "Categories I, II & III: Taxonomy & Sub-Categories",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "VCF, SME Funds, social venture funds, infrastructure funds, hedge funds and real estate funds"
+      },
+      {
+        "key": "B",
+        "text": "Private equity funds, debt funds, SME Funds and infrastructure funds"
+      },
+      {
+        "key": "C",
+        "text": "VCF, angel funds, real estate funds and special situation funds"
+      },
+      {
+        "key": "D",
+        "text": "VCF, SME Funds, angel funds, social impact funds, infrastructure and special situation funds"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Reg. 3(4) lists VCF, SME Funds, angel funds (inserted 09-09-2025), social impact funds (which replaced 'social venture funds'), infrastructure funds and special situation funds. Hedge funds are Category III; PE and debt funds are Category II; real estate is not a named sub-category.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 6 · Categories I, II & III: Taxonomy & Sub-Categories"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "VCF, SME Funds, social venture funds, infrastructure funds, hedge funds and real estate funds",
+    "option_b": "Private equity funds, debt funds, SME Funds and infrastructure funds",
+    "option_c": "VCF, angel funds, real estate funds and special situation funds",
+    "option_d": "VCF, SME Funds, angel funds, social impact funds, infrastructure and special situation funds"
+  },
+  {
+    "question_code": "AIF-Q0014",
+    "title": "An analyst argues a debt fund must be Category I because lending to bu",
+    "question_text": "An analyst argues a debt fund must be Category I because lending to businesses benefits the economy. What is the correct classification and reasoning?",
+    "topic_number": 6,
+    "topic_name": "Categories I, II & III: Taxonomy & Sub-Categories",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Category I, since any activity with an economic benefit fits the positive-spillover box"
+      },
+      {
+        "key": "B",
+        "text": "Category II, since a plain debt fund is expressly given as a Category II example"
+      },
+      {
+        "key": "C",
+        "text": "Category III, since lending is a complex trading strategy involving credit risk"
+      },
+      {
+        "key": "D",
+        "text": "Category II only where it uses leverage, and Category I otherwise"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "The Explanation to Reg. 2(1)(b) expressly gives debt funds as a Category II example. Category I is not 'anything economically useful' — it is the specific set the Board or Government treats as meriting incentives. Generalised economic benefit does not qualify a fund for Category I.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 6 · Categories I, II & III: Taxonomy & Sub-Categories"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Category I, since any activity with an economic benefit fits the positive-spillover box",
+    "option_b": "Category II, since a plain debt fund is expressly given as a Category II example",
+    "option_c": "Category III, since lending is a complex trading strategy involving credit risk",
+    "option_d": "Category II only where it uses leverage, and Category I otherwise"
+  },
+  {
+    "question_code": "AIF-Q0015",
+    "title": "Which statement about open-ended structures across the categories is c",
+    "question_text": "Which statement about open-ended structures across the categories is correct?",
+    "topic_number": 6,
+    "topic_name": "Categories I, II & III: Taxonomy & Sub-Categories",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Category III funds may be open-ended, whereas Category I and II funds are close-ended"
+      },
+      {
+        "key": "B",
+        "text": "Only Category I funds may be open-ended, as they serve long-term development goals"
+      },
+      {
+        "key": "C",
+        "text": "All three categories may freely choose to be open-ended or close-ended"
+      },
+      {
+        "key": "D",
+        "text": "No AIF category may be open-ended; every AIF must be close-ended in form"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The Explanation to Reg. 2(1)(c) contemplates Category III funds being open-ended, consistent with their short-term, hedge-fund character. Category I and II schemes are close-ended (Chapter 2 of this course). This is a frequent trap because it inverts naturally.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 6 · Categories I, II & III: Taxonomy & Sub-Categories"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Category III funds may be open-ended, whereas Category I and II funds are close-ended",
+    "option_b": "Only Category I funds may be open-ended, as they serve long-term development goals",
+    "option_c": "All three categories may freely choose to be open-ended or close-ended",
+    "option_d": "No AIF category may be open-ended; every AIF must be close-ended in form"
+  },
+  {
+    "question_code": "AIF-Q0016",
+    "title": "A Manager is unimpeachable, but the Sponsor has an adverse fit-and-pro",
+    "question_text": "A Manager is unimpeachable, but the Sponsor has an adverse fit-and-proper record. What is the effect on the registration application?",
+    "topic_number": 7,
+    "topic_name": "Registration & Eligibility",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "It proceeds, since the Manager runs the fund and is the party that must be fit and proper"
+      },
+      {
+        "key": "B",
+        "text": "It is ineligible, since Reg. 4(f) tests applicant, Sponsor and Manager alike as fit and proper"
+      },
+      {
+        "key": "C",
+        "text": "It proceeds if the Sponsor reduces its stake below the continuing-interest threshold"
+      },
+      {
+        "key": "D",
+        "text": "It is deferred until the Sponsor obtains a fresh certification for its key personnel"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 4(f) applies the fit-and-proper test — measured against Schedule II of the SEBI (Intermediaries) Regulations, 2008 — to the applicant, the Sponsor and the Manager. A tainted Sponsor makes the application ineligible; a clean Manager cannot cure it.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 7 · Registration & Eligibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "It proceeds, since the Manager runs the fund and is the party that must be fit and proper",
+    "option_b": "It is ineligible, since Reg. 4(f) tests applicant, Sponsor and Manager alike as fit and proper",
+    "option_c": "It proceeds if the Sponsor reduces its stake below the continuing-interest threshold",
+    "option_d": "It is deferred until the Sponsor obtains a fresh certification for its key personnel"
+  },
+  {
+    "question_code": "AIF-Q0017",
+    "title": "What does the Reg. 4(g) key-investment-team requirement currently dema",
+    "question_text": "What does the Reg. 4(g) key-investment-team requirement currently demand?",
+    "topic_number": 7,
+    "topic_name": "Registration & Eligibility",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "At least one key personnel with not less than five years' pool-of-capital experience"
+      },
+      {
+        "key": "B",
+        "text": "Every investment-team member to hold both a CFA charter and a Board-specified certification"
+      },
+      {
+        "key": "C",
+        "text": "One Board-certified and one professionally-qualified person, possibly the same, kept certified"
+      },
+      {
+        "key": "D",
+        "text": "Two distinct key personnel, one certified and one qualified, never the same individual"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Reg. 4(g) requires one certified and one qualified key personnel, expressly permits the same person to satisfy both limbs, and requires fresh certification before expiry. The 'five years' experience' formulation is the pre-amendment test and is now wrong.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 7 · Registration & Eligibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "At least one key personnel with not less than five years' pool-of-capital experience",
+    "option_b": "Every investment-team member to hold both a CFA charter and a Board-specified certification",
+    "option_c": "One Board-certified and one professionally-qualified person, possibly the same, kept certified",
+    "option_d": "Two distinct key personnel, one certified and one qualified, never the same individual"
+  },
+  {
+    "question_code": "AIF-Q0018",
+    "title": "During diligence you find the applicant trust's deed permits it to inv",
+    "question_text": "During diligence you find the applicant trust's deed permits it to invite the public to subscribe to its units. Identify the compliance problem.",
+    "topic_number": 7,
+    "topic_name": "Registration & Eligibility",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "No problem, provided the fund in practice raises money only by private placement"
+      },
+      {
+        "key": "B",
+        "text": "Acceptable if the trust simultaneously registers as a Category III open-ended fund"
+      },
+      {
+        "key": "C",
+        "text": "A failure only if the fund actually makes a public issue during its tenure"
+      },
+      {
+        "key": "D",
+        "text": "A failure of Reg. 4(b), which requires the deed itself to bar any public invitation"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Reg. 4(b) makes the prohibition on public invitation an eligibility condition tested at the level of the deed itself, not conduct. A permissive deed fails the test even if the fund never in fact approaches the public.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 7 · Registration & Eligibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "No problem, provided the fund in practice raises money only by private placement",
+    "option_b": "Acceptable if the trust simultaneously registers as a Category III open-ended fund",
+    "option_c": "A failure only if the fund actually makes a public issue during its tenure",
+    "option_d": "A failure of Reg. 4(b), which requires the deed itself to bar any public invitation"
+  },
+  {
+    "question_code": "AIF-Q0019",
+    "title": "Once granted under a specific category, how long is an AIF's certifica",
+    "question_text": "Once granted under a specific category, how long is an AIF's certificate of registration valid?",
+    "topic_number": 7,
+    "topic_name": "Registration & Eligibility",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "For five years, renewable each time on payment of the prescribed registration fee to the Board"
+      },
+      {
+        "key": "B",
+        "text": "Until the Alternative Investment Fund is wound up, with no periodic renewal"
+      },
+      {
+        "key": "C",
+        "text": "For the tenure declared in the placement memorandum, then renewable"
+      },
+      {
+        "key": "D",
+        "text": "For three years from the date of first close of its maiden scheme"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 3(7) makes the certificate valid until the AIF is wound up — there is no periodic renewal. Confusing this with a fixed-term or tenure-linked validity is a common error carried over from other intermediary regimes.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 7 · Registration & Eligibility"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "For five years, renewable each time on payment of the prescribed registration fee to the Board",
+    "option_b": "Until the Alternative Investment Fund is wound up, with no periodic renewal",
+    "option_c": "For the tenure declared in the placement memorandum, then renewable",
+    "option_d": "For three years from the date of first close of its maiden scheme"
+  },
+  {
+    "question_code": "AIF-Q0020",
+    "title": "A Category III AIF (not a large value fund) places 22% of its investab",
+    "question_text": "A Category III AIF (not a large value fund) places 22% of its investable funds in a single listed company. A Category II AIF places 22% in one investee company. Who, if anyone, is in breach?",
+    "topic_number": 8,
+    "topic_name": "Investment Conditions & Concentration Limits",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Only the Category III fund, whose single-company cap is 10% against the 25% for Category II"
+      },
+      {
+        "key": "B",
+        "text": "Only the Category II fund, since Category III funds have no concentration limit at all"
+      },
+      {
+        "key": "C",
+        "text": "Both funds, since the single-company cap is a uniform 20% across every category"
+      },
+      {
+        "key": "D",
+        "text": "Neither fund, since 22% sits within the 25% cap that applies to all categories"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Under Reg. 15(1)(d) the single-company cap is 10% for Category III (20% only for Category III LVFs) and 25% for Category I and II. The Category III fund at 22% breaches; the Category II fund at 22% is within its 25% cap.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 8 · Investment Conditions & Concentration Limits"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Only the Category III fund, whose single-company cap is 10% against the 25% for Category II",
+    "option_b": "Only the Category II fund, since Category III funds have no concentration limit at all",
+    "option_c": "Both funds, since the single-company cap is a uniform 20% across every category",
+    "option_d": "Neither fund, since 22% sits within the 25% cap that applies to all categories"
+  },
+  {
+    "question_code": "AIF-Q0021",
+    "title": "A Category II AIF draws operational bridge borrowings five separate ti",
+    "question_text": "A Category II AIF draws operational bridge borrowings five separate times in a financial year, each for 20 days and each under 10% of investable funds. Is this within the permitted carve-out?",
+    "topic_number": 8,
+    "topic_name": "Investment Conditions & Concentration Limits",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Yes, as each draw is under thirty days and under ten per cent and so individually compliant"
+      },
+      {
+        "key": "B",
+        "text": "Yes, as the four-occasion limit binds only Category I AIFs and not Category II funds"
+      },
+      {
+        "key": "C",
+        "text": "No, as the carve-out allows four occasions a year and the fifth draw breaches regardless"
+      },
+      {
+        "key": "D",
+        "text": "No, as five draws together exceed thirty days of borrowing in aggregate over the year"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The carve-out imposes three simultaneous limits: not more than 30 days, not more than four occasions a year, and not more than 10% of investable funds. The fifth occasion breaches the frequency limit even though each individual draw satisfies duration and size.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 8 · Investment Conditions & Concentration Limits"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Yes, as each draw is under thirty days and under ten per cent and so individually compliant",
+    "option_b": "Yes, as the four-occasion limit binds only Category I AIFs and not Category II funds",
+    "option_c": "No, as the carve-out allows four occasions a year and the fifth draw breaches regardless",
+    "option_d": "No, as five draws together exceed thirty days of borrowing in aggregate over the year"
+  },
+  {
+    "question_code": "AIF-Q0022",
+    "title": "Two years into an eight-year venture capital fund, only 60% of investa",
+    "question_text": "Two years into an eight-year venture capital fund, only 60% of investable funds sit in unlisted venture and SME-listed exposure. Is the VCF in breach of the 75% mandate?",
+    "topic_number": 8,
+    "topic_name": "Investment Conditions & Concentration Limits",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Yes, since a venture capital fund must hold 75% in venture exposure at all points in time"
+      },
+      {
+        "key": "B",
+        "text": "Not necessarily, since the 75% floor is to be met by the end of the fund's life cycle"
+      },
+      {
+        "key": "C",
+        "text": "Yes, since two years is beyond the permitted deployment period for any category of AIF"
+      },
+      {
+        "key": "D",
+        "text": "No, since the 75% venture floor applies only to Category III funds and not to VCFs"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 16(2)(a) requires the 75% venture/SME-listed floor to be achieved by the end of the fund's life cycle. An interim portfolio below 75% during the deployment phase is not, by itself, a breach.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 8 · Investment Conditions & Concentration Limits"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Yes, since a venture capital fund must hold 75% in venture exposure at all points in time",
+    "option_b": "Not necessarily, since the 75% floor is to be met by the end of the fund's life cycle",
+    "option_c": "Yes, since two years is beyond the permitted deployment period for any category of AIF",
+    "option_d": "No, since the 75% venture floor applies only to Category III funds and not to VCFs"
+  },
+  {
+    "question_code": "AIF-Q0023",
+    "title": "Where may an AIF park investable funds that are un-invested, or divest",
+    "question_text": "Where may an AIF park investable funds that are un-invested, or divestment proceeds pending distribution to investors?",
+    "topic_number": 8,
+    "topic_name": "Investment Conditions & Concentration Limits",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "In any listed equity of its choosing, so long as the position stays under the single-company cap"
+      },
+      {
+        "key": "B",
+        "text": "In further unlisted investee companies, so as to keep the capital fully deployed"
+      },
+      {
+        "key": "C",
+        "text": "In physical gold or real estate, held as a hedge until the distribution is made"
+      },
+      {
+        "key": "D",
+        "text": "In liquid mutual funds, bank deposits or high-quality liquid assets such as T-bills or TREPS"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Reg. 15(1)(f) confines idle investable funds and pending divestment proceeds to defined liquid instruments — liquid mutual funds, bank deposits, T-bills, TREPS, commercial papers, certificates of deposit and similar high-quality liquid assets — not to off-mandate deployment.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 8 · Investment Conditions & Concentration Limits"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "In any listed equity of its choosing, so long as the position stays under the single-company cap",
+    "option_b": "In further unlisted investee companies, so as to keep the capital fully deployed",
+    "option_c": "In physical gold or real estate, held as a hedge until the distribution is made",
+    "option_d": "In liquid mutual funds, bank deposits or high-quality liquid assets such as T-bills or TREPS"
+  },
+  {
+    "question_code": "AIF-Q0024",
+    "title": "A CO is told a Category II fund 'used leverage', so it must re-registe",
+    "question_text": "A CO is told a Category II fund 'used leverage', so it must re-register as Category III. Under what condition is that conclusion wrong?",
+    "topic_number": 8,
+    "topic_name": "Investment Conditions & Concentration Limits",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "If the borrowing was the permitted 30-day / 4-occasion / 10% operational carve-out"
+      },
+      {
+        "key": "B",
+        "text": "Never — any borrowing at all converts a Category II fund into a Category III fund"
+      },
+      {
+        "key": "C",
+        "text": "Only where the fund happens to be a large value fund for accredited investors"
+      },
+      {
+        "key": "D",
+        "text": "Only where the borrowing was specifically disclosed in the placement memorandum"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Category II is defined as not undertaking leverage or borrowing other than as permitted. The 30-day / 4-occasion / 10% operational bridge is expressly permitted and does not convert the fund into Category III. Strategic leverage does; a permitted operational draw does not.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 8 · Investment Conditions & Concentration Limits"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "If the borrowing was the permitted 30-day / 4-occasion / 10% operational carve-out",
+    "option_b": "Never — any borrowing at all converts a Category II fund into a Category III fund",
+    "option_c": "Only where the fund happens to be a large value fund for accredited investors",
+    "option_d": "Only where the borrowing was specifically disclosed in the placement memorandum"
+  },
+  {
+    "question_code": "AIF-Q0025",
+    "title": "Under the GARUDA green channel, what is the mechanism by which a regul",
+    "question_text": "Under the GARUDA green channel, what is the mechanism by which a regular AIF scheme reaches launch?",
+    "topic_number": 9,
+    "topic_name": "Placement Memorandum & the GARUDA Green Channel",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "It must wait to receive and incorporate SEBI's prior written comments before launch"
+      },
+      {
+        "key": "B",
+        "text": "It may launch at once on filing, with no diligence step and no waiting period at all"
+      },
+      {
+        "key": "C",
+        "text": "It must obtain an in-principle approval order from SEBI for each scheme before launch"
+      },
+      {
+        "key": "D",
+        "text": "It may launch after ten working days of a merchant-banker-diligenced PPM filing"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "GARUDA (Master Circular, 30-07-2026) is an acknowledgement-based green channel: launch follows a short working-day window after a merchant-banker-diligenced filing, replacing the wait-for-prior-comments model. Responsibility for accuracy sits with the merchant banker and Manager.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 9 · Placement Memorandum & the GARUDA Green Channel"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "It must wait to receive and incorporate SEBI's prior written comments before launch",
+    "option_b": "It may launch at once on filing, with no diligence step and no waiting period at all",
+    "option_c": "It must obtain an in-principle approval order from SEBI for each scheme before launch",
+    "option_d": "It may launch after ten working days of a merchant-banker-diligenced PPM filing"
+  },
+  {
+    "question_code": "AIF-Q0026",
+    "title": "A Manager assumes every scheme it launches is exempt from scheme fees,",
+    "question_text": "A Manager assumes every scheme it launches is exempt from scheme fees, citing the first-scheme proviso. Where is the error?",
+    "topic_number": 9,
+    "topic_name": "Placement Memorandum & the GARUDA Green Channel",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "There is no error; no AIF scheme ever pays a scheme fee under the Second Schedule"
+      },
+      {
+        "key": "B",
+        "text": "The exemption applies to every scheme, but only in the case of large value funds"
+      },
+      {
+        "key": "C",
+        "text": "The scheme-fee exemption applies only to the AIF's first scheme, not to later schemes"
+      },
+      {
+        "key": "D",
+        "text": "The exemption applies to every scheme, but only where the GARUDA channel is used"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The proviso to Reg. 12(2) exempts only the first scheme from scheme fees. Later schemes attract the Second Schedule fee. Reading the first-scheme concession as a standing exemption is a costly filing error.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 9 · Placement Memorandum & the GARUDA Green Channel"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "There is no error; no AIF scheme ever pays a scheme fee under the Second Schedule",
+    "option_b": "The exemption applies to every scheme, but only in the case of large value funds",
+    "option_c": "The scheme-fee exemption applies only to the AIF's first scheme, not to later schemes",
+    "option_d": "The exemption applies to every scheme, but only where the GARUDA channel is used"
+  },
+  {
+    "question_code": "AIF-Q0027",
+    "title": "From which date is the tenure of a close-ended AIF scheme calculated, ",
+    "question_text": "From which date is the tenure of a close-ended AIF scheme calculated, and what happens if first close is not declared in time?",
+    "topic_number": 9,
+    "topic_name": "Placement Memorandum & the GARUDA Green Channel",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "From final close; a missed first close simply shifts the tenure start to final close"
+      },
+      {
+        "key": "B",
+        "text": "From first close; if it is not declared within twelve months, the scheme must be re-applied for"
+      },
+      {
+        "key": "C",
+        "text": "From the date of grant of registration; a missed first close carries no tenure consequence at all"
+      },
+      {
+        "key": "D",
+        "text": "From the date of PPM filing; a missed first close triggers automatic winding up"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "The Master Circular calculates close-ended tenure from the date of first close and requires first close within twelve months of eligibility to launch; failing that, the scheme must be re-applied for with the requisite fee. Final-close calculation survives only for legacy schemes that had declared first close by 17-11-2022.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 9 · Placement Memorandum & the GARUDA Green Channel"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "From final close; a missed first close simply shifts the tenure start to final close",
+    "option_b": "From first close; if it is not declared within twelve months, the scheme must be re-applied for",
+    "option_c": "From the date of grant of registration; a missed first close carries no tenure consequence at all",
+    "option_d": "From the date of PPM filing; a missed first close triggers automatic winding up"
+  },
+  {
+    "question_code": "AIF-Q0028",
+    "title": "Which exemption do large value funds for accredited investors enjoy in",
+    "question_text": "Which exemption do large value funds for accredited investors enjoy in the scheme-launch process?",
+    "topic_number": 9,
+    "topic_name": "Placement Memorandum & the GARUDA Green Channel",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Exemption from filing the placement memorandum with the Board and from the comment step"
+      },
+      {
+        "key": "B",
+        "text": "Exemption from having any placement memorandum for the scheme at all"
+      },
+      {
+        "key": "C",
+        "text": "Exemption from the minimum-corpus requirement to be met at first close"
+      },
+      {
+        "key": "D",
+        "text": "Exemption from appointing a merchant banker and from every investor disclosure obligation entirely"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The proviso relieves LVFs for accredited investors from the filing-and-Board-comment requirements of Reg. 12(2)-(3). It does not dispense with having a PPM, nor with the substantive protections — it is a light-touch on the filing machinery, not on disclosure itself.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 9 · Placement Memorandum & the GARUDA Green Channel"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Exemption from filing the placement memorandum with the Board and from the comment step",
+    "option_b": "Exemption from having any placement memorandum for the scheme at all",
+    "option_c": "Exemption from the minimum-corpus requirement to be met at first close",
+    "option_d": "Exemption from appointing a merchant banker and from every investor disclosure obligation entirely"
+  },
+  {
+    "question_code": "AIF-Q0029",
+    "title": "Which of the following is a mandatory head of disclosure in an AIF's p",
+    "question_text": "Which of the following is a mandatory head of disclosure in an AIF's placement memorandum?",
+    "topic_number": 9,
+    "topic_name": "Placement Memorandum & the GARUDA Green Channel",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "A guaranteed minimum internal rate of return promised to the scheme's investors"
+      },
+      {
+        "key": "B",
+        "text": "Conflicts of interest and the procedures to identify and address them"
+      },
+      {
+        "key": "C",
+        "text": "The personal net worth of each individual investor who is onboarded"
+      },
+      {
+        "key": "D",
+        "text": "A SEBI assurance that the scheme has been approved on its merits"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 11 lists conflicts of interest and the procedures to address them among the mandatory PPM disclosures. Guaranteed returns, investor net-worth disclosure and any SEBI merit-approval are not features of the AIF PPM regime.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 9 · Placement Memorandum & the GARUDA Green Channel"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "A guaranteed minimum internal rate of return promised to the scheme's investors",
+    "option_b": "Conflicts of interest and the procedures to identify and address them",
+    "option_c": "The personal net worth of each individual investor who is onboarded",
+    "option_d": "A SEBI assurance that the scheme has been approved on its merits"
+  },
+  {
+    "question_code": "AIF-Q0030",
+    "title": "An individual has annual income of one crore twenty lakh rupees and ne",
+    "question_text": "An individual has annual income of one crore twenty lakh rupees and net worth of five crore fifty lakh rupees, of which three crore is in financial assets. Do they qualify as an accredited investor?",
+    "topic_number": 10,
+    "topic_name": "Investor Onboarding, Accreditation & Co-investment",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "No, because their annual income is below the two-crore standalone income threshold"
+      },
+      {
+        "key": "B",
+        "text": "No, because their net worth is below the seven-crore-fifty-lakh individual net-worth threshold line"
+      },
+      {
+        "key": "C",
+        "text": "Yes, under the combined route: income of at least 1 crore plus net worth of at least 5 crore"
+      },
+      {
+        "key": "D",
+        "text": "Yes, but only if the value of their primary residence is added into net worth first"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The combined limb requires income of at least one crore AND net worth of at least five crore with at least two crore fifty lakh in financial assets. Income of one crore twenty lakh, net worth of five crore fifty lakh with three crore financial assets satisfies every element. Failing the pure-income or pure-net-worth limb is irrelevant when a limb is met.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 10 · Investor Onboarding, Accreditation & Co-investment"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "No, because their annual income is below the two-crore standalone income threshold",
+    "option_b": "No, because their net worth is below the seven-crore-fifty-lakh individual net-worth threshold line",
+    "option_c": "Yes, under the combined route: income of at least 1 crore plus net worth of at least 5 crore",
+    "option_d": "Yes, but only if the value of their primary residence is added into net worth first"
+  },
+  {
+    "question_code": "AIF-Q0031",
+    "title": "A body corporate seeks accreditation. Which single test applies to it?",
+    "question_text": "A body corporate seeks accreditation. Which single test applies to it?",
+    "topic_number": 10,
+    "topic_name": "Investor Onboarding, Accreditation & Co-investment",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Net worth of at least fifty crore rupees, with no financial-assets split imposed"
+      },
+      {
+        "key": "B",
+        "text": "Net worth of at least seven crore fifty lakh rupees, mirroring the individual test"
+      },
+      {
+        "key": "C",
+        "text": "Annual income of at least two crore rupees, mirroring the individual income limb"
+      },
+      {
+        "key": "D",
+        "text": "Net worth of at least fifty crore, of which at least half must be financial assets"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "For a body corporate the accreditation test is a flat net worth of at least fifty crore rupees. The seven-crore-fifty-lakh and two-crore figures belong to the individual limbs, and there is no financial-assets split imposed on the corporate test.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 10 · Investor Onboarding, Accreditation & Co-investment"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Net worth of at least fifty crore rupees, with no financial-assets split imposed",
+    "option_b": "Net worth of at least seven crore fifty lakh rupees, mirroring the individual test",
+    "option_c": "Annual income of at least two crore rupees, mirroring the individual income limb",
+    "option_d": "Net worth of at least fifty crore, of which at least half must be financial assets"
+  },
+  {
+    "question_code": "AIF-Q0032",
+    "title": "A Category III AIF wishes to offer its investors co-investment through",
+    "question_text": "A Category III AIF wishes to offer its investors co-investment through a dedicated CIV scheme within the AIF structure. Is this permitted?",
+    "topic_number": 10,
+    "topic_name": "Investor Onboarding, Accreditation & Co-investment",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Yes, because any category of AIF may run a CIV co-investment scheme for its investors"
+      },
+      {
+        "key": "B",
+        "text": "Yes, provided the CIV scheme itself uses leverage to enhance the co-investment returns"
+      },
+      {
+        "key": "C",
+        "text": "No, because co-investment within the AIF structure is prohibited for all categories"
+      },
+      {
+        "key": "D",
+        "text": "No, because the CIV co-investment route is open only to Category I and Category II AIFs"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "The Master Circular confines CIV-scheme co-investment to Category I and Category II AIFs, offered to accredited investors, with the CIV scheme ring-fenced and barred from borrowing or leverage. A Category III fund cannot run a CIV co-investment scheme.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 10 · Investor Onboarding, Accreditation & Co-investment"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Yes, because any category of AIF may run a CIV co-investment scheme for its investors",
+    "option_b": "Yes, provided the CIV scheme itself uses leverage to enhance the co-investment returns",
+    "option_c": "No, because co-investment within the AIF structure is prohibited for all categories",
+    "option_d": "No, because the CIV co-investment route is open only to Category I and Category II AIFs"
+  },
+  {
+    "question_code": "AIF-Q0033",
+    "title": "An investor approaches an AIF directly, without any distributor. How m",
+    "question_text": "An investor approaches an AIF directly, without any distributor. How must the AIF onboard them?",
+    "topic_number": 10,
+    "topic_name": "Investor Onboarding, Accreditation & Co-investment",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Through the Direct Plan, which must not carry any distribution or placement fee"
+      },
+      {
+        "key": "B",
+        "text": "Through the regular plan, charging the standard placement fee to meet the AIF's costs"
+      },
+      {
+        "key": "C",
+        "text": "Through whichever plan the Manager selects for the investor at its own discretion"
+      },
+      {
+        "key": "D",
+        "text": "Only after appointing a distributor of record to receive the trail commission"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The Direct Plan is mandatory for investors who arrive without a distributor and must not carry distribution or placement fees. Charging such an investor a placement fee, or routing them through a distributor, is a breach of the direct-plan framework.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 10 · Investor Onboarding, Accreditation & Co-investment"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Through the Direct Plan, which must not carry any distribution or placement fee",
+    "option_b": "Through the regular plan, charging the standard placement fee to meet the AIF's costs",
+    "option_c": "Through whichever plan the Manager selects for the investor at its own discretion",
+    "option_d": "Only after appointing a distributor of record to receive the trail commission"
+  },
+  {
+    "question_code": "AIF-Q0034",
+    "title": "An AIF treats its investment committee as an external advisory panel a",
+    "question_text": "An AIF treats its investment committee as an external advisory panel and assumes only the Manager bears liability for approved deals. Where is the error?",
+    "topic_number": 11,
+    "topic_name": "General Obligations, Transparency & the Investment Committee",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "There is no error; only the Manager can ever be liable for an AIF's investment decisions"
+      },
+      {
+        "key": "B",
+        "text": "Investment committees are prohibited under the framework, so the arrangement is void"
+      },
+      {
+        "key": "C",
+        "text": "IC members are equally responsible as the Manager for decisions, external members included"
+      },
+      {
+        "key": "D",
+        "text": "Liability shifts entirely onto the investment committee, fully relieving the Manager"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "The Master Circular places investment-committee members on the same liability footing as the Manager for investment decisions and compliance. Constituting the IC does not offload the Manager's liability, and external membership does not dilute it — it shares it.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 11 · General Obligations, Transparency & the Investment Committee"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "There is no error; only the Manager can ever be liable for an AIF's investment decisions",
+    "option_b": "Investment committees are prohibited under the framework, so the arrangement is void",
+    "option_c": "IC members are equally responsible as the Manager for decisions, external members included",
+    "option_d": "Liability shifts entirely onto the investment committee, fully relieving the Manager"
+  },
+  {
+    "question_code": "AIF-Q0035",
+    "title": "A Manager disclosed all known conflicts in the placement memorandum at",
+    "question_text": "A Manager disclosed all known conflicts in the placement memorandum at launch and treats that as discharging its conflicts obligation for the fund's life. Is that correct?",
+    "topic_number": 11,
+    "topic_name": "General Obligations, Transparency & the Investment Committee",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Yes, since a PPM disclosure at launch satisfies the conflicts duty for the whole tenure"
+      },
+      {
+        "key": "B",
+        "text": "Yes, provided the launch-stage PPM disclosure was reviewed by an appointed merchant banker"
+      },
+      {
+        "key": "C",
+        "text": "No, since conflicts of interest are outright prohibited and cannot be disclosed away"
+      },
+      {
+        "key": "D",
+        "text": "No, since conflicts must be disclosed as they arise and mitigated throughout the business"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Reg. 21 imposes a continuing fiduciary duty: disclose conflicts as and when they arise and monitor and mitigate them throughout the business. A one-time PPM disclosure at launch does not discharge an ongoing obligation.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 11 · General Obligations, Transparency & the Investment Committee"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Yes, since a PPM disclosure at launch satisfies the conflicts duty for the whole tenure",
+    "option_b": "Yes, provided the launch-stage PPM disclosure was reviewed by an appointed merchant banker",
+    "option_c": "No, since conflicts of interest are outright prohibited and cannot be disclosed away",
+    "option_d": "No, since conflicts must be disclosed as they arise and mitigated throughout the business"
+  },
+  {
+    "question_code": "AIF-Q0036",
+    "title": "Within what timeline must an AIF's Compliance Test Report be submitted",
+    "question_text": "Within what timeline must an AIF's Compliance Test Report be submitted, and to whom is the review loop directed?",
+    "topic_number": 11,
+    "topic_name": "General Obligations, Transparency & the Investment Committee",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within thirty days of the financial year-end, with a 30-day intimate and 15-day cure loop"
+      },
+      {
+        "key": "B",
+        "text": "Within ninety days of each quarter-end, reported directly to the fund's investors only"
+      },
+      {
+        "key": "C",
+        "text": "Within fifteen days of every investment decision, submitted to the merchant banker"
+      },
+      {
+        "key": "D",
+        "text": "Within thirty days of the AIF's date of registration, as a one-time filing only"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The CTR is an annual compliance self-test filed within thirty days of the financial year-end; the trustee or sponsor intimates observations to the manager within thirty days, and the manager cures within fifteen days. It is separate from routine SI-Portal reporting.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 11 · General Obligations, Transparency & the Investment Committee"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within thirty days of the financial year-end, with a 30-day intimate and 15-day cure loop",
+    "option_b": "Within ninety days of each quarter-end, reported directly to the fund's investors only",
+    "option_c": "Within fifteen days of every investment decision, submitted to the merchant banker",
+    "option_d": "Within thirty days of the AIF's date of registration, as a one-time filing only"
+  },
+  {
+    "question_code": "AIF-Q0037",
+    "title": "Which statement correctly distinguishes an AIF's transparency duty fro",
+    "question_text": "Which statement correctly distinguishes an AIF's transparency duty from its reporting duty?",
+    "topic_number": 11,
+    "topic_name": "General Obligations, Transparency & the Investment Committee",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "They are the same obligation, both discharged in full by the annual Compliance Test Report"
+      },
+      {
+        "key": "B",
+        "text": "Transparency is continuous disclosure to investors; reporting is periodic filing to SEBI"
+      },
+      {
+        "key": "C",
+        "text": "Transparency is owed only to SEBI, while the reporting duty is owed only to investors"
+      },
+      {
+        "key": "D",
+        "text": "Both are one-time obligations, each discharged at the scheme's first close and no later"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Reg. 22 transparency runs continuously to investors (material information, fees, actions); the reporting duty is periodic filing to SEBI via the SI Portal and the annual CTR. They are different audiences and different cadences, commonly conflated.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 11 · General Obligations, Transparency & the Investment Committee"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "They are the same obligation, both discharged in full by the annual Compliance Test Report",
+    "option_b": "Transparency is continuous disclosure to investors; reporting is periodic filing to SEBI",
+    "option_c": "Transparency is owed only to SEBI, while the reporting duty is owed only to investors",
+    "option_d": "Both are one-time obligations, each discharged at the scheme's first close and no later"
+  },
+  {
+    "question_code": "AIF-Q0038",
+    "title": "An AIF proposes to appoint as its independent valuer a firm that is a ",
+    "question_text": "An AIF proposes to appoint as its independent valuer a firm that is a subsidiary of the Manager but holds an IBBI valuer registration and has ten years' experience. Is the appointment valid?",
+    "topic_number": 12,
+    "topic_name": "Dematerialisation, Valuation & Investor Rights",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Yes, because IBBI registration and ten years' experience satisfy the valuer criteria"
+      },
+      {
+        "key": "B",
+        "text": "Yes, because a Manager's own subsidiary is best placed to understand the portfolio"
+      },
+      {
+        "key": "C",
+        "text": "No, because the valuer must not be an associate of the manager, sponsor or trustee"
+      },
+      {
+        "key": "D",
+        "text": "No, because the valuer must instead be a subsidiary of a credit rating agency in all cases"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Independence is the threshold test: the valuer must not be an associate of the manager, sponsor or trustee. A subsidiary of the Manager fails that test regardless of its registration or experience. Qualification does not cure a structural conflict.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 12 · Dematerialisation, Valuation & Investor Rights"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Yes, because IBBI registration and ten years' experience satisfy the valuer criteria",
+    "option_b": "Yes, because a Manager's own subsidiary is best placed to understand the portfolio",
+    "option_c": "No, because the valuer must not be an associate of the manager, sponsor or trustee",
+    "option_d": "No, because the valuer must instead be a subsidiary of a credit rating agency in all cases"
+  },
+  {
+    "question_code": "AIF-Q0039",
+    "title": "At what point does an asset-level valuation movement become a reportab",
+    "question_text": "At what point does an asset-level valuation movement become a reportable event to investors?",
+    "topic_number": 12,
+    "topic_name": "Dematerialisation, Valuation & Investor Rights",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Where two consecutive valuations of the asset deviate by more than 20%, or the method changes"
+      },
+      {
+        "key": "B",
+        "text": "Where there is any deviation at all, however small, between two consecutive valuations of the asset"
+      },
+      {
+        "key": "C",
+        "text": "Only where the fund's overall net asset value falls by more than fifty per cent"
+      },
+      {
+        "key": "D",
+        "text": "Only at final close, when all of the scheme's assets are revalued together"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The Master Circular treats an asset-level deviation of more than twenty per cent between consecutive valuations, or a change in methodology, as material and reportable to investors with reasons. A methodology change triggers reporting independently of the percentage.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 12 · Dematerialisation, Valuation & Investor Rights"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Where two consecutive valuations of the asset deviate by more than 20%, or the method changes",
+    "option_b": "Where there is any deviation at all, however small, between two consecutive valuations of the asset",
+    "option_c": "Only where the fund's overall net asset value falls by more than fifty per cent",
+    "option_d": "Only at final close, when all of the scheme's assets are revalued together"
+  },
+  {
+    "question_code": "AIF-Q0040",
+    "title": "In which situation does the requirement to maintain pro-rata rights am",
+    "question_text": "In which situation does the requirement to maintain pro-rata rights among investors NOT apply?",
+    "topic_number": 12,
+    "topic_name": "Dematerialisation, Valuation & Investor Rights",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Where the Manager simply prefers to give a large investor priority over the returns"
+      },
+      {
+        "key": "B",
+        "text": "Where the scheme is a Category III fund, for which pro-rata rights never apply"
+      },
+      {
+        "key": "C",
+        "text": "Where the investor concerned has held its units for a period of less than one year"
+      },
+      {
+        "key": "D",
+        "text": "Where an investor is excused or excluded from the investment, or has defaulted on a call"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "The pro-rata requirement yields only in named cases: an investor excused or excluded from that investment, or one who has defaulted on its pro-rata contribution. Manager preference, category, or holding period are not recognised exceptions.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 12 · Dematerialisation, Valuation & Investor Rights"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Where the Manager simply prefers to give a large investor priority over the returns",
+    "option_b": "Where the scheme is a Category III fund, for which pro-rata rights never apply",
+    "option_c": "Where the investor concerned has held its units for a period of less than one year",
+    "option_d": "Where an investor is excused or excluded from the investment, or has defaulted on a call"
+  },
+  {
+    "question_code": "AIF-Q0041",
+    "title": "What did the five-hundred-crore corpus threshold do in the demateriali",
+    "question_text": "What did the five-hundred-crore corpus threshold do in the dematerialisation framework?",
+    "topic_number": 12,
+    "topic_name": "Dematerialisation, Valuation & Investor Rights",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "It permanently exempted funds below five hundred crore from ever dematerialising units"
+      },
+      {
+        "key": "B",
+        "text": "It sequenced the roll-out, bringing larger funds into mandatory demat crediting first"
+      },
+      {
+        "key": "C",
+        "text": "It set the minimum corpus that a scheme must hold in order to be registered"
+      },
+      {
+        "key": "D",
+        "text": "It capped the amount that any single investor may hold in dematerialised form"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "The corpus threshold phased the demat crediting roll-out — larger funds first, smaller funds on a later date. It is a sequencing device, not a permanent exemption, and is unrelated to the minimum-corpus registration gate.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 12 · Dematerialisation, Valuation & Investor Rights"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "It permanently exempted funds below five hundred crore from ever dematerialising units",
+    "option_b": "It sequenced the roll-out, bringing larger funds into mandatory demat crediting first",
+    "option_c": "It set the minimum corpus that a scheme must hold in order to be registered",
+    "option_d": "It capped the amount that any single investor may hold in dematerialised form"
+  },
+  {
+    "question_code": "AIF-Q0042",
+    "title": "A director insists SEBI cannot inspect the fund because it has neither",
+    "question_text": "A director insists SEBI cannot inspect the fund because it has neither alleged wrongdoing nor given the usual notice. Assess this.",
+    "topic_number": 13,
+    "topic_name": "Winding Up, Inspection & Default",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Correct: an inspection requires a specific complaint and always ten days' clear notice"
+      },
+      {
+        "key": "B",
+        "text": "Correct as to notice: the ten-day notice period can never lawfully be dispensed with"
+      },
+      {
+        "key": "C",
+        "text": "Wrong on both: inspection may be suo motu and may, under Reg. 31(2), proceed without notice"
+      },
+      {
+        "key": "D",
+        "text": "Wrong only on the allegation point; the ten-day notice is otherwise mandatory always"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Inspection may be initiated suo motu, on information or on complaint — no allegation is needed to begin. And while ten days' notice is the norm, Reg. 31(2) permits a no-notice inspection where the Board is satisfied it is in investors' interest. Both parts of the director's position are wrong.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 13 · Winding Up, Inspection & Default"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Correct: an inspection requires a specific complaint and always ten days' clear notice",
+    "option_b": "Correct as to notice: the ten-day notice period can never lawfully be dispensed with",
+    "option_c": "Wrong on both: inspection may be suo motu and may, under Reg. 31(2), proceed without notice",
+    "option_d": "Wrong only on the allegation point; the ten-day notice is otherwise mandatory always"
+  },
+  {
+    "question_code": "AIF-Q0043",
+    "title": "During an inspection, who bears the duty to produce documents and coop",
+    "question_text": "During an inspection, who bears the duty to produce documents and cooperate with the Inspecting Authority?",
+    "topic_number": 13,
+    "topic_name": "Winding Up, Inspection & Default",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Every officer of the AIF and any associated person with relevant information, the manager included"
+      },
+      {
+        "key": "B",
+        "text": "Only the compliance officer, treated as the single designated point of contact for the regulator"
+      },
+      {
+        "key": "C",
+        "text": "Only the trustee of the fund, in the case of a trust-form AIF being inspected"
+      },
+      {
+        "key": "D",
+        "text": "Only external parties such as the custodian, and not the fund's own officers"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Reg. 32 casts the duty widely: every officer and any associated person holding relevant information — expressly including the manager — must produce records and cooperate, and may be examined on oath. Confining the duty to the compliance officer is a common and serious error.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 13 · Winding Up, Inspection & Default"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Every officer of the AIF and any associated person with relevant information, the manager included",
+    "option_b": "Only the compliance officer, treated as the single designated point of contact for the regulator",
+    "option_c": "Only the trustee of the fund, in the case of a trust-form AIF being inspected",
+    "option_d": "Only external parties such as the custodian, and not the fund's own officers"
+  },
+  {
+    "question_code": "AIF-Q0044",
+    "title": "For how long may an AIF retain proceeds beyond its permissible fund li",
+    "question_text": "For how long may an AIF retain proceeds beyond its permissible fund life, and what status may it then seek?",
+    "topic_number": 13,
+    "topic_name": "Winding Up, Inspection & Default",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Retention is unlimited in time, provided that the investors are informed of it each year"
+      },
+      {
+        "key": "B",
+        "text": "Retention may not exceed one year, after which the fund is automatically deregistered"
+      },
+      {
+        "key": "C",
+        "text": "Retention may not exceed five years, after which the fund converts to a Category III AIF"
+      },
+      {
+        "key": "D",
+        "text": "Retention may not exceed three years, after which 'Inoperative Fund' status may be sought"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "The 2026 Master Circular caps retention of proceeds at three years beyond permissible fund life and introduces 'Inoperative Fund' status as the route thereafter. These are circular provisions — cite them as such, not as regulation.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 13 · Winding Up, Inspection & Default"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Retention is unlimited in time, provided that the investors are informed of it each year",
+    "option_b": "Retention may not exceed one year, after which the fund is automatically deregistered",
+    "option_c": "Retention may not exceed five years, after which the fund converts to a Category III AIF",
+    "option_d": "Retention may not exceed three years, after which 'Inoperative Fund' status may be sought"
+  },
+  {
+    "question_code": "AIF-Q0045",
+    "title": "A close-ended scheme cannot sell certain investments due to lack of li",
+    "question_text": "A close-ended scheme cannot sell certain investments due to lack of liquidity at the end of its tenure. Which route is available, and on what investor threshold?",
+    "topic_number": 13,
+    "topic_name": "Winding Up, Inspection & Default",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Extend the tenure indefinitely by a simple majority of the investors counted by number"
+      },
+      {
+        "key": "B",
+        "text": "Transfer the affected assets onto the Manager's own book at their last carrying value"
+      },
+      {
+        "key": "C",
+        "text": "Distribute the assets in-specie or enter a dissolution period, on a 75%-by-value approval"
+      },
+      {
+        "key": "D",
+        "text": "Continue holding the assets with no investor approval, given that the tenure has ended"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Illiquid residual investments may be distributed in-specie or taken into a dissolution period, but only with approval of at least seventy-five per cent of investors by value. Tenure extension by a bare numeric majority, or a Manager buy-out at carrying value, is not the prescribed route.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 13 · Winding Up, Inspection & Default"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Extend the tenure indefinitely by a simple majority of the investors counted by number",
+    "option_b": "Transfer the affected assets onto the Manager's own book at their last carrying value",
+    "option_c": "Distribute the assets in-specie or enter a dissolution period, on a 75%-by-value approval",
+    "option_d": "Continue holding the assets with no investor approval, given that the tenure has ended"
+  },
+  {
+    "question_code": "AIF-Q0046",
+    "title": "Which of the following is expressly a trigger for action against an AI",
+    "question_text": "Which of the following is expressly a trigger for action against an AIF in case of default?",
+    "topic_number": 13,
+    "topic_name": "Winding Up, Inspection & Default",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Not cooperating in any enquiry, inspection or investigation conducted by the Board"
+      },
+      {
+        "key": "B",
+        "text": "Declining to guarantee the fund's investors any specified minimum rate of return"
+      },
+      {
+        "key": "C",
+        "text": "Choosing to remain a close-ended fund rather than converting to an open-ended one"
+      },
+      {
+        "key": "D",
+        "text": "Appointing an independent valuer instead of valuing the investments in-house"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Reg. 35 lists non-cooperation in an enquiry, inspection or investigation among the default triggers, alongside contravention, false information, non-submission of returns and failure to resolve complaints. The other options describe compliant or neutral conduct.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 13 · Winding Up, Inspection & Default"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Not cooperating in any enquiry, inspection or investigation conducted by the Board",
+    "option_b": "Declining to guarantee the fund's investors any specified minimum rate of return",
+    "option_c": "Choosing to remain a close-ended fund rather than converting to an open-ended one",
+    "option_d": "Appointing an independent valuer instead of valuing the investments in-house"
+  },
+  {
+    "question_code": "AIF-Q0047",
+    "title": "Which statement correctly attributes the GARUDA launch mechanism and t",
+    "question_text": "Which statement correctly attributes the GARUDA launch mechanism and the pre-2026 comment model to their sources?",
+    "topic_number": 14,
+    "topic_name": "Amendment & Circular Tracker (2022-2026)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "GARUDA was introduced by a 2026 amendment to the Regulations and overrides the circular"
+      },
+      {
+        "key": "B",
+        "text": "GARUDA is a 2026 Master Circular mechanism; the comment model reflected the earlier position"
+      },
+      {
+        "key": "C",
+        "text": "Both GARUDA and the comment model are Regulation provisions with no circular involvement"
+      },
+      {
+        "key": "D",
+        "text": "GARUDA is a Regulation, while the comment model was only ever an informal market practice"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "GARUDA is a 2026 Master Circular mechanism, not a regulation amendment. Attributing it to the Regulations is the classic source error — the whole point of the tracker discipline is to label a 2026 circular mechanism as circular.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 14 · Amendment & Circular Tracker (2022-2026)"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "GARUDA was introduced by a 2026 amendment to the Regulations and overrides the circular",
+    "option_b": "GARUDA is a 2026 Master Circular mechanism; the comment model reflected the earlier position",
+    "option_c": "Both GARUDA and the comment model are Regulation provisions with no circular involvement",
+    "option_d": "GARUDA is a Regulation, while the comment model was only ever an informal market practice"
+  },
+  {
+    "question_code": "AIF-Q0048",
+    "title": "An adviser lists Category I sub-categories as VCF, SME Funds, social i",
+    "question_text": "An adviser lists Category I sub-categories as VCF, SME Funds, social impact funds and infrastructure funds, and separately calls angel funds and hedge funds 'Chapter III-A constructs'. Identify the errors.",
+    "topic_number": 14,
+    "topic_name": "Amendment & Circular Tracker (2022-2026)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "The list is entirely correct; angel funds and hedge funds sit outside the three categories"
+      },
+      {
+        "key": "B",
+        "text": "Only the omission of special situation funds is wrong; the angel/hedge treatment is correct"
+      },
+      {
+        "key": "C",
+        "text": "Angel funds are now a Category I sub-category, and hedge funds are a Category III example"
+      },
+      {
+        "key": "D",
+        "text": "Angel funds belong in Category III, while hedge funds are properly a Category I sub-category"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Post-09-09-2025, angel funds are an express Category I sub-category, not a standalone Chapter III-A construct; hedge funds are the archetypal Category III example. The 'Chapter III-A construct' framing is dated for angel funds and simply wrong for hedge funds.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 14 · Amendment & Circular Tracker (2022-2026)"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "The list is entirely correct; angel funds and hedge funds sit outside the three categories",
+    "option_b": "Only the omission of special situation funds is wrong; the angel/hedge treatment is correct",
+    "option_c": "Angel funds are now a Category I sub-category, and hedge funds are a Category III example",
+    "option_d": "Angel funds belong in Category III, while hedge funds are properly a Category I sub-category"
+  },
+  {
+    "question_code": "AIF-Q0049",
+    "title": "Which pair correctly matches the 2024 changes to their effect?",
+    "question_text": "Which pair correctly matches the 2024 changes to their effect?",
+    "topic_number": 14,
+    "topic_name": "Amendment & Circular Tracker (2022-2026)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "The 07-08-2024 amendment introduced GARUDA and the 05-01-2024 change made 'Inoperative Fund'"
+      },
+      {
+        "key": "B",
+        "text": "Both of the 2024 changes concerned only the minimum corpus prescribed for AIF schemes"
+      },
+      {
+        "key": "C",
+        "text": "The 07-08-2024 change abolished concentration limits and the 05-01-2024 change the borrowing cap"
+      },
+      {
+        "key": "D",
+        "text": "The 07-08-2024 change recast the I/II borrowing carve-out; 05-01-2024 required demat holding"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "The 07-08-2024 Fourth Amendment recast the Category I/II borrowing carve-out; the 05-01-2024 insertion required demat holding of investments. GARUDA and 'Inoperative Fund' are 2026 circular changes, not 2024 amendments.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 14 · Amendment & Circular Tracker (2022-2026)"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "The 07-08-2024 amendment introduced GARUDA and the 05-01-2024 change made 'Inoperative Fund'",
+    "option_b": "Both of the 2024 changes concerned only the minimum corpus prescribed for AIF schemes",
+    "option_c": "The 07-08-2024 change abolished concentration limits and the 05-01-2024 change the borrowing cap",
+    "option_d": "The 07-08-2024 change recast the I/II borrowing carve-out; 05-01-2024 required demat holding"
+  },
+  {
+    "question_code": "AIF-Q0050",
+    "title": "Which 2026 change belongs to the Master Circular rather than to the AI",
+    "question_text": "Which 2026 change belongs to the Master Circular rather than to the AIF Regulations?",
+    "topic_number": 14,
+    "topic_name": "Amendment & Circular Tracker (2022-2026)",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "The three-year cap on retention beyond permissible fund life and 'Inoperative Fund' status"
+      },
+      {
+        "key": "B",
+        "text": "The requirement to hold a certificate of registration before acting as an AIF at all"
+      },
+      {
+        "key": "C",
+        "text": "The definition of a Category III AIF as a fund that may employ leverage in its strategy"
+      },
+      {
+        "key": "D",
+        "text": "The existence of the 75%-by-value threshold within the winding-up regulation itself"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "The retention cap and 'Inoperative Fund' status are 2026 Master Circular additions. The registration requirement and the Category III definition are core Regulation provisions, and the winding-up vote sits in the Regulations — only option A is the circular-sourced 2026 change.",
+    "regulatory_reference": {
+      "source": "SEBI (Alternative Investment Funds) Regulations, 2012",
+      "provision": "Chapter 14 · Amendment & Circular Tracker (2022-2026)"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "The three-year cap on retention beyond permissible fund life and 'Inoperative Fund' status",
+    "option_b": "The requirement to hold a certificate of registration before acting as an AIF at all",
+    "option_c": "The definition of a Category III AIF as a fund that may employ leverage in its strategy",
+    "option_d": "The existence of the 75%-by-value threshold within the winding-up regulation itself"
+  }
+]

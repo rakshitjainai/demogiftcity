@@ -1,0 +1,557 @@
+[
+  {
+    "question_code": "CA-Q0001",
+    "title": "Post-Incorporation Compliances & Bank Account Setup",
+    "question_text": "Within how many days from the date of incorporation must a company with share capital file Form INC-20A (Declaration of Commencement of Business)?",
+    "topic_number": 1,
+    "topic_name": "Post-Incorporation Compliances & Bank Account Setup",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 90 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 180 days"
+      }
+    ],
+    "correct_answer": "D",
+    "explanation": "Section 10A(1)(a) of the Companies Act, 2013 stipulates that Form INC-20A must be filed with the ROC within 180 days from the date of incorporation.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 10A, Companies Act, 2013 & Rule 23A of Companies (Incorporation) Rules, 2014"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "Within 30 days",
+    "option_b": "Within 60 days",
+    "option_c": "Within 90 days",
+    "option_d": "Within 180 days"
+  },
+  {
+    "question_code": "CA-Q0002",
+    "title": "First Board Meeting & Secretarial Standard-1 (SS-1)",
+    "question_text": "Under Section 173(1), within what timeframe must every newly incorporated company hold its first Board of Directors meeting?",
+    "topic_number": 2,
+    "topic_name": "First Board Meeting & Secretarial Standard-1 (SS-1)",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days of incorporation"
+      },
+      {
+        "key": "B",
+        "text": "Within 30 days of incorporation"
+      },
+      {
+        "key": "C",
+        "text": "Within 45 days of incorporation"
+      },
+      {
+        "key": "D",
+        "text": "Within 60 days of incorporation"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 173(1) mandates that every company shall hold the first meeting of the Board of Directors within thirty days of the date of its incorporation.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 173(1), Companies Act, 2013 & ICSI Secretarial Standard-1 (SS-1)"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "Within 15 days of incorporation",
+    "option_b": "Within 30 days of incorporation",
+    "option_c": "Within 45 days of incorporation",
+    "option_d": "Within 60 days of incorporation"
+  },
+  {
+    "question_code": "CA-Q0003",
+    "title": "Appointment of First Statutory Auditor (Form ADT-1)",
+    "question_text": "If the Board of Directors fails to appoint the first statutory auditor within 30 days of incorporation, within how many days must members appoint the auditor at an EGM?",
+    "topic_number": 3,
+    "topic_name": "Appointment of First Statutory Auditor (Form ADT-1)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 90 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 120 days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Section 139(6) provides that if the Board fails to appoint the first auditor within 30 days, members of the company shall appoint within 90 days at an EGM.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 139(6), Companies Act, 2013 & Rule 4(2) of Companies (Audit and Auditors) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 30 days",
+    "option_b": "Within 60 days",
+    "option_c": "Within 90 days",
+    "option_d": "Within 120 days"
+  },
+  {
+    "question_code": "CA-Q0004",
+    "title": "Share Certificate Issuance & State Stamp Duty",
+    "question_text": "Under Section 56(4)(a), within what maximum timeframe must share certificates be delivered to subscribers from the date of incorporation?",
+    "topic_number": 4,
+    "topic_name": "Share Certificate Issuance & State Stamp Duty",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 90 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 180 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 56(4)(a) mandates delivery of share certificates to subscribers within 2 months (60 days) from the date of incorporation.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 56(4), Companies Act, 2013 & Indian Stamp Act, 1899"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 30 days",
+    "option_b": "Within 60 days",
+    "option_c": "Within 90 days",
+    "option_d": "Within 180 days"
+  },
+  {
+    "question_code": "CA-Q0005",
+    "title": "Director Disqualifications, DIN & Annual DIR-3 KYC",
+    "question_text": "Under Section 164(2)(a), what continuous period of default in filing financial statements or annual returns triggers a 5-year director disqualification?",
+    "topic_number": 5,
+    "topic_name": "Director Disqualifications, DIN & Annual DIR-3 KYC",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 financial year"
+      },
+      {
+        "key": "B",
+        "text": "2 consecutive financial years"
+      },
+      {
+        "key": "C",
+        "text": "3 consecutive financial years"
+      },
+      {
+        "key": "D",
+        "text": "5 consecutive financial years"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Section 164(2)(a) provides that failure to file financial statements or annual returns for any continuous period of 3 financial years results in disqualification for 5 years.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 164(2), Section 167 & Rule 12A of Companies (Appointment and Qualification of Directors) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "1 financial year",
+    "option_b": "2 consecutive financial years",
+    "option_c": "3 consecutive financial years",
+    "option_d": "5 consecutive financial years"
+  },
+  {
+    "question_code": "CA-Q0006",
+    "title": "Related Party Transactions & Approvals (Section 188)",
+    "question_text": "Which of the following related party contracts is EXEMPT from Board and General Meeting approval under Section 188(1)?",
+    "topic_number": 6,
+    "topic_name": "Related Party Transactions & Approvals (Section 188)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Contracts with unlisted subsidiaries"
+      },
+      {
+        "key": "B",
+        "text": "Transactions entered in ordinary course of business on an arm's length basis"
+      },
+      {
+        "key": "C",
+        "text": "Any transaction valued below ₹50 Lakhs"
+      },
+      {
+        "key": "D",
+        "text": "Contracts approved verbally by the Managing Director"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 188(1) fourth proviso explicitly states that nothing in this sub-section shall apply to any transactions entered into by the company in its ordinary course of business other than transactions which are not on an arm’s length basis.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 188 & Section 177, Companies Act, 2013 & Rule 15 of Companies (Meetings of Board and its Powers) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Contracts with unlisted subsidiaries",
+    "option_b": "Transactions entered in ordinary course of business on an arm's length basis",
+    "option_c": "Any transaction valued below ₹50 Lakhs",
+    "option_d": "Contracts approved verbally by the Managing Director"
+  },
+  {
+    "question_code": "CA-Q0007",
+    "title": "Board Meetings, Quorum & Video Conferencing",
+    "question_text": "What is the maximum permissible time gap between two consecutive Board Meetings under Section 173(1)?",
+    "topic_number": 7,
+    "topic_name": "Board Meetings, Quorum & Video Conferencing",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "60 days"
+      },
+      {
+        "key": "B",
+        "text": "90 days"
+      },
+      {
+        "key": "C",
+        "text": "120 days"
+      },
+      {
+        "key": "D",
+        "text": "180 days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Section 173(1) mandates that not more than one hundred and twenty (120) days shall intervene between two consecutive meetings of the Board.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 173, Section 174 & Rule 3 of Companies (Meetings of Board and its Powers) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "60 days",
+    "option_b": "90 days",
+    "option_c": "120 days",
+    "option_d": "180 days"
+  },
+  {
+    "question_code": "CA-Q0008",
+    "title": "General Meetings & Secretarial Standard-2 (SS-2)",
+    "question_text": "What is the statutory notice period required for calling an Annual General Meeting under Section 101(1)?",
+    "topic_number": 8,
+    "topic_name": "General Meetings & Secretarial Standard-2 (SS-2)",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "7 clear days"
+      },
+      {
+        "key": "B",
+        "text": "14 clear days"
+      },
+      {
+        "key": "C",
+        "text": "21 clear days"
+      },
+      {
+        "key": "D",
+        "text": "30 clear days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Section 101(1) requires that a general meeting of a company may be called by giving not less than clear twenty-one days’ notice either in writing or through electronic mode.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 96, Section 100, Section 101, Companies Act, 2013 & ICSI Secretarial Standard-2 (SS-2)"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "7 clear days",
+    "option_b": "14 clear days",
+    "option_c": "21 clear days",
+    "option_d": "30 clear days"
+  },
+  {
+    "question_code": "CA-Q0009",
+    "title": "Loans to Directors & Inter-Corporate Investments (Sec 185/186)",
+    "question_text": "What is the ceiling threshold under Section 186(2) beyond which inter-corporate loans and investments require prior approval by Special Resolution?",
+    "topic_number": 9,
+    "topic_name": "Loans to Directors & Inter-Corporate Investments (Sec 185/186)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "50% of paid up capital"
+      },
+      {
+        "key": "B",
+        "text": "60% of paid-up capital + free reserves + securities premium (or 100% of free reserves + securities premium)"
+      },
+      {
+        "key": "C",
+        "text": "75% of total net worth"
+      },
+      {
+        "key": "D",
+        "text": "100% of annual turnover"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 186(2) provides that no company shall directly or indirectly give loan/investment exceeding 60% of paid-up share capital, free reserves and securities premium, or 100% of free reserves and securities premium, whichever is higher, without Special Resolution.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 185 & Section 186, Companies Act, 2013 & Companies (Meetings of Board and its Powers) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "50% of paid up capital",
+    "option_b": "60% of paid-up capital + free reserves + securities premium (or 100% of free reserves + securities premium)",
+    "option_c": "75% of total net worth",
+    "option_d": "100% of annual turnover"
+  },
+  {
+    "question_code": "CA-Q0010",
+    "title": "Acceptance of Deposits & Annual Form DPT-3",
+    "question_text": "What is the mandatory annual deadline for filing Form DPT-3 (Return of Deposits / Particulars of Transactions not considered as Deposit) with the ROC?",
+    "topic_number": 10,
+    "topic_name": "Acceptance of Deposits & Annual Form DPT-3",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "30th April"
+      },
+      {
+        "key": "B",
+        "text": "30th June"
+      },
+      {
+        "key": "C",
+        "text": "30th September"
+      },
+      {
+        "key": "D",
+        "text": "30th October"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Rule 16 of Companies (Acceptance of Deposits) Rules mandates that Form DPT-3 must be filed on or before the 30th day of June every year with information as on 31st March.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 73 to 76, Companies Act, 2013 & Companies (Acceptance of Deposits) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "30th April",
+    "option_b": "30th June",
+    "option_c": "30th September",
+    "option_d": "30th October"
+  },
+  {
+    "question_code": "CA-Q0011",
+    "title": "Annual Filings: Form AOC-4 & Financial Statements",
+    "question_text": "Within how many days from the date of the AGM must Form AOC-4 (Financial Statements) be filed with the ROC?",
+    "topic_number": 11,
+    "topic_name": "Annual Filings: Form AOC-4 & Financial Statements",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 90 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 137(1) requires that financial statements adopted at the AGM shall be filed with the Registrar within thirty days of the date of the annual general meeting.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 137, Companies Act, 2013 & Rule 12 of Companies (Accounts) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 15 days",
+    "option_b": "Within 30 days",
+    "option_c": "Within 60 days",
+    "option_d": "Within 90 days"
+  },
+  {
+    "question_code": "CA-Q0012",
+    "title": "Annual Return: Form MGT-7 & MGT-7A",
+    "question_text": "What is the statutory deadline for filing the Annual Return (Form MGT-7/MGT-7A) with the ROC following the AGM?",
+    "topic_number": 12,
+    "topic_name": "Annual Return: Form MGT-7 & MGT-7A",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 45 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 90 days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Section 92(4) mandates that every company shall file its Annual Return in Form MGT-7/MGT-7A within sixty days from the date on which the annual general meeting is held.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 92, Section 88, Companies Act, 2013 & Companies (Management and Administration) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 30 days",
+    "option_b": "Within 45 days",
+    "option_c": "Within 60 days",
+    "option_d": "Within 90 days"
+  },
+  {
+    "question_code": "CA-Q0013",
+    "title": "Significant Beneficial Ownership (SBO - Section 90 & BEN-2)",
+    "question_text": "What is the threshold of indirect/direct shareholding or voting rights that defines a Significant Beneficial Owner (SBO) under Rule 2(1)(h)?",
+    "topic_number": 13,
+    "topic_name": "Significant Beneficial Ownership (SBO - Section 90 & BEN-2)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "5% or more"
+      },
+      {
+        "key": "B",
+        "text": "10% or more"
+      },
+      {
+        "key": "C",
+        "text": "25% or more"
+      },
+      {
+        "key": "D",
+        "text": "51% or more"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Rule 2(1)(h) defines an SBO as an individual who, acting alone or together through one or more persons/trusts, possesses not less than 10 per cent of shares, voting rights, or distributable dividends.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 90, Companies Act, 2013 & Companies (Significant Beneficial Owners) Rules, 2018"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "5% or more",
+    "option_b": "10% or more",
+    "option_c": "25% or more",
+    "option_d": "51% or more"
+  },
+  {
+    "question_code": "CA-Q0014",
+    "title": "FEMA & Foreign Investment Post-Incorporation Compliances",
+    "question_text": "Within how many days from the date of allotment of equity shares to a foreign investor must Form FC-GPR be filed on the RBI FIRMS portal?",
+    "topic_number": 14,
+    "topic_name": "FEMA & Foreign Investment Post-Incorporation Compliances",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 90 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Under FEMA NDI Rules, Form FC-GPR must be filed with the Reserve Bank of India through the FIRMS portal within 30 days from the date of allotment of shares.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Foreign Exchange Management Act, 1999 & FEMA (Non-Debt Instruments) Rules, 2019"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 15 days",
+    "option_b": "Within 30 days",
+    "option_c": "Within 60 days",
+    "option_d": "Within 90 days"
+  },
+  {
+    "question_code": "CA-Q0015",
+    "title": "Corporate Social Responsibility (CSR - Section 135)",
+    "question_text": "Which of the following is an eligibility trigger for mandatory CSR compliance under Section 135(1) of the Companies Act, 2013?",
+    "topic_number": 15,
+    "topic_name": "Corporate Social Responsibility (CSR - Section 135)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Net Profit of ₹1 Crore or more"
+      },
+      {
+        "key": "B",
+        "text": "Net Profit of ₹5 Crores or more"
+      },
+      {
+        "key": "C",
+        "text": "Turnover of ₹100 Crores or more"
+      },
+      {
+        "key": "D",
+        "text": "Paid-up Capital of ₹50 Crores or more"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Section 135(1) applies to any company having Net Worth of ₹500 Cr or more, or Turnover of ₹1,000 Cr or more, or Net Profit of ₹5 Cr or more in the immediately preceding financial year.",
+    "regulatory_reference": {
+      "source": "Companies Act, 2013",
+      "provision": "Section 135, Companies Act, 2013 & Companies (CSR Policy) Rules, 2014"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Net Profit of ₹1 Crore or more",
+    "option_b": "Net Profit of ₹5 Crores or more",
+    "option_c": "Turnover of ₹100 Crores or more",
+    "option_d": "Paid-up Capital of ₹50 Crores or more"
+  }
+]

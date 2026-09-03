@@ -8,6 +8,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UpgradeModal from '../components/UpgradeModal';
+import {
+  CANONICAL_MOCK_TESTS,
+  MOCK_TEST_ALIASES,
+  getCanonicalMockTest,
+  isValidMockTestSlug
+} from '../data/mockTestsConfig';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 const DURATION_SECONDS = 90 * 60; // 90 minutes
@@ -101,24 +107,19 @@ function LandingScreen({ meta, onStart, loading, error, selectedSlug, onSwitchTe
           <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to RegPractice
         </Link>
 
-        {/* Test switcher */}
-        <div className="flex items-center gap-2 bg-white border border-line p-1 rounded-xl text-xs font-bold shadow-2xs">
-          <button
-            onClick={() => onSwitchTest('fme-full-length-mock-test')}
-            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-              selectedSlug === 'fme-full-length-mock-test' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'
-            }`}
-          >
-            FME Mock Test
-          </button>
-          <button
-            onClick={() => onSwitchTest('cmi-full-length-mock-test')}
-            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-              selectedSlug === 'cmi-full-length-mock-test' ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest'
-            }`}
-          >
-            CMI Mock Test
-          </button>
+        {/* Test switcher — All 5 Canonical Full-Length Mock Tests */}
+        <div className="flex items-center gap-1.5 bg-white border border-line p-1 rounded-xl text-xs font-bold shadow-2xs overflow-x-auto max-w-full">
+          {CANONICAL_MOCK_TESTS.map(test => (
+            <button
+              key={test.slug}
+              onClick={() => onSwitchTest(test.slug)}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap text-xs ${
+                selectedSlug === test.slug ? 'bg-forest text-white' : 'text-ink-soft hover:text-forest hover:bg-mint/40'
+              }`}
+            >
+              {test.shortTitle}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -269,12 +270,17 @@ function TestScreen({
   const q = questions[currentIdx] || questions[0];
   const isLocked = q?.isLocked;
 
-  const opts = [
-    { letter: 'A', text: q.option_a },
-    { letter: 'B', text: q.option_b },
-    { letter: 'C', text: q.option_c },
-    { letter: 'D', text: q.option_d },
-  ].filter(o => o.text);
+  const opts = (Array.isArray(q?.options) && q.options.length > 0)
+    ? q.options.map((o, idx) => ({
+        letter: o.key || o.letter || String.fromCharCode(65 + idx),
+        text: o.text || o.title || ''
+      }))
+    : [
+        { letter: 'A', text: q?.option_a },
+        { letter: 'B', text: q?.option_b },
+        { letter: 'C', text: q?.option_c },
+        { letter: 'D', text: q?.option_d },
+      ].filter(o => o.text);
 
   const attempted = Object.keys(answers).length;
   const isFlagged = flagged.has(q.question_code);
@@ -812,9 +818,18 @@ export default function ExamReady() {
   const navigate = useNavigate();
   const { user, token, isMember, hasEntitlement } = useAuth();
 
-  const selectedSlug = slug === 'fme-full-length-mock-test' || slug === 'fme'
-    ? 'fme-full-length-mock-test'
-    : 'cmi-full-length-mock-test';
+  const rawSlug = (slug || '').toLowerCase().trim();
+  const canonicalSlug = MOCK_TEST_ALIASES[rawSlug] || (rawSlug === '' ? 'fme-full-length-mock-test' : null);
+  const isValidSlug = Boolean(canonicalSlug);
+  const selectedSlug = canonicalSlug || 'fme-full-length-mock-test';
+  const currentTestConfig = getCanonicalMockTest(selectedSlug);
+
+  // Safe Canonical Redirect for legacy aliases (e.g. /practice/mock-tests/fme -> /practice/mock-tests/fme-full-length-mock-test)
+  useEffect(() => {
+    if (slug && canonicalSlug && slug !== canonicalSlug) {
+      navigate(`/practice/mock-tests/${canonicalSlug}`, { replace: true });
+    }
+  }, [slug, canonicalSlug, navigate]);
 
   const [phase, setPhase] = useState('landing'); // 'landing' | 'test' | 'results'
   const [meta, setMeta] = useState(null);
@@ -826,9 +841,20 @@ export default function ExamReady() {
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const hasFmeAccess = Boolean(isMember || hasEntitlement?.('REGREADY_FME_001') || hasEntitlement?.('REGMATE_ANNUAL'));
-  const hasCmiAccess = Boolean(isMember || hasEntitlement?.('ifsca-cmi') || hasEntitlement?.('REGMATE_ANNUAL'));
-  const hasCurrentTestAccess = selectedSlug === 'fme-full-length-mock-test' ? hasFmeAccess : hasCmiAccess;
+  const hasCurrentTestAccess = Boolean(
+    isMember ||
+    hasEntitlement?.('REGMATE_ANNUAL') ||
+    hasEntitlement?.(selectedSlug) ||
+    hasEntitlement?.(currentTestConfig?.sku) ||
+    hasEntitlement?.(currentTestConfig?.courseSlug) ||
+    (selectedSlug === 'fme-full-length-mock-test' && hasEntitlement?.('REGREADY_FME_001'))
+  );
+
+  useEffect(() => {
+    if (currentTestConfig) {
+      document.title = `${currentTestConfig.title} | RegMate Practice`;
+    }
+  }, [currentTestConfig]);
 
   useEffect(() => {
     fetch(`${API_BASE}/exam-ready/${selectedSlug}/meta`, {
@@ -918,6 +944,27 @@ export default function ExamReady() {
     navigate(`/practice/mock-tests/${newSlug}`);
   };
 
+  if (slug && !isValidSlug) {
+    return (
+      <div className="py-16 px-4 max-w-xl mx-auto text-center animate-fade-in">
+        <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto mb-4">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+        <h1 className="text-2xl font-bold font-serif text-forest-deep mb-2">Mock Test Not Found</h1>
+        <p className="text-sm text-ink-soft mb-6 leading-relaxed">
+          The requested mock test slug <code className="px-2 py-0.5 bg-paper border rounded text-forest font-mono">{slug}</code> does not exist. Please select one of our 5 canonical full-length regulatory mock examinations.
+        </p>
+        <Link
+          to="/practice/mock-tests/fme-full-length-mock-test"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-forest text-white font-bold text-sm rounded-full shadow hover:bg-forest-deep transition-all cursor-pointer"
+        >
+          <span>View Available Mock Tests</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       {phase === 'results' && result ? (
@@ -938,7 +985,7 @@ export default function ExamReady() {
           timer={timer}
           onTriggerUpgrade={() => setShowUpgradeModal(true)}
           hasFullAccess={hasCurrentTestAccess}
-          examName={meta?.exam_name || 'IFSCA Full-Length Regulatory Mock Test'}
+          examName={meta?.exam_name || currentTestConfig?.title || 'Full-Length Regulatory Mock Test'}
         />
       ) : (
         <LandingScreen
@@ -954,10 +1001,10 @@ export default function ExamReady() {
       <UpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        sectionKey={selectedSlug === 'fme-full-length-mock-test' ? 'REGREADY_FME_001' : 'ifsca-cmi'}
-        courseSlug={selectedSlug === 'fme-full-length-mock-test' ? 'REGREADY_FME_001' : 'ifsca-cmi'}
-        title={selectedSlug === 'fme-full-length-mock-test' ? 'Unlock Full FME Mock Test' : 'Unlock CMI Full Mock Test'}
-        message="Unlock the complete 100-question timed exam simulation, negative marking analytics, full statutory answer review, and verified certificate."
+        sectionKey={selectedSlug}
+        courseSlug={selectedSlug}
+        title={`Unlock Full ${currentTestConfig?.shortTitle || 'Mock Test'}`}
+        message="Unlock the complete timed exam simulation, negative marking analytics, full statutory answer review, and verified certificate."
       />
     </>
   );

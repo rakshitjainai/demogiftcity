@@ -44,6 +44,57 @@ export default function PracticeHub() {
       actionText: 'Start CMI Mock Test',
       icon: <FlaskConical className="w-6 h-6 text-blue-700" />,
       highlightBg: 'border-blue-200 hover:border-blue-400 bg-white'
+    },
+    {
+      id: 'sebi-aif-mock-test',
+      slug: 'sebi-aif-full-length-mock-test',
+      title: 'SEBI AIF Mock Test',
+      subtitle: 'Alternative Investment Funds Regulations',
+      badge: 'SEBI AIF 2012',
+      badgeColor: 'bg-purple-100 text-purple-800 border-purple-300',
+      desc: 'Comprehensive 50-question simulation on Category I, II & III AIFs, Angel Funds, PPM structuring, accredited investors, and regulatory returns.',
+      questions: '50 Questions',
+      duration: '90 Minutes',
+      marking: 'Negative Marking (−0.25)',
+      accessNote: '2 Free Questions • Paid after Question 2',
+      link: '/practice/mock-tests/sebi-aif-full-length-mock-test',
+      actionText: 'Start SEBI AIF Mock Test',
+      icon: <BookOpen className="w-6 h-6 text-purple-700" />,
+      highlightBg: 'border-purple-200 hover:border-purple-400 bg-white'
+    },
+    {
+      id: 'companies-act-mock-test',
+      slug: 'companies-act-full-length-mock-test',
+      title: 'Companies Act Mock Test',
+      subtitle: 'Essential Secretarial Compliance',
+      badge: 'MCA 2013',
+      badgeColor: 'bg-amber-100 text-amber-800 border-amber-300',
+      desc: 'Statutory examination covering incorporation, director duties, related party transactions, secretarial standards, and MCA V3 filings.',
+      questions: '15 Questions',
+      duration: '90 Minutes',
+      marking: 'Negative Marking (−0.25)',
+      accessNote: '2 Free Questions • Paid after Question 2',
+      link: '/practice/mock-tests/companies-act-full-length-mock-test',
+      actionText: 'Start Companies Act Test',
+      icon: <Target className="w-6 h-6 text-amber-700" />,
+      highlightBg: 'border-amber-200 hover:border-amber-400 bg-white'
+    },
+    {
+      id: 'sebi-lodr-mock-test',
+      slug: 'sebi-lodr-full-length-mock-test',
+      title: 'SEBI LODR Mock Test',
+      subtitle: 'Listing Obligations & Disclosure Norms',
+      badge: 'SEBI LODR 2015',
+      badgeColor: 'bg-teal-100 text-teal-800 border-teal-300',
+      desc: 'Compliance exam simulation covering board composition, committee mandates, material event reporting, and continuous disclosures.',
+      questions: '12 Questions',
+      duration: '90 Minutes',
+      marking: 'Negative Marking (−0.25)',
+      accessNote: '2 Free Questions • Paid after Question 2',
+      link: '/practice/mock-tests/sebi-lodr-full-length-mock-test',
+      actionText: 'Start SEBI LODR Test',
+      icon: <ShieldCheck className="w-6 h-6 text-teal-700" />,
+      highlightBg: 'border-teal-200 hover:border-teal-400 bg-white'
     }
   ];
 

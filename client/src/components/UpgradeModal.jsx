@@ -48,11 +48,47 @@ export default function UpgradeModal({
       return {
         passId: 'ifsca-cmi',
         productType: 'exam_pass',
-        productId: 'ifsca-cmi',
+        productId: 'cmi-full-length-mock-test',
         name: 'IFSCA CMI Mock Test Pass',
         price: '₹499',
         scope: 'IFSCA CMI 100-Question Mock Test',
         description: 'Unlock full 100-question CMI examination simulation, scoring breakdown, and statutory citation reviews.'
+      };
+    }
+
+    if (key === 'sebi-aif-full-length-mock-test' || key === 'aif_mock') {
+      return {
+        passId: 'sebi-aif',
+        productType: 'exam_pass',
+        productId: 'sebi-aif-full-length-mock-test',
+        name: 'SEBI AIF Full Length Mock Test Pass',
+        price: '₹499',
+        scope: 'SEBI AIF Full Length Mock Test',
+        description: 'Unlock full 50-question SEBI AIF examination simulation, domain analytics, and statutory citations.'
+      };
+    }
+
+    if (key === 'companies-act-full-length-mock-test' || key === 'ca_mock') {
+      return {
+        passId: 'companies-act',
+        productType: 'exam_pass',
+        productId: 'companies-act-full-length-mock-test',
+        name: 'Companies Act Full Length Mock Test Pass',
+        price: '₹499',
+        scope: 'Companies Act 2013 Mock Test',
+        description: 'Unlock full secretarial compliance mock examination, negative marking analysis, and detailed explanations.'
+      };
+    }
+
+    if (key === 'sebi-lodr-full-length-mock-test' || key === 'lodr_mock') {
+      return {
+        passId: 'sebi-lodr',
+        productType: 'exam_pass',
+        productId: 'sebi-lodr-full-length-mock-test',
+        name: 'SEBI LODR Full Length Mock Test Pass',
+        price: '₹499',
+        scope: 'SEBI LODR 2015 Mock Test',
+        description: 'Unlock full capital markets disclosure examination simulation and statutory compliance breakdown.'
       };
     }
 

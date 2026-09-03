@@ -31,7 +31,13 @@ const PRODUCT_PRICING = {
 };
 
 const VALID_COURSES = ['ifsca-cmi', 'sebi-aif', 'ifsca-fme', 'companies-act', 'sebi-lodr', 'mca-ca2013', 'job_ready', 'interview_pro'];
-const VALID_EXAM_PASSES = ['REGREADY_FME_001', 'fme-full-length-mock-test', 'cmi-full-length-mock-test', 'ifsca-cmi'];
+const VALID_EXAM_PASSES = [
+  'REGREADY_FME_001', 'fme-full-length-mock-test', 'fme',
+  'cmi-full-length-mock-test', 'ifsca-cmi', 'cmi',
+  'sebi-aif-full-length-mock-test', 'sebi-aif', 'aif',
+  'companies-act-full-length-mock-test', 'companies-act', 'mca',
+  'sebi-lodr-full-length-mock-test', 'sebi-lodr', 'lodr'
+];
 
 // ─── GET /api/payments/key-id ─────────────────────────────────────────────
 router.get('/key-id', (req, res) => {

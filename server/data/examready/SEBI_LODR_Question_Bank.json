@@ -1,0 +1,446 @@
+[
+  {
+    "question_code": "LODR-Q0001",
+    "title": "Board Composition & Independent Directors",
+    "question_text": "Under Regulation 17(1)(b), what proportion of the Board must comprise Independent Directors if the Chairperson is a promoter or executive director?",
+    "topic_number": 1,
+    "topic_name": "Board Composition & Independent Directors",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "At least 1/4th of the Board"
+      },
+      {
+        "key": "B",
+        "text": "At least 1/3rd of the Board"
+      },
+      {
+        "key": "C",
+        "text": "At least 1/2 (50%) of the Board"
+      },
+      {
+        "key": "D",
+        "text": "At least 2/3rds of the Board"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 17(1)(b) mandates that where the chairperson of the board of directors is a promoter or an executive director, at least half (50%) of the board of directors shall consist of independent directors.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 17 & 17A, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "At least 1/4th of the Board",
+    "option_b": "At least 1/3rd of the Board",
+    "option_c": "At least 1/2 (50%) of the Board",
+    "option_d": "At least 2/3rds of the Board"
+  },
+  {
+    "question_code": "LODR-Q0002",
+    "title": "Audit Committee Mandates & Composition",
+    "question_text": "What is the minimum proportion of Independent Directors required on the Audit Committee of a listed entity under Regulation 18(1)(b)?",
+    "topic_number": 2,
+    "topic_name": "Audit Committee Mandates & Composition",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "At least 1/3rd"
+      },
+      {
+        "key": "B",
+        "text": "At least 1/2"
+      },
+      {
+        "key": "C",
+        "text": "At least 2/3rds"
+      },
+      {
+        "key": "D",
+        "text": "100% Independent Directors"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 18(1)(b) provides that at least two-thirds of the members of audit committee shall be independent directors.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 18, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREVIEW",
+    "option_a": "At least 1/3rd",
+    "option_b": "At least 1/2",
+    "option_c": "At least 2/3rds",
+    "option_d": "100% Independent Directors"
+  },
+  {
+    "question_code": "LODR-Q0003",
+    "title": "Related Party Transactions Framework (Regulation 23)",
+    "question_text": "Under Regulation 23, what threshold defines a \"Material Related Party Transaction\" requiring prior shareholder approval?",
+    "topic_number": 3,
+    "topic_name": "Related Party Transactions Framework (Regulation 23)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Value exceeding ₹100 Crores"
+      },
+      {
+        "key": "B",
+        "text": "Value exceeding ₹500 Crores or 5% of turnover"
+      },
+      {
+        "key": "C",
+        "text": "Value exceeding ₹1,000 Crores or 10% of annual consolidated turnover"
+      },
+      {
+        "key": "D",
+        "text": "Value exceeding 20% of net worth"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 23(1) provides that a transaction with a related party shall be considered material if it exceeds ₹1,000 crore or 10 per cent of the annual consolidated turnover of the listed entity, whichever is lower.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 23, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Value exceeding ₹100 Crores",
+    "option_b": "Value exceeding ₹500 Crores or 5% of turnover",
+    "option_c": "Value exceeding ₹1,000 Crores or 10% of annual consolidated turnover",
+    "option_d": "Value exceeding 20% of net worth"
+  },
+  {
+    "question_code": "LODR-Q0004",
+    "title": "Prior Intimations & Closure of Trading Window",
+    "question_text": "Under Regulation 29(2), how many clear days of prior intimation must be given to stock exchanges for a Board meeting considering financial results?",
+    "topic_number": 4,
+    "topic_name": "Prior Intimations & Closure of Trading Window",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "At least 2 working days"
+      },
+      {
+        "key": "B",
+        "text": "At least 3 clear days"
+      },
+      {
+        "key": "C",
+        "text": "At least 5 clear days"
+      },
+      {
+        "key": "D",
+        "text": "At least 7 clear days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 29(2) mandates that prior intimation for financial results board meetings shall be given at least 5 clear days in advance (excluding the date of the intimation and date of the meeting).",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 29, SEBI (LODR) Regulations, 2015 & SEBI (PIT) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "At least 2 working days",
+    "option_b": "At least 3 clear days",
+    "option_c": "At least 5 clear days",
+    "option_d": "At least 7 clear days"
+  },
+  {
+    "question_code": "LODR-Q0005",
+    "title": "Disclosure of Material Events & Information (Regulation 30)",
+    "question_text": "Within what timeframe must the outcome of a Board Meeting considering dividends or financial results be disclosed to stock exchanges under Regulation 30(6)?",
+    "topic_number": 5,
+    "topic_name": "Disclosure of Material Events & Information (Regulation 30)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 minutes of closure of the meeting"
+      },
+      {
+        "key": "B",
+        "text": "Within 2 hours of closure of the meeting"
+      },
+      {
+        "key": "C",
+        "text": "Within 12 hours of closure of the meeting"
+      },
+      {
+        "key": "D",
+        "text": "Within 24 hours of closure of the meeting"
+      }
+    ],
+    "correct_answer": "A",
+    "explanation": "Regulation 30(6) requires that the listed entity shall disclose the outcome of the Board meeting within thirty (30) minutes of the closure of the meeting.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 30 & Schedule III, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 30 minutes of closure of the meeting",
+    "option_b": "Within 2 hours of closure of the meeting",
+    "option_c": "Within 12 hours of closure of the meeting",
+    "option_d": "Within 24 hours of closure of the meeting"
+  },
+  {
+    "question_code": "LODR-Q0006",
+    "title": "Financial Results & Limited Review Reports (Reg 33)",
+    "question_text": "Within how many days from the end of the quarter must a listed entity submit its quarterly financial results under Regulation 33(3)(a)?",
+    "topic_number": 6,
+    "topic_name": "Financial Results & Limited Review Reports (Reg 33)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 45 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 60 days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 33(3)(a) mandates that quarterly financial results shall be submitted to the stock exchange within 45 days of end of each quarter, other than the last quarter.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 33, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 15 days",
+    "option_b": "Within 30 days",
+    "option_c": "Within 45 days",
+    "option_d": "Within 60 days"
+  },
+  {
+    "question_code": "LODR-Q0007",
+    "title": "Secretarial Audit & Annual Compliance Report (Reg 24A)",
+    "question_text": "Within how many days from the end of the financial year must the Annual Secretarial Compliance Report (ASCR) be submitted to stock exchanges?",
+    "topic_number": 7,
+    "topic_name": "Secretarial Audit & Annual Compliance Report (Reg 24A)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 45 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 60 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 90 days"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Under Regulation 24A, listed entities must submit an annual secretarial compliance report issued by a PCS to stock exchanges within sixty days from the end of each financial year.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 24A, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 30 days",
+    "option_b": "Within 45 days",
+    "option_c": "Within 60 days",
+    "option_d": "Within 90 days"
+  },
+  {
+    "question_code": "LODR-Q0008",
+    "title": "Shareholding Pattern & Statement of Deviations (Reg 31 & 32)",
+    "question_text": "Within how many days from the end of each quarter must the Shareholding Pattern be submitted under Regulation 31(1)(b)?",
+    "topic_number": 8,
+    "topic_name": "Shareholding Pattern & Statement of Deviations (Reg 31 & 32)",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 21 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 45 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Regulation 31(1)(b) provides that the shareholding pattern shall be submitted quarterly within 21 days from the end of each quarter.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 31 & Regulation 32, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 15 days",
+    "option_b": "Within 21 days",
+    "option_c": "Within 30 days",
+    "option_d": "Within 45 days"
+  },
+  {
+    "question_code": "LODR-Q0009",
+    "title": "Nomination & Remuneration Committee (NRC - Reg 19)",
+    "question_text": "Who among the following CANNOT chair the Nomination and Remuneration Committee (NRC) of a listed entity?",
+    "topic_number": 9,
+    "topic_name": "Nomination & Remuneration Committee (NRC - Reg 19)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Independent Director"
+      },
+      {
+        "key": "B",
+        "text": "Senior Independent Woman Director"
+      },
+      {
+        "key": "C",
+        "text": "Chairperson of the listed entity"
+      },
+      {
+        "key": "D",
+        "text": "A non-executive independent director"
+      }
+    ],
+    "correct_answer": "C",
+    "explanation": "Regulation 19(2) explicitly provides that the chairperson of the listed entity, whether executive or non-executive, shall not chair the Nomination and Remuneration Committee.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 19, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Independent Director",
+    "option_b": "Senior Independent Woman Director",
+    "option_c": "Chairperson of the listed entity",
+    "option_d": "A non-executive independent director"
+  },
+  {
+    "question_code": "LODR-Q0010",
+    "title": "Stakeholders Relationship & Risk Management Committees",
+    "question_text": "Under Regulation 21(3A), how many times must the Risk Management Committee (RMC) meet in a financial year?",
+    "topic_number": 10,
+    "topic_name": "Stakeholders Relationship & Risk Management Committees",
+    "difficulty": "Intermediate",
+    "options": [
+      {
+        "key": "A",
+        "text": "At least once a year"
+      },
+      {
+        "key": "B",
+        "text": "At least twice a year"
+      },
+      {
+        "key": "C",
+        "text": "At least 4 times a year"
+      },
+      {
+        "key": "D",
+        "text": "Once every quarter"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Regulation 21(3A) mandates that the Risk Management Committee shall meet at least twice in a year, with not more than 180 days intervening between two meetings.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 20 & Regulation 21, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "At least once a year",
+    "option_b": "At least twice a year",
+    "option_c": "At least 4 times a year",
+    "option_d": "Once every quarter"
+  },
+  {
+    "question_code": "LODR-Q0011",
+    "title": "Corporate Governance Report & Annual Report (Reg 27 & 34)",
+    "question_text": "Within how many days from the end of each quarter must the Corporate Governance Compliance Report be filed under Regulation 27(2)?",
+    "topic_number": 11,
+    "topic_name": "Corporate Governance Report & Annual Report (Reg 27 & 34)",
+    "difficulty": "Foundational",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 15 days"
+      },
+      {
+        "key": "B",
+        "text": "Within 21 days"
+      },
+      {
+        "key": "C",
+        "text": "Within 30 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 45 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Regulation 27(2)(a) stipulates that the listed entity shall submit a quarterly compliance report on corporate governance to the recognized stock exchange(s) within 21 days from the end of each quarter.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 27, Regulation 34 & Schedule V, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 15 days",
+    "option_b": "Within 21 days",
+    "option_c": "Within 30 days",
+    "option_d": "Within 45 days"
+  },
+  {
+    "question_code": "LODR-Q0012",
+    "title": "Website Disclosures & Record Keeping (Reg 46 & 62)",
+    "question_text": "Within what timeframe must any change in the contents of the website be updated under Regulation 46(3)?",
+    "topic_number": 12,
+    "topic_name": "Website Disclosures & Record Keeping (Reg 46 & 62)",
+    "difficulty": "Advanced",
+    "options": [
+      {
+        "key": "A",
+        "text": "Within 24 hours"
+      },
+      {
+        "key": "B",
+        "text": "Within 2 working days"
+      },
+      {
+        "key": "C",
+        "text": "Within 7 days"
+      },
+      {
+        "key": "D",
+        "text": "Within 15 days"
+      }
+    ],
+    "correct_answer": "B",
+    "explanation": "Regulation 46(3) mandates that the listed entity shall update any change in the content of its website within two (2) working days from the date of such change in content.",
+    "regulatory_reference": {
+      "source": "SEBI (Listing Obligations and Disclosure Requirements) 2015",
+      "provision": "Regulation 46 & Regulation 62, SEBI (LODR) Regulations, 2015"
+    },
+    "access_level": "PREMIUM",
+    "option_a": "Within 24 hours",
+    "option_b": "Within 2 working days",
+    "option_c": "Within 7 days",
+    "option_d": "Within 15 days"
+  }
+]

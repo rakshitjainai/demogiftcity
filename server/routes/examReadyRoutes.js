@@ -14,14 +14,14 @@ const EXAM_CONFIGS = {
   'fme-full-length-mock-test': {
     slug: 'fme-full-length-mock-test',
     title: 'IFSCA (Fund Management) Regulations, 2025 — Full Length Mock Test',
-    short_title: 'FME Mock Test',
+    short_title: 'IFSCA FME Full Length Mock Test',
     track: 'RegReady — FME / Fund Management',
     file: 'FME_Question_Bank.json',
     duration_minutes: 90,
     marks_per_question: 1,
     negative_marking: -0.25,
     pass_benchmark_pct: 70,
-    required_entitlements: ['REGREADY_FME_001', 'REGMATE_ANNUAL'],
+    required_entitlements: ['REGREADY_FME_001', 'fme-full-length-mock-test', 'REGMATE_ANNUAL'],
     sku: 'REGREADY_FME_001',
     price_inr: 499,
     disclaimer: 'This is an independent simulation product by RegMate. It is not affiliated with or an official substitute for any statutory regulatory examination.',
@@ -29,30 +29,102 @@ const EXAM_CONFIGS = {
   },
   'cmi-full-length-mock-test': {
     slug: 'cmi-full-length-mock-test',
-    title: 'IFSCA CMI Regulations — Full Mock Test',
-    short_title: 'IFSCA CMI Mock Test',
+    title: 'IFSCA CMI Regulations — Full Length Mock Test',
+    short_title: 'IFSCA CMI Full Length Mock Test',
     track: 'RegReady — CMI / Capital Market Intermediaries',
     file: 'IFSC_CMI_Question_Bank.json',
     duration_minutes: 90,
     marks_per_question: 1,
     negative_marking: -0.25,
     pass_benchmark_pct: 50,
-    required_entitlements: ['ifsca-cmi', 'REGMATE_ANNUAL'],
+    required_entitlements: ['ifsca-cmi', 'cmi-full-length-mock-test', 'REGMATE_ANNUAL'],
     sku: 'ifsca-cmi',
     price_inr: 499,
     disclaimer: 'Independent practice examination simulation by RegMate.',
     certificate_prefix: 'RM-CMI'
+  },
+  'sebi-aif-full-length-mock-test': {
+    slug: 'sebi-aif-full-length-mock-test',
+    title: 'SEBI (Alternative Investment Funds) Regulations, 2012 — Full Length Mock Test',
+    short_title: 'SEBI AIF Full Length Mock Test',
+    track: 'RegReady — SEBI AIF / Alternative Investment Funds',
+    file: 'SEBI_AIF_Question_Bank.json',
+    duration_minutes: 90,
+    marks_per_question: 1,
+    negative_marking: -0.25,
+    pass_benchmark_pct: 60,
+    required_entitlements: ['sebi-aif', 'sebi-aif-full-length-mock-test', 'REGMATE_ANNUAL'],
+    sku: 'sebi-aif',
+    price_inr: 499,
+    disclaimer: 'Independent practice examination simulation by RegMate.',
+    certificate_prefix: 'RM-AIF'
+  },
+  'companies-act-full-length-mock-test': {
+    slug: 'companies-act-full-length-mock-test',
+    title: 'Companies Act 2013: Essential Secretarial Compliance — Full Length Mock Test',
+    short_title: 'Companies Act Full Length Mock Test',
+    track: 'RegReady — Corporate Law / MCA 2013',
+    file: 'Companies_Act_Question_Bank.json',
+    duration_minutes: 90,
+    marks_per_question: 1,
+    negative_marking: -0.25,
+    pass_benchmark_pct: 60,
+    required_entitlements: ['companies-act', 'companies-act-full-length-mock-test', 'REGMATE_ANNUAL'],
+    sku: 'companies-act',
+    price_inr: 499,
+    disclaimer: 'Independent practice examination simulation by RegMate.',
+    certificate_prefix: 'RM-MCA'
+  },
+  'sebi-lodr-full-length-mock-test': {
+    slug: 'sebi-lodr-full-length-mock-test',
+    title: 'SEBI (Listing Obligations and Disclosure Requirements) 2015 — Full Length Mock Test',
+    short_title: 'SEBI LODR Full Length Mock Test',
+    track: 'RegReady — Capital Markets / SEBI LODR',
+    file: 'SEBI_LODR_Question_Bank.json',
+    duration_minutes: 90,
+    marks_per_question: 1,
+    negative_marking: -0.25,
+    pass_benchmark_pct: 60,
+    required_entitlements: ['sebi-lodr', 'sebi-lodr-full-length-mock-test', 'REGMATE_ANNUAL'],
+    sku: 'sebi-lodr',
+    price_inr: 499,
+    disclaimer: 'Independent practice examination simulation by RegMate.',
+    certificate_prefix: 'RM-LODR'
   }
 };
 
-// Aliases
+const SLUG_ALIASES = {
+  'fme': 'fme-full-length-mock-test',
+  'fme-mock-test': 'fme-full-length-mock-test',
+  'ifsca-fme': 'fme-full-length-mock-test',
+  'fme-full-length-mock-test': 'fme-full-length-mock-test',
+
+  'cmi': 'cmi-full-length-mock-test',
+  'cmi-mock-test': 'cmi-full-length-mock-test',
+  'ifsca-cmi': 'cmi-full-length-mock-test',
+  'cmi-full-length-mock-test': 'cmi-full-length-mock-test',
+
+  'sebi-aif': 'sebi-aif-full-length-mock-test',
+  'aif': 'sebi-aif-full-length-mock-test',
+  'aif-mock-test': 'sebi-aif-full-length-mock-test',
+  'sebi-aif-full-length-mock-test': 'sebi-aif-full-length-mock-test',
+
+  'companies-act': 'companies-act-full-length-mock-test',
+  'mca': 'companies-act-full-length-mock-test',
+  'ca-mock-test': 'companies-act-full-length-mock-test',
+  'companies-act-full-length-mock-test': 'companies-act-full-length-mock-test',
+
+  'sebi-lodr': 'sebi-lodr-full-length-mock-test',
+  'lodr': 'sebi-lodr-full-length-mock-test',
+  'lodr-mock-test': 'sebi-lodr-full-length-mock-test',
+  'sebi-lodr-full-length-mock-test': 'sebi-lodr-full-length-mock-test'
+};
+
+// Aliases and slug resolver
 function resolveExamSlug(slug) {
-  if (!slug) return 'cmi-full-length-mock-test';
+  if (!slug) return 'fme-full-length-mock-test';
   const clean = String(slug).toLowerCase().trim();
-  if (clean === 'fme' || clean === 'fme-mock-test' || clean === 'ifsca-fme' || clean === 'fme-full-length-mock-test') {
-    return 'fme-full-length-mock-test';
-  }
-  return 'cmi-full-length-mock-test';
+  return SLUG_ALIASES[clean] || null;
 }
 
 const _cache = {};
@@ -144,8 +216,11 @@ function calculateReadinessBand(percentage) {
 
 // ─── GET /api/exam-ready/meta & /api/exam-ready/:slug/meta ────────────────
 router.get(['/meta', '/:slug/meta'], async (req, res) => {
-  const slug = req.params.slug || 'cmi-full-length-mock-test';
+  const slug = req.params.slug;
   const canonical = resolveExamSlug(slug);
+  if (!canonical || !EXAM_CONFIGS[canonical]) {
+    return res.status(404).json({ message: 'Mock test not found' });
+  }
   const config = EXAM_CONFIGS[canonical];
   const questions = loadQuestionsForExam(canonical);
 
@@ -199,8 +274,11 @@ router.get(['/meta', '/:slug/meta'], async (req, res) => {
 // Q1 and Q2 are FREE/PREVIEW.
 // Q3 onwards are LOCKED unless user has active entitlement (REGREADY_FME_001 or REGMATE_ANNUAL).
 router.get(['/questions', '/:slug/questions'], async (req, res) => {
-  const slug = req.params.slug || 'cmi-full-length-mock-test';
+  const slug = req.params.slug;
   const canonical = resolveExamSlug(slug);
+  if (!canonical || !EXAM_CONFIGS[canonical]) {
+    return res.status(404).json({ message: 'Question bank not found for this test' });
+  }
   const config = EXAM_CONFIGS[canonical];
   const questions = loadQuestionsForExam(canonical);
 
@@ -262,8 +340,11 @@ router.get(['/questions', '/:slug/questions'], async (req, res) => {
 // ─── POST /api/exam-ready/submit-test & /api/exam-ready/:slug/submit-test ─
 router.post(['/submit-test', '/:slug/submit-test'], async (req, res) => {
   try {
-    const slug = req.params.slug || 'cmi-full-length-mock-test';
+    const slug = req.params.slug;
     const canonical = resolveExamSlug(slug);
+    if (!canonical || !EXAM_CONFIGS[canonical]) {
+      return res.status(404).json({ message: 'Mock test not found' });
+    }
     const config = EXAM_CONFIGS[canonical];
     const questions = loadQuestionsForExam(canonical);
 
